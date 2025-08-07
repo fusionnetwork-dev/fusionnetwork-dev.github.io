@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>swaqq's Creation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #ff3333 0%, #cc0000 33%, #333333 66%, #cccccc 100%);
+            background-size: 200% 200%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .volume-control {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .volume-control:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .volume-control input[type="range"] {
+            width: 100px;
+            -webkit-appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .volume-control input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px;
+            background: linear-gradient(90deg, #ff3333, #cc0000);
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .volume-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(90deg, #ff3333, #cc0000);
+            border: 2px solid white;
+            border-radius: 50%;
+            margin-top: -6px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .volume-control input[type="range"]:hover::-webkit-slider-thumb {
+            transform: scale(1.2);
+        }
+
+        .volume-control input[type="range"]::-moz-range-track {
+            height: 6px;
+            background: linear-gradient(90deg, #ff3333, #cc0000);
+            border-radius: 10px;
+        }
+
+        .volume-control input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(90deg, #ff3333, #cc0000);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border-radius: 40px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: url('https://cdn.discordapp.com/avatars/1084576683262230548/18813b03ad39cc513fe2761f744bd0bf.webp?size=1024') no-repeat center/cover;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .name-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .name {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff3333, #cc0000, #333333, #cccccc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            animation: gradientText 6s ease infinite;
+            background-size: 200% 200%;
+            position: relative;
+            display: inline-block;
+        }
+
+        .uid {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10;
+            opacity: 0;
+            animation: floatUID 3s ease-in-out infinite;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .name:hover + .uid {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        @keyframes floatUID {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: linear-gradient(90deg, #ff3333, #cc0000, #333333, #cccccc);
+            color: white;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+            animation: gradientText 6s ease infinite;
+            background-size: 200% 200%;
+            transition: transform 0.4s ease;
+        }
+
+        .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .bio {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            margin-top: 20px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-button {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            background: linear-gradient(90deg, #ff3333, #cc0000, #333333, #cccccc);
+            background-size: 200% 200%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            animation: gradientText 6s ease infinite;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .link-button:hover::before {
+            left: 100%;
+        }
+
+        .link-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .link-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .link-icon-img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .click-game-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(90deg, #ff3333, #cc0000, #333333, #cccccc);
+            background-size: 200% 200%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            animation: gradientText 6s ease infinite;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .click-game-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .click-game-button:hover::before {
+            left: 100%;
+        }
+
+        .click-game-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .eye-logo {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+            width: 60px;
+            height: 60px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.08;
+            animation: floatRandom 18s infinite ease-in-out;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            font-size: 20px;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 5s;
+            font-size: 24px;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 10s;
+            font-size: 18px;
+        }
+
+        @keyframes floatRandom {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg);
+                opacity: 0.08;
+            }
+            50% { 
+                transform: translateY(-25px) translateX(15px) rotate(8deg);
+                opacity: 0.15;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .profile-card {
+                padding: 30px 20px;
+                border-radius: 30px;
+            }
+            
+            .name {
+                font-size: 24px;
+            }
+            
+            .name-section {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .volume-control {
+                top: 10px;
+                left: 10px;
+                padding: 8px;
+            }
+
+            .volume-control input[type="range"] {
+                width: 80px;
+            }
+
+            .eye-logo {
+                width: 50px;
+                height: 50px;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="backgroundAudio" autoplay loop>
+        <source src="https://cdn.discordapp.com/attachments/1400222624956547182/1402933749473345567/worth_it.mp3?ex=6895b75f&is=689465df&hm=eccf1d871b09bc67940669c70195509558e1bc3cd2981703d304a2801308d288&" type="audio/mpeg">
+    </audio>
+    
+    <div class="floating-elements">
+        <i class="floating-element fas fa-star"></i>
+        <i class="floating-element fas fa-heart"></i>
+        <i class="floating-element fas fa-sparkles"></i>
+    </div>
+
+    <div class="volume-control">
+        <i class="fas fa-volume-up"></i>
+        <input type="range" id="volumeSlider" min="0" max="100" value="25">
+    </div>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-image"></div>
+            
+            <div class="name-section">
+                <span class="uid">UID 0</span>
+                <h1 class="name" id="typewriter"></h1>
+            </div>
+            
+            <div class="badges">
+                <span class="badge owner">
+                    <i class="fas fa-crown"></i>
+                    Owner
+                </span>
+                <span class="badge swag">
+                    <i class="fas fa-fire"></i>
+                    #swag
+                </span>
+            </div>
+            
+            <p class="bio" id="bioTypewriter"></p>
+            
+            <div class="links-container">
+                <a href="https://www.roblox.com/users/8156657037/profile" class="link-button">
+                    <div class="link-icon">
+                        <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1402927505865969684/512px-Roblox_icon_-_2017.png?ex=6895b18e&is=6894600e&hm=fd900d66aae0a19ddb8feb65332487952e69a68a8dfe3b820fce868c87b1353b&" alt="Roblox" class="link-icon-img">
+                    </div>
+                    <span class="link-text">Roblox</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                
+                <a href="https://discord.com/users/1084576683262230548" class="link-button">
+                    <div class="link-icon">
+                        <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1402928254943498292/LWljb24ucG5n.png?ex=6895b241&is=689460c1&hm=a399d755e6722dc452c4c824d84b009e7fba2b95b64dc976ca3671bfac5a61a5&" alt="Discord" class="link-icon-img">
+                    </div>
+                    <span class="link-text">Discord</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                
+                <a href="https://www.youtube.com/@faintche" class="link-button">
+                    <div class="link-icon">
+                        <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1402928506484297789/cG5n.png?ex=6895b27d&is=689460fd&hm=f6eaaf7a3eb0160a314f3a0d73a734fd71ee83fee0e5c20d8941edbbc61ee2b6&" alt="YouTube" class="link-icon-img">
+                    </div>
+                    <span class="link-text">YouTube</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <button class="click-game-button" id="clickButton">Clicks: 0</button>
+        </div>
+    </div>
+
+    <svg class="eye-logo" viewBox="0 0 100 100">
+        <ellipse cx="50" cy="50" rx="40" ry="25" fill="none" stroke="url(#eyeGradient)" stroke-width="5"/>
+        <circle cx="50" cy="50" r="15" fill="#ffffff"/>
+        <circle cx="50" cy="50" r="7" fill="#333333"/>
+        <defs>
+            <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#ff3333" />
+                <stop offset="33%" style="stop-color:#cc0000" />
+                <stop offset="66%" style="stop-color:#333333" />
+                <stop offset="100%" style="stop-color:#cccccc" />
+            </linearGradient>
+        </defs>
+        <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
+    </svg>
+
+    <script>
+        // Click game button logic
+        let clickCount = 0;
+        const clickButton = document.getElementById('clickButton');
+        clickButton.addEventListener('click', () => {
+            clickCount++;
+            clickButton.textContent = `Clicks: ${clickCount}`;
+            
+            // Create ripple effect
+            const ripple = document.createElement('div');
+            const rect = clickButton.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                background: rgba(255, 255, 255, 0.25);
+                border-radius: 50%;
+                left: ${x}px;
+                top: ${y}px;
+                transform: scale(0);
+                animation: ripple 0.8s ease-out;
+                pointer-events: none;
+            `;
+            
+            clickButton.style.position = 'relative';
+            clickButton.style.overflow = 'hidden';
+            clickButton.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 800);
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Mouse movement parallax for floating elements
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            document.querySelectorAll('.floating-element').forEach((element, index) => {
+                const speed = (index + 1) * 0.3;
+                const x = (mouseX - 0.5) * speed * 40;
+                const y = (mouseY - 0.5) * speed * 40;
+                
+                element.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+
+        // Volume control for audio
+        const volumeSlider = document.getElementById('volumeSlider');
+        const audio = document.getElementById('backgroundAudio');
+        audio.volume = 0.25; // Set initial volume to 25%
+        volumeSlider.addEventListener('input', () => {
+            audio.volume = volumeSlider.value / 100;
+        });
+
+        // View counter logic
+        let viewCount = localStorage.getItem('viewCount') ? parseInt(localStorage.getItem('viewCount')) + 1 : 1;
+        localStorage.setItem('viewCount', viewCount);
+        document.getElementById('eyeViewCounter').textContent = `Views: ${viewCount}`;
+
+        // Typewriter effect for name
+        const nameTypewriter = document.getElementById('typewriter');
+        const nameText = 'swaqq';
+        let nameIndex = 0;
+        let nameDirection = 1;
+
+        function typeNameEffect() {
+            nameTypewriter.textContent = nameText.slice(0, nameIndex);
+            if (nameDirection === 1) {
+                nameIndex++;
+                if (nameIndex > nameText.length) {
+                    nameDirection = -1;
+                    setTimeout(typeNameEffect, 1000); // Pause at full text
+                } else {
+                    setTimeout(typeNameEffect, 200);
+                }
+            } else {
+                nameIndex--;
+                if (nameIndex === 1) { // Stop at 's'
+                    nameDirection = 1;
+                    setTimeout(typeNameEffect, 1000); // Pause at 's'
+                } else {
+                    setTimeout(typeNameEffect, 200);
+                }
+            }
+        }
+
+        // Typewriter effect for bio
+        const bioTypewriter = document.getElementById('bioTypewriter');
+        const bioText = 'I got swag icl';
+        let bioIndex = 0;
+        let bioDirection = 1;
+
+        function typeBioEffect() {
+            bioTypewriter.textContent = bioText.slice(0, bioIndex);
+            if (bioDirection === 1) {
+                bioIndex++;
+                if (bioIndex > bioText.length) {
+                    bioDirection = -1;
+                    setTimeout(typeBioEffect, 1000); // Pause at full text
+                } else {
+                    setTimeout(typeBioEffect, 200);
+                }
+            } else {
+                bioIndex--;
+                if (bioIndex === 1) { // Stop at 'I'
+                    bioDirection = 1;
+                    setTimeout(typeBioEffect, 1000); // Pause at 'I'
+                } else {
+                    setTimeout(typeBioEffect, 200);
+                }
+            }
+        }
+
+        // Start typewriter effects with a slight delay for bio
+        typeNameEffect();
+        setTimeout(typeBioEffect, 500);
+    </script>
+</body>
+</html>
