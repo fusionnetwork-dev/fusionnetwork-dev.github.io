@@ -14,17 +14,19 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #ff3333 0%, #cc0000 33%, #333333 66%, #cccccc 100%);
-            background-size: 200% 200%;
             min-height: 100vh;
             overflow-x: hidden;
-            animation: gradientShift 15s ease infinite;
+            position: relative;
         }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        video#backgroundVideo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
         }
 
         .container {
@@ -448,9 +450,9 @@
     </style>
 </head>
 <body>
-    <audio id="backgroundAudio" autoplay loop muted>
-        <source src="assets/worth_it.mp3" type="audio/mpeg">
-    </audio>
+    <video id="backgroundVideo" autoplay loop muted playsinline>
+        <source src="assets/prettifun - Unfazed.mp4" type="video/mp4">
+    </video>
     
     <div class="floating-elements">
         <i class="floating-element fas fa-star"></i>
@@ -531,23 +533,23 @@
     </svg>
 
     <script>
-        // Audio control
-        const audio = document.getElementById('backgroundAudio');
+        // Video control
+        const video = document.getElementById('backgroundVideo');
         const volumeSlider = document.getElementById('volumeSlider');
-        audio.volume = 0.25; // Set initial volume to 25%
+        video.volume = 0.25; // Set initial volume to 25%
 
         // Unmute on first user interaction
         let hasInteracted = false;
         document.addEventListener('click', () => {
             if (!hasInteracted) {
-                audio.muted = false;
+                video.muted = false;
                 hasInteracted = true;
             }
         });
 
         volumeSlider.addEventListener('input', () => {
-            audio.muted = false; // Unmute when slider is used
-            audio.volume = volumeSlider.value / 100;
+            video.muted = false; // Unmute when slider is used
+            video.volume = volumeSlider.value / 100;
         });
 
         // Click game button logic
