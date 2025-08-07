@@ -805,9 +805,8 @@
         let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
         
-        // Set video to play unmuted with higher initial volume
+        // Set video volume to match slider default (50%)
         video.volume = 0.5;
-        video.muted = false;
 
         // Attempt to play video with audio immediately
         function tryPlayVideo() {
