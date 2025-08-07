@@ -1283,10 +1283,13 @@
             totalTimeDisplay.textContent = 'Error';
         });
 
-        // Volume control for video (keep video muted)
+        // Volume control for both video and audio
         volumeSlider.addEventListener('input', () => {
-            // Video stays muted, this slider is now just visual
+            const volume = volumeSlider.value / 100;
+            // Video stays muted, but we can still set its volume for visual feedback
             video.muted = true;
+            // Control audio volume
+            audioPlayer.volume = volume;
         });
 
         // Welcome screen dismissal and initialization
