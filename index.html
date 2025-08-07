@@ -29,6 +29,7 @@
             align-items: center;
             justify-content: center;
             cursor: url('https://cdn.discordapp.com/attachments/1400222624956547182/1403125508929224855/normal.cur?ex=689669f6&is=68951876&hm=be4840f68967a6bd48d7337d12699c7fc94cecc0ebb9d6d3ca4bc86996d926b1&') 16 16, auto;
+            background-color: #d3d3d3; /* Smooth gray background, no transparency */
         }
 
         body.welcome-active * {
@@ -36,34 +37,11 @@
         }
 
         video#backgroundVideo {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            transform: translate(-50%, -50%);
-            z-index: -2;
-            filter: brightness(0.8);
+            display: none; /* Removed video to avoid overlap issues */
         }
 
         .vintage-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                to bottom,
-                transparent,
-                transparent 2px,
-                rgba(0, 0, 0, 0.2) 2px,
-                rgba(0, 0, 0, 0.2) 4px
-            );
-            z-index: -1;
-            pointer-events: none;
-            mix-blend-mode: overlay;
-            opacity: 0.3;
+            display: none; /* Removed overlay since we're using a solid background */
         }
 
         .click-effect {
@@ -93,15 +71,15 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 0; /* Moved above video (-2) and overlay (-1) */
+            z-index: 0;
         }
 
         .word-element {
             position: absolute;
-            color: rgba(255, 255, 255, 0.7);
+            color: #000000; /* Black text for contrast on gray background */
             font-weight: 800;
             font-size: 28px;
-            text-shadow: 0 0 6px rgba(0, 0, 0, 0.4), 0 0 2px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 2px rgba(255, 255, 255, 0.5); /* Light shadow for readability */
             opacity: 0;
             animation: wordFloat 8s ease-in-out forwards;
             white-space: nowrap;
@@ -109,8 +87,8 @@
 
         @keyframes wordFloat {
             0% { opacity: 0; transform: translate(0, 0); }
-            20% { opacity: 0.7; }
-            80% { opacity: 0.7; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
             100% { opacity: 0; transform: translate(var(--tx), var(--ty)); }
         }
 
@@ -158,70 +136,7 @@
         }
 
         .volume-control {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 10px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .volume-control:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .volume-control input[type="range"] {
-            width: 100px;
-            -webkit-appearance: none;
-            background: transparent;
-            cursor: pointer;
-        }
-
-        .volume-control input[type="range"]::-webkit-slider-runnable-track {
-            height: 6px;
-            background: linear-gradient(90deg, #ff0000, #000000);
-            border-radius: 10px;
-        }
-
-        .volume-control input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            background: linear-gradient(90deg, #ff0000, #000000);
-            border: 2px solid white;
-            border-radius: 50%;
-            margin-top: -6px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease;
-        }
-
-        .volume-control input[type="range"]:hover::-webkit-slider-thumb {
-            transform: scale(1.2);
-        }
-
-        .volume-control input[type="range"]::-moz-range-track {
-            height: 6px;
-            background: linear-gradient(90deg, #ff0000, #000000);
-            border-radius: 10px;
-        }
-
-        .volume-control input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            background: linear-gradient(90deg, #ff0000, #000000);
-            border: 2px solid white;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none; /* Removed volume control since video is gone */
         }
 
         .profile-card {
@@ -376,12 +291,12 @@
         }
 
         .bio {
-            color: rgba(255, 255, 255, 0.95);
+            color: rgba(0, 0, 0, 0.95); /* Adjusted bio color to contrast gray background */
             font-size: 14px;
             line-height: 1.5;
             margin-bottom: 15px;
             margin-top: 10px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
             display: inline-block;
         }
 
@@ -790,17 +705,6 @@
         let hasInteracted = false;
         let clickCount = 0;
         const volumeSlider = document.getElementById('volumeSlider');
-        video.volume = 0.25;
-
-        // Attempt unmuted playback
-        function tryUnmuteVideo() {
-            video.muted = false;
-            video.play().catch(error => {
-                console.error('Unmuted playback failed:', error);
-                video.muted = true;
-                video.play();
-            });
-        }
 
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
@@ -831,45 +735,6 @@
         profileCard.addEventListener('mouseleave', () => {
             profileCard.style.transform = 'translateY(0)';
         });
-
-        // Audio context for beat detection
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const source = audioContext.createMediaElementSource(video);
-        const analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256;
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
-        // Floating elements bounce
-        const floatingElements = document.querySelectorAll('.floating-element');
-        let lastBeat = 0;
-        const beatThreshold = 150;
-        const beatInterval = 500;
-
-        function detectBeat() {
-            analyser.getByteFrequencyData(frequencyData);
-            const bass = frequencyData.slice(0, 10).reduce((sum, val) => sum + val, 0) / 10;
-
-            if (bass > beatThreshold && Date.now() - lastBeat > beatInterval) {
-                floatingElements.forEach((el, index) => {
-                    const bottom = parseFloat(getComputedStyle(el).bottom) || window.innerHeight - 50;
-                    el.style.bottom = `${bottom}px`;
-                    el.style.animation = `bounce 0.3s ease, floatRandom 18s infinite ease-in-out ${index * 2}s`;
-                });
-                lastBeat = Date.now();
-            }
-
-            requestAnimationFrame(detectBeat);
-        }
-
-        function startBeatDetection() {
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => detectBeat());
-            } else {
-                detectBeat();
-            }
-        }
 
         // Typewriter effect for name
         const nameTypewriter = document.getElementById('typewriter');
@@ -955,7 +820,14 @@
         }
 
         welcomeScreen.addEventListener('click', () => {
+            welcomeScreen.classList.add('hidden');
+            body.classList.remove('welcome-active');
             startWordEffect();
+            typeNameEffect();
+            setTimeout(typeBioEffect, 500);
+            hasInteracted = true;
+            updateViewCount();
+            updateLikeDislikeCounts();
         }, { once: true });
 
         // Optimized click game button logic
@@ -1087,32 +959,16 @@
         document.getElementById('likeButton').addEventListener('click', handleLike);
         document.getElementById('dislikeButton').addEventListener('click', handleDislike);
 
-        // Volume control
-        volumeSlider.addEventListener('input', () => {
-            video.muted = false;
-            video.volume = volumeSlider.value / 100;
-            tryUnmuteVideo();
-        });
-
         // Welcome screen dismissal and initialization
         welcomeScreen.addEventListener('click', () => {
             welcomeScreen.classList.add('hidden');
             body.classList.remove('welcome-active');
-            tryUnmuteVideo();
-            startBeatDetection();
+            startWordEffect();
             typeNameEffect();
             setTimeout(typeBioEffect, 500);
             hasInteracted = true;
             updateViewCount();
             updateLikeDislikeCounts();
-        }, { once: true });
-
-        // Attempt unmuted playback on first click
-        document.addEventListener('click', () => {
-            if (!hasInteracted) {
-                tryUnmuteVideo();
-                hasInteracted = true;
-            }
         }, { once: true });
     </script>
 </body>
