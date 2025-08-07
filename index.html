@@ -27,6 +27,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: url('https://banner2.cleanpng.com/20180325/bbq/av0y8ynk0.webp') 16 16, auto;
         }
 
         body.welcome-active * {
@@ -42,6 +43,47 @@
             object-fit: cover;
             transform: translate(-50%, -50%);
             z-index: -2;
+            filter: brightness(0.8);
+        }
+
+        .vintage-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+                        url('https://www.transparenttextures.com/patterns/noise.png');
+            z-index: -1;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+            mix-blend-mode: overlay;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.8; }
+            50% { opacity: 0.9; }
+            100% { opacity: 0.8; }
+        }
+
+        .click-effect {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            background: linear-gradient(90deg, #ff0000, #000000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 12px;
+            opacity: 0.3;
+            animation: shapeFade 1s ease-out forwards;
+            border-radius: 20%;
+        }
+
+        @keyframes shapeFade {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.3; }
+            100% { transform: scale(1.5) translate(var(--tx), var(--ty)); opacity: 0; }
         }
 
         .welcome-screen {
@@ -616,9 +658,11 @@
     </div>
 
     <video id="backgroundVideo" loop playsinline>
-        <source src="assets/Protect - Hotspot.mp4" type="video/mp4">
+        <source src="assets/need me.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
+    
+    <div class="vintage-overlay"></div>
     
     <div class="floating-elements">
         <i class="floating-element fas fa-cross"></i>
@@ -899,143 +943,88 @@
         `;
         document.head.appendChild(style);
 
-        // Generate unique device ID
-        function generateDeviceId() {
-            let id = localStorage.getItem('deviceId');
-            if (!id) {
-                id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                    return v.toString(16);
-                });
-                localStorage.setItem('deviceId', id);
-            }
-            return id;
-        }
+        // Mouse click effect with random shapes
+        document.addEventListener('click', (e) => {
+            const shapes = ['fa-star', 'fa-heart', 'fa-bolt', 'fa-gem', 'fa-cross'];
+            for (let i = 0; i < 5; i++) {
+                const shape = document.createElement('i');
+                const shapeClass = shapes[Math.floor(Math.random() * shapes.length)];
+                const tx = (Math.random() - 0.5) * 50;
+                const ty = (Math.random() - 0.5) * 50;
 
-        const deviceId = generateDeviceId();
+                shape.className = `click-effect fas ${shapeClass}`;
+                shape.style.left = `${e.clientX}px`;
+                shape.style.top = `${e.clientY}px`;
+                shape.style.setProperty('--tx', `${tx}px`);
+                shape.style.setProperty('--ty', `${ty}px`);
 
-        // View counter logic with daily limit
-        function handleViewCount() {
-            const viewData = JSON.parse(localStorage.getItem('viewData') || '{}');
-            const today = new Date().toISOString().split('T')[0];
-            
-            if (!viewData[deviceId] || viewData[deviceId].date !== today) {
-                let totalViews = parseInt(localStorage.getItem('totalViews') || '0') + 1;
-                localStorage.setItem('totalViews', totalViews);
-                viewData[deviceId] = { date: today };
-                localStorage.setItem('viewData', JSON.stringify(viewData));
-            }
-            
-            document.getElementById('eyeViewCounter').textContent = `Views: ${localStorage.getItem('totalViews') || 0}`;
-        }
-
-        handleViewCount();
-
-        // Like/Dislike logic
-        const likeButton = document.getElementById('likeButton');
-        const dislikeButton = document.getElementById('dislikeButton');
-        const likeCountSpan = document.getElementById('likeCount');
-        const dislikeCountSpan = document.getElementById('dislikeCount');
-
-        function updateLikeDislikeCounts() {
-            likeCountSpan.textContent = localStorage.getItem('totalLikes') || 0;
-            dislikeCountSpan.textContent = localStorage.getItem('totalDislikes') || 0;
-        }
-
-        function checkInteractionStatus() {
-            const interactionData = JSON.parse(localStorage.getItem('interactionData') || '{}');
-            const today = new Date().toISOString().split('T')[0];
-            
-            if (!interactionData[deviceId] || interactionData[deviceId].date !== today) {
-                interactionData[deviceId] = { date: today, liked: false, disliked: false };
-                localStorage.setItem('interactionData', JSON.stringify(interactionData));
-            }
-            
-            if (interactionData[deviceId].liked && interactionData[deviceId].disliked) {
-                // User has both liked and disliked, reset to allow switching
-                interactionData[deviceId].liked = false;
-                interactionData[deviceId].disliked = false;
-                localStorage.setItem('interactionData', JSON.stringify(interactionData));
-            }
-            
-            if (interactionData[deviceId].liked) {
-                likeButton.classList.add('disabled');
-                likeButton.disabled = true;
-            } else {
-                likeButton.classList.remove('disabled');
-                likeButton.disabled = false;
-            }
-            
-            if (interactionData[deviceId].disliked) {
-                dislikeButton.classList.add('disabled');
-                dislikeButton.disabled = true;
-            } else {
-                dislikeButton.classList.remove('disabled');
-                dislikeButton.disabled = false;
-            }
-            
-            updateLikeDislikeCounts();
-        }
-
-        checkInteractionStatus();
-
-        likeButton.addEventListener('click', () => {
-            const interactionData = JSON.parse(localStorage.getItem('interactionData') || '{}');
-            const today = new Date().toISOString().split('T')[0];
-            
-            if (interactionData[deviceId].date === today) {
-                if (!interactionData[deviceId].liked) {
-                    let totalLikes = parseInt(localStorage.getItem('totalLikes') || '0');
-                    let totalDislikes = parseInt(localStorage.getItem('totalDislikes') || '0');
-                    
-                    if (interactionData[deviceId].disliked) {
-                        totalDislikes--;
-                        localStorage.setItem('totalDislikes', totalDislikes);
-                        interactionData[deviceId].disliked = false;
-                        dislikeButton.classList.remove('disabled');
-                        dislikeButton.disabled = false;
-                    }
-                    
-                    totalLikes++;
-                    localStorage.setItem('totalLikes', totalLikes);
-                    interactionData[deviceId].liked = true;
-                    localStorage.setItem('interactionData', JSON.stringify(interactionData));
-                    
-                    likeButton.classList.add('disabled');
-                    likeButton.disabled = true;
-                    updateLikeDislikeCounts();
-                }
+                document.body.appendChild(shape);
+                setTimeout(() => shape.remove(), 1000);
             }
         });
 
-        dislikeButton.addEventListener('click', () => {
-            const interactionData = JSON.parse(localStorage.getItem('interactionData') || '{}');
-            const today = new Date().toISOString().split('T')[0];
-            
-            if (interactionData[deviceId].date === today) {
-                if (!interactionData[deviceId].disliked) {
-                    let totalLikes = parseInt(localStorage.getItem('totalLikes') || '0');
-                    let totalDislikes = parseInt(localStorage.getItem('totalDislikes') || '0');
-                    
-                    if (interactionData[deviceId].liked) {
-                        totalLikes--;
-                        localStorage.setItem('totalLikes', totalLikes);
-                        interactionData[deviceId].liked = false;
-                        likeButton.classList.remove('disabled');
-                        likeButton.disabled = false;
-                    }
-                    
-                    totalDislikes++;
-                    localStorage.setItem('totalDislikes', totalDislikes);
-                    interactionData[deviceId].disliked = true;
-                    localStorage.setItem('interactionData', JSON.stringify(interactionData));
-                    
-                    dislikeButton.classList.add('disabled');
-                    dislikeButton.disabled = true;
+        // Server-side interaction logic with fallback
+        async function updateViewCount() {
+            try {
+                const response = await fetch('http://localhost:3000/api/views', { method: 'POST' });
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                document.getElementById('eyeViewCounter').textContent = `Views: ${data.views || 0}`;
+            } catch (error) {
+                console.error('Error updating view count:', error.message);
+                document.getElementById('eyeViewCounter').textContent = 'Views: N/A';
+            }
+        }
+
+        async function updateLikeDislikeCounts() {
+            try {
+                const response = await fetch('http://localhost:3000/api/ratings');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                document.getElementById('likeCount').textContent = data.likes || 0;
+                document.getElementById('dislikeCount').textContent = data.dislikes || 0;
+
+                const likeButton = document.getElementById('likeButton');
+                const dislikeButton = document.getElementById('dislikeButton');
+                likeButton.classList.toggle('disabled', data.userLiked);
+                dislikeButton.classList.toggle('disabled', data.userDisliked);
+                likeButton.disabled = data.userLiked;
+                dislikeButton.disabled = data.userDisliked;
+            } catch (error) {
+                console.error('Error fetching ratings:', error.message);
+                document.getElementById('likeCount').textContent = 'N/A';
+                document.getElementById('dislikeCount').textContent = 'N/A';
+            }
+        }
+
+        async function handleLike() {
+            try {
+                const response = await fetch('http://localhost:3000/api/like', { method: 'POST' });
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                if (data.success) {
                     updateLikeDislikeCounts();
                 }
+            } catch (error) {
+                console.error('Error liking:', error.message);
             }
-        });
+        }
+
+        async function handleDislike() {
+            try {
+                const response = await fetch('http://localhost:3000/api/dislike', { method: 'POST' });
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                if (data.success) {
+                    updateLikeDislikeCounts();
+                }
+            } catch (error) {
+                console.error('Error disliking:', error.message);
+            }
+        }
+
+        document.getElementById('likeButton').addEventListener('click', handleLike);
+        document.getElementById('dislikeButton').addEventListener('click', handleDislike);
 
         // Volume control
         volumeSlider.addEventListener('input', () => {
@@ -1071,6 +1060,8 @@
             setTimeout(typeBioEffect, 500);
 
             hasInteracted = true;
+            updateViewCount();
+            updateLikeDislikeCounts();
         }, { once: true });
 
         document.addEventListener('click', () => {
