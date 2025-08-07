@@ -52,18 +52,17 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-                        url('https://www.transparenttextures.com/patterns/noise.png');
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.2) 2px,
+                rgba(0, 0, 0, 0.2) 4px
+            );
             z-index: -1;
             pointer-events: none;
-            animation: flicker 0.15s infinite;
             mix-blend-mode: overlay;
-        }
-
-        @keyframes flicker {
-            0% { opacity: 0.8; }
-            50% { opacity: 0.9; }
-            100% { opacity: 0.8; }
+            opacity: 0.4;
         }
 
         .click-effect {
@@ -84,6 +83,33 @@
         @keyframes shapeFade {
             0% { transform: scale(1) translate(0, 0); opacity: 0.3; }
             100% { transform: scale(1.5) translate(var(--tx), var(--ty)); opacity: 0; }
+        }
+
+        .word-fx {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -3;
+        }
+
+        .word-element {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 700;
+            font-size: 24px;
+            opacity: 0;
+            animation: wordFloat 6s ease-in-out forwards;
+            white-space: nowrap;
+        }
+
+        @keyframes wordFloat {
+            0% { opacity: 0; transform: translate(0, 0); }
+            20% { opacity: 0.7; }
+            80% { opacity: 0.7; }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)); }
         }
 
         .welcome-screen {
@@ -649,6 +675,10 @@
             .like-dislike-container {
                 gap: 15px;
             }
+
+            .word-element {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -657,7 +687,7 @@
         <div class="welcome-text">Welcome to my creation</div>
     </div>
 
-    <video id="backgroundVideo" loop playsinline>
+    <video id="backgroundVideo" autoplay loop playsinline muted>
         <source src="assets/need me.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -672,6 +702,8 @@
         <i class="floating-element fas fa-cross"></i>
         <i class="floating-element fas fa-cross"></i>
     </div>
+
+    <div class="word-fx" id="wordFx"></div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -770,16 +802,21 @@
         // Welcome screen logic
         const welcomeScreen = document.getElementById('welcomeScreen');
         const body = document.body;
-
-        // Keep video paused initially
         const video = document.getElementById('backgroundVideo');
-        video.pause();
-
-        // Initialize variables for typewriter and other effects
         let hasInteracted = false;
         let clickCount = 0;
         const volumeSlider = document.getElementById('volumeSlider');
         video.volume = 0.25;
+
+        // Attempt unmuted playback
+        function tryUnmuteVideo() {
+            video.muted = false;
+            video.play().catch(error => {
+                console.error('Unmuted playback failed:', error);
+                video.muted = true;
+                video.play();
+            });
+        }
 
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
@@ -900,6 +937,35 @@
             }
         }
 
+        // Random words background effect
+        const wordFxContainer = document.getElementById('wordFx');
+        const words = ['swag', 'coolness', 'rad', 'epik'];
+
+        function createWord() {
+            const word = document.createElement('div');
+            word.className = 'word-element';
+            word.textContent = words[Math.floor(Math.random() * words.length)];
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            const tx = (Math.random() - 0.5) * 100;
+            const ty = (Math.random() - 0.5) * 100;
+            word.style.left = `${x}px`;
+            word.style.top = `${y}px`;
+            word.style.setProperty('--tx', `${tx}px`);
+            word.style.setProperty('--ty', `${ty}px`);
+            wordFxContainer.appendChild(word);
+            setTimeout(() => word.remove(), 6000);
+        }
+
+        function startWordEffect() {
+            createWord();
+            setTimeout(startWordEffect, Math.random() * 2000 + 1000);
+        }
+
+        welcomeScreen.addEventListener('click', () => {
+            startWordEffect();
+        }, { once: true });
+
         // Click game button logic
         const clickButton = document.getElementById('clickButton');
         clickButton.addEventListener('click', () => {
@@ -963,33 +1029,36 @@
             }
         });
 
-        // Server-side interaction logic with fallback
-        async function updateViewCount() {
+        // Local storage for views and ratings
+        function updateViewCount() {
             try {
-                const response = await fetch('http://localhost:3000/api/views', { method: 'POST' });
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                document.getElementById('eyeViewCounter').textContent = `Views: ${data.views || 0}`;
+                const sessionKey = 'swaqq_viewed';
+                if (!sessionStorage.getItem(sessionKey)) {
+                    let views = parseInt(localStorage.getItem('swaqq_views') || '0', 10) + 1;
+                    localStorage.setItem('swaqq_views', views);
+                    sessionStorage.setItem(sessionKey, 'true');
+                }
+                const views = localStorage.getItem('swaqq_views') || '0';
+                document.getElementById('eyeViewCounter').textContent = `Views: ${views}`;
             } catch (error) {
                 console.error('Error updating view count:', error.message);
                 document.getElementById('eyeViewCounter').textContent = 'Views: N/A';
             }
         }
 
-        async function updateLikeDislikeCounts() {
+        function updateLikeDislikeCounts() {
             try {
-                const response = await fetch('http://localhost:3000/api/ratings');
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                document.getElementById('likeCount').textContent = data.likes || 0;
-                document.getElementById('dislikeCount').textContent = data.dislikes || 0;
-
+                const likes = parseInt(localStorage.getItem('swaqq_likes') || '0', 10);
+                const dislikes = parseInt(localStorage.getItem('swaqq_dislikes') || '0', 10);
+                const userAction = localStorage.getItem('swaqq_user_action');
+                document.getElementById('likeCount').textContent = likes;
+                document.getElementById('dislikeCount').textContent = dislikes;
                 const likeButton = document.getElementById('likeButton');
                 const dislikeButton = document.getElementById('dislikeButton');
-                likeButton.classList.toggle('disabled', data.userLiked);
-                dislikeButton.classList.toggle('disabled', data.userDisliked);
-                likeButton.disabled = data.userLiked;
-                dislikeButton.disabled = data.userDisliked;
+                likeButton.classList.toggle('disabled', userAction === 'like');
+                dislikeButton.classList.toggle('disabled', userAction === 'dislike');
+                likeButton.disabled = userAction === 'like';
+                dislikeButton.disabled = userAction === 'dislike';
             } catch (error) {
                 console.error('Error fetching ratings:', error.message);
                 document.getElementById('likeCount').textContent = 'N/A';
@@ -997,27 +1066,27 @@
             }
         }
 
-        async function handleLike() {
+        function handleLike() {
             try {
-                const response = await fetch('http://localhost:3000/api/like', { method: 'POST' });
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                if (data.success) {
-                    updateLikeDislikeCounts();
-                }
+                let userAction = localStorage.getItem('swaqq_user_action');
+                if (userAction) return;
+                let likes = parseInt(localStorage.getItem('swaqq_likes') || '0', 10) + 1;
+                localStorage.setItem('swaqq_likes', likes);
+                localStorage.setItem('swaqq_user_action', 'like');
+                updateLikeDislikeCounts();
             } catch (error) {
                 console.error('Error liking:', error.message);
             }
         }
 
-        async function handleDislike() {
+        function handleDislike() {
             try {
-                const response = await fetch('http://localhost:3000/api/dislike', { method: 'POST' });
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                if (data.success) {
-                    updateLikeDislikeCounts();
-                }
+                let userAction = localStorage.getItem('swaqq_user_action');
+                if (userAction) return;
+                let dislikes = parseInt(localStorage.getItem('swaqq_dislikes') || '0', 10) + 1;
+                localStorage.setItem('swaqq_dislikes', dislikes);
+                localStorage.setItem('swaqq_user_action', 'dislike');
+                updateLikeDislikeCounts();
             } catch (error) {
                 console.error('Error disliking:', error.message);
             }
@@ -1030,49 +1099,29 @@
         volumeSlider.addEventListener('input', () => {
             video.muted = false;
             video.volume = volumeSlider.value / 100;
-            video.play().catch(error => {
-                console.error('Video playback failed on volume change:', error);
-            });
+            tryUnmuteVideo();
         });
 
         // Welcome screen dismissal and initialization
         welcomeScreen.addEventListener('click', () => {
             welcomeScreen.classList.add('hidden');
             body.classList.remove('welcome-active');
-
-            video.play().catch(error => {
-                console.error('Video playback failed:', error);
-                video.muted = true;
-                video.play().then(() => {
-                    document.addEventListener('click', () => {
-                        if (!hasInteracted) {
-                            video.muted = false;
-                            hasInteracted = true;
-                        }
-                    }, { once: true });
-                }).catch(err => {
-                    console.error('Muted playback failed:', err);
-                });
-            });
-
+            tryUnmuteVideo();
             startBeatDetection();
             typeNameEffect();
             setTimeout(typeBioEffect, 500);
-
             hasInteracted = true;
             updateViewCount();
             updateLikeDislikeCounts();
         }, { once: true });
 
+        // Attempt unmuted playback on first click
         document.addEventListener('click', () => {
-            if (!hasInteracted && !welcomeScreen.classList.contains('hidden')) {
-                video.muted = false;
-                video.play().catch(error => {
-                    console.error('Video playback failed after interaction:', error);
-                });
+            if (!hasInteracted) {
+                tryUnmuteVideo();
                 hasInteracted = true;
             }
-        });
+        }, { once: true });
     </script>
 </body>
 </html>
