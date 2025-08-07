@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta property="og:title" content="swaqq's creation">
-    <meta property="og:description" content="my very own biolink page">
+    <meta property="og:description" content="my very own biolink page gng">
     <meta property="og:url" content="https://swaqq.xyz">
     <meta property="og:image" content="https://i.pinimg.com/1200x/0e/91/ec/0e91ec6ec24f28b11b6052878ec991b1.jpg">
     <meta property="og:type" content="website">
@@ -156,7 +156,7 @@
         }
 
         .profile-card {
-            background: rgba(232, 236, 239, 0.3); /* Semi-transparent whitish gray */
+            background: rgba(232, 236, 239, 0.3);
             backdrop-filter: blur(10px);
             border-radius: 40px;
             padding: 20px 20px;
@@ -438,6 +438,62 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
+        .like-dislike-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .like-button, .dislike-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: linear-gradient(90deg, #ff0000, #000000);
+            background-size: 200% 200%;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            animation: gradientText 6s ease infinite;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .like-button::before, .dislike-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .like-button:hover::before, .dislike-button:hover::before {
+            left: 100%;
+        }
+
+        .like-button:hover, .dislike-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .like-button.disabled, .dislike-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .eye-logo {
             position: fixed;
             bottom: 20px;
@@ -547,6 +603,10 @@
             .links-container {
                 gap: 12px;
             }
+
+            .like-dislike-container {
+                gap: 15px;
+            }
         }
     </style>
 </head>
@@ -635,6 +695,17 @@
             </div>
             
             <button class="click-game-button" id="clickButton">Clicks: 0</button>
+            
+            <div class="like-dislike-container">
+                <button class="like-button" id="likeButton">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span id="likeCount">0</span>
+                </button>
+                <button class="dislike-button" id="dislikeButton">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span id="dislikeCount">0</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -828,10 +899,143 @@
         `;
         document.head.appendChild(style);
 
-        // View counter logic
-        let viewCount = localStorage.getItem('viewCount') ? parseInt(localStorage.getItem('viewCount')) + 1 : 1;
-        localStorage.setItem('viewCount', viewCount);
-        document.getElementById('eyeViewCounter').textContent = `Views: ${viewCount}`;
+        // Generate unique device ID
+        function generateDeviceId() {
+            let id = localStorage.getItem('deviceId');
+            if (!id) {
+                id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+                localStorage.setItem('deviceId', id);
+            }
+            return id;
+        }
+
+        const deviceId = generateDeviceId();
+
+        // View counter logic with daily limit
+        function handleViewCount() {
+            const viewData = JSON.parse(localStorage.getItem('viewData') || '{}');
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (!viewData[deviceId] || viewData[deviceId].date !== today) {
+                let totalViews = parseInt(localStorage.getItem('totalViews') || '0') + 1;
+                localStorage.setItem('totalViews', totalViews);
+                viewData[deviceId] = { date: today };
+                localStorage.setItem('viewData', JSON.stringify(viewData));
+            }
+            
+            document.getElementById('eyeViewCounter').textContent = `Views: ${localStorage.getItem('totalViews') || 0}`;
+        }
+
+        handleViewCount();
+
+        // Like/Dislike logic
+        const likeButton = document.getElementById('likeButton');
+        const dislikeButton = document.getElementById('dislikeButton');
+        const likeCountSpan = document.getElementById('likeCount');
+        const dislikeCountSpan = document.getElementById('dislikeCount');
+
+        function updateLikeDislikeCounts() {
+            likeCountSpan.textContent = localStorage.getItem('totalLikes') || 0;
+            dislikeCountSpan.textContent = localStorage.getItem('totalDislikes') || 0;
+        }
+
+        function checkInteractionStatus() {
+            const interactionData = JSON.parse(localStorage.getItem('interactionData') || '{}');
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (!interactionData[deviceId] || interactionData[deviceId].date !== today) {
+                interactionData[deviceId] = { date: today, liked: false, disliked: false };
+                localStorage.setItem('interactionData', JSON.stringify(interactionData));
+            }
+            
+            if (interactionData[deviceId].liked && interactionData[deviceId].disliked) {
+                // User has both liked and disliked, reset to allow switching
+                interactionData[deviceId].liked = false;
+                interactionData[deviceId].disliked = false;
+                localStorage.setItem('interactionData', JSON.stringify(interactionData));
+            }
+            
+            if (interactionData[deviceId].liked) {
+                likeButton.classList.add('disabled');
+                likeButton.disabled = true;
+            } else {
+                likeButton.classList.remove('disabled');
+                likeButton.disabled = false;
+            }
+            
+            if (interactionData[deviceId].disliked) {
+                dislikeButton.classList.add('disabled');
+                dislikeButton.disabled = true;
+            } else {
+                dislikeButton.classList.remove('disabled');
+                dislikeButton.disabled = false;
+            }
+            
+            updateLikeDislikeCounts();
+        }
+
+        checkInteractionStatus();
+
+        likeButton.addEventListener('click', () => {
+            const interactionData = JSON.parse(localStorage.getItem('interactionData') || '{}');
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (interactionData[deviceId].date === today) {
+                if (!interactionData[deviceId].liked) {
+                    let totalLikes = parseInt(localStorage.getItem('totalLikes') || '0');
+                    let totalDislikes = parseInt(localStorage.getItem('totalDislikes') || '0');
+                    
+                    if (interactionData[deviceId].disliked) {
+                        totalDislikes--;
+                        localStorage.setItem('totalDislikes', totalDislikes);
+                        interactionData[deviceId].disliked = false;
+                        dislikeButton.classList.remove('disabled');
+                        dislikeButton.disabled = false;
+                    }
+                    
+                    totalLikes++;
+                    localStorage.setItem('totalLikes', totalLikes);
+                    interactionData[deviceId].liked = true;
+                    localStorage.setItem('interactionData', JSON.stringify(interactionData));
+                    
+                    likeButton.classList.add('disabled');
+                    likeButton.disabled = true;
+                    updateLikeDislikeCounts();
+                }
+            }
+        });
+
+        dislikeButton.addEventListener('click', () => {
+            const interactionData = JSON.parse(localStorage.getItem('interactionData') || '{}');
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (interactionData[deviceId].date === today) {
+                if (!interactionData[deviceId].disliked) {
+                    let totalLikes = parseInt(localStorage.getItem('totalLikes') || '0');
+                    let totalDislikes = parseInt(localStorage.getItem('totalDislikes') || '0');
+                    
+                    if (interactionData[deviceId].liked) {
+                        totalLikes--;
+                        localStorage.setItem('totalLikes', totalLikes);
+                        interactionData[deviceId].liked = false;
+                        likeButton.classList.remove('disabled');
+                        likeButton.disabled = false;
+                    }
+                    
+                    totalDislikes++;
+                    localStorage.setItem('totalDislikes', totalDislikes);
+                    interactionData[deviceId].disliked = true;
+                    localStorage.setItem('interactionData', JSON.stringify(interactionData));
+                    
+                    dislikeButton.classList.add('disabled');
+                    dislikeButton.disabled = true;
+                    updateLikeDislikeCounts();
+                }
+            }
+        });
 
         // Volume control
         volumeSlider.addEventListener('input', () => {
