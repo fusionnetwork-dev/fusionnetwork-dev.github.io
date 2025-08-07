@@ -21,11 +21,12 @@
 
         video#backgroundVideo {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
             object-fit: cover;
+            transform: translate(-50%, -50%);
             z-index: -2;
         }
 
@@ -107,7 +108,7 @@
         }
 
         .profile-card {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(25px);
             border-radius: 40px;
             padding: 40px 30px;
@@ -375,40 +376,40 @@
 
         .floating-element {
             position: absolute;
-            opacity: 0.08;
-            animation: floatRandom 18s infinite ease-in-out;
-        }
-
-        .floating-element:nth-child(1) {
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
+            opacity: 0.3;
             font-size: 20px;
+            animation: floatRandom 18s infinite ease-in-out, colorShift 6s ease infinite;
         }
 
-        .floating-element:nth-child(2) {
-            top: 60%;
-            right: 15%;
-            animation-delay: 5s;
-            font-size: 24px;
-        }
-
-        .floating-element:nth-child(3) {
-            bottom: 30%;
-            left: 20%;
-            animation-delay: 10s;
-            font-size: 18px;
-        }
+        .floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { top: 60%; right: 15%; animation-delay: 2s; }
+        .floating-element:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 4s; }
+        .floating-element:nth-child(4) { top: 40%; left: 30%; animation-delay: 6s; font-size: 22px; }
+        .floating-element:nth-child(5) { bottom: 20%; right: 25%; animation-delay: 8s; font-size: 18px; }
+        .floating-element:nth-child(6) { top: 70%; left: 40%; animation-delay: 10s; font-size: 24px; }
+        .floating-element:nth-child(7) { bottom: 10%; left: 50%; animation-delay: 12s; font-size: 20px; }
+        .floating-element:nth-child(8) { top: 30%; right: 35%; animation-delay: 14s; font-size: 19px; }
+        .floating-element:nth-child(9) { bottom: 25%; left: 15%; animation-delay: 16s; font-size: 21px; }
+        .floating-element:nth-child(10) { top: 50%; right: 20%; animation-delay: 18s; font-size: 20px; }
 
         @keyframes floatRandom {
-            0%, 100% { 
-                transform: translateY(0px) translateX(0px) rotate(0deg);
-                opacity: 0.08;
-            }
-            50% { 
-                transform: translateY(-25px) translateX(15px) rotate(8deg);
-                opacity: 0.15;
-            }
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+            50% { transform: translateY(-25px) translateX(15px) rotate(8deg); }
+        }
+
+        @keyframes colorShift {
+            0% { color: #ff6666; }
+            20% { color: #ffcc66; }
+            40% { color: #66ff66; }
+            60% { color: #66ccff; }
+            80% { color: #cc66ff; }
+            100% { color: #ff6666; }
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.2); }
+            100% { transform: translateY(0) scale(1); }
         }
 
         @media (max-width: 480px) {
@@ -446,6 +447,10 @@
                 bottom: 15px;
                 right: 15px;
             }
+
+            .floating-element {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -457,7 +462,14 @@
     <div class="floating-elements">
         <i class="floating-element fas fa-star"></i>
         <i class="floating-element fas fa-heart"></i>
-        <i class="floating-element fas fa-sparkles"></i>
+        <i class="floating-element fas fa-star"></i>
+        <i class="floating-element fas fa-heart"></i>
+        <i class="floating-element fas fa-star"></i>
+        <i class="floating-element fas fa-heart"></i>
+        <i class="floating-element fas fa-star"></i>
+        <i class="floating-element fas fa-heart"></i>
+        <i class="floating-element fas fa-star"></i>
+        <i class="floating-element fas fa-heart"></i>
     </div>
 
     <div class="volume-control">
@@ -552,6 +564,46 @@
             video.volume = volumeSlider.value / 100;
         });
 
+        // Audio context for beat detection
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaElementSource(video);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+        // Floating elements bounce
+        const floatingElements = document.querySelectorAll('.floating-element');
+        let lastBeat = 0;
+        const beatThreshold = 150; // Adjust for sensitivity
+        const beatInterval = 300; // Minimum time between beats (ms)
+
+        function detectBeat() {
+            analyser.getByteFrequencyData(frequencyData);
+            const bass = frequencyData.slice(0, 10).reduce((sum, val) => sum + val, 0) / 10;
+
+            if (bass > beatThreshold && Date.now() - lastBeat > beatInterval) {
+                floatingElements.forEach((el, index) => {
+                    const bottom = parseFloat(getComputedStyle(el).bottom) || window.innerHeight - 50;
+                    el.style.bottom = `${bottom}px`;
+                    el.style.animation = `bounce 0.3s ease, floatRandom 18s infinite ease-in-out ${index * 2}s, colorShift 6s ease infinite`;
+                });
+                lastBeat = Date.now();
+            }
+
+            requestAnimationFrame(detectBeat);
+        }
+
+        // Start beat detection after audio context is ready
+        video.addEventListener('play', () => {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => detectBeat());
+            } else {
+                detectBeat();
+            }
+        });
+
         // Click game button logic
         let clickCount = 0;
         const clickButton = document.getElementById('clickButton');
@@ -603,7 +655,7 @@
             const mouseX = e.clientX / window.innerWidth;
             const mouseY = e.clientY / window.innerHeight;
             
-            document.querySelectorAll('.floating-element').forEach((element, index) => {
+            floatingElements.forEach((element, index) => {
                 const speed = (index + 1) * 0.3;
                 const x = (mouseX - 0.5) * speed * 40;
                 const y = (mouseY - 0.5) * speed * 40;
