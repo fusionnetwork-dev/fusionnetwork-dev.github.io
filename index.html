@@ -409,10 +409,6 @@
             }
         }
 
-        #youtubePlayer {
-            display: none;
-        }
-
         @media (max-width: 480px) {
             .container {
                 padding: 20px 15px;
@@ -452,7 +448,9 @@
     </style>
 </head>
 <body>
-    <div id="youtubePlayer"></div>
+    <audio id="backgroundAudio" autoplay loop muted>
+        <source src="assets/worth_it.mp3" type="audio/mpeg">
+    </audio>
     
     <div class="floating-elements">
         <i class="floating-element fas fa-star"></i>
@@ -532,34 +530,25 @@
         <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
     </svg>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        let player;
+        // Audio control
+        const audio = document.getElementById('backgroundAudio');
+        const volumeSlider = document.getElementById('volumeSlider');
+        audio.volume = 0.25; // Set initial volume to 25%
 
-        // Initialize YouTube IFrame Player
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtubePlayer', {
-                height: '0',
-                width: '0',
-                videoId: 'eIJSSChhC2I',
-                playerVars: {
-                    autoplay: 1,
-                    loop: 1,
-                    playlist: 'eIJSSChhC2I', // Required for looping
-                    controls: 0,
-                    showinfo: 0,
-                    modestbranding: 1
-                },
-                events: {
-                    'onReady': onPlayerReady
-                }
-            });
-        }
+        // Unmute on first user interaction
+        let hasInteracted = false;
+        document.addEventListener('click', () => {
+            if (!hasInteracted) {
+                audio.muted = false;
+                hasInteracted = true;
+            }
+        });
 
-        function onPlayerReady(event) {
-            event.target.setVolume(25); // Set initial volume to 25%
-            event.target.playVideo();
-        }
+        volumeSlider.addEventListener('input', () => {
+            audio.muted = false; // Unmute when slider is used
+            audio.volume = volumeSlider.value / 100;
+        });
 
         // Click game button logic
         let clickCount = 0;
@@ -619,14 +608,6 @@
                 
                 element.style.transform = `translate(${x}px, ${y}px)`;
             });
-        });
-
-        // Volume control for YouTube player
-        const volumeSlider = document.getElementById('volumeSlider');
-        volumeSlider.addEventListener('input', () => {
-            if (player && player.setVolume) {
-                player.setVolume(volumeSlider.value);
-            }
         });
 
         // View counter logic
