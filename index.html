@@ -887,7 +887,7 @@
                     <span class="time-display" id="totalTime">0:00</span>
                 </div>
                 
-                <audio id="audioPlayer" preload="auto">
+                <audio id="audioPlayer" preload="auto" loop>
                     <source src="assets/kills.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
@@ -1198,6 +1198,17 @@
         // Set initial volume
         audioPlayer.volume = 0.7;
         
+        // Attempt to autoplay audio
+        function tryPlayAudio() {
+            audioPlayer.play().then(() => {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                isPlaying = true;
+            }).catch(error => {
+                console.log('Autoplay blocked - user interaction required');
+                // Audio will start when user clicks welcome screen
+            });
+        }
+        
         // Play/Pause functionality
         playPauseBtn.addEventListener('click', () => {
             if (isPlaying) {
@@ -1205,9 +1216,12 @@
                 playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                 isPlaying = false;
             } else {
-                audioPlayer.play();
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                isPlaying = true;
+                audioPlayer.play().then(() => {
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    isPlaying = true;
+                }).catch(error => {
+                    console.log('Audio play failed:', error);
+                });
             }
         });
         
@@ -1249,12 +1263,24 @@
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
         
-        // Handle audio end
+        // Handle audio end (loop is handled by HTML loop attribute, but keeping this for UI updates)
         audioPlayer.addEventListener('ended', () => {
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            isPlaying = false;
-            progressFill.style.width = '0%';
+            // Since loop is enabled, this shouldn't fire, but keeping as backup
             audioPlayer.currentTime = 0;
+            audioPlayer.play();
+        });
+        
+        // Handle successful audio loading
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+        });
+        
+        // Handle audio errors
+        audioPlayer.addEventListener('error', (e) => {
+            console.log('Audio error:', e);
+            // Update UI to show error state
+            currentTimeDisplay.textContent = 'Error';
+            totalTimeDisplay.textContent = 'Error';
         });
 
         // Volume control for video (keep video muted)
