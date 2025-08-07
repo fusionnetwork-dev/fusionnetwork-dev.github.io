@@ -154,18 +154,41 @@
         }
 
         .profile-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
+            background: #e8ecef; /* Changed to smooth whitish gray */
+            backdrop-filter: blur(10px);
             border-radius: 40px;
             padding: 40px 30px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            perspective: 800px;
+            position: relative;
+            border: 3px solid transparent;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 3px solid transparent;
+            border-radius: 40px;
+            background: linear-gradient(90deg, #ff0000, #800000, #000000, #800000, #ff0000) border-box;
+            background-size: 200% 200%;
+            animation: gradientStroke 10s ease infinite;
+            z-index: -1;
         }
 
         .profile-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-8px) scale(1.05);
             box-shadow: 0 30px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        @keyframes gradientStroke {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .profile-image {
@@ -228,7 +251,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 0 2px rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.2);
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
             position: relative;
@@ -268,6 +291,14 @@
             100% { background-position: 0% 50%; }
         }
 
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px; /* Increased spacing between badges */
+            margin-bottom: 20px;
+        }
+
         .badge {
             display: inline-flex;
             align-items: center;
@@ -303,7 +334,7 @@
         .links-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 25px;
         }
 
         .link-button {
@@ -313,7 +344,7 @@
             padding: 15px 25px;
             background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             border-radius: 50px;
             color: white;
             text-decoration: none;
@@ -368,7 +399,7 @@
             padding: 20px;
             background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             border-radius: 50px;
             color: white;
             text-decoration: none;
@@ -382,7 +413,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             margin-top: 30px;
             width: 100%;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .click-game-button::before {
@@ -472,6 +502,10 @@
                 border-radius: 30px;
             }
             
+            .profile-card::before {
+                border-radius: 30px;
+            }
+            
             .name {
                 font-size: 24px;
             }
@@ -506,6 +540,10 @@
                 font-size: 32px;
                 padding: 15px;
             }
+
+            .links-container {
+                gap: 20px;
+            }
         }
     </style>
 </head>
@@ -534,7 +572,7 @@
     </div>
 
     <div class="container">
-        <div class="profile-card">
+        <div class="profile-card" id="profileCard">
             <div class="profile-image" id="profileImage"></div>
             
             <div class="name-section">
@@ -631,6 +669,24 @@
             profileImage.classList.remove('spin');
             void profileImage.offsetWidth; // Trigger reflow to restart animation
             profileImage.classList.add('spin');
+        });
+
+        // Parallax effect for profile card
+        const profileCard = document.getElementById('profileCard');
+        profileCard.addEventListener('mousemove', (e) => {
+            const rect = profileCard.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const mouseX = e.clientX - centerX;
+            const mouseY = e.clientY - centerY;
+            const maxTilt = 15; // Increased tilt for better effect
+            const rotateX = (mouseY / rect.height) * -maxTilt;
+            const rotateY = (mouseX / rect.width) * maxTilt;
+            profileCard.style.transform = `perspective(800px) translateY(-8px) scale(1.05) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        profileCard.addEventListener('mouseleave', () => {
+            profileCard.style.transform = 'translateY(0)';
         });
 
         // Audio context for beat detection
