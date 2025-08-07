@@ -13,8 +13,8 @@ app.use(express.static(path.join(__dirname, 'public'))); // Serve static files f
 // Database connection
 const pool = mysql.createPool({
     host: 'localhost',
-    user: 'your_username', // Replace with your MySQL username
-    password: 'your_password', // Replace with your MySQL password
+    user: 'captainswaqq', // Replace with your MySQL username
+    password: 'anonymous', // Replace with your MySQL password
     database: 'swaqq_db'
 });
 
