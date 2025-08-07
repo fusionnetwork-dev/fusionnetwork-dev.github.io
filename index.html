@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta property="og:title" content="swaqq's creation">
-<meta property="og:description" content="my very own biolink page gng">
-<meta property="og:url" content="https://swaqq.xyz">
-<meta property="og:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/18813b03ad39cc513fe2761f744bd0bf.webp?size=1024">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#FF0000">
+    <meta property="og:description" content="my very own biolink page gng">
+    <meta property="og:url" content="https://swaqq.xyz">
+    <meta property="og:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/18813b03ad39cc513fe2761f744bd0bf.webp?size=1024">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#FF0000">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>swaqq's creation</title>
@@ -26,6 +26,10 @@
             position: relative;
         }
 
+        body.welcome-active * {
+            animation-play-state: paused !important;
+        }
+
         video#backgroundVideo {
             position: fixed;
             top: 50%;
@@ -35,6 +39,41 @@
             object-fit: cover;
             transform: translate(-50%, -50%);
             z-index: -2;
+        }
+
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px); /* Smooth blur effect */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .welcome-text {
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(90deg, #ff0000, #000000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientText 6s ease infinite;
+            background-size: 200% 200%;
+            text-align: center;
+            padding: 20px;
         }
 
         .container {
@@ -452,12 +491,22 @@
             .floating-element {
                 font-size: 16px;
             }
+
+            .welcome-text {
+                font-size: 32px;
+                padding: 15px;
+            }
         }
     </style>
 </head>
-<body>
-    <video id="backgroundVideo" autoplay loop playsinline>
+<body class="welcome-active">
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-text">Welcome to my creation</div>
+    </div>
+
+    <video id="backgroundVideo" loop playsinline>
         <source src="assets/Protect - Hotspot.mp4" type="video/mp4">
+        Your browser does not support the video tag.
     </video>
     
     <div class="floating-elements">
@@ -540,8 +589,17 @@
     </svg>
 
     <script>
-        // Video control
+        // Welcome screen logic
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const body = document.body;
+
+        // Keep video paused initially
         const video = document.getElementById('backgroundVideo');
+        video.pause();
+
+        // Initialize variables for typewriter and other effects
+        let hasInteracted = false;
+        let clickCount = 0;
         const volumeSlider = document.getElementById('volumeSlider');
         video.volume = 0.25; // Set initial volume to 25%
 
@@ -577,78 +635,13 @@
         }
 
         // Start beat detection after audio context is ready
-        video.addEventListener('play', () => {
+        function startBeatDetection() {
             if (audioContext.state === 'suspended') {
                 audioContext.resume().then(() => detectBeat());
             } else {
                 detectBeat();
             }
-        });
-
-        // Unmute on first user interaction
-        let hasInteracted = false;
-        document.addEventListener('click', () => {
-            if (!hasInteracted) {
-                video.muted = false;
-                hasInteracted = true;
-            }
-        });
-
-        volumeSlider.addEventListener('input', () => {
-            video.muted = false; // Unmute when slider is used
-            video.volume = volumeSlider.value / 100;
-        });
-
-        // Click game button logic
-        let clickCount = 0;
-        const clickButton = document.getElementById('clickButton');
-        clickButton.addEventListener('click', () => {
-            clickCount++;
-            clickButton.textContent = `Clicks: ${clickCount}`;
-            
-            // Create ripple effect
-            const ripple = document.createElement('div');
-            const rect = clickButton.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = event.clientX - rect.left - size / 2;
-            const y = event.clientY - rect.top - size / 2;
-            
-            ripple.style.cssText = `
-                position: absolute;
-                width: ${size}px;
-                height: ${size}px;
-                background: rgba(255, 255, 255, 0.25);
-                border-radius: 50%;
-                left: ${x}px;
-                top: ${y}px;
-                transform: scale(0);
-                animation: ripple 0.8s ease-out;
-                pointer-events: none;
-            `;
-            
-            clickButton.style.position = 'relative';
-            clickButton.style.overflow = 'hidden';
-            clickButton.appendChild(ripple);
-            
-            setTimeout(() => ripple.remove(), 800);
-        });
-
-        // Add ripple animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // View counter logic
-        let viewCount = localStorage.getItem('viewCount') ? parseInt(localStorage.getItem('viewCount')) + 1 : 1;
-        localStorage.setItem('viewCount', viewCount);
-        document.getElementById('eyeViewCounter').textContent = `Views: ${viewCount}`;
+        }
 
         // Typewriter effect for name
         const nameTypewriter = document.getElementById('typewriter');
@@ -704,10 +697,104 @@
             }
         }
 
-        // Start typewriter effects with a slight delay for bio
-        typeNameEffect();
-        setTimeout(typeBioEffect, 500);
+        // Click game button logic
+        const clickButton = document.getElementById('clickButton');
+        clickButton.addEventListener('click', () => {
+            clickCount++;
+            clickButton.textContent = `Clicks: ${clickCount}`;
+            
+            // Create ripple effect
+            const ripple = document.createElement('div');
+            const rect = clickButton.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                background: rgba(255, 255, 255, 0.25);
+                border-radius: 50%;
+                left: ${x}px;
+                top: ${y}px;
+                transform: scale(0);
+                animation: ripple 0.8s ease-out;
+                pointer-events: none;
+            `;
+            
+            clickButton.style.position = 'relative';
+            clickButton.style.overflow = 'hidden';
+            clickButton.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 800);
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // View counter logic
+        let viewCount = localStorage.getItem('viewCount') ? parseInt(localStorage.getItem('viewCount')) + 1 : 1;
+        localStorage.setItem('viewCount', viewCount);
+        document.getElementById('eyeViewCounter').textContent = `Views: ${viewCount}`;
+
+        // Volume control
+        volumeSlider.addEventListener('input', () => {
+            video.muted = false;
+            video.volume = volumeSlider.value / 100;
+            video.play().catch(error => {
+                console.error('Video playback failed on volume change:', error);
+            });
+        });
+
+        // Welcome screen dismissal and initialization
+        welcomeScreen.addEventListener('click', () => {
+            welcomeScreen.classList.add('hidden');
+            body.classList.remove('welcome-active');
+
+            // Start video playback
+            video.play().catch(error => {
+                console.error('Video playback failed:', error);
+                video.muted = true; // Fallback to muted
+                video.play().then(() => {
+                    document.addEventListener('click', () => {
+                        if (!hasInteracted) {
+                            video.muted = false;
+                            hasInteracted = true;
+                        }
+                    }, { once: true });
+                }).catch(err => {
+                    console.error('Muted playback failed:', err);
+                });
+            });
+
+            // Start beat detection and typewriter effects
+            startBeatDetection();
+            typeNameEffect();
+            setTimeout(typeBioEffect, 500);
+
+            hasInteracted = true;
+        }, { once: true });
+
+        // Additional interaction for unmuting
+        document.addEventListener('click', () => {
+            if (!hasInteracted && !welcomeScreen.classList.contains('hidden')) {
+                video.muted = false;
+                video.play().catch(error => {
+                    console.error('Video playback failed after interaction:', error);
+                });
+                hasInteracted = true;
+            }
+        });
     </script>
 </body>
 </html>
-
