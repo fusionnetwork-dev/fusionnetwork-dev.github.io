@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta property="og:title" content="swaqq's creation">
-    <meta property="og:description" content="my very own biolink page">
+    <meta property="og:description" content="my very own biolink page gng">
     <meta property="og:url" content="https://swaqq.xyz">
     <meta property="og:image" content="https://i.pinimg.com/1200x/0e/91/ec/0e91ec6ec24f28b11b6052878ec991b1.jpg">
     <meta property="og:type" content="website">
@@ -391,6 +391,100 @@
             display: inline-block;
         }
 
+        .audio-player {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 10px;
+            padding: 6px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .audio-player:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .audio-info {
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .song-title {
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .audio-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .control-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #ff0000, #000000);
+            background-size: 200% 200%;
+            color: white;
+            font-size: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: gradientText 6s ease infinite;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-pause-btn {
+            width: 24px;
+            height: 24px;
+            font-size: 10px;
+        }
+
+        .audio-progress {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .time-display {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 8px;
+            font-weight: 500;
+            min-width: 20px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #000000);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
         .links-container {
             display: flex;
             flex-direction: column;
@@ -767,6 +861,38 @@
                 </a>
             </div>
             
+            <div class="audio-player">
+                <div class="audio-info">
+                    <div class="song-title">Kills</div>
+                    <div class="artist-name">Now Playing</div>
+                </div>
+                
+                <div class="audio-controls">
+                    <button class="control-btn" id="rewindBtn">
+                        <i class="fas fa-backward"></i>
+                    </button>
+                    <button class="control-btn play-pause-btn" id="playPauseBtn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn" id="skipBtn">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                </div>
+                
+                <div class="audio-progress">
+                    <span class="time-display" id="currentTime">0:00</span>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="time-display" id="totalTime">0:00</span>
+                </div>
+                
+                <audio id="audioPlayer" preload="auto">
+                    <source src="assets/kills.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            
             <button class="click-game-button" id="clickButton">Clicks: 0</button>
             
             <div class="like-dislike-container">
@@ -805,17 +931,15 @@
         let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
         
-        // Set video volume to match slider default (50%)
+        // Set video volume to match slider default (50%) but mute video
         video.volume = 0.5;
+        video.muted = true; // Keep video muted
 
-        // Attempt to play video with audio immediately
+        // Attempt to play video muted
         function tryPlayVideo() {
-            video.muted = false;
+            video.muted = true; // Always keep video muted
             video.play().catch(error => {
-                console.log('Autoplay with audio blocked, will unmute on user interaction');
-                // If autoplay with audio fails, try muted autoplay
-                video.muted = true;
-                video.play();
+                console.log('Autoplay blocked');
             });
         }
 
@@ -1059,10 +1183,84 @@
         document.getElementById('likeButton').addEventListener('click', handleLike);
         document.getElementById('dislikeButton').addEventListener('click', handleDislike);
 
-        // Volume control
+        // Audio player functionality
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const rewindBtn = document.getElementById('rewindBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const totalTimeDisplay = document.getElementById('totalTime');
+        
+        let isPlaying = false;
+        
+        // Set initial volume
+        audioPlayer.volume = 0.7;
+        
+        // Play/Pause functionality
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                audioPlayer.pause();
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                isPlaying = false;
+            } else {
+                audioPlayer.play();
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                isPlaying = true;
+            }
+        });
+        
+        // Rewind functionality (restart song)
+        rewindBtn.addEventListener('click', () => {
+            audioPlayer.currentTime = 0;
+        });
+        
+        // Skip functionality (restart song since only one song)
+        skipBtn.addEventListener('click', () => {
+            audioPlayer.currentTime = 0;
+        });
+        
+        // Update progress bar
+        audioPlayer.addEventListener('timeupdate', () => {
+            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            progressFill.style.width = `${progress}%`;
+            
+            // Update time displays
+            currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
+            if (audioPlayer.duration) {
+                totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+            }
+        });
+        
+        // Progress bar click functionality
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            const percentage = clickX / width;
+            audioPlayer.currentTime = percentage * audioPlayer.duration;
+        });
+        
+        // Format time helper function
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Handle audio end
+        audioPlayer.addEventListener('ended', () => {
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            isPlaying = false;
+            progressFill.style.width = '0%';
+            audioPlayer.currentTime = 0;
+        });
+
+        // Volume control for video (keep video muted)
         volumeSlider.addEventListener('input', () => {
-            video.muted = false;
-            video.volume = volumeSlider.value / 100;
+            // Video stays muted, this slider is now just visual
+            video.muted = true;
         });
 
         // Welcome screen dismissal and initialization
@@ -1070,11 +1268,8 @@
             welcomeScreen.classList.add('hidden');
             body.classList.remove('welcome-active');
             
-            // Ensure video plays with audio after user interaction
-            video.muted = false;
-            video.play().catch(error => {
-                console.log('Could not play video with audio:', error);
-            });
+            // Ensure video stays muted after user interaction
+            video.muted = true;
             
             typeNameEffect();
             setTimeout(typeBioEffect, 500);
