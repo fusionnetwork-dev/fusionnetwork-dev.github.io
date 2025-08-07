@@ -115,8 +115,8 @@
 
         @keyframes wordFloat {
             0% { opacity: 0; transform: translate(0, 0); }
-            20% { opacity: 1; }
-            80% { opacity: 1; }
+            20% { opacity: 0.3; }
+            80% { opacity: 0.3; }
             100% { opacity: 0; transform: translate(var(--tx), var(--ty)); }
         }
 
@@ -684,7 +684,7 @@
         <div class="welcome-text">Welcome to my creation</div>
     </div>
 
-    <video id="backgroundVideo" autoplay loop playsinline muted>
+    <video id="backgroundVideo" autoplay loop playsinline>
         <source src="assets/need me.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -805,6 +805,20 @@
         let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
         video.volume = 0.25;
+
+        // Attempt to play video with audio immediately
+        function tryPlayVideo() {
+            video.muted = false;
+            video.play().catch(error => {
+                console.log('Autoplay with audio blocked, will unmute on user interaction');
+                // If autoplay with audio fails, try muted autoplay
+                video.muted = true;
+                video.play();
+            });
+        }
+
+        // Try to play the video immediately
+        tryPlayVideo();
 
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
@@ -1046,6 +1060,13 @@
         welcomeScreen.addEventListener('click', () => {
             welcomeScreen.classList.add('hidden');
             body.classList.remove('welcome-active');
+            
+            // Ensure video plays with audio after user interaction
+            video.muted = false;
+            video.play().catch(error => {
+                console.log('Could not play video with audio:', error);
+            });
+            
             typeNameEffect();
             setTimeout(typeBioEffect, 500);
             hasInteracted = true;
