@@ -409,6 +409,10 @@
             }
         }
 
+        #youtubePlayer {
+            display: none;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 20px 15px;
@@ -448,9 +452,7 @@
     </style>
 </head>
 <body>
-    <audio id="backgroundAudio" autoplay loop>
-        <source src="https://cdn.discordapp.com/attachments/1400222624956547182/1402933749473345567/worth_it.mp3?ex=6895b75f&is=689465df&hm=eccf1d871b09bc67940669c70195509558e1bc3cd2981703d304a2801308d288&" type="audio/mpeg">
-    </audio>
+    <div id="youtubePlayer"></div>
     
     <div class="floating-elements">
         <i class="floating-element fas fa-star"></i>
@@ -530,7 +532,35 @@
         <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
     </svg>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        let player;
+
+        // Initialize YouTube IFrame Player
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtubePlayer', {
+                height: '0',
+                width: '0',
+                videoId: 'eIJSSChhC2I',
+                playerVars: {
+                    autoplay: 1,
+                    loop: 1,
+                    playlist: 'eIJSSChhC2I', // Required for looping
+                    controls: 0,
+                    showinfo: 0,
+                    modestbranding: 1
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.setVolume(25); // Set initial volume to 25%
+            event.target.playVideo();
+        }
+
         // Click game button logic
         let clickCount = 0;
         const clickButton = document.getElementById('clickButton');
@@ -591,12 +621,12 @@
             });
         });
 
-        // Volume control for audio
+        // Volume control for YouTube player
         const volumeSlider = document.getElementById('volumeSlider');
-        const audio = document.getElementById('backgroundAudio');
-        audio.volume = 0.25; // Set initial volume to 25%
         volumeSlider.addEventListener('input', () => {
-            audio.volume = volumeSlider.value / 100;
+            if (player && player.setVolume) {
+                player.setVolume(volumeSlider.value);
+            }
         });
 
         // View counter logic
