@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta property="og:title" content="swaqq's creation">
-    <meta property="og:description" content="my very own biolink page gng">
+    <meta property="og:description" content="my very own biolink page">
     <meta property="og:url" content="https://swaqq.xyz">
     <meta property="og:image" content="https://i.pinimg.com/1200x/0e/91/ec/0e91ec6ec24f28b11b6052878ec991b1.jpg">
     <meta property="og:type" content="website">
@@ -98,10 +98,10 @@
 
         .word-element {
             position: absolute;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.7); /* Increased opacity for better visibility */
             font-weight: 800;
             font-size: 28px;
-            text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 0 6px rgba(0, 0, 0, 0.4), 0 0 2px rgba(255, 255, 255, 0.3); /* Enhanced shadow for contrast */
             opacity: 0;
             animation: wordFloat 8s ease-in-out forwards;
             white-space: nowrap;
@@ -109,8 +109,8 @@
 
         @keyframes wordFloat {
             0% { opacity: 0; transform: translate(0, 0); }
-            20% { opacity: 0.5; }
-            80% { opacity: 0.5; }
+            20% { opacity: 0.7; }
+            80% { opacity: 0.7; }
             100% { opacity: 0; transform: translate(var(--tx), var(--ty)); }
         }
 
@@ -225,8 +225,8 @@
         }
 
         .profile-card {
-            background: rgba(200, 200, 200, 0.6);
-            backdrop-filter: blur(20px);
+            background: rgba(220, 220, 220, 0.5); /* Reduced opacity to 0.5 and lighter gray */
+            backdrop-filter: blur(10px); /* Reduced blur from 20px to 10px */
             border-radius: 40px;
             padding: 20px 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
@@ -301,11 +301,11 @@
         .name {
             font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(90deg, #ff0000, #000000); /* Red to black gradient */
+            background: linear-gradient(90deg, #ff0000, #000000);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 0 2px white, 0 0 2px rgba(0, 0, 0, 0.2); /* White UI stroke */
+            text-shadow: 0 0 0 2px white, 0 0 2px rgba(0, 0, 0, 0.2);
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
             position: relative;
