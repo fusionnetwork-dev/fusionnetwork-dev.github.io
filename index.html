@@ -12,7 +12,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>swaqq's creation</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="preload" href="https://cdn.discordapp.com/attachments/1400222624956547182/1403125508929224855/normal.cur?ex=689669f6&is=68951876&hm=be4840f68967a6bd48d7337d12699c7fc94cecc0ebb9d6d3ca4bc86996d926b1&" as="image">
     <style>
         * {
             margin: 0;
@@ -28,8 +27,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: url('https://cdn.discordapp.com/attachments/1400222624956547182/1403125508929224855/normal.cur?ex=689669f6&is=68951876&hm=be4840f68967a6bd48d7337d12699c7fc94cecc0ebb9d6d3ca4bc86996d926b1&') 16 16, auto;
-            background-color: #d3d3d3; /* Smooth gray background, no transparency */
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==') 16 16, auto;
         }
 
         body.welcome-active * {
@@ -37,31 +35,61 @@
         }
 
         video#backgroundVideo {
-            display: none; /* Removed video to avoid overlap issues */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+            z-index: -2;
+            filter: brightness(0.8);
         }
 
         .vintage-overlay {
-            display: none; /* Removed overlay since we're using a solid background */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.2) 2px,
+                rgba(0, 0, 0, 0.2) 4px
+            );
+            z-index: -1;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            opacity: 0.3;
         }
 
         .click-effect {
-            position: absolute;
-            width: 10px;
-            height: 10px;
+            position: fixed;
+            width: 20px;
+            height: 20px;
             pointer-events: none;
             background: linear-gradient(90deg, #ff0000, #000000);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            font-size: 12px;
-            opacity: 0.3;
-            animation: shapeFade 0.8s ease-out forwards;
-            border-radius: 20%;
+            font-size: 18px;
+            opacity: 0.8;
+            animation: shapeFade 1.2s ease-out forwards;
+            border-radius: 50%;
+            z-index: 1000;
         }
 
         @keyframes shapeFade {
-            0% { transform: scale(1) translate(0, 0); opacity: 0.3; }
-            100% { transform: scale(1.3) translate(var(--tx), var(--ty)); opacity: 0; }
+            0% { 
+                transform: scale(1) translate(0, 0); 
+                opacity: 0.8; 
+            }
+            100% { 
+                transform: scale(2) translate(var(--tx), var(--ty)); 
+                opacity: 0; 
+            }
         }
 
         .word-fx {
@@ -76,10 +104,10 @@
 
         .word-element {
             position: absolute;
-            color: #000000; /* Black text for contrast on gray background */
+            color: #808080; /* Gray color for text */
             font-weight: 800;
             font-size: 28px;
-            text-shadow: 0 0 2px rgba(255, 255, 255, 0.5); /* Light shadow for readability */
+            text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
             opacity: 0;
             animation: wordFloat 8s ease-in-out forwards;
             white-space: nowrap;
@@ -136,7 +164,70 @@
         }
 
         .volume-control {
-            display: none; /* Removed volume control since video is gone */
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .volume-control:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .volume-control input[type="range"] {
+            width: 100px;
+            -webkit-appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .volume-control input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px;
+            background: linear-gradient(90deg, #ff0000, #000000);
+            border-radius: 10px;
+        }
+
+        .volume-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(90deg, #ff0000, #000000);
+            border: 2px solid white;
+            border-radius: 50%;
+            margin-top: -6px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .volume-control input[type="range"]:hover::-webkit-slider-thumb {
+            transform: scale(1.2);
+        }
+
+        .volume-control input[type="range"]::-moz-range-track {
+            height: 6px;
+            background: linear-gradient(90deg, #ff0000, #000000);
+            border-radius: 10px;
+        }
+
+        .volume-control input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(90deg, #ff0000, #000000);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .profile-card {
@@ -291,12 +382,12 @@
         }
 
         .bio {
-            color: rgba(0, 0, 0, 0.95); /* Adjusted bio color to contrast gray background */
+            color: #ffffff; /* White bio color */
             font-size: 14px;
             line-height: 1.5;
             margin-bottom: 15px;
             margin-top: 10px;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             display: inline-block;
         }
 
@@ -518,6 +609,13 @@
             100% { transform: translateY(0) scale(1); }
         }
 
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 15px 10px;
@@ -587,7 +685,7 @@
     </div>
 
     <video id="backgroundVideo" autoplay loop playsinline muted>
-        <source src="assets/need me.mp4" type="video/mp4">
+        <source src="data:video/mp4;base64," type="video/mp4">
         Your browser does not support the video tag.
     </video>
     
@@ -704,7 +802,9 @@
         const video = document.getElementById('backgroundVideo');
         let hasInteracted = false;
         let clickCount = 0;
+        let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
+        video.volume = 0.25;
 
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
@@ -790,49 +890,49 @@
             }
         }
 
-        // Optimized random words background effect
+        // Fixed random words background effect
         const wordFxContainer = document.getElementById('wordFx');
         const words = ['swag', 'coolness', 'rad', 'epik'];
         let lastWordTime = 0;
 
         function createWord() {
+            if (!wordEffectActive) return;
+            
             const now = performance.now();
             if (now - lastWordTime < 2500) return;
             lastWordTime = now;
+            
             const word = document.createElement('div');
             word.className = 'word-element';
             word.textContent = words[Math.floor(Math.random() * words.length)];
+            
             const x = Math.random() * (window.innerWidth - 100);
             const y = Math.random() * (window.innerHeight - 50);
             const tx = (Math.random() - 0.5) * 80;
             const ty = (Math.random() - 0.5) * 80;
+            
             word.style.left = `${x}px`;
             word.style.top = `${y}px`;
             word.style.setProperty('--tx', `${tx}px`);
             word.style.setProperty('--ty', `${ty}px`);
+            
             wordFxContainer.appendChild(word);
-            setTimeout(() => word.remove(), 8000);
+            setTimeout(() => {
+                if (word.parentNode) {
+                    word.remove();
+                }
+            }, 8000);
         }
 
         function startWordEffect() {
+            if (!wordEffectActive) return;
             createWord();
-            requestAnimationFrame(startWordEffect);
+            setTimeout(startWordEffect, 2500); // Create a new word every 2.5 seconds
         }
-
-        welcomeScreen.addEventListener('click', () => {
-            welcomeScreen.classList.add('hidden');
-            body.classList.remove('welcome-active');
-            startWordEffect();
-            typeNameEffect();
-            setTimeout(typeBioEffect, 500);
-            hasInteracted = true;
-            updateViewCount();
-            updateLikeDislikeCounts();
-        }, { once: true });
 
         // Optimized click game button logic
         const clickButton = document.getElementById('clickButton');
-        clickButton.addEventListener('click', () => {
+        clickButton.addEventListener('click', (event) => {
             clickCount++;
             clickButton.textContent = `Clicks: ${clickCount}`;
             
@@ -862,113 +962,99 @@
             setTimeout(() => ripple.remove(), 800);
         });
 
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Optimized mouse click effect with fewer shapes
+        // Enhanced mouse click effect with overlapping shapes
         document.addEventListener('click', (e) => {
-            const shapes = ['fa-star', 'fa-heart', 'fa-bolt'];
-            for (let i = 0; i < 3; i++) {
+            const shapes = ['fa-star', 'fa-heart', 'fa-bolt', 'fa-sparkles', 'fa-gem'];
+            const shapeCount = Math.floor(Math.random() * 3) + 3; // 3-5 shapes
+            
+            for (let i = 0; i < shapeCount; i++) {
                 const shape = document.createElement('i');
                 const shapeClass = shapes[Math.floor(Math.random() * shapes.length)];
-                const tx = (Math.random() - 0.5) * 40;
-                const ty = (Math.random() - 0.5) * 40;
+                
+                // Create overlapping effect with slight random offsets
+                const offsetX = (Math.random() - 0.5) * 20;
+                const offsetY = (Math.random() - 0.5) * 20;
+                const tx = (Math.random() - 0.5) * 60;
+                const ty = (Math.random() - 0.5) * 60;
 
                 shape.className = `click-effect fas ${shapeClass}`;
-                shape.style.left = `${e.clientX}px`;
-                shape.style.top = `${e.clientY}px`;
+                shape.style.left = `${e.clientX + offsetX}px`;
+                shape.style.top = `${e.clientY + offsetY}px`;
                 shape.style.setProperty('--tx', `${tx}px`);
                 shape.style.setProperty('--ty', `${ty}px`);
+                shape.style.animationDelay = `${i * 0.1}s`; // Stagger animation
 
                 document.body.appendChild(shape);
-                setTimeout(() => shape.remove(), 800);
+                setTimeout(() => {
+                    if (shape.parentNode) {
+                        shape.remove();
+                    }
+                }, 1200);
             }
         });
 
-        // Local storage for views and ratings
+        // Memory-based storage for views and ratings
+        let viewCount = 0;
+        let likeCount = 0;
+        let dislikeCount = 0;
+        let userAction = null;
+        let hasViewed = false;
+
         function updateViewCount() {
-            try {
-                const sessionKey = 'swaqq_viewed';
-                if (!sessionStorage.getItem(sessionKey)) {
-                    let views = parseInt(localStorage.getItem('swaqq_views') || '0', 10) + 1;
-                    localStorage.setItem('swaqq_views', views);
-                    sessionStorage.setItem(sessionKey, 'true');
-                }
-                const views = localStorage.getItem('swaqq_views') || '0';
-                document.getElementById('eyeViewCounter').textContent = `Views: ${views}`;
-            } catch (error) {
-                console.error('Error updating view count:', error.message);
-                document.getElementById('eyeViewCounter').textContent = 'Views: N/A';
+            if (!hasViewed) {
+                viewCount++;
+                hasViewed = true;
             }
+            document.getElementById('eyeViewCounter').textContent = `Views: ${viewCount}`;
         }
 
         function updateLikeDislikeCounts() {
-            try {
-                const likes = parseInt(localStorage.getItem('swaqq_likes') || '0', 10);
-                const dislikes = parseInt(localStorage.getItem('swaqq_dislikes') || '0', 10);
-                const userAction = localStorage.getItem('swaqq_user_action');
-                document.getElementById('likeCount').textContent = likes;
-                document.getElementById('dislikeCount').textContent = dislikes;
-                const likeButton = document.getElementById('likeButton');
-                const dislikeButton = document.getElementById('dislikeButton');
-                likeButton.classList.toggle('disabled', userAction === 'like');
-                dislikeButton.classList.toggle('disabled', userAction === 'dislike');
-                likeButton.disabled = userAction === 'like';
-                dislikeButton.disabled = userAction === 'dislike';
-            } catch (error) {
-                console.error('Error fetching ratings:', error.message);
-                document.getElementById('likeCount').textContent = 'N/A';
-                document.getElementById('dislikeCount').textContent = 'N/A';
-            }
+            document.getElementById('likeCount').textContent = likeCount;
+            document.getElementById('dislikeCount').textContent = dislikeCount;
+            const likeButton = document.getElementById('likeButton');
+            const dislikeButton = document.getElementById('dislikeButton');
+            likeButton.classList.toggle('disabled', userAction === 'like');
+            dislikeButton.classList.toggle('disabled', userAction === 'dislike');
+            likeButton.disabled = userAction === 'like';
+            dislikeButton.disabled = userAction === 'dislike';
         }
 
         function handleLike() {
-            try {
-                let userAction = localStorage.getItem('swaqq_user_action');
-                if (userAction) return;
-                let likes = parseInt(localStorage.getItem('swaqq_likes') || '0', 10) + 1;
-                localStorage.setItem('swaqq_likes', likes);
-                localStorage.setItem('swaqq_user_action', 'like');
-                updateLikeDislikeCounts();
-            } catch (error) {
-                console.error('Error liking:', error.message);
-            }
+            if (userAction) return;
+            likeCount++;
+            userAction = 'like';
+            updateLikeDislikeCounts();
         }
 
         function handleDislike() {
-            try {
-                let userAction = localStorage.getItem('swaqq_user_action');
-                if (userAction) return;
-                let dislikes = parseInt(localStorage.getItem('swaqq_dislikes') || '0', 10) + 1;
-                localStorage.setItem('swaqq_dislikes', dislikes);
-                localStorage.setItem('swaqq_user_action', 'dislike');
-                updateLikeDislikeCounts();
-            } catch (error) {
-                console.error('Error disliking:', error.message);
-            }
+            if (userAction) return;
+            dislikeCount++;
+            userAction = 'dislike';
+            updateLikeDislikeCounts();
         }
 
         document.getElementById('likeButton').addEventListener('click', handleLike);
         document.getElementById('dislikeButton').addEventListener('click', handleDislike);
 
+        // Volume control
+        volumeSlider.addEventListener('input', () => {
+            video.muted = false;
+            video.volume = volumeSlider.value / 100;
+        });
+
         // Welcome screen dismissal and initialization
         welcomeScreen.addEventListener('click', () => {
             welcomeScreen.classList.add('hidden');
             body.classList.remove('welcome-active');
-            startWordEffect();
             typeNameEffect();
             setTimeout(typeBioEffect, 500);
             hasInteracted = true;
             updateViewCount();
             updateLikeDislikeCounts();
+            
+            // Start word effect
+            wordEffectActive = true;
+            startWordEffect();
         }, { once: true });
     </script>
 </body>
