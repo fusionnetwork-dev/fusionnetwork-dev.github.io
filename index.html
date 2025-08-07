@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta property="og:title" content="swaqq's creation">
-    <meta property="og:description" content="my very own biolink page gng">
+    <meta property="og:description" content="my very own biolink page">
     <meta property="og:url" content="https://swaqq.xyz">
-    <meta property="og:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/18813b03ad39cc513fe2761f744bd0bf.webp?size=1024">
+    <meta property="og:image" content="https://i.pinimg.com/1200x/0e/91/ec/0e91ec6ec24f28b11b6052878ec991b1.jpg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#FF0000">
@@ -48,7 +48,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px); /* Smooth blur effect */
+            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -172,16 +172,26 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: url('https://cdn.discordapp.com/avatars/1084576683262230548/18813b03ad39cc513fe2761f744bd0bf.webp?size=1024') no-repeat center/cover;
+            background: url('https://i.pinimg.com/1200x/0e/91/ec/0e91ec6ec24f28b11b6052878ec991b1.jpg') no-repeat center/cover;
             margin: 0 auto 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
             transition: transform 0.4s ease;
+            cursor: pointer;
         }
 
         .profile-image:hover {
             transform: scale(1.05);
+        }
+
+        .profile-image.spin {
+            animation: spin 0.3s ease-in-out;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .profile-image::before {
@@ -525,7 +535,7 @@
 
     <div class="container">
         <div class="profile-card">
-            <div class="profile-image"></div>
+            <div class="profile-image" id="profileImage"></div>
             
             <div class="name-section">
                 <span class="uid">UID 0</span>
@@ -540,6 +550,18 @@
                 <span class="badge swag">
                     <i class="fas fa-fire"></i>
                     #swag
+                </span>
+                <span class="badge developer">
+                    <i class="fas fa-code"></i>
+                    Developer
+                </span>
+                <span class="badge administrator">
+                    <i class="fas fa-shield-alt"></i>
+                    Administrator
+                </span>
+                <span class="badge moderator">
+                    <i class="fas fa-gavel"></i>
+                    Moderator
                 </span>
             </div>
             
@@ -602,6 +624,14 @@
         let clickCount = 0;
         const volumeSlider = document.getElementById('volumeSlider');
         video.volume = 0.25; // Set initial volume to 25%
+
+        // Profile image rotation
+        const profileImage = document.getElementById('profileImage');
+        profileImage.addEventListener('click', () => {
+            profileImage.classList.remove('spin');
+            void profileImage.offsetWidth; // Trigger reflow to restart animation
+            profileImage.classList.add('spin');
+        });
 
         // Audio context for beat detection
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -672,7 +702,7 @@
 
         // Typewriter effect for bio
         const bioTypewriter = document.getElementById('bioTypewriter');
-        const bioText = 'I got swag icl';
+        const bioText = 'i got swag';
         let bioIndex = 0;
         let bioDirection = 1;
 
@@ -688,9 +718,9 @@
                 }
             } else {
                 bioIndex--;
-                if (bioIndex === 1) { // Stop at 'I'
+                if (bioIndex === 1) { // Stop at 'i'
                     bioDirection = 1;
-                    setTimeout(typeBioEffect, 1000); // Pause at 'I'
+                    setTimeout(typeBioEffect, 1000); // Pause at 'i'
                 } else {
                     setTimeout(typeBioEffect, 200);
                 }
