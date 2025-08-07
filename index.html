@@ -79,7 +79,7 @@
         .container {
             max-width: 400px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 20px 20px; /* Reduced padding */
             text-align: center;
             position: relative;
             z-index: 1;
@@ -154,10 +154,10 @@
         }
 
         .profile-card {
-            background: #e8ecef; /* Changed to smooth whitish gray */
+            background: rgba(232, 236, 239, 0.7); /* Semi-transparent whitish gray */
             backdrop-filter: blur(10px);
             border-radius: 40px;
-            padding: 40px 30px;
+            padding: 20px 20px; /* Reduced padding */
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             perspective: 800px;
@@ -192,11 +192,11 @@
         }
 
         .profile-image {
-            width: 120px;
-            height: 120px;
+            width: 100px; /* Reduced size */
+            height: 100px;
             border-radius: 50%;
             background: url('https://i.pinimg.com/1200x/0e/91/ec/0e91ec6ec24f28b11b6052878ec991b1.jpg') no-repeat center/cover;
-            margin: 0 auto 20px;
+            margin: 0 auto 10px; /* Reduced margin */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
@@ -245,7 +245,7 @@
         }
 
         .name {
-            font-size: 28px;
+            font-size: 24px; /* Reduced size */
             font-weight: 700;
             background: linear-gradient(90deg, #ff0000, #000000);
             -webkit-background-clip: text;
@@ -260,14 +260,14 @@
 
         .uid {
             position: absolute;
-            top: -25px;
+            top: -20px; /* Adjusted for smaller layout */
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 5px 10px;
-            border-radius: 10px;
-            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
             white-space: nowrap;
             z-index: 10;
             opacity: 0;
@@ -277,12 +277,12 @@
 
         .name:hover + .uid {
             opacity: 1;
-            transform: translateX(-50%) translateY(-10px);
+            transform: translateX(-50%) translateY(-8px);
         }
 
         @keyframes floatUID {
             0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-5px); }
+            50% { transform: translateX(-50%) translateY(-4px); }
         }
 
         @keyframes gradientText {
@@ -295,17 +295,17 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 15px; /* Increased spacing between badges */
-            margin-bottom: 20px;
+            gap: 20px; /* Increased spacing between badges */
+            margin-bottom: 15px; /* Reduced margin */
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 4px 10px; /* Reduced padding */
+            border-radius: 15px;
+            font-size: 10px; /* Reduced size */
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -323,10 +323,10 @@
 
         .bio {
             color: rgba(255, 255, 255, 0.95);
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            margin-top: 20px;
+            font-size: 14px; /* Reduced size */
+            line-height: 1.5;
+            margin-bottom: 15px; /* Reduced margin */
+            margin-top: 10px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             display: inline-block;
         }
@@ -334,21 +334,22 @@
         .links-container {
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 15px; /* Reduced gap */
         }
 
         .link-button {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px 25px;
+            gap: 10px;
+            padding: 10px 20px; /* Reduced padding */
             background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
             border: 1px solid rgba(255, 255, 255, 0.9);
-            border-radius: 50px;
+            border-radius: 40px;
             color: white;
             text-decoration: none;
             font-weight: 600;
+            font-size: 14px; /* Reduced size */
             transition: all 0.4s ease;
             backdrop-filter: blur(15px);
             position: relative;
@@ -378,17 +379,17 @@
         }
 
         .link-icon {
-            width: 24px;
-            height: 24px;
+            width: 20px; /* Reduced size */
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .link-icon-img {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             object-fit: contain;
         }
 
@@ -396,22 +397,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px; /* Reduced padding */
             background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
             border: 1px solid rgba(255, 255, 255, 0.9);
-            border-radius: 50px;
+            border-radius: 40px;
             color: white;
             text-decoration: none;
             font-weight: 600;
-            font-size: 18px;
+            font-size: 16px; /* Reduced size */
             transition: all 0.4s ease;
             backdrop-filter: blur(15px);
             position: relative;
             overflow: hidden;
             animation: gradientText 6s ease infinite;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-top: 30px;
+            margin-top: 15px; /* Reduced margin */
             width: 100%;
         }
 
@@ -440,8 +441,8 @@
             bottom: 20px;
             right: 20px;
             z-index: 10;
-            width: 60px;
-            height: 60px;
+            width: 50px; /* Reduced size */
+            height: 50px;
             animation: pulse 2s ease-in-out infinite;
         }
 
@@ -463,7 +464,7 @@
         .floating-element {
             position: absolute;
             opacity: 0.3;
-            font-size: 20px;
+            font-size: 18px; /* Reduced size */
             background: linear-gradient(90deg, #ff0000, #000000);
             -webkit-background-clip: text;
             background-clip: text;
@@ -474,9 +475,9 @@
         .floating-element:nth-child(1) { top: 15%; left: 5%; animation-delay: 0s; }
         .floating-element:nth-child(2) { top: 65%; right: 10%; animation-delay: 2s; }
         .floating-element:nth-child(3) { bottom: 25%; left: 15%; animation-delay: 4s; }
-        .floating-element:nth-child(4) { top: 35%; left: 25%; animation-delay: 6s; font-size: 22px; }
-        .floating-element:nth-child(5) { bottom: 15%; right: 20%; animation-delay: 8s; font-size: 18px; }
-        .floating-element:nth-child(6) { top: 75%; left: 35%; animation-delay: 10s; font-size: 24px; }
+        .floating-element:nth-child(4) { top: 35%; left: 25%; animation-delay: 6s; font-size: 20px; }
+        .floating-element:nth-child(5) { bottom: 15%; right: 20%; animation-delay: 8s; font-size: 16px; }
+        .floating-element:nth-child(6) { top: 75%; left: 35%; animation-delay: 10s; font-size: 22px; }
 
         @keyframes floatRandom {
             0% { transform: translate(0, 0) rotate(0deg); }
@@ -494,11 +495,11 @@
 
         @media (max-width: 480px) {
             .container {
-                padding: 20px 15px;
+                padding: 15px 10px;
             }
             
             .profile-card {
-                padding: 30px 20px;
+                padding: 15px 15px;
                 border-radius: 30px;
             }
             
@@ -507,18 +508,18 @@
             }
             
             .name {
-                font-size: 24px;
+                font-size: 20px;
             }
             
             .name-section {
                 flex-direction: column;
-                gap: 8px;
+                gap: 6px;
             }
 
             .volume-control {
                 top: 10px;
                 left: 10px;
-                padding: 8px;
+                padding: 6px;
             }
 
             .volume-control input[type="range"] {
@@ -526,23 +527,23 @@
             }
 
             .eye-logo {
-                width: 50px;
-                height: 50px;
-                bottom: 15px;
-                right: 15px;
+                width: 40px;
+                height: 40px;
+                bottom: 10px;
+                right: 10px;
             }
 
             .floating-element {
-                font-size: 16px;
+                font-size: 14px;
             }
 
             .welcome-text {
-                font-size: 32px;
-                padding: 15px;
+                font-size: 28px;
+                padding: 10px;
             }
 
             .links-container {
-                gap: 20px;
+                gap: 12px;
             }
         }
     </style>
@@ -679,7 +680,7 @@
             const centerY = rect.top + rect.height / 2;
             const mouseX = e.clientX - centerX;
             const mouseY = e.clientY - centerY;
-            const maxTilt = 15; // Increased tilt for better effect
+            const maxTilt = 15;
             const rotateX = (mouseY / rect.height) * -maxTilt;
             const rotateY = (mouseX / rect.width) * maxTilt;
             profileCard.style.transform = `perspective(800px) translateY(-8px) scale(1.05) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
@@ -701,8 +702,8 @@
         // Floating elements bounce
         const floatingElements = document.querySelectorAll('.floating-element');
         let lastBeat = 0;
-        const beatThreshold = 150; // Adjust for sensitivity
-        const beatInterval = 300; // Minimum time between beats (ms)
+        const beatThreshold = 150;
+        const beatInterval = 300;
 
         function detectBeat() {
             analyser.getByteFrequencyData(frequencyData);
@@ -741,15 +742,15 @@
                 nameIndex++;
                 if (nameIndex > nameText.length) {
                     nameDirection = -1;
-                    setTimeout(typeNameEffect, 1000); // Pause at full text
+                    setTimeout(typeNameEffect, 1000);
                 } else {
                     setTimeout(typeNameEffect, 200);
                 }
             } else {
                 nameIndex--;
-                if (nameIndex === 1) { // Stop at 's'
+                if (nameIndex === 1) {
                     nameDirection = 1;
-                    setTimeout(typeNameEffect, 1000); // Pause at 's'
+                    setTimeout(typeNameEffect, 1000);
                 } else {
                     setTimeout(typeNameEffect, 200);
                 }
@@ -768,15 +769,15 @@
                 bioIndex++;
                 if (bioIndex > bioText.length) {
                     bioDirection = -1;
-                    setTimeout(typeBioEffect, 1000); // Pause at full text
+                    setTimeout(typeBioEffect, 1000);
                 } else {
                     setTimeout(typeBioEffect, 200);
                 }
             } else {
                 bioIndex--;
-                if (bioIndex === 1) { // Stop at 'i'
+                if (bioIndex === 1) {
                     bioDirection = 1;
-                    setTimeout(typeBioEffect, 1000); // Pause at 'i'
+                    setTimeout(typeBioEffect, 1000);
                 } else {
                     setTimeout(typeBioEffect, 200);
                 }
@@ -789,7 +790,6 @@
             clickCount++;
             clickButton.textContent = `Clicks: ${clickCount}`;
             
-            // Create ripple effect
             const ripple = document.createElement('div');
             const rect = clickButton.getBoundingClientRect();
             const size = Math.max(rect.width, rect.height);
@@ -847,10 +847,9 @@
             welcomeScreen.classList.add('hidden');
             body.classList.remove('welcome-active');
 
-            // Start video playback
             video.play().catch(error => {
                 console.error('Video playback failed:', error);
-                video.muted = true; // Fallback to muted
+                video.muted = true;
                 video.play().then(() => {
                     document.addEventListener('click', () => {
                         if (!hasInteracted) {
@@ -863,7 +862,6 @@
                 });
             });
 
-            // Start beat detection and typewriter effects
             startBeatDetection();
             typeNameEffect();
             setTimeout(typeBioEffect, 500);
@@ -871,7 +869,6 @@
             hasInteracted = true;
         }, { once: true });
 
-        // Additional interaction for unmuting
         document.addEventListener('click', () => {
             if (!hasInteracted && !welcomeScreen.classList.contains('hidden')) {
                 video.muted = false;
