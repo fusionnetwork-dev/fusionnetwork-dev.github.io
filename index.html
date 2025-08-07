@@ -69,7 +69,7 @@
 
         .volume-control input[type="range"]::-webkit-slider-runnable-track {
             height: 6px;
-            background: linear-gradient(90deg, #ff3333, #cc0000);
+            background: linear-gradient(90deg, #ff0000, #000000);
             border-radius: 10px;
             transition: background 0.3s ease;
         }
@@ -78,7 +78,7 @@
             -webkit-appearance: none;
             width: 18px;
             height: 18px;
-            background: linear-gradient(90deg, #ff3333, #cc0000);
+            background: linear-gradient(90deg, #ff0000, #000000);
             border: 2px solid white;
             border-radius: 50%;
             margin-top: -6px;
@@ -93,14 +93,14 @@
 
         .volume-control input[type="range"]::-moz-range-track {
             height: 6px;
-            background: linear-gradient(90deg, #ff3333, #cc0000);
+            background: linear-gradient(90deg, #ff0000, #000000);
             border-radius: 10px;
         }
 
         .volume-control input[type="range"]::-moz-range-thumb {
             width: 18px;
             height: 18px;
-            background: linear-gradient(90deg, #ff3333, #cc0000);
+            background: linear-gradient(90deg, #ff0000, #000000);
             border: 2px solid white;
             border-radius: 50%;
             cursor: pointer;
@@ -168,7 +168,7 @@
         .name {
             font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(90deg, #ff3333, #cc0000, #333333, #cccccc);
+            background: linear-gradient(90deg, #ff0000, #000000);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -222,7 +222,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            background: linear-gradient(90deg, #ff3333, #cc0000, #333333, #cccccc);
+            background: linear-gradient(90deg, #ff0000, #000000);
             color: white;
             box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
             animation: gradientText 6s ease infinite;
@@ -255,7 +255,7 @@
             align-items: center;
             gap: 15px;
             padding: 15px 25px;
-            background: linear-gradient(90deg, #ff3333, #cc0000, #333333, #cccccc);
+            background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 50px;
@@ -310,7 +310,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: linear-gradient(90deg, #ff3333, #cc0000, #333333, #cccccc);
+            background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 50px;
@@ -378,7 +378,11 @@
             position: absolute;
             opacity: 0.3;
             font-size: 20px;
-            animation: floatRandom 18s infinite ease-in-out, colorShift 6s ease infinite;
+            animation: floatRandom 18s infinite ease-in-out;
+        }
+
+        .floating-element.color-shift {
+            animation: floatRandom 18s infinite ease-in-out, colorShift 6s ease infinite 1s;
         }
 
         .floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
@@ -393,8 +397,11 @@
         .floating-element:nth-child(10) { top: 50%; right: 20%; animation-delay: 18s; font-size: 20px; }
 
         @keyframes floatRandom {
-            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
-            50% { transform: translateY(-25px) translateX(15px) rotate(8deg); }
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -30px) rotate(5deg); }
+            50% { transform: translate(-15px, 25px) rotate(-5deg); }
+            75% { transform: translate(25px, -20px) rotate(3deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
         }
 
         @keyframes colorShift {
@@ -455,20 +462,20 @@
     </style>
 </head>
 <body>
-    <video id="backgroundVideo" autoplay loop muted playsinline>
+    <video id="backgroundVideo" autoplay loop playsinline>
         <source src="assets/prettifun - Unfazed.mp4" type="video/mp4">
     </video>
     
     <div class="floating-elements">
         <i class="floating-element fas fa-star"></i>
+        <i class="floating-element fas fa-heart color-shift"></i>
+        <i class="floating-element fas fa-star color-shift"></i>
+        <i class="floating-element fas fa-heart"></i>
+        <i class="floating-element fas fa-star color-shift"></i>
         <i class="floating-element fas fa-heart"></i>
         <i class="floating-element fas fa-star"></i>
-        <i class="floating-element fas fa-heart"></i>
-        <i class="floating-element fas fa-star"></i>
-        <i class="floating-element fas fa-heart"></i>
-        <i class="floating-element fas fa-star"></i>
-        <i class="floating-element fas fa-heart"></i>
-        <i class="floating-element fas fa-star"></i>
+        <i class="floating-element fas fa-heart color-shift"></i>
+        <i class="floating-element fas fa-star color-shift"></i>
         <i class="floating-element fas fa-heart"></i>
     </div>
 
@@ -532,13 +539,11 @@
     <svg class="eye-logo" viewBox="0 0 100 100">
         <ellipse cx="50" cy="50" rx="40" ry="25" fill="none" stroke="url(#eyeGradient)" stroke-width="5"/>
         <circle cx="50" cy="50" r="15" fill="#ffffff"/>
-        <circle cx="50" cy="50" r="7" fill="#333333"/>
+        <circle cx="50" cy="50" r="7" fill="#000000"/>
         <defs>
             <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#ff3333" />
-                <stop offset="33%" style="stop-color:#cc0000" />
-                <stop offset="66%" style="stop-color:#333333" />
-                <stop offset="100%" style="stop-color:#cccccc" />
+                <stop offset="0%" style="stop-color:#ff0000" />
+                <stop offset="100%" style="stop-color:#000000" />
             </linearGradient>
         </defs>
         <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
@@ -549,20 +554,6 @@
         const video = document.getElementById('backgroundVideo');
         const volumeSlider = document.getElementById('volumeSlider');
         video.volume = 0.25; // Set initial volume to 25%
-
-        // Unmute on first user interaction
-        let hasInteracted = false;
-        document.addEventListener('click', () => {
-            if (!hasInteracted) {
-                video.muted = false;
-                hasInteracted = true;
-            }
-        });
-
-        volumeSlider.addEventListener('input', () => {
-            video.muted = false; // Unmute when slider is used
-            video.volume = volumeSlider.value / 100;
-        });
 
         // Audio context for beat detection
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -587,7 +578,10 @@
                 floatingElements.forEach((el, index) => {
                     const bottom = parseFloat(getComputedStyle(el).bottom) || window.innerHeight - 50;
                     el.style.bottom = `${bottom}px`;
-                    el.style.animation = `bounce 0.3s ease, floatRandom 18s infinite ease-in-out ${index * 2}s, colorShift 6s ease infinite`;
+                    const animations = el.classList.contains('color-shift') 
+                        ? `bounce 0.3s ease, floatRandom 18s infinite ease-in-out ${index * 2}s, colorShift 6s ease infinite 1s`
+                        : `bounce 0.3s ease, floatRandom 18s infinite ease-in-out ${index * 2}s`;
+                    el.style.animation = animations;
                 });
                 lastBeat = Date.now();
             }
@@ -602,6 +596,20 @@
             } else {
                 detectBeat();
             }
+        });
+
+        // Unmute on first user interaction
+        let hasInteracted = false;
+        document.addEventListener('click', () => {
+            if (!hasInteracted) {
+                video.muted = false;
+                hasInteracted = true;
+            }
+        });
+
+        volumeSlider.addEventListener('input', () => {
+            video.muted = false; // Unmute when slider is used
+            video.volume = volumeSlider.value / 100;
         });
 
         // Click game button logic
@@ -649,20 +657,6 @@
             }
         `;
         document.head.appendChild(style);
-
-        // Mouse movement parallax for floating elements
-        document.addEventListener('mousemove', (e) => {
-            const mouseX = e.clientX / window.innerWidth;
-            const mouseY = e.clientY / window.innerHeight;
-            
-            floatingElements.forEach((element, index) => {
-                const speed = (index + 1) * 0.3;
-                const x = (mouseX - 0.5) * speed * 40;
-                const y = (mouseY - 0.5) * speed * 40;
-                
-                element.style.transform = `translate(${x}px, ${y}px)`;
-            });
-        });
 
         // View counter logic
         let viewCount = localStorage.getItem('viewCount') ? parseInt(localStorage.getItem('viewCount')) + 1 : 1;
