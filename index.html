@@ -887,7 +887,7 @@
                     <span class="time-display" id="totalTime">0:00</span>
                 </div>
                 
-                <audio id="audioPlayer" preload="auto" loop>
+                <audio id="audioPlayer" preload="auto" loop autoplay>
                     <source src="assets/kills.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
@@ -931,9 +931,22 @@
         let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
         
-        // Set video volume to match slider default (50%) but mute video
+        // Audio player elements - define these early
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const rewindBtn = document.getElementById('rewindBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const totalTimeDisplay = document.getElementById('totalTime');
+        
+        let isPlaying = false;
+        
+        // Set initial volumes
         video.volume = 0.5;
         video.muted = true; // Keep video muted
+        audioPlayer.volume = 0.7; // Set initial audio volume
 
         // Attempt to play video muted
         function tryPlayVideo() {
@@ -943,8 +956,22 @@
             });
         }
 
+        // Try to autoplay audio immediately
+        function tryPlayAudio() {
+            audioPlayer.play().then(() => {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                isPlaying = true;
+                console.log('Audio started playing');
+            }).catch(error => {
+                console.log('Audio autoplay blocked - will try after user interaction');
+            });
+        }
+
         // Try to play the video immediately
         tryPlayVideo();
+        
+        // Try to play audio immediately on page load
+        tryPlayAudio();
 
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
@@ -1184,17 +1211,6 @@
         document.getElementById('dislikeButton').addEventListener('click', handleDislike);
 
         // Audio player functionality
-        const audioPlayer = document.getElementById('audioPlayer');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const rewindBtn = document.getElementById('rewindBtn');
-        const skipBtn = document.getElementById('skipBtn');
-        const progressBar = document.getElementById('progressBar');
-        const progressFill = document.getElementById('progressFill');
-        const currentTimeDisplay = document.getElementById('currentTime');
-        const totalTimeDisplay = document.getElementById('totalTime');
-        
-        let isPlaying = false;
-        
         // Set initial volume
         audioPlayer.volume = 0.7;
         
