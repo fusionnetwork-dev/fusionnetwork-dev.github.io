@@ -798,7 +798,7 @@
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
-        <input type="range" id="volumeSlider" min="0" max="100" value="50">
+        <input type="range" id="volumeSlider" min="0" max="100" value="70">
     </div>
 
     <div class="container">
@@ -887,7 +887,7 @@
                     <span class="time-display" id="totalTime">0:00</span>
                 </div>
                 
-                <audio id="audioPlayer" preload="auto" loop autoplay>
+                <audio id="audioPlayer" preload="auto" loop>
                     <source src="assets/kills.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
@@ -956,22 +956,19 @@
             });
         }
 
-        // Try to autoplay audio immediately
-        function tryPlayAudio() {
+        // Function to start audio after welcome screen
+        function startAudio() {
             audioPlayer.play().then(() => {
                 playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 isPlaying = true;
-                console.log('Audio started playing');
+                console.log('Audio started playing after welcome screen');
             }).catch(error => {
-                console.log('Audio autoplay blocked - will try after user interaction');
+                console.log('Audio play failed:', error);
             });
         }
 
         // Try to play the video immediately
         tryPlayVideo();
-        
-        // Try to play audio immediately on page load
-        tryPlayAudio();
 
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
@@ -1211,20 +1208,6 @@
         document.getElementById('dislikeButton').addEventListener('click', handleDislike);
 
         // Audio player functionality
-        // Set initial volume
-        audioPlayer.volume = 0.7;
-        
-        // Attempt to autoplay audio
-        function tryPlayAudio() {
-            audioPlayer.play().then(() => {
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                isPlaying = true;
-            }).catch(error => {
-                console.log('Autoplay blocked - user interaction required');
-                // Audio will start when user clicks welcome screen
-            });
-        }
-        
         // Play/Pause functionality
         playPauseBtn.addEventListener('click', () => {
             if (isPlaying) {
@@ -1315,6 +1298,11 @@
             
             // Ensure video stays muted after user interaction
             video.muted = true;
+            
+            // Start audio after welcome screen is dismissed
+            setTimeout(() => {
+                startAudio();
+            }, 500);
             
             typeNameEffect();
             setTimeout(typeBioEffect, 500);
