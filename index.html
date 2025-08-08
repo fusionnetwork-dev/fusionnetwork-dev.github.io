@@ -9,7 +9,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#FF0000">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>swaqq's creation</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -25,8 +25,9 @@
             overflow-x: hidden;
             position: relative;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
+            padding-top: 20px;
             cursor: url('https://cdn.discordapp.com/attachments/1400222624956547182/1403125508929224855/normal.cur?ex=689669f6&is=68951876&hm=be4840f68967a6bd48d7337d12699c7fc94cecc0ebb9d6d3ca4bc86996d926b1&') 16 16, auto;
         }
 
@@ -44,6 +45,7 @@
             transform: translate(-50%, -50%);
             z-index: -10;
             filter: brightness(0.8);
+            display: none; /* Hidden by default, shown via JS if not mobile */
         }
 
         .vintage-overlay {
@@ -104,19 +106,19 @@
 
         .word-element {
             position: absolute;
-            color: #808080; /* Gray color for text */
+            color: #808080;
             font-weight: 800;
-            font-size: 28px;
+            font-size: 20px;
             text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
             opacity: 0;
-            animation: wordFloat 8s ease-in-out forwards;
+            animation: wordFloat 6s ease-in-out forwards;
             white-space: nowrap;
         }
 
         @keyframes wordFloat {
             0% { opacity: 0; transform: translate(0, 0); }
-            20% { opacity: 0.2; } /* Increased from 0.1 to 0.2 for better visibility */
-            80% { opacity: 0.2; } /* Increased from 0.1 to 0.2 for better visibility */
+            20% { opacity: 0.3; }
+            80% { opacity: 0.3; }
             100% { opacity: 0; transform: translate(var(--tx), var(--ty)); }
         }
 
@@ -141,7 +143,7 @@
         }
 
         .welcome-text {
-            font-size: 48px;
+            font-size: 32px;
             font-weight: 700;
             color: white;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
@@ -152,12 +154,12 @@
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
             text-align: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
-            max-width: 400px;
-            padding: 20px 20px;
+            max-width: 360px;
+            padding: 15px;
             text-align: center;
             position: relative;
             z-index: 1;
@@ -165,16 +167,16 @@
 
         .volume-control {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 10px;
+            left: 10px;
             z-index: 10;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            padding: 10px;
-            border-radius: 15px;
+            padding: 8px;
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -185,26 +187,26 @@
         }
 
         .volume-control input[type="range"] {
-            width: 100px;
+            width: 80px;
             -webkit-appearance: none;
             background: transparent;
             cursor: pointer;
         }
 
         .volume-control input[type="range"]::-webkit-slider-runnable-track {
-            height: 6px;
+            height: 5px;
             background: linear-gradient(90deg, #ff0000, #000000);
             border-radius: 10px;
         }
 
         .volume-control input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background: linear-gradient(90deg, #ff0000, #000000);
             border: 2px solid white;
             border-radius: 50%;
-            margin-top: -6px;
+            margin-top: -5.5px;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s ease;
@@ -215,14 +217,14 @@
         }
 
         .volume-control input[type="range"]::-moz-range-track {
-            height: 6px;
+            height: 5px;
             background: linear-gradient(90deg, #ff0000, #000000);
             border-radius: 10px;
         }
 
         .volume-control input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background: linear-gradient(90deg, #ff0000, #000000);
             border: 2px solid white;
             border-radius: 50%;
@@ -233,31 +235,27 @@
         .profile-card {
             background: rgba(220, 220, 220, 0.5);
             backdrop-filter: blur(10px);
-            border-radius: 40px;
-            padding: 20px 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            perspective: 800px;
+            perspective: 1000px;
             position: relative;
             border: 2px solid rgba(255, 255, 255, 0.8);
         }
 
-        .profile-card::before {
-            content: none;
-        }
-
         .profile-card:hover {
-            transform: translateY(-8px) scale(1.05);
-            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
         }
 
         .profile-image {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background: url('https://i.pinimg.com/1200x/0e/91/ec/0e91ec6ec24f28b11b6052878ec991b1.jpg') no-repeat center/cover;
-            margin: 0 auto 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 0 auto 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
             transition: transform 0.4s ease;
@@ -298,51 +296,47 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 8px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
             position: relative;
         }
 
         .name {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             background: linear-gradient(90deg, #ff0000, #000000);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 0 2px white, 0 0 2px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
             position: relative;
             display: inline-block;
+            cursor: pointer;
         }
 
         .uid {
             position: absolute;
-            top: -20px;
+            top: -18px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-size: 9px;
             white-space: nowrap;
             z-index: 10;
             opacity: 0;
-            animation: floatUID 3s ease-in-out infinite;
             transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
         }
 
-        .name:hover + .uid {
+        .name:hover .uid {
             opacity: 1;
-            transform: translateX(-50%) translateY(-8px);
-        }
-
-        @keyframes floatUID {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-4px); }
+            transform: translateX(-50%) translateY(-6px);
         }
 
         @keyframes gradientText {
@@ -355,26 +349,26 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 10px;
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 10px;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 9px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             background: linear-gradient(90deg, #ff0000, #000000);
             color: white;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
-            transition: transform 0.4s ease;
+            transition: transform 0.3s ease;
         }
 
         .badge:hover {
@@ -382,39 +376,39 @@
         }
 
         .bio {
-            color: #ffffff; /* White bio color */
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            margin-top: 10px;
+            color: #ffffff;
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            margin-top: 8px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             display: inline-block;
         }
 
         .audio-player {
             background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border-radius: 10px;
-            padding: 6px;
-            margin: 10px 0;
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 5px;
+            margin: 8px 0;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .audio-player:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         }
 
         .audio-info {
             text-align: center;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .song-title {
             color: white;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
@@ -423,50 +417,50 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
+            gap: 5px;
+            margin-bottom: 3px;
         }
 
         .control-btn {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border: none;
             border-radius: 50%;
             background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
             color: white;
-            font-size: 8px;
+            font-size: 7px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             animation: gradientText 6s ease infinite;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .control-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
         }
 
         .play-pause-btn {
-            width: 24px;
-            height: 24px;
-            font-size: 10px;
+            width: 22px;
+            height: 22px;
+            font-size: 9px;
         }
 
         .audio-progress {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
 
         .time-display {
             color: rgba(255, 255, 255, 0.8);
-            font-size: 8px;
+            font-size: 7px;
             font-weight: 500;
-            min-width: 20px;
+            min-width: 18px;
         }
 
         .progress-bar {
@@ -486,30 +480,31 @@
         }
 
         .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .link-button {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
+            gap: 8px;
+            padding: 8px 15px;
             background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
             border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 40px;
+            border-radius: 30px;
             color: white;
             text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(15px);
+            font-size: 12px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
             animation: gradientText 6s ease infinite;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .link-button::before {
@@ -520,7 +515,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.8s ease;
+            transition: left 0.6s ease;
         }
 
         .link-button:hover::before {
@@ -528,22 +523,22 @@
         }
 
         .link-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
 
         .link-icon {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .link-icon-img {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             object-fit: contain;
         }
 
@@ -551,22 +546,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            padding: 10px;
             background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
             border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 40px;
+            border-radius: 30px;
             color: white;
             text-decoration: none;
             font-weight: 600;
-            font-size: 16px;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(15px);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
             animation: gradientText 6s ease infinite;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
             width: 100%;
         }
 
@@ -578,7 +573,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.8s ease;
+            transition: left 0.6s ease;
         }
 
         .click-game-button:hover::before {
@@ -586,36 +581,36 @@
         }
 
         .click-game-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
 
         .like-dislike-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 10px;
             margin-bottom: 10px;
         }
 
         .like-button, .dislike-button {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 15px;
+            gap: 6px;
+            padding: 8px 12px;
             background: linear-gradient(90deg, #ff0000, #000000);
             background-size: 200% 200%;
             border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 30px;
+            border-radius: 25px;
             color: white;
             font-weight: 600;
-            font-size: 14px;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(15px);
+            font-size: 12px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
             animation: gradientText 6s ease infinite;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             cursor: pointer;
         }
 
@@ -627,7 +622,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.8s ease;
+            transition: left 0.6s ease;
         }
 
         .like-button:hover::before, .dislike-button:hover::before {
@@ -635,8 +630,13 @@
         }
 
         .like-button:hover, .dislike-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .like-button.active, .dislike-button.active {
+            background: linear-gradient(90deg, #00ff00, #000000);
+            transform: scale(1.05);
         }
 
         .like-button.disabled, .dislike-button.disabled {
@@ -648,11 +648,11 @@
 
         .eye-logo {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 15px;
+            right: 15px;
             z-index: 10;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             animation: pulse 2s ease-in-out infinite;
         }
 
@@ -674,101 +674,181 @@
         .floating-element {
             position: absolute;
             opacity: 0.3;
-            font-size: 18px;
+            font-size: 16px;
             background: linear-gradient(90deg, #ff0000, #000000);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: floatRandom 18s infinite ease-in-out;
+            animation: floatRandom 15s infinite ease-in-out;
         }
 
         .floating-element:nth-child(1) { top: 15%; left: 5%; animation-delay: 0s; }
         .floating-element:nth-child(2) { top: 65%; right: 10%; animation-delay: 2s; }
         .floating-element:nth-child(3) { bottom: 25%; left: 15%; animation-delay: 4s; }
-        .floating-element:nth-child(4) { top: 35%; left: 25%; animation-delay: 6s; font-size: 20px; }
-        .floating-element:nth-child(5) { bottom: 15%; right: 20%; animation-delay: 8s; font-size: 16px; }
-        .floating-element:nth-child(6) { top: 75%; left: 35%; animation-delay: 10s; font-size: 22px; }
+        .floating-element:nth-child(4) { top: 35%; left: 25%; animation-delay: 6s; font-size: 18px; }
+        .floating-element:nth-child(5) { bottom: 15%; right: 20%; animation-delay: 8s; font-size: 14px; }
+        .floating-element:nth-child(6) { top: 75%; left: 35%; animation-delay: 10s; font-size: 20px; }
 
         @keyframes floatRandom {
             0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(20px, -30px) rotate(5deg); }
-            50% { transform: translate(-15px, 25px) rotate(-5deg); }
-            75% { transform: translate(25px, -20px) rotate(3deg); }
+            25% { transform: translate(15px, -20px) rotate(4deg); }
+            50% { transform: translate(-10px, 15px) rotate(-4deg); }
+            75% { transform: translate(20px, -15px) rotate(3deg); }
             100% { transform: translate(0, 0) rotate(0deg); }
         }
 
         @keyframes bounce {
             0% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.2); }
+            50% { transform: translateY(-15px) scale(1.1); }
             100% { transform: translateY(0) scale(1); }
         }
 
         @keyframes ripple {
             to {
-                transform: scale(4);
+                transform: scale(3);
                 opacity: 0;
             }
         }
 
         @media (max-width: 480px) {
+            body {
+                align-items: flex-start;
+                padding-top: 10px;
+            }
+
             .container {
-                padding: 15px 10px;
-            }
-            
-            .profile-card {
-                padding: 15px 15px;
-                border-radius: 30px;
-            }
-            
-            .profile-card::before {
-                border-radius: 30px;
-            }
-            
-            .name {
-                font-size: 20px;
-            }
-            
-            .name-section {
-                flex-direction: column;
-                gap: 6px;
-            }
-
-            .volume-control {
-                top: 10px;
-                left: 10px;
-                padding: 6px;
-            }
-
-            .volume-control input[type="range"] {
-                width: 80px;
-            }
-
-            .eye-logo {
-                width: 40px;
-                height: 40px;
-                bottom: 10px;
-                right: 10px;
-            }
-
-            .floating-element {
-                font-size: 14px;
-            }
-
-            .welcome-text {
-                font-size: 28px;
+                max-width: 90%;
                 padding: 10px;
             }
 
+            .profile-card {
+                padding: 12px;
+                border-radius: 25px;
+            }
+
+            .profile-image {
+                width: 70px;
+                height: 70px;
+                margin-bottom: 6px;
+            }
+
+            .name {
+                font-size: 18px;
+            }
+
+            .name-section {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .uid {
+                top: -16px;
+                font-size: 8px;
+                padding: 2px 5px;
+            }
+
+            .volume-control {
+                top: 8px;
+                left: 8px;
+                padding: 5px;
+            }
+
+            .volume-control input[type="range"] {
+                width: 60px;
+            }
+
+            .eye-logo {
+                width: 35px;
+                height: 35px;
+                bottom: 8px;
+                right: 8px;
+            }
+
+            .floating-element {
+                font-size: 12px;
+            }
+
+            .welcome-text {
+                font-size: 24px;
+                padding: 8px;
+            }
+
             .links-container {
-                gap: 12px;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .link-button {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .link-icon {
+                width: 16px;
+                height: 16px;
+                font-size: 13px;
+            }
+
+            .link-icon-img {
+                width: 16px;
+                height: 16px;
+            }
+
+            .click-game-button {
+                padding: 8px;
+                font-size: 12px;
             }
 
             .like-dislike-container {
-                gap: 15px;
+                gap: 10px;
+            }
+
+            .like-button, .dislike-button {
+                padding: 6px 10px;
+                font-size: 11px;
             }
 
             .word-element {
-                font-size: 20px;
+                font-size: 16px;
+            }
+
+            .badges {
+                gap: 8px;
+            }
+
+            .badge {
+                padding: 2px 6px;
+                font-size: 8px;
+            }
+
+            .bio {
+                font-size: 12px;
+            }
+
+            .audio-player {
+                padding: 4px;
+                margin: 6px 0;
+            }
+
+            .song-title {
+                font-size: 8px;
+            }
+
+            .control-btn {
+                width: 16px;
+                height: 16px;
+                font-size: 6px;
+            }
+
+            .play-pause-btn {
+                width: 20px;
+                height: 20px;
+                font-size: 8px;
+            }
+
+            .time-display {
+                font-size: 6px;
+                min-width: 16px;
             }
         }
     </style>
@@ -806,8 +886,7 @@
             <div class="profile-image" id="profileImage"></div>
             
             <div class="name-section">
-                <span class="uid">UID 0</span>
-                <h1 class="name" id="typewriter"></h1>
+                <span class="name" id="typewriter">swaqq<span class="uid">UID inf</span></span>
             </div>
             
             <div class="badges">
@@ -922,16 +1001,19 @@
     </svg>
 
     <script>
+        // Detect mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
         // Welcome screen logic
         const welcomeScreen = document.getElementById('welcomeScreen');
         const body = document.body;
         const video = document.getElementById('backgroundVideo');
         let hasInteracted = false;
-        let clickCount = 0;
+        let clickCount = localStorage.getItem('clickCount') ? parseInt(localStorage.getItem('clickCount')) : 0;
         let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
         
-        // Audio player elements - define these early
+        // Audio player elements
         const audioPlayer = document.getElementById('audioPlayer');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const rewindBtn = document.getElementById('rewindBtn');
@@ -945,12 +1027,12 @@
         
         // Set initial volumes
         video.volume = 0.5;
-        video.muted = true; // Keep video muted
-        audioPlayer.volume = 0.7; // Set initial audio volume
+        video.muted = true;
+        audioPlayer.volume = 0.7;
 
-        // Attempt to play video muted
-        function tryPlayVideo() {
-            video.muted = true; // Always keep video muted
+        // Conditionally enable background video
+        if (!isMobile) {
+            video.style.display = 'block';
             video.play().catch(error => {
                 console.log('Autoplay blocked');
             });
@@ -961,14 +1043,10 @@
             audioPlayer.play().then(() => {
                 playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 isPlaying = true;
-                console.log('Audio started playing after welcome screen');
             }).catch(error => {
                 console.log('Audio play failed:', error);
             });
         }
-
-        // Try to play the video immediately
-        tryPlayVideo();
 
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
@@ -978,27 +1056,34 @@
             profileImage.classList.add('spin');
         });
 
-        // Throttled parallax effect for profile card
+        // Optimized parallax effect
         const profileCard = document.getElementById('profileCard');
         let lastUpdate = 0;
-        profileCard.addEventListener('mousemove', (e) => {
+
+        function handleParallax(e) {
+            if (isMobile) return;
             const now = performance.now();
-            if (now - lastUpdate < 16) return;
+            if (now - lastUpdate < 33) return; // Throttle to ~30fps
             lastUpdate = now;
             const rect = profileCard.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             const mouseX = e.clientX - centerX;
             const mouseY = e.clientY - centerY;
-            const maxTilt = 10;
+            const maxTilt = 8;
             const rotateX = (mouseY / rect.height) * -maxTilt;
             const rotateY = (mouseX / rect.width) * maxTilt;
-            profileCard.style.transform = `perspective(800px) translateY(-8px) scale(1.05) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
+            profileCard.style.transform = `perspective(1000px) translateY(-5px) scale(1.03) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            profileCard.style.transition = 'transform 0.1s ease-out';
+        }
 
-        profileCard.addEventListener('mouseleave', () => {
-            profileCard.style.transform = 'translateY(0)';
-        });
+        if (!isMobile) {
+            profileCard.addEventListener('mousemove', handleParallax);
+            profileCard.addEventListener('mouseleave', () => {
+                profileCard.style.transform = 'translateY(0) scale(1)';
+                profileCard.style.transition = 'transform 0.3s ease';
+            });
+        }
 
         // Typewriter effect for name
         const nameTypewriter = document.getElementById('typewriter');
@@ -1007,7 +1092,7 @@
         let nameDirection = 1;
 
         function typeNameEffect() {
-            nameTypewriter.textContent = nameText.slice(0, nameIndex);
+            nameTypewriter.childNodes[0].textContent = nameText.slice(0, nameIndex);
             if (nameDirection === 1) {
                 nameIndex++;
                 if (nameIndex > nameText.length) {
@@ -1054,26 +1139,29 @@
             }
         }
 
-        // Fixed random words background effect
+        // Optimized word effect
         const wordFxContainer = document.getElementById('wordFx');
         const words = ['swag', 'coolness', 'rad', 'epik'];
         let lastWordTime = 0;
+        let activeWords = 0;
+        const maxWords = isMobile ? 3 : 5;
 
         function createWord() {
-            if (!wordEffectActive) return;
+            if (!wordEffectActive || activeWords >= maxWords) return;
             
             const now = performance.now();
-            if (now - lastWordTime < 2500) return;
+            if (now - lastWordTime < 3000) return;
             lastWordTime = now;
+            activeWords++;
             
             const word = document.createElement('div');
             word.className = 'word-element';
             word.textContent = words[Math.floor(Math.random() * words.length)];
             
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
-            const tx = (Math.random() - 0.5) * 80;
-            const ty = (Math.random() - 0.5) * 80;
+            const x = Math.random() * (window.innerWidth - 80);
+            const y = Math.random() * (window.innerHeight - 40);
+            const tx = (Math.random() - 0.5) * 60;
+            const ty = (Math.random() - 0.5) * 60;
             
             word.style.left = `${x}px`;
             word.style.top = `${y}px`;
@@ -1084,20 +1172,23 @@
             setTimeout(() => {
                 if (word.parentNode) {
                     word.remove();
+                    activeWords--;
                 }
-            }, 8000);
+            }, 6000);
         }
 
         function startWordEffect() {
             if (!wordEffectActive) return;
             createWord();
-            setTimeout(startWordEffect, 2500); // Create a new word every 2.5 seconds
+            setTimeout(startWordEffect, 3000);
         }
 
-        // Optimized click game button logic
+        // Optimized click game button
         const clickButton = document.getElementById('clickButton');
+        clickButton.textContent = `Clicks: ${clickCount}`;
         clickButton.addEventListener('click', (event) => {
             clickCount++;
+            localStorage.setItem('clickCount', clickCount);
             clickButton.textContent = `Clicks: ${clickCount}`;
             
             const ripple = document.createElement('div');
@@ -1115,7 +1206,7 @@
                 left: ${x}px;
                 top: ${y}px;
                 transform: scale(0);
-                animation: ripple 0.8s ease-out;
+                animation: ripple 0.6s ease-out;
                 pointer-events: none;
             `;
             
@@ -1123,58 +1214,59 @@
             clickButton.style.overflow = 'hidden';
             clickButton.appendChild(ripple);
             
-            setTimeout(() => ripple.remove(), 800);
+            setTimeout(() => ripple.remove(), 600);
         });
 
-        // Enhanced mouse click effect for background only
+        // Optimized mouse click effect
         document.addEventListener('click', (e) => {
-            // Check if click was on background (not on interactive elements)
+            if (isMobile || activeWords >= maxWords) return;
             if (e.target === document.body || e.target.id === 'backgroundVideo' || 
                 e.target.classList.contains('vintage-overlay') || 
                 e.target.classList.contains('word-fx') ||
                 e.target.classList.contains('floating-elements')) {
                 
-                const shapes = ['fa-star', 'fa-heart', 'fa-bolt', 'fa-sparkles', 'fa-gem'];
-                const shapeCount = Math.floor(Math.random() * 3) + 3; // 3-5 shapes
+                const shapes = ['fa-star', 'fa-heart', 'fa-bolt'];
+                const shapeCount = isMobile ? 1 : 2;
                 
                 for (let i = 0; i < shapeCount; i++) {
                     const shape = document.createElement('i');
                     const shapeClass = shapes[Math.floor(Math.random() * shapes.length)];
                     
-                    // Create overlapping effect with slight random offsets
-                    const offsetX = (Math.random() - 0.5) * 20;
-                    const offsetY = (Math.random() - 0.5) * 20;
-                    const tx = (Math.random() - 0.5) * 60;
-                    const ty = (Math.random() - 0.5) * 60;
+                    const offsetX = (Math.random() - 0.5) * 15;
+                    const offsetY = (Math.random() - 0.5) * 15;
+                    const tx = (Math.random() - 0.5) * 50;
+                    const ty = (Math.random() - 0.5) * 50;
 
                     shape.className = `click-effect fas ${shapeClass}`;
                     shape.style.left = `${e.clientX + offsetX}px`;
                     shape.style.top = `${e.clientY + offsetY}px`;
                     shape.style.setProperty('--tx', `${tx}px`);
                     shape.style.setProperty('--ty', `${ty}px`);
-                    shape.style.animationDelay = `${i * 0.1}s`; // Stagger animation
+                    shape.style.animationDelay = `${i * 0.08}s`;
 
                     document.body.appendChild(shape);
                     setTimeout(() => {
                         if (shape.parentNode) {
                             shape.remove();
                         }
-                    }, 1200);
+                    }, 1000);
                 }
             }
         });
 
-        // Memory-based storage for views and ratings
-        let viewCount = 0;
-        let likeCount = 0;
-        let dislikeCount = 0;
-        let userAction = null;
-        let hasViewed = false;
+        // Rating system with localStorage
+        let viewCount = localStorage.getItem('viewCount') ? parseInt(localStorage.getItem('viewCount')) : 0;
+        let likeCount = localStorage.getItem('likeCount') ? parseInt(localStorage.getItem('likeCount')) : 0;
+        let dislikeCount = localStorage.getItem('dislikeCount') ? parseInt(localStorage.getItem('dislikeCount')) : 0;
+        let userAction = localStorage.getItem('userAction') || null;
+        let hasViewed = localStorage.getItem('hasViewed') === 'true';
 
         function updateViewCount() {
             if (!hasViewed) {
                 viewCount++;
+                localStorage.setItem('viewCount', viewCount);
                 hasViewed = true;
+                localStorage.setItem('hasViewed', 'true');
             }
             document.getElementById('eyeViewCounter').textContent = `Views: ${viewCount}`;
         }
@@ -1184,23 +1276,35 @@
             document.getElementById('dislikeCount').textContent = dislikeCount;
             const likeButton = document.getElementById('likeButton');
             const dislikeButton = document.getElementById('dislikeButton');
-            likeButton.classList.toggle('disabled', userAction === 'like');
-            dislikeButton.classList.toggle('disabled', userAction === 'dislike');
-            likeButton.disabled = userAction === 'like';
-            dislikeButton.disabled = userAction === 'dislike';
+            likeButton.classList.toggle('active', userAction === 'like');
+            dislikeButton.classList.toggle('active', userAction === 'dislike');
+            likeButton.classList.toggle('disabled', userAction === 'dislike');
+            dislikeButton.classList.toggle('disabled', userAction === 'like');
         }
 
         function handleLike() {
-            if (userAction) return;
+            if (userAction === 'like') return;
+            if (userAction === 'dislike') {
+                dislikeCount--;
+                localStorage.setItem('dislikeCount', dislikeCount);
+            }
             likeCount++;
             userAction = 'like';
+            localStorage.setItem('likeCount', likeCount);
+            localStorage.setItem('userAction', userAction);
             updateLikeDislikeCounts();
         }
 
         function handleDislike() {
-            if (userAction) return;
+            if (userAction === 'dislike') return;
+            if (userAction === 'like') {
+                likeCount--;
+                localStorage.setItem('likeCount', likeCount);
+            }
             dislikeCount++;
             userAction = 'dislike';
+            localStorage.setItem('dislikeCount', dislikeCount);
+            localStorage.setItem('userAction', userAction);
             updateLikeDislikeCounts();
         }
 
@@ -1208,7 +1312,6 @@
         document.getElementById('dislikeButton').addEventListener('click', handleDislike);
 
         // Audio player functionality
-        // Play/Pause functionality
         playPauseBtn.addEventListener('click', () => {
             if (isPlaying) {
                 audioPlayer.pause();
@@ -1224,29 +1327,24 @@
             }
         });
         
-        // Rewind functionality (restart song)
         rewindBtn.addEventListener('click', () => {
             audioPlayer.currentTime = 0;
         });
         
-        // Skip functionality (restart song since only one song)
         skipBtn.addEventListener('click', () => {
             audioPlayer.currentTime = 0;
         });
         
-        // Update progress bar
         audioPlayer.addEventListener('timeupdate', () => {
             const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
             progressFill.style.width = `${progress}%`;
             
-            // Update time displays
             currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
             if (audioPlayer.duration) {
                 totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
             }
         });
         
-        // Progress bar click functionality
         progressBar.addEventListener('click', (e) => {
             const rect = progressBar.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
@@ -1255,51 +1353,34 @@
             audioPlayer.currentTime = percentage * audioPlayer.duration;
         });
         
-        // Format time helper function
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
         
-        // Handle audio end (loop is handled by HTML loop attribute, but keeping this for UI updates)
-        audioPlayer.addEventListener('ended', () => {
-            // Since loop is enabled, this shouldn't fire, but keeping as backup
-            audioPlayer.currentTime = 0;
-            audioPlayer.play();
-        });
-        
-        // Handle successful audio loading
         audioPlayer.addEventListener('loadedmetadata', () => {
             totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
         });
         
-        // Handle audio errors
         audioPlayer.addEventListener('error', (e) => {
             console.log('Audio error:', e);
-            // Update UI to show error state
             currentTimeDisplay.textContent = 'Error';
             totalTimeDisplay.textContent = 'Error';
         });
 
-        // Volume control for both video and audio
         volumeSlider.addEventListener('input', () => {
             const volume = volumeSlider.value / 100;
-            // Video stays muted, but we can still set its volume for visual feedback
-            video.muted = true;
-            // Control audio volume
             audioPlayer.volume = volume;
         });
 
-        // Welcome screen dismissal and initialization
+        // Welcome screen dismissal
         welcomeScreen.addEventListener('click', () => {
             welcomeScreen.classList.add('hidden');
             body.classList.remove('welcome-active');
             
-            // Ensure video stays muted after user interaction
             video.muted = true;
             
-            // Start audio after welcome screen is dismissed
             setTimeout(() => {
                 startAudio();
             }, 500);
@@ -1310,11 +1391,9 @@
             updateViewCount();
             updateLikeDislikeCounts();
             
-            // Start word effect
             wordEffectActive = true;
             startWordEffect();
         }, { once: true });
     </script>
 </body>
 </html>
-
