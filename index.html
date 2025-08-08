@@ -45,7 +45,7 @@
             transform: translate(-50%, -50%);
             z-index: -10;
             filter: brightness(0.8);
-            display: none; /* Hidden by default, shown via JS if not mobile */
+            display: none;
         }
 
         .vintage-overlay {
@@ -157,6 +157,34 @@
             padding: 15px;
         }
 
+        .marquee-container {
+            position: fixed;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .marquee {
+            display: inline-block;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff0000, #000000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            white-space: nowrap;
+            animation: marquee 15s linear infinite, gradientText 6s ease infinite;
+            padding-left: 100%;
+            background-size: 200% 200%;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-200%); }
+        }
+
         .container {
             max-width: 360px;
             padding: 15px;
@@ -167,7 +195,7 @@
 
         .volume-control {
             position: fixed;
-            top: 10px;
+            top: 40px;
             left: 10px;
             z-index: 10;
             display: flex;
@@ -230,6 +258,34 @@
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .clown-list {
+            position: fixed;
+            top: 90px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 16px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .clown-image {
+            position: fixed;
+            top: 140px;
+            left: 10px;
+            z-index: 10;
+            width: 140px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .profile-card {
@@ -308,7 +364,7 @@
             background: linear-gradient(90deg, #ff0000, #000000);
             -webkit-background-clip: text;
             background-clip: text;
-            color: transparent;
+            color: transparent !important;
             text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
@@ -748,13 +804,26 @@
             }
 
             .volume-control {
-                top: 8px;
+                top: 35px;
                 left: 8px;
                 padding: 5px;
             }
 
             .volume-control input[type="range"] {
                 width: 60px;
+            }
+
+            .clown-list {
+                top: 80px;
+                left: 8px;
+                font-size: 18px;
+                padding: 12px;
+            }
+
+            .clown-image {
+                top: 115px;
+                left: 8px;
+                width: 110px;
             }
 
             .eye-logo {
@@ -771,6 +840,10 @@
             .welcome-text {
                 font-size: 24px;
                 padding: 8px;
+            }
+
+            .marquee {
+                font-size: 18px;
             }
 
             .links-container {
@@ -840,17 +913,6 @@
                 font-size: 6px;
             }
 
-            .play-pause-btn {
-                width: 20px;
-                height: 20px;
-                font-size: 8px;
-            }
-
-            .time-display {
-                font-size: 6px;
-                min-width: 16px;
-            }
-        }
     </style>
 </head>
 <body class="welcome-active">
@@ -858,7 +920,11 @@
         <div class="welcome-text">Welcome to my creation</div>
     </div>
 
-    <video id="backgroundVideo" autoplay loop playsinline>
+    <div class="marquee-container">
+        <div class="marquee">I made this as a fun project, hope u enjoy ~ swaqq</div>
+    </div>
+
+    <video id="backgroundVideo" autoplay loop playsinline style="display: none;">
         <source src="assets/need me.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -880,6 +946,9 @@
         <i class="fas fa-volume-up"></i>
         <input type="range" id="volumeSlider" min="0" max="100" value="70">
     </div>
+
+    <div class="clown-list">Clown list:</div>
+    <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1403220757181632662/image.png?ex=6896c2ab&is=6895712b&hm=3e85282e323925a70e0155c72c5c68d6b8fd0e03280be253eae47e805d113856&" alt="Clown Image" class="clown-image">
 
     <div class="container">
         <div class="profile-card" id="profileCard">
@@ -1009,7 +1078,6 @@
         const body = document.body;
         const video = document.getElementById('backgroundVideo');
         let hasInteracted = false;
-        let clickCount = localStorage.getItem('clickCount') ? parseInt(localStorage.getItem('clickCount')) : 0;
         let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
         
@@ -1183,12 +1251,29 @@
             setTimeout(startWordEffect, 3000);
         }
 
+        // Generate or retrieve device ID
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('deviceId');
+            if (!deviceId) {
+                deviceId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+                localStorage.setItem('deviceId', deviceId);
+            }
+            return deviceId;
+        }
+
+        // Click counter with device ID
+        const deviceId = getDeviceId();
+        let clickCount = localStorage.getItem(`clickCount_${deviceId}`) ? parseInt(localStorage.getItem(`clickCount_${deviceId}`)) : 0;
+
         // Optimized click game button
         const clickButton = document.getElementById('clickButton');
         clickButton.textContent = `Clicks: ${clickCount}`;
         clickButton.addEventListener('click', (event) => {
             clickCount++;
-            localStorage.setItem('clickCount', clickCount);
+            localStorage.setItem(`clickCount_${deviceId}`, clickCount);
             clickButton.textContent = `Clicks: ${clickCount}`;
             
             const ripple = document.createElement('div');
