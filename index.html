@@ -363,9 +363,10 @@
             font-weight: 700;
             background: linear-gradient(90deg, #ff0000, #000000);
             -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: transparent !important;
-            text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+            color: transparent;
+            text-shadow: none;
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
             position: relative;
@@ -948,7 +949,7 @@
     </div>
 
     <div class="clown-list">Clown list:</div>
-    <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1403220757181632662/image.png?ex=6896c2ab&is=6895712b&hm=3e85282e323925a70e0155c72c5c68d6b8fd0e03280be253eae47e805d113856&" alt="Clown Image" class="clown-image">
+    <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1403220757181632662/image.png?ex=6896c2ab&is=6895712b&hm=3e45282e323925a70e0155c72c5c68d6b8fd0e03280be253eae47e805d113856&" alt="Clown Image" class="clown-image">
 
     <div class="container">
         <div class="profile-card" id="profileCard">
@@ -1098,13 +1099,13 @@
         video.muted = true;
         audioPlayer.volume = 0.7;
 
-        // Conditionally enable background video
-        if (!isMobile) {
-            video.style.display = 'block';
-            video.play().catch(error => {
-                console.log('Autoplay blocked');
-            });
-        }
+        // Enable background video for all devices
+        video.style.display = 'block';
+        video.muted = true;
+        video.volume = 0.5;
+        video.play().catch(error => {
+            console.log('Autoplay blocked:', error);
+        });
 
         // Function to start audio after welcome screen
         function startAudio() {
@@ -1212,7 +1213,7 @@
         const words = ['swag', 'coolness', 'rad', 'epik'];
         let lastWordTime = 0;
         let activeWords = 0;
-        const maxWords = isMobile ? 3 : 5;
+        const maxWords = 5;
 
         function createWord() {
             if (!wordEffectActive || activeWords >= maxWords) return;
@@ -1304,14 +1305,14 @@
 
         // Optimized mouse click effect
         document.addEventListener('click', (e) => {
-            if (isMobile || activeWords >= maxWords) return;
+            if (activeWords >= maxWords) return;
             if (e.target === document.body || e.target.id === 'backgroundVideo' || 
                 e.target.classList.contains('vintage-overlay') || 
                 e.target.classList.contains('word-fx') ||
                 e.target.classList.contains('floating-elements')) {
                 
                 const shapes = ['fa-star', 'fa-heart', 'fa-bolt'];
-                const shapeCount = isMobile ? 1 : 2;
+                const shapeCount = 2;
                 
                 for (let i = 0; i < shapeCount; i++) {
                     const shape = document.createElement('i');
@@ -1464,7 +1465,11 @@
             welcomeScreen.classList.add('hidden');
             body.classList.remove('welcome-active');
             
+            // Keep video muted and playing on all devices
             video.muted = true;
+            video.play().catch(error => {
+                console.log('Video play failed after welcome:', error);
+            });
             
             setTimeout(() => {
                 startAudio();
