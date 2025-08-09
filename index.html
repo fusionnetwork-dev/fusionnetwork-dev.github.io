@@ -18,6 +18,11 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            cursor: url('https://r2.guns.lol/d9488425-e8da-4556-98ef-b37992bc279a.webp') 16 16, auto;
+        }
+
+        *::selection {
+            cursor: url('https://r2.guns.lol/d9488425-e8da-4556-98ef-b37992bc279a.webp') 16 16, text;
         }
 
         body {
@@ -29,7 +34,6 @@
             align-items: flex-start;
             justify-content: center;
             padding-top: 20px;
-            cursor: url('https://cdn.discordapp.com/attachments/1400222624956547182/1403125508929224855/normal.cur?ex=689669f6&is=68951876&hm=be4840f68967a6bd48d7337d12699c7fc94cecc0ebb9d6d3ca4bc86996d926b1&') 16 16, auto;
         }
 
         body.welcome-active * {
@@ -156,6 +160,25 @@
             0% { opacity: 1; }
             80% { opacity: 1; }
             100% { opacity: 0; }
+        }
+
+        .sparkle-effect {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url('https://assets.guns.lol/sparkle_white.gif') no-repeat center/cover;
+            opacity: 0.8;
+            animation: sparkleMove 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @keyframes sparkleMove {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+            25% { transform: translate(8px, -10px) scale(1.1); opacity: 1; }
+            50% { transform: translate(-8px, -12px) scale(1); opacity: 0.8; }
+            75% { transform: translate(10px, -8px) scale(1.1); opacity: 1; }
+            100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
         }
 
         .welcome-screen {
@@ -411,6 +434,11 @@
             cursor: pointer;
         }
 
+        .name:hover .uid {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-6px);
+        }
+
         .uid {
             position: absolute;
             top: -18px;
@@ -428,9 +456,20 @@
             pointer-events: none;
         }
 
-        .name:hover .uid {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-6px);
+        .bio {
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            margin-top: 8px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            background: linear-gradient(90deg, #000000, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            animation: gradientText 6s ease infinite;
+            background-size: 200% 200%;
         }
 
         @keyframes gradientText {
@@ -467,16 +506,6 @@
 
         .badge:hover {
             transform: translateY(-2px);
-        }
-
-        .bio {
-            color: #ffffff;
-            font-size: 13px;
-            line-height: 1.4;
-            margin-bottom: 10px;
-            margin-top: 8px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            display: inline-block;
         }
 
         .audio-player {
@@ -950,6 +979,11 @@
                 height: 16px;
                 font-size: 6px;
             }
+
+            .sparkle-effect {
+                width: 16px;
+                height: 16px;
+            }
         }
     </style>
 </head>
@@ -998,6 +1032,10 @@
             
             <div class="name-section">
                 <span class="name" id="typewriter">swaqq<span class="uid">UID inf</span></span>
+                <div class="sparkle-effect" style="left: -25px; top: -10px; animation-delay: 0s;"></div>
+                <div class="sparkle-effect" style="right: -25px; top: -10px; animation-delay: 0.5s;"></div>
+                <div class="sparkle-effect" style="left: -25px; bottom: -10px; animation-delay: 1s;"></div>
+                <div class="sparkle-effect" style="right: -25px; bottom: -10px; animation-delay: 1.5s;"></div>
             </div>
             
             <div class="badges">
@@ -1132,7 +1170,7 @@
         const songTitle = document.getElementById('songTitle');
 
         let isPlaying = false;
-        let currentSongIndex = Math.floor(Math.random() * 5); // Randomize song on page load
+        let currentSongIndex = Math.floor(Math.random() * 6); // Randomize song on page load
         let retryAttempts = 0;
         const maxRetries = 3;
 
@@ -1141,7 +1179,8 @@
             { title: "For Da Flex", src: "assets/fdf.mp3" },
             { title: "Baghdad", src: "assets/baghdad.mp3" },
             { title: "Cartel", src: "assets/cartel.mp3" },
-            { title: "Popstar", src: "assets/popstar.mp3" }
+            { title: "Popstar", src: "assets/popstar.mp3" },
+            { title: "Lambtruck", src: "assets/lamb.mp3" }
         ];
 
         // Function to shuffle array
