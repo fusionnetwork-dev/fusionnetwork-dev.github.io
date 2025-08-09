@@ -81,13 +81,34 @@
             pointer-events: none;
             z-index: -5;
             overflow: hidden;
-            background: linear-gradient(to right, rgba(200, 200, 200, 0.1), rgba(200, 200, 200, 0.05), transparent);
-            animation: hazeScroll 20s linear infinite;
+            background: url('https://r2.guns.lol/smoke_texture.png') repeat, 
+                        linear-gradient(to right, rgba(200, 200, 200, 0.3), rgba(200, 200, 200, 0.15), transparent);
+            background-size: 50% auto, 100% 100%;
+            opacity: 0.5;
+            animation: smokeDrift 25s ease-in-out infinite;
         }
 
-        @keyframes hazeScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        @keyframes smokeDrift {
+            0% { 
+                transform: translateX(0) scale(1); 
+                opacity: 0.5; 
+            }
+            25% { 
+                transform: translateX(-10%) scale(1.05); 
+                opacity: 0.6; 
+            }
+            50% { 
+                transform: translateX(-20%) scale(1.1); 
+                opacity: 0.55; 
+            }
+            75% { 
+                transform: translateX(-15%) scale(1.05); 
+                opacity: 0.6; 
+            }
+            100% { 
+                transform: translateX(0) scale(1); 
+                opacity: 0.5; 
+            }
         }
 
         .version-text {
@@ -984,6 +1005,11 @@
                 width: 16px;
                 height: 16px;
             }
+
+            .smoky-haze {
+                background-size: 75% auto, 100% 100%;
+                opacity: 0.4;
+            }
         }
     </style>
 </head>
@@ -1246,9 +1272,6 @@
             loadSong(currentSongIndex);
             playCurrentSong();
         }
-
-        // Smoky haze effect
-        const smokyHaze = document.getElementById('smokyHaze');
 
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
