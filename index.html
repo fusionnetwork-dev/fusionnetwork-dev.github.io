@@ -7,7 +7,7 @@
     <meta property="og:image" content="https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="theme-color" content="#FF0000">
+    <meta name="theme-color" content="#808080">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>swaqq's creation</title>
@@ -72,32 +72,30 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 200%;
             height: 100%;
             pointer-events: none;
             z-index: -5;
             overflow: hidden;
+            background: linear-gradient(to right, rgba(200, 200, 200, 0.1), rgba(200, 200, 200, 0.05), transparent);
+            animation: hazeScroll 20s linear infinite;
         }
 
-        .smoke-particle {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(200, 200, 200, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            opacity: 0.15;
-            animation: smokeDrift linear infinite;
+        @keyframes hazeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
 
-        @keyframes smokeDrift {
-            0% {
-                transform: translateX(0) translateY(0) scale(1);
-                opacity: 0.15;
-            }
-            100% {
-                transform: translateX(calc(100vw + 100px)) translateY(calc(-50px + 100px * var(--random-y))) scale(1.5);
-                opacity: 0.05;
-            }
+        .version-text {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            z-index: 10;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
         }
 
         .click-effect {
@@ -105,7 +103,7 @@
             width: 12px;
             height: 12px;
             pointer-events: none;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -134,7 +132,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 20;
+            z-index: 2;
         }
 
         .word-element {
@@ -144,27 +142,20 @@
             font-size: 24px;
             text-transform: uppercase;
             text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-            opacity: 0;
-            animation: mlgWordPop 2s ease-out forwards;
-            white-space: nowrap;
             color: #fff;
+            white-space: nowrap;
+            animation: bounceToAudio 0.5s ease-in-out infinite, fadeAway 5s ease-out forwards;
         }
 
-        @keyframes mlgWordPop {
-            0% { opacity: 0; transform: scale(0.5) translate(0, 0); }
-            20% { opacity: 1; transform: scale(1.2) translate(var(--tx), var(--ty)); }
+        @keyframes bounceToAudio {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        @keyframes fadeAway {
+            0% { opacity: 1; }
             80% { opacity: 1; }
-            100% { opacity: 0; transform: scale(0.8) translate(var(--tx), var(--ty)); }
-        }
-
-        .word-kick {
-            animation: kick 0.2s ease-out;
-        }
-
-        @keyframes kick {
-            0% { transform: scale(1) translate(var(--tx), var(--ty)); }
-            50% { transform: scale(1.2) translate(var(--tx), calc(var(--ty) - 10px)); }
-            100% { transform: scale(1) translate(var(--tx), var(--ty)); }
+            100% { opacity: 0; }
         }
 
         .welcome-screen {
@@ -192,7 +183,7 @@
             font-weight: 700;
             color: white;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -215,7 +206,7 @@
             display: inline-block;
             font-size: 20px;
             font-weight: 700;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -235,7 +226,7 @@
             padding: 15px;
             text-align: center;
             position: relative;
-            z-index: 1;
+            z-index: 10;
         }
 
         .volume-control {
@@ -268,7 +259,7 @@
 
         .volume-control input[type="range"]::-webkit-slider-runnable-track {
             height: 5px;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             border-radius: 10px;
         }
 
@@ -276,7 +267,7 @@
             -webkit-appearance: none;
             width: 16px;
             height: 16px;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             border: 2px solid white;
             border-radius: 50%;
             margin-top: -5.5px;
@@ -291,14 +282,14 @@
 
         .volume-control input[type="range"]::-moz-range-track {
             height: 5px;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             border-radius: 10px;
         }
 
         .volume-control input[type="range"]::-moz-range-thumb {
             width: 16px;
             height: 16px;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             border: 2px solid white;
             border-radius: 50%;
             cursor: pointer;
@@ -368,12 +359,13 @@
         }
 
         .profile-image.spin {
-            animation: spin 0.3s ease-in-out;
+            animation: spin 1.2s ease-out;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            80% { transform: rotate(1080deg); }
+            100% { transform: rotate(350deg); }
         }
 
         .profile-image::before {
@@ -406,7 +398,7 @@
         .name {
             font-size: 22px;
             font-weight: 700;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -465,7 +457,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             animation: gradientText 6s ease infinite;
@@ -528,7 +520,7 @@
             height: 18px;
             border: none;
             border-radius: 50%;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             background-size: 200% 200%;
             color: white;
             font-size: 7px;
@@ -576,7 +568,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             width: 0%;
             transition: width 0.1s ease;
         }
@@ -593,7 +585,7 @@
             align-items: center;
             gap: 8px;
             padding: 8px 15px;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             background-size: 200% 200%;
             border: 2px solid rgba(255, 255, 255, 0.8);
             border-radius: 30px;
@@ -649,7 +641,7 @@
             align-items: center;
             justify-content: center;
             padding: 10px;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             background-size: 200% 200%;
             border: 2px solid rgba(255, 255, 255, 0.8);
             border-radius: 30px;
@@ -700,7 +692,7 @@
             align-items: center;
             gap: 6px;
             padding: 8px 12px;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             background-size: 200% 200%;
             border: 2px solid rgba(255, 255, 255, 0.8);
             border-radius: 25px;
@@ -777,7 +769,7 @@
             position: absolute;
             opacity: 0.3;
             font-size: 16px;
-            background: linear-gradient(90deg, #ff0000, #000000);
+            background: linear-gradient(90deg, #000000, #808080);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -990,6 +982,8 @@
 
     <div class="word-fx" id="wordFx"></div>
 
+    <div class="version-text">v1.2.0</div>
+
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
         <input type="range" id="volumeSlider" min="0" max="100" value="70">
@@ -1034,7 +1028,7 @@
             <div class="links-container">
                 <a href="https://www.roblox.com/users/8156657037/profile" class="link-button">
                     <div class="link-icon">
-                        <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1402927505865969684/512px-Roblox_icon_-_2017.png?ex=6895b18e&is=6894600e&hm=fd900d66aae0a19ddb8feb65332487952e69a68a8dfe3b820fce868c87b1353b&" alt="Roblox" class="link-icon-img">
+                        <img src="https://www.citypng.com/public/uploads/preview/hd-roblox-white-symbol-sign-icon-logo-png-701751694787435ra1r2desi8.png" alt="Roblox" class="link-icon-img">
                     </div>
                     <span class="link-text">Roblox</span>
                     <i class="fas fa-arrow-right"></i>
@@ -1042,7 +1036,7 @@
                 
                 <a href="https://discord.com/users/1084576683262230548" class="link-button">
                     <div class="link-icon">
-                        <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1402928254943498292/LWljb24ucG5n.png?ex=6895b241&is=689460c1&hm=a399d755e6722dc452c4c824d84b009e7fba2b95b64dc976ca3671bfac5a61a5&" alt="Discord" class="link-icon-img">
+                        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-white-icon.png" alt="Discord" class="link-icon-img">
                     </div>
                     <span class="link-text">Discord</span>
                     <i class="fas fa-arrow-right"></i>
@@ -1050,7 +1044,7 @@
                 
                 <a href="https://www.youtube.com/@faintche" class="link-button">
                     <div class="link-icon">
-                        <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1402928506484297789/cG5n.png?ex=6895b27d&is=689460fd&hm=f6eaaf7a3eb0160a314f3a0d73a734fd71ee83fee0e5c20d8941edbbc61ee2b6&" alt="YouTube" class="link-icon-img">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/YouTube_light_icon_%282017%29.svg/1280px-YouTube_light_icon_%282017%29.svg.png" alt="YouTube" class="link-icon-img">
                     </div>
                     <span class="link-text">YouTube</span>
                     <i class="fas fa-arrow-right"></i>
@@ -1107,8 +1101,8 @@
         <circle cx="50" cy="50" r="7" fill="#000000"/>
         <defs>
             <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#ff0000" />
-                <stop offset="100%" style="stop-color:#000000" />
+                <stop offset="0%" style="stop-color:#000000" />
+                <stop offset="100%" style="stop-color:#808080" />
             </linearGradient>
         </defs>
         <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
@@ -1149,6 +1143,15 @@
             { title: "Cartel", src: "assets/cartel.mp3" },
             { title: "Popstar", src: "assets/popstar.mp3" }
         ];
+
+        // Function to shuffle array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
         // Function to load a song
         function loadSong(index) {
@@ -1207,29 +1210,15 @@
 
         // Smoky haze effect
         const smokyHaze = document.getElementById('smokyHaze');
-        function createSmokeParticle() {
-            const particle = document.createElement('div');
-            particle.className = 'smoke-particle';
-            particle.style.left = `-${100}px`;
-            particle.style.top = `${Math.random() * 100}%`;
-            particle.style.setProperty('--random-y', Math.random());
-            particle.style.animationDuration = `${10 + Math.random() * 10}s`;
-            smokyHaze.appendChild(particle);
-            setTimeout(() => particle.remove(), 20000);
-        }
-
-        function startSmokeEffect() {
-            createSmokeParticle();
-            setTimeout(startSmokeEffect, 2000);
-        }
 
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
-        profileImage.addEventListener('click', () => {
+        function autoSpinProfileImage() {
             profileImage.classList.remove('spin');
             void profileImage.offsetWidth;
             profileImage.classList.add('spin');
-        });
+            setTimeout(autoSpinProfileImage, 15000);
+        }
 
         // Optimized parallax effect
         const profileCard = document.getElementById('profileCard');
@@ -1317,45 +1306,44 @@
         // Optimized MLG word effect with audio synchronization
         const wordFxContainer = document.getElementById('wordFx');
         const words = ['Dank', 'MLG', 'NoScope', 'QuickScope', 'BlazeIt', 'Wow', 'SuchSwag', 'Swag', 'Epik', '420', 'Headshot', 'Yolo', 'Lad', 'Sick', 'Hype'];
-        let lastWordTime = 0;
-        let activeWords = 0;
-        const maxWords = 10;
+        const maxWords = 3;
 
         function createWord() {
-            if (!wordEffectActive || activeWords >= maxWords) return;
-            
-            const now = performance.now();
-            if (now - lastWordTime < 500) return;
-            lastWordTime = now;
-            activeWords++;
+            if (!wordEffectActive || wordFxContainer.children.length >= maxWords) return;
             
             const word = document.createElement('div');
             word.className = 'word-element';
             word.textContent = words[Math.floor(Math.random() * words.length)];
             
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
-            const tx = (Math.random() - 0.5) * 100;
-            const ty = (Math.random() - 0.5) * 100;
+            const profileRect = profileCard.getBoundingClientRect();
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            const safeMargin = 20;
+            let x, y;
+            do {
+                x = Math.random() * (window.innerWidth - 100);
+                y = Math.random() * (window.innerHeight - 50);
+            } while (
+                x > containerRect.left - safeMargin &&
+                x < containerRect.right + safeMargin &&
+                y > containerRect.top - safeMargin &&
+                y < containerRect.bottom + safeMargin
+            );
             
             word.style.left = `${x}px`;
             word.style.top = `${y}px`;
-            word.style.setProperty('--tx', `${tx}px`);
-            word.style.setProperty('--ty', `${ty}px`);
             
             wordFxContainer.appendChild(word);
             setTimeout(() => {
                 if (word.parentNode) {
                     word.remove();
-                    activeWords--;
                 }
-            }, 2000);
+            }, 5000);
         }
 
         function startWordEffect() {
             if (!wordEffectActive) return;
             createWord();
-            setTimeout(startWordEffect, 500);
+            setTimeout(startWordEffect, 2000);
         }
 
         // Audio visualization for word movement
@@ -1368,29 +1356,17 @@
             analyser.fftSize = 256;
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
-            let lastKick = 0;
 
             function updateWordMovement() {
                 analyser.getByteFrequencyData(dataArray);
                 const lowFreq = dataArray.slice(0, 10).reduce((sum, val) => sum + val, 0) / 10;
                 const normalized = Math.min(lowFreq / 255, 1);
-                const spawnDelay = Math.max(100, 500 - normalized * 400);
+                const bounceScale = 1 + normalized * 0.1;
                 
-                const now = performance.now();
-                if (now - lastWordTime >= spawnDelay && activeWords < maxWords) {
-                    createWord();
-                    lastWordTime = now;
-                }
-                
-                if (normalized > 0.5 && now - lastKick > 200) {
-                    const wordElements = document.querySelectorAll('.word-element');
-                    wordElements.forEach(word => {
-                        word.classList.remove('word-kick');
-                        void word.offsetWidth;
-                        word.classList.add('word-kick');
-                    });
-                    lastKick = now;
-                }
+                const wordElements = document.querySelectorAll('.word-element');
+                wordElements.forEach(word => {
+                    word.style.animation = `bounceToAudio ${0.5 / (1 + normalized * 0.5)}s ease-in-out infinite, fadeAway 5s ease-out forwards`;
+                });
                 
                 requestAnimationFrame(updateWordMovement);
             }
@@ -1450,7 +1426,6 @@
 
         // Optimized mouse click effect
         document.addEventListener('click', (e) => {
-            if (activeWords >= maxWords) return;
             if (e.target === document.body || e.target.id === 'backgroundVideo' || 
                 e.target.classList.contains('vintage-overlay') || 
                 e.target.classList.contains('word-fx') ||
@@ -1558,7 +1533,8 @@
         });
         
         skipBtn.addEventListener('click', () => {
-            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            const shuffledSongs = shuffleArray([...songs]);
+            currentSongIndex = (shuffledSongs.indexOf(songs[currentSongIndex]) + 1) % songs.length;
             loadSong(currentSongIndex);
             playCurrentSong();
         });
@@ -1596,7 +1572,8 @@
         });
 
         audioPlayer.addEventListener('ended', () => {
-            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            const shuffledSongs = shuffleArray([...songs]);
+            currentSongIndex = (shuffledSongs.indexOf(songs[currentSongIndex]) + 1) % songs.length;
             loadSong(currentSongIndex);
             playCurrentSong();
         });
@@ -1635,7 +1612,8 @@
             setTimeout(() => {
                 startAudio();
                 setupAudioVisualization();
-                startSmokeEffect();
+                startWordEffect();
+                autoSpinProfileImage();
             }, 500);
             
             typeNameEffect();
@@ -1645,7 +1623,6 @@
             updateLikeDislikeCounts();
             
             wordEffectActive = true;
-            startWordEffect();
         }, { once: true });
     </script>
 </body>
