@@ -376,20 +376,21 @@
         }
 
         .uid {
-position: absolute;
-top: -18px;
-left: 50%;
-transform: translateX(-50%);
-background: rgba(0, 0, 0, 0.8); color: white;
-padding: 3px 6px;
-border-radius: 6px;
-font-size: 9px;
-white-space: nowrap;
-z-index: 10;
-opacity: 0;
-transition: opacity 0.3s ease, transform 0.3s ease;
-pointer-events: none;
-}
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-size: 9px;
+            white-space: nowrap;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+        }
 
         .name:hover .uid {
             opacity: 1;
@@ -1012,10 +1013,9 @@ pointer-events: none;
             
             <div class="audio-player">
                 <div class="audio-info">
-                    <div class="song-title">Kills</div>
+                    <div class="song-title" id="songTitle">Kills</div>
                     <div class="artist-name">Now Playing</div>
                 </div>
-                
                 <div class="audio-controls">
                     <button class="control-btn" id="rewindBtn">
                         <i class="fas fa-backward"></i>
@@ -1027,7 +1027,6 @@ pointer-events: none;
                         <i class="fas fa-forward"></i>
                     </button>
                 </div>
-                
                 <div class="audio-progress">
                     <span class="time-display" id="currentTime">0:00</span>
                     <div class="progress-bar" id="progressBar">
@@ -1035,7 +1034,6 @@ pointer-events: none;
                     </div>
                     <span class="time-display" id="totalTime">0:00</span>
                 </div>
-                
                 <audio id="audioPlayer" preload="auto" loop>
                     <source src="assets/kills.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
@@ -1067,7 +1065,7 @@ pointer-events: none;
                 <stop offset="100%" style="stop-color:#000000" />
             </linearGradient>
         </defs>
-        <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
+        <text x="50"Frontend y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
     </svg>
 
     <script>
@@ -1091,9 +1089,30 @@ pointer-events: none;
         const progressFill = document.getElementById('progressFill');
         const currentTimeDisplay = document.getElementById('currentTime');
         const totalTimeDisplay = document.getElementById('totalTime');
-        
+        const songTitle = document.getElementById('songTitle');
+
         let isPlaying = false;
-        
+
+        const songs = [
+            { title: "Kills", src: "assets/kills.mp3" },
+            { title: "For Da Flex", src: "assets/fdf.mp3" },
+            { title: "Baghdad", src: "assets/baghdad.mp3" }
+        ];
+
+        // Function to select and play a random song
+        function playRandomSong() {
+            const randomIndex = Math.floor(Math.random() * songs.length);
+            const selectedSong = songs[randomIndex];
+            audioPlayer.src = selectedSong.src;
+            songTitle.textContent = selectedSong.title;
+            audioPlayer.play().then(() => {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                isPlaying = true;
+            }).catch(error => {
+                console.log('Audio play failed:', error);
+            });
+        }
+
         // Set initial volumes
         video.volume = 0.5;
         video.muted = true;
@@ -1107,14 +1126,9 @@ pointer-events: none;
             console.log('Autoplay blocked:', error);
         });
 
-        // Function to start audio after welcome screen
+        // Start audio after welcome screen
         function startAudio() {
-            audioPlayer.play().then(() => {
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                isPlaying = true;
-            }).catch(error => {
-                console.log('Audio play failed:', error);
-            });
+            playRandomSong();
         }
 
         // Profile image rotation
@@ -1418,7 +1432,7 @@ pointer-events: none;
         });
         
         skipBtn.addEventListener('click', () => {
-            audioPlayer.currentTime = 0;
+            playRandomSong();
         });
         
         audioPlayer.addEventListener('timeupdate', () => {
@@ -1487,8 +1501,3 @@ pointer-events: none;
     </script>
 </body>
 </html>
-
-
-
-
-
