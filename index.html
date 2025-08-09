@@ -4,7 +4,7 @@
     <meta property="og:title" content="swaqq's creation">
     <meta property="og:description" content="my very own biolink page">
     <meta property="og:url" content="https://swaqq.xyz">
-    <meta property="og:image" content="https://i.pinimg.com/1200x/0e/91/ec/0e91ec6ec24f28b11b6052878ec991b1.jpg">
+    <meta property="og:image" content="https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#FF0000">
@@ -68,6 +68,38 @@
             opacity: 0.3;
         }
 
+        .smoky-haze {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -5;
+            overflow: hidden;
+        }
+
+        .smoke-particle {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(200, 200, 200, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: smokeDrift linear infinite;
+        }
+
+        @keyframes smokeDrift {
+            0% {
+                transform: translateX(0) translateY(0) scale(1);
+                opacity: 0.15;
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px)) translateY(calc(-50px + 100px * var(--random-y))) scale(1.5);
+                opacity: 0.05;
+            }
+        }
+
         .click-effect {
             position: fixed;
             width: 12px;
@@ -102,7 +134,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1;
+            z-index: 20;
         }
 
         .word-element {
@@ -322,7 +354,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: url('https://i.pinimg.com/1200x/0e/91/ec/0e91ec6ec24f28b11b6052878ec991b1.jpg') no-repeat center/cover;
+            background: url('https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg') no-repeat center/cover;
             margin: 0 auto 8px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             position: relative;
@@ -945,6 +977,8 @@
     
     <div class="vintage-overlay"></div>
     
+    <div class="smoky-haze" id="smokyHaze"></div>
+
     <div class="floating-elements">
         <i class="floating-element fas fa-cross"></i>
         <i class="floating-element fas fa-cross"></i>
@@ -981,17 +1015,17 @@
                     <i class="fas fa-fire"></i>
                     #swag
                 </span>
-                <span class="badge developer">
-                    <i class="fas fa-code"></i>
-                    Developer
+                <span class="badge hasswag">
+                    <i class="fas fa-star"></i>
+                    #hasswag
                 </span>
-                <span class="badge administrator">
-                    <i class="fas fa-shield-alt"></i>
-                    Administrator
+                <span class="badge igotswag">
+                    <i class="fas fa-trophy"></i>
+                    #igotswag
                 </span>
-                <span class="badge moderator">
-                    <i class="fas fa-gavel"></i>
-                    Moderator
+                <span class="badge swaggedup">
+                    <i class="fas fa-gem"></i>
+                    #swaggedup
                 </span>
             </div>
             
@@ -1104,7 +1138,7 @@
         const songTitle = document.getElementById('songTitle');
 
         let isPlaying = false;
-        let currentSongIndex = 0;
+        let currentSongIndex = Math.floor(Math.random() * 5); // Randomize song on page load
         let retryAttempts = 0;
         const maxRetries = 3;
 
@@ -1152,13 +1186,6 @@
             }
         }
 
-        // Function to play a random song
-        function playRandomSong() {
-            currentSongIndex = Math.floor(Math.random() * songs.length);
-            loadSong(currentSongIndex);
-            playCurrentSong();
-        }
-
         // Set initial volumes
         video.volume = 0.5;
         video.muted = true;
@@ -1176,6 +1203,24 @@
         function startAudio() {
             loadSong(currentSongIndex);
             playCurrentSong();
+        }
+
+        // Smoky haze effect
+        const smokyHaze = document.getElementById('smokyHaze');
+        function createSmokeParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'smoke-particle';
+            particle.style.left = `-${100}px`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.setProperty('--random-y', Math.random());
+            particle.style.animationDuration = `${10 + Math.random() * 10}s`;
+            smokyHaze.appendChild(particle);
+            setTimeout(() => particle.remove(), 20000);
+        }
+
+        function startSmokeEffect() {
+            createSmokeParticle();
+            setTimeout(startSmokeEffect, 2000);
         }
 
         // Profile image rotation
@@ -1271,7 +1316,7 @@
 
         // Optimized MLG word effect with audio synchronization
         const wordFxContainer = document.getElementById('wordFx');
-        const words = ['Dank', 'MLG', 'NoScope', 'QuickScope', 'BlazeIt', 'Wow', 'SuchSwag', 'Swag', 'Epik'];
+        const words = ['Dank', 'MLG', 'NoScope', 'QuickScope', 'BlazeIt', 'Wow', 'SuchSwag', 'Swag', 'Epik', '420', 'Headshot', 'Yolo', 'Lad', 'Sick', 'Hype'];
         let lastWordTime = 0;
         let activeWords = 0;
         const maxWords = 10;
@@ -1326,10 +1371,6 @@
             let lastKick = 0;
 
             function updateWordMovement() {
-                if (!isPlaying || !wordEffectActive) {
-                    requestAnimationFrame(updateWordMovement);
-                    return;
-                }
                 analyser.getByteFrequencyData(dataArray);
                 const lowFreq = dataArray.slice(0, 10).reduce((sum, val) => sum + val, 0) / 10;
                 const normalized = Math.min(lowFreq / 255, 1);
@@ -1350,17 +1391,6 @@
                     });
                     lastKick = now;
                 }
-                
-                const wordElements = document.querySelectorAll('.word-element');
-                wordElements.forEach(word => {
-                    const currentTx = parseFloat(word.style.getPropertyValue('--tx')) || 0;
-                    const currentTy = parseFloat(word.style.getPropertyValue('--ty')) || 0;
-                    const movement = normalized * 50;
-                    const newTx = currentTx + (Math.random() - 0.5) * movement;
-                    const newTy = currentTy + (Math.random() - 0.5) * movement;
-                    word.style.setProperty('--tx', `${newTx}px`);
-                    word.style.setProperty('--ty', `${newTy}px`);
-                });
                 
                 requestAnimationFrame(updateWordMovement);
             }
@@ -1605,6 +1635,7 @@
             setTimeout(() => {
                 startAudio();
                 setupAudioVisualization();
+                startSmokeEffect();
             }, 500);
             
             typeNameEffect();
