@@ -49,18 +49,6 @@
             display: none;
         }
 
-        video#mlgVideo {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 50%;
-            max-width: 600px;
-            transform: translate(-50%, -50%);
-            z-index: 50;
-            display: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        }
-
         .vintage-overlay {
             position: fixed;
             top: 0;
@@ -135,6 +123,16 @@
             20% { opacity: 1; transform: scale(1.2) translate(var(--tx), var(--ty)); }
             80% { opacity: 1; }
             100% { opacity: 0; transform: scale(0.8) translate(var(--tx), var(--ty)); }
+        }
+
+        .word-kick {
+            animation: kick 0.2s ease-out;
+        }
+
+        @keyframes kick {
+            0% { transform: scale(1) translate(var(--tx), var(--ty)); }
+            50% { transform: scale(1.2) translate(var(--tx), calc(var(--ty) - 10px)); }
+            100% { transform: scale(1) translate(var(--tx), var(--ty)); }
         }
 
         .welcome-screen {
@@ -944,11 +942,6 @@
         <source src="assets/popstar.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-
-    <video id="mlgVideo" playsinline>
-        <source src="assets/420.gif" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
     
     <div class="vintage-overlay"></div>
     
@@ -1095,7 +1088,6 @@
         const welcomeScreen = document.getElementById('welcomeScreen');
         const body = document.body;
         const video = document.getElementById('backgroundVideo');
-        const mlgVideo = document.getElementById('mlgVideo');
         let hasInteracted = false;
         let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
@@ -1184,18 +1176,6 @@
         function startAudio() {
             loadSong(currentSongIndex);
             playCurrentSong();
-        }
-
-        // Play MLG video
-        function playMlgVideo() {
-            mlgVideo.style.display = 'block';
-            mlgVideo.play().catch(error => {
-                console.log('MLG video play failed:', error);
-            });
-            setTimeout(() => {
-                mlgVideo.style.display = 'none';
-                mlgVideo.currentTime = 0;
-            }, 5000);
         }
 
         // Profile image rotation
@@ -1296,7 +1276,7 @@
         let activeWords = 0;
         const maxWords = 10;
 
-        function createWord(text) {
+        function createWord() {
             if (!wordEffectActive || activeWords >= maxWords) return;
             
             const now = performance.now();
@@ -1306,31 +1286,7 @@
             
             const word = document.createElement('div');
             word.className = 'word-element';
-            word.textContent = text || words[Math.floor(Math.random() * words.length)];
-            
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
-            const tx = (Math.random() - 0.5) * 100;
-            const ty = (Math.random() - 0.5) * 100;
-            
-            word.style.left = `${x}px`;
-            word.style.top = `${y}px`;
-            word.style.setProperty('--tx', `${tx}px`);
-            word.style.setProperty('--ty', `${ty}px`);
-            
-            wordFxContainer.appendChild(word);
-            setTimeout(() => {
-                if (word.parentNode) {
-                    word.remove();
-                    activeWords--;
-                }
-            }, 2000);
-        }
-
-        function create420Word() {
-            const word = document.createElement('div');
-            word.className = 'word-element';
-            word.textContent = '420';
+            word.textContent = words[Math.floor(Math.random() * words.length)];
             
             const x = Math.random() * (window.innerWidth - 100);
             const y = Math.random() * (window.innerHeight - 50);
@@ -1353,17 +1309,7 @@
 
         function startWordEffect() {
             if (!wordEffectActive) return;
-            if (Math.random() < 0.1) { // 10% chance to trigger MLG video and 420 word
-                playMlgVideo();
-                setTimeout(() => {
-                    if (activeWords < maxWords) {
-                        activeWords++;
-                        create420Word();
-                    }
-                }, 1666); // One-third of 5 seconds
-            } else {
-                createWord();
-            }
+            createWord();
             setTimeout(startWordEffect, 500);
         }
 
@@ -1377,6 +1323,7 @@
             analyser.fftSize = 256;
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
+            let lastKick = 0;
 
             function updateWordMovement() {
                 if (!isPlaying || !wordEffectActive) {
@@ -1384,24 +1331,24 @@
                     return;
                 }
                 analyser.getByteFrequencyData(dataArray);
-                const avgFrequency = dataArray.reduce((sum, val) => sum + val, 0) / bufferLength;
-                const normalized = Math.min(avgFrequency / 255, 1);
+                const lowFreq = dataArray.slice(0, 10).reduce((sum, val) => sum + val, 0) / 10;
+                const normalized = Math.min(lowFreq / 255, 1);
                 const spawnDelay = Math.max(100, 500 - normalized * 400);
                 
                 const now = performance.now();
                 if (now - lastWordTime >= spawnDelay && activeWords < maxWords) {
-                    if (Math.random() < 0.1) { // 10% chance to trigger MLG video and 420 word
-                        playMlgVideo();
-                        setTimeout(() => {
-                            if (activeWords < maxWords) {
-                                activeWords++;
-                                create420Word();
-                            }
-                        }, 1666);
-                    } else {
-                        createWord();
-                    }
+                    createWord();
                     lastWordTime = now;
+                }
+                
+                if (normalized > 0.5 && now - lastKick > 200) {
+                    const wordElements = document.querySelectorAll('.word-element');
+                    wordElements.forEach(word => {
+                        word.classList.remove('word-kick');
+                        void word.offsetWidth;
+                        word.classList.add('word-kick');
+                    });
+                    lastKick = now;
                 }
                 
                 const wordElements = document.querySelectorAll('.word-element');
@@ -1475,7 +1422,7 @@
         document.addEventListener('click', (e) => {
             if (activeWords >= maxWords) return;
             if (e.target === document.body || e.target.id === 'backgroundVideo' || 
-                e.target.id === 'mlgVideo' || e.target.classList.contains('vintage-overlay') || 
+                e.target.classList.contains('vintage-overlay') || 
                 e.target.classList.contains('word-fx') ||
                 e.target.classList.contains('floating-elements')) {
                 
@@ -1658,13 +1605,6 @@
             setTimeout(() => {
                 startAudio();
                 setupAudioVisualization();
-                playMlgVideo();
-                setTimeout(() => {
-                    if (activeWords < maxWords) {
-                        activeWords++;
-                        create420Word();
-                    }
-                }, 1666);
             }, 500);
             
             typeNameEffect();
