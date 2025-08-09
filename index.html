@@ -107,20 +107,22 @@
 
         .word-element {
             position: absolute;
-            color: #808080;
-            font-weight: 800;
-            font-size: 20px;
-            text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+            font-family: 'Impact', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
             opacity: 0;
-            animation: wordFloat 6s ease-in-out forwards;
+            animation: mlgWordPop 2s ease-out forwards;
             white-space: nowrap;
+            color: #fff;
         }
 
-        @keyframes wordFloat {
-            0% { opacity: 0; transform: translate(0, 0); }
-            20% { opacity: 0.3; }
-            80% { opacity: 0.3; }
-            100% { opacity: 0; transform: translate(var(--tx), var(--ty)); }
+        @keyframes mlgWordPop {
+            0% { opacity: 0; transform: scale(0.5) translate(0, 0); }
+            20% { opacity: 1; transform: scale(1.2) translate(var(--tx), var(--ty)); }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: scale(0.8) translate(var(--tx), var(--ty)); }
         }
 
         .welcome-screen {
@@ -572,7 +574,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 1255, 0.25), transparent);
             transition: left 0.6s ease;
         }
 
@@ -1034,7 +1036,7 @@
                     </div>
                     <span class="time-display" id="totalTime">0:00</span>
                 </div>
-                <audio id="audioPlayer" preload="auto" loop>
+                <audio id="audioPlayer" preload="auto">
                     <source src="assets/kills.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
@@ -1065,7 +1067,7 @@
                 <stop offset="100%" style="stop-color:#000000" />
             </linearGradient>
         </defs>
-        <text x="50"Frontend y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
+        <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
     </svg>
 
     <script>
@@ -1092,6 +1094,7 @@
         const songTitle = document.getElementById('songTitle');
 
         let isPlaying = false;
+        let currentSongIndex = 0;
 
         const songs = [
             { title: "Kills", src: "assets/kills.mp3" },
@@ -1099,18 +1102,35 @@
             { title: "Baghdad", src: "assets/baghdad.mp3" }
         ];
 
-        // Function to select and play a random song
+        // Function to load and play a song
+        function loadSong(index) {
+            const song = songs[index];
+            audioPlayer.src = song.src;
+            songTitle.textContent = song.title;
+            audioPlayer.load();
+        }
+
+        // Function to play the current song
+        function playCurrentSong() {
+            const playPromise = audioPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    isPlaying = true;
+                }).catch(error => {
+                    console.log('Audio play failed:', error);
+                    songTitle.textContent = 'Error: Cannot play';
+                    isPlaying = false;
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                });
+            }
+        }
+
+        // Function to play a random song
         function playRandomSong() {
-            const randomIndex = Math.floor(Math.random() * songs.length);
-            const selectedSong = songs[randomIndex];
-            audioPlayer.src = selectedSong.src;
-            songTitle.textContent = selectedSong.title;
-            audioPlayer.play().then(() => {
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                isPlaying = true;
-            }).catch(error => {
-                console.log('Audio play failed:', error);
-            });
+            currentSongIndex = Math.floor(Math.random() * songs.length);
+            loadSong(currentSongIndex);
+            playCurrentSong();
         }
 
         // Set initial volumes
@@ -1128,7 +1148,8 @@
 
         // Start audio after welcome screen
         function startAudio() {
-            playRandomSong();
+            loadSong(currentSongIndex);
+            playCurrentSong();
         }
 
         // Profile image rotation
@@ -1222,18 +1243,18 @@
             }
         }
 
-        // Optimized word effect
+        // Optimized MLG word effect
         const wordFxContainer = document.getElementById('wordFx');
-        const words = ['swag', 'coolness', 'rad', 'epik'];
+        const words = ['Dank', 'MLG', '420', 'NoScope', 'QuickScope', 'BlazeIt', 'Wow', 'SuchSwag', 'Swag', 'Epik'];
         let lastWordTime = 0;
         let activeWords = 0;
-        const maxWords = 5;
+        const maxWords = 10;
 
         function createWord() {
             if (!wordEffectActive || activeWords >= maxWords) return;
             
             const now = performance.now();
-            if (now - lastWordTime < 3000) return;
+            if (now - lastWordTime < 500) return; // Faster spawn rate for MLG effect
             lastWordTime = now;
             activeWords++;
             
@@ -1241,10 +1262,10 @@
             word.className = 'word-element';
             word.textContent = words[Math.floor(Math.random() * words.length)];
             
-            const x = Math.random() * (window.innerWidth - 80);
-            const y = Math.random() * (window.innerHeight - 40);
-            const tx = (Math.random() - 0.5) * 60;
-            const ty = (Math.random() - 0.5) * 60;
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 50);
+            const tx = (Math.random() - 0.5) * 100;
+            const ty = (Math.random() - 0.5) * 100;
             
             word.style.left = `${x}px`;
             word.style.top = `${y}px`;
@@ -1257,13 +1278,13 @@
                     word.remove();
                     activeWords--;
                 }
-            }, 6000);
+            }, 2000); // Shorter duration for MLG effect
         }
 
         function startWordEffect() {
             if (!wordEffectActive) return;
             createWord();
-            setTimeout(startWordEffect, 3000);
+            setTimeout(startWordEffect, 500); // Faster spawn interval
         }
 
         // Generate or retrieve device ID
@@ -1418,12 +1439,7 @@
                 playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                 isPlaying = false;
             } else {
-                audioPlayer.play().then(() => {
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    isPlaying = true;
-                }).catch(error => {
-                    console.log('Audio play failed:', error);
-                });
+                playCurrentSong();
             }
         });
         
@@ -1432,25 +1448,49 @@
         });
         
         skipBtn.addEventListener('click', () => {
-            playRandomSong();
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(currentSongIndex);
+            playCurrentSong();
         });
         
         audioPlayer.addEventListener('timeupdate', () => {
-            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-            progressFill.style.width = `${progress}%`;
-            
-            currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
-            if (audioPlayer.duration) {
+            if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                progressFill.style.width = `${progress}%`;
+                currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
                 totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
             }
         });
         
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
+                totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+            }
+        });
+        
+        audioPlayer.addEventListener('error', () => {
+            console.log('Audio error: Failed to load audio');
+            songTitle.textContent = 'Error: Cannot play';
+            currentTimeDisplay.textContent = '0:00';
+            totalTimeDisplay.textContent = '0:00';
+            isPlaying = false;
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        });
+
+        audioPlayer.addEventListener('ended', () => {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(currentSongIndex);
+            playCurrentSong();
+        });
+
         progressBar.addEventListener('click', (e) => {
-            const rect = progressBar.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const width = rect.width;
-            const percentage = clickX / width;
-            audioPlayer.currentTime = percentage * audioPlayer.duration;
+            if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
+                const rect = progressBar.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const width = rect.width;
+                const percentage = clickX / width;
+                audioPlayer.currentTime = percentage * audioPlayer.duration;
+            }
         });
         
         function formatTime(seconds) {
@@ -1458,16 +1498,6 @@
             const secs = Math.floor(seconds % 60);
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
-        
-        audioPlayer.addEventListener('loadedmetadata', () => {
-            totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
-        });
-        
-        audioPlayer.addEventListener('error', (e) => {
-            console.log('Audio error:', e);
-            currentTimeDisplay.textContent = 'Error';
-            totalTimeDisplay.textContent = 'Error';
-        });
 
         volumeSlider.addEventListener('input', () => {
             const volume = volumeSlider.value / 100;
