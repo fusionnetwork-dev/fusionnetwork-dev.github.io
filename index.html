@@ -49,6 +49,18 @@
             display: none;
         }
 
+        video#mlgVideo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 50%;
+            max-width: 600px;
+            transform: translate(-50%, -50%);
+            z-index: 50;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
         .vintage-overlay {
             position: fixed;
             top: 0;
@@ -929,7 +941,12 @@
     </div>
 
     <video id="backgroundVideo" autoplay loop playsinline style="display: none;">
-        <source src="assets/need me.mp4" type="video/mp4">
+        <source src="assets/popstar.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <video id="mlgVideo" playsinline>
+        <source src="assets/420.gif" type="video/mp4">
         Your browser does not support the video tag.
     </video>
     
@@ -1078,6 +1095,7 @@
         const welcomeScreen = document.getElementById('welcomeScreen');
         const body = document.body;
         const video = document.getElementById('backgroundVideo');
+        const mlgVideo = document.getElementById('mlgVideo');
         let hasInteracted = false;
         let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
@@ -1101,7 +1119,9 @@
         const songs = [
             { title: "Kills", src: "assets/kills.mp3" },
             { title: "For Da Flex", src: "assets/fdf.mp3" },
-            { title: "Baghdad", src: "assets/baghdad.mp3" }
+            { title: "Baghdad", src: "assets/baghdad.mp3" },
+            { title: "Cartel", src: "assets/cartel.mp3" },
+            { title: "Popstar", src: "assets/popstar.mp3" }
         ];
 
         // Function to load a song
@@ -1115,7 +1135,7 @@
 
         // Function to play the current song with retry logic
         function playCurrentSong() {
-            songTitle.textContent = songs[currentSongIndex].title; // Ensure title is set
+            songTitle.textContent = songs[currentSongIndex].title;
             const playPromise = audioPlayer.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
@@ -1166,6 +1186,18 @@
             playCurrentSong();
         }
 
+        // Play MLG video
+        function playMlgVideo() {
+            mlgVideo.style.display = 'block';
+            mlgVideo.play().catch(error => {
+                console.log('MLG video play failed:', error);
+            });
+            setTimeout(() => {
+                mlgVideo.style.display = 'none';
+                mlgVideo.currentTime = 0;
+            }, 5000);
+        }
+
         // Profile image rotation
         const profileImage = document.getElementById('profileImage');
         profileImage.addEventListener('click', () => {
@@ -1181,7 +1213,7 @@
         function handleParallax(e) {
             if (isMobile) return;
             const now = performance.now();
-            if (now - lastUpdate < 33) return; // Throttle to ~30fps
+            if (now - lastUpdate < 33) return;
             lastUpdate = now;
             const rect = profileCard.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -1257,24 +1289,24 @@
             }
         }
 
-        // Optimized MLG word effect
+        // Optimized MLG word effect with audio synchronization
         const wordFxContainer = document.getElementById('wordFx');
-        const words = ['Dank', 'MLG', '420', 'NoScope', 'QuickScope', 'BlazeIt', 'Wow', 'SuchSwag', 'Swag', 'Epik'];
+        const words = ['Dank', 'MLG', 'NoScope', 'QuickScope', 'BlazeIt', 'Wow', 'SuchSwag', 'Swag', 'Epik'];
         let lastWordTime = 0;
         let activeWords = 0;
         const maxWords = 10;
 
-        function createWord() {
+        function createWord(text) {
             if (!wordEffectActive || activeWords >= maxWords) return;
             
             const now = performance.now();
-            if (now - lastWordTime < 500) return; // Faster spawn rate for MLG effect
+            if (now - lastWordTime < 500) return;
             lastWordTime = now;
             activeWords++;
             
             const word = document.createElement('div');
             word.className = 'word-element';
-            word.textContent = words[Math.floor(Math.random() * words.length)];
+            word.textContent = text || words[Math.floor(Math.random() * words.length)];
             
             const x = Math.random() * (window.innerWidth - 100);
             const y = Math.random() * (window.innerHeight - 50);
@@ -1292,13 +1324,100 @@
                     word.remove();
                     activeWords--;
                 }
-            }, 2000); // Shorter duration for MLG effect
+            }, 2000);
+        }
+
+        function create420Word() {
+            const word = document.createElement('div');
+            word.className = 'word-element';
+            word.textContent = '420';
+            
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 50);
+            const tx = (Math.random() - 0.5) * 100;
+            const ty = (Math.random() - 0.5) * 100;
+            
+            word.style.left = `${x}px`;
+            word.style.top = `${y}px`;
+            word.style.setProperty('--tx', `${tx}px`);
+            word.style.setProperty('--ty', `${ty}px`);
+            
+            wordFxContainer.appendChild(word);
+            setTimeout(() => {
+                if (word.parentNode) {
+                    word.remove();
+                    activeWords--;
+                }
+            }, 2000);
         }
 
         function startWordEffect() {
             if (!wordEffectActive) return;
-            createWord();
-            setTimeout(startWordEffect, 500); // Faster spawn interval
+            if (Math.random() < 0.1) { // 10% chance to trigger MLG video and 420 word
+                playMlgVideo();
+                setTimeout(() => {
+                    if (activeWords < maxWords) {
+                        activeWords++;
+                        create420Word();
+                    }
+                }, 1666); // One-third of 5 seconds
+            } else {
+                createWord();
+            }
+            setTimeout(startWordEffect, 500);
+        }
+
+        // Audio visualization for word movement
+        function setupAudioVisualization() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const analyser = audioContext.createAnalyser();
+            const source = audioContext.createMediaElementSource(audioPlayer);
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            function updateWordMovement() {
+                if (!isPlaying || !wordEffectActive) {
+                    requestAnimationFrame(updateWordMovement);
+                    return;
+                }
+                analyser.getByteFrequencyData(dataArray);
+                const avgFrequency = dataArray.reduce((sum, val) => sum + val, 0) / bufferLength;
+                const normalized = Math.min(avgFrequency / 255, 1);
+                const spawnDelay = Math.max(100, 500 - normalized * 400);
+                
+                const now = performance.now();
+                if (now - lastWordTime >= spawnDelay && activeWords < maxWords) {
+                    if (Math.random() < 0.1) { // 10% chance to trigger MLG video and 420 word
+                        playMlgVideo();
+                        setTimeout(() => {
+                            if (activeWords < maxWords) {
+                                activeWords++;
+                                create420Word();
+                            }
+                        }, 1666);
+                    } else {
+                        createWord();
+                    }
+                    lastWordTime = now;
+                }
+                
+                const wordElements = document.querySelectorAll('.word-element');
+                wordElements.forEach(word => {
+                    const currentTx = parseFloat(word.style.getPropertyValue('--tx')) || 0;
+                    const currentTy = parseFloat(word.style.getPropertyValue('--ty')) || 0;
+                    const movement = normalized * 50;
+                    const newTx = currentTx + (Math.random() - 0.5) * movement;
+                    const newTy = currentTy + (Math.random() - 0.5) * movement;
+                    word.style.setProperty('--tx', `${newTx}px`);
+                    word.style.setProperty('--ty', `${newTy}px`);
+                });
+                
+                requestAnimationFrame(updateWordMovement);
+            }
+            requestAnimationFrame(updateWordMovement);
         }
 
         // Generate or retrieve device ID
@@ -1356,7 +1475,7 @@
         document.addEventListener('click', (e) => {
             if (activeWords >= maxWords) return;
             if (e.target === document.body || e.target.id === 'backgroundVideo' || 
-                e.target.classList.contains('vintage-overlay') || 
+                e.target.id === 'mlgVideo' || e.target.classList.contains('vintage-overlay') || 
                 e.target.classList.contains('word-fx') ||
                 e.target.classList.contains('floating-elements')) {
                 
@@ -1531,7 +1650,6 @@
             welcomeScreen.classList.add('hidden');
             body.classList.remove('welcome-active');
             
-            // Keep video muted and playing on all devices
             video.muted = true;
             video.play().catch(error => {
                 console.log('Video play failed after welcome:', error);
@@ -1539,6 +1657,14 @@
             
             setTimeout(() => {
                 startAudio();
+                setupAudioVisualization();
+                playMlgVideo();
+                setTimeout(() => {
+                    if (activeWords < maxWords) {
+                        activeWords++;
+                        create420Word();
+                    }
+                }, 1666);
             }, 500);
             
             typeNameEffect();
