@@ -574,7 +574,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 1255, 0.25), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
             transition: left 0.6s ease;
         }
 
@@ -1095,6 +1095,8 @@
 
         let isPlaying = false;
         let currentSongIndex = 0;
+        let retryAttempts = 0;
+        const maxRetries = 3;
 
         const songs = [
             { title: "Kills", src: "assets/kills.mp3" },
@@ -1102,26 +1104,38 @@
             { title: "Baghdad", src: "assets/baghdad.mp3" }
         ];
 
-        // Function to load and play a song
+        // Function to load a song
         function loadSong(index) {
             const song = songs[index];
             audioPlayer.src = song.src;
             songTitle.textContent = song.title;
             audioPlayer.load();
+            retryAttempts = 0;
         }
 
-        // Function to play the current song
+        // Function to play the current song with retry logic
         function playCurrentSong() {
+            songTitle.textContent = songs[currentSongIndex].title; // Ensure title is set
             const playPromise = audioPlayer.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     isPlaying = true;
+                    retryAttempts = 0;
                 }).catch(error => {
                     console.log('Audio play failed:', error);
-                    songTitle.textContent = 'Error: Cannot play';
-                    isPlaying = false;
-                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    if (retryAttempts < maxRetries) {
+                        retryAttempts++;
+                        songTitle.textContent = 'Loading...';
+                        setTimeout(() => {
+                            loadSong(currentSongIndex);
+                            playCurrentSong();
+                        }, 1000);
+                    } else {
+                        songTitle.textContent = songs[currentSongIndex].title;
+                        isPlaying = false;
+                        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    }
                 });
             }
         }
@@ -1465,16 +1479,24 @@
         audioPlayer.addEventListener('loadedmetadata', () => {
             if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
                 totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+                songTitle.textContent = songs[currentSongIndex].title;
             }
         });
         
         audioPlayer.addEventListener('error', () => {
             console.log('Audio error: Failed to load audio');
-            songTitle.textContent = 'Error: Cannot play';
-            currentTimeDisplay.textContent = '0:00';
-            totalTimeDisplay.textContent = '0:00';
-            isPlaying = false;
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            if (retryAttempts < maxRetries) {
+                retryAttempts++;
+                songTitle.textContent = 'Loading...';
+                setTimeout(() => {
+                    loadSong(currentSongIndex);
+                    playCurrentSong();
+                }, 1000);
+            } else {
+                songTitle.textContent = songs[currentSongIndex].title;
+                isPlaying = false;
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
         });
 
         audioPlayer.addEventListener('ended', () => {
