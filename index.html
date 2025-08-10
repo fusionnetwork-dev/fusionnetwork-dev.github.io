@@ -25,6 +25,12 @@
             cursor: url('https://r2.guns.lol/d9488425-e8da-4556-98ef-b37992bc279a.webp') 16 16, text;
         }
 
+        :root {
+            --primary-gradient: linear-gradient(90deg, #000000, #808080);
+            --smoke-color: rgba(220, 220, 220, 0.6);
+            --smoke-center: rgba(255, 255, 255, 0.15);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             min-height: 100vh;
@@ -34,10 +40,23 @@
             align-items: flex-start;
             justify-content: center;
             padding-top: 20px;
+            background: var(--primary-gradient);
         }
 
         body.welcome-active * {
             animation-play-state: paused !important;
+        }
+
+        body.neon {
+            --primary-gradient: linear-gradient(90deg, #ff00ff, #00ffff);
+            --smoke-color: rgba(0, 255, 255, 0.6);
+            --smoke-center: rgba(255, 0, 255, 0.15);
+        }
+
+        body.retro {
+            --primary-gradient: linear-gradient(90deg, #8b5a2b, #ffa07a);
+            --smoke-color: rgba(255, 160, 122, 0.6);
+            --smoke-center: rgba(139, 90, 43, 0.15);
         }
 
         video#backgroundVideo {
@@ -72,62 +91,281 @@
             opacity: 0.3;
         }
 
-.foggy-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -2;
-    background: linear-gradient(
-        to right,
-        rgba(220, 220, 220, 0.6), /* Slightly more opaque for visibility */
-        rgba(255, 255, 255, 0.15), /* More transparent center for wispy effect */
-        rgba(220, 220, 220, 0.6)
-    );
-    opacity: 0.7; /* Increased for clearer smoke clouds */
-    animation: fogScroll 20s ease-in-out infinite; /* Faster and smoother for curling smoke */
-    filter: blur(35px); /* Higher blur for soft, cigarette-like diffusion */
-}
+        .foggy-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            background: linear-gradient(
+                to right,
+                var(--smoke-color),
+                var(--smoke-center),
+                var(--smoke-color)
+            );
+            opacity: 0.7;
+            animation: fogScroll 20s ease-in-out infinite;
+            filter: blur(35px);
+        }
 
-.fog-layer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-    background: radial-gradient(
-        circle at 50% 50%,
-        rgba(255, 255, 255, 0.35), /* More defined for smoky wisps */
-        transparent 50% /* Tighter gradient for concentrated smoke */
-    );
-    opacity: 0.55; /* Slightly more visible for cloud-like effect */
-    animation: fogDrift 30s ease-in-out infinite; /* Smoother and faster for swirling smoke */
-    filter: blur(30px); /* Increased blur for softer, cigarette-smoke texture */
-}
+        .fog-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: radial-gradient(
+                circle at 50% 50%,
+                rgba(255, 255, 255, 0.35),
+                transparent 50%
+            );
+            opacity: 0.55;
+            animation: fogDrift 30s ease-in-out infinite;
+            filter: blur(30px);
+        }
 
-@keyframes fogScroll {
-    0% { transform: translateX(0) scale(1); }
-    50% { transform: translateX(-50%) scale(1.05); } /* Slight scaling for organic movement */
-    100% { transform: translateX(0) scale(1); }
-}
+        @keyframes fogScroll {
+            0% { transform: translateX(0) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(0) scale(1); }
+        }
 
-@keyframes fogDrift {
-    0% { transform: translateX(-15%) translateY(0) rotate(2deg); } /* Added slight rotation */
-    50% { transform: translateX(15%) translateY(10%) rotate(-2deg); } /* Swirling effect */
-    100% { transform: translateX(-15%) translateY(0) rotate(2deg); }
-}
+        @keyframes fogDrift {
+            0% { transform: translateX(-15%) translateY(0) rotate(2deg); }
+            50% { transform: translateX(15%) translateY(10%) rotate(-2deg); }
+            100% { transform: translateX(-15%) translateY(0) rotate(2deg); }
+        }
 
-@media (max-width: 480px) {
-    .foggy-background, .fog-layer {
-        background-size: 80% auto; /* Slightly larger for mobile visibility */
-        opacity: 0.45; /* Reduced opacity to avoid overwhelming small screens */
-        filter: blur(28px); /* Slightly less blur for mobile clarity */
-    }
-}
+        .cursor-trail {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--smoke-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.5;
+            animation: trailFade 0.8s ease-out forwards;
+            filter: blur(5px);
+        }
+
+        @keyframes trailFade {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 0; transform: scale(2); }
+        }
+
+        .theme-switcher {
+            position: fixed;
+            top: 80px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .theme-switcher:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-switcher select {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            padding: 5px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .guestbook-container {
+            background: rgba(220, 220, 220, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .guestbook-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .guestbook-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        #guestbookForm {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        #guestbookInput {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .guestbook-submit {
+            padding: 8px 12px;
+            background: var(--primary-gradient);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .guestbook-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .guestbook-messages {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 5px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .guestbook-message {
+            font-size: 12px;
+            color: white;
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 5px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .audio-visualizer {
+            width: 100%;
+            height: 30px;
+            margin-top: 5px;
+        }
+
+        .mini-game-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mini-game-container.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mini-game-canvas {
+            width: 80%;
+            max-width: 400px;
+            height: 400px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .game-score {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            margin: 10px 0;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .close-game-button {
+            padding: 8px 12px;
+            background: var(--primary-gradient);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .close-game-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--smoke-color);
+            animation: spinSmoke 1s linear infinite, smokePulse 1.5s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        @keyframes spinSmoke {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes smokePulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
 
         .version-text {
             position: fixed;
@@ -146,7 +384,7 @@
             width: 12px;
             height: 12px;
             pointer-events: none;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -158,14 +396,8 @@
         }
 
         @keyframes shapeFade {
-            0% { 
-                transform: scale(1) translate(0, 0); 
-                opacity: 0.8; 
-            }
-            100% { 
-                transform: scale(2) translate(var(--tx), var(--ty)); 
-                opacity: 0; 
-            }
+            0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+            100% { transform: scale(2) translate(var(--tx), var(--ty)); opacity: 0; }
         }
 
         .word-fx {
@@ -185,7 +417,7 @@
             font-size: 24px;
             text-transform: uppercase;
             text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-            color: rgba(255, 255, 255, 0.4); /* Changed to white with 0.4 opacity */
+            color: rgba(255, 255, 255, 0.4);
             white-space: nowrap;
             animation: bounceToAudio 0.5s ease-in-out infinite, fadeAway 5s ease-out forwards;
         }
@@ -245,7 +477,7 @@
             font-weight: 700;
             color: white;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -268,7 +500,7 @@
             display: inline-block;
             font-size: 20px;
             font-weight: 700;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -321,7 +553,7 @@
 
         .volume-control input[type="range"]::-webkit-slider-runnable-track {
             height: 5px;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             border-radius: 10px;
         }
 
@@ -329,7 +561,7 @@
             -webkit-appearance: none;
             width: 16px;
             height: 16px;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             border: 2px solid white;
             border-radius: 50%;
             margin-top: -5.5px;
@@ -344,14 +576,14 @@
 
         .volume-control input[type="range"]::-moz-range-track {
             height: 5px;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             border-radius: 10px;
         }
 
         .volume-control input[type="range"]::-moz-range-thumb {
             width: 16px;
             height: 16px;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             border: 2px solid white;
             border-radius: 50%;
             cursor: pointer;
@@ -399,8 +631,16 @@
         }
 
         .profile-card:hover {
-            transform: translateY(-5px) scale(1.03);
+            transform: translateY(-5px) scale(1.03) rotate(2deg);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1;
+            animation: smokyBorder 2s ease-in-out infinite;
+        }
+
+        @keyframes smokyBorder {
+            0% { border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1; }
+            50% { border-image: linear-gradient(45deg, transparent, var(--smoke-color)) 1; }
+            100% { border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1; }
         }
 
         .profile-image {
@@ -409,23 +649,23 @@
             border-radius: 50%;
             background: url('https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg') no-repeat center/cover;
             margin: 0 auto 8px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); /* Enhanced glow with slightly stronger shadow and spread */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
             position: relative;
             overflow: hidden;
-            transition: transform 0.4s ease, box-shadow 0.4s ease; /* Added box-shadow to transition for smoother glow */
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
             cursor: pointer;
-            animation: glowPulse 2.5s ease-in-out infinite; /* Slightly slower animation for smoother effect */
+            animation: glowPulse 2.5s ease-in-out infinite;
         }
 
         @keyframes glowPulse {
             0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
-            50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); } /* Increased spread and intensity */
+            50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
             100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
         }
 
         .profile-image:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7); /* Stronger glow on hover */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7);
         }
 
         .profile-image.spin {
@@ -476,7 +716,7 @@
 
         .name span {
             display: inline-block;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -530,13 +770,20 @@
             margin-top: 8px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             display: inline-block;
-            background: linear-gradient(90deg, #000000, #ffffff);
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .bio.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .badges {
@@ -557,12 +804,19 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
             transition: transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .badge.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .badge:hover {
@@ -578,6 +832,13 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .audio-player.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .audio-player:hover {
@@ -610,7 +871,7 @@
             height: 18px;
             border: none;
             border-radius: 50%;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             background-size: 200% 200%;
             color: white;
             font-size: 7px;
@@ -658,7 +919,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             width: 0%;
             transition: width 0.1s ease;
         }
@@ -675,7 +936,7 @@
             align-items: center;
             gap: 8px;
             padding: 8px 15px;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             background-size: 200% 200%;
             border: 2px solid rgba(255, 255, 255, 0.8);
             border-radius: 30px;
@@ -689,6 +950,13 @@
             overflow: hidden;
             animation: gradientText 6s ease infinite;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .link-button.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .link-button::before {
@@ -731,7 +999,7 @@
             align-items: center;
             justify-content: center;
             padding: 10px;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             background-size: 200% 200%;
             border: 2px solid rgba(255, 255, 255, 0.8);
             border-radius: 30px;
@@ -747,6 +1015,13 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             margin-top: 10px;
             width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .click-game-button.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .click-game-button::before {
@@ -775,6 +1050,13 @@
             gap: 15px;
             margin-top: 10px;
             margin-bottom: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .like-dislike-container.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .like-button, .dislike-button {
@@ -782,7 +1064,7 @@
             align-items: center;
             gap: 6px;
             padding: 8px 12px;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             background-size: 200% 200%;
             border: 2px solid rgba(255, 255, 255, 0.8);
             border-radius: 25px;
@@ -859,7 +1141,7 @@
             position: absolute;
             opacity: 0.3;
             font-size: 16px;
-            background: linear-gradient(90deg, #000000, #808080);
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -905,6 +1187,67 @@
                 padding: 10px;
             }
 
+            .foggy-background, .fog-layer {
+                background-size: 80% auto;
+                opacity: 0.45;
+                filter: blur(28px);
+            }
+
+            .theme-switcher {
+                top: 70px;
+                left: 8px;
+                padding: 5px;
+            }
+
+            .theme-switcher select {
+                font-size: 10px;
+            }
+
+            .guestbook-container {
+                padding: 10px;
+                border-radius: 15px;
+            }
+
+            .guestbook-title {
+                font-size: 16px;
+            }
+
+            #guestbookInput {
+                font-size: 10px;
+                padding: 6px;
+            }
+
+            .guestbook-submit {
+                font-size: 10px;
+                padding: 6px 10px;
+            }
+
+            .guestbook-messages {
+                max-height: 100px;
+            }
+
+            .guestbook-message {
+                font-size: 10px;
+            }
+
+            .audio-visualizer {
+                height: 20px;
+            }
+
+            .mini-game-canvas {
+                width: 90%;
+                height: 300px;
+            }
+
+            .game-score {
+                font-size: 16px;
+            }
+
+            .close-game-button {
+                font-size: 10px;
+                padding: 6px 10px;
+            }
+
             .profile-card {
                 padding: 12px;
                 border-radius: 25px;
@@ -914,7 +1257,7 @@
                 width: 70px;
                 height: 70px;
                 margin-bottom: 6px;
-                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5); /* Adjusted for mobile */
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5);
             }
 
             @keyframes glowPulse {
@@ -924,7 +1267,7 @@
             }
 
             .profile-image:hover {
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); /* Adjusted hover for mobile */
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7);
             }
 
             .name {
@@ -1056,11 +1399,6 @@
                 width: 16px;
                 height: 16px;
             }
-
-            .foggy-background, .fog-layer {
-                background-size: 75% auto;
-                opacity: 0.25;
-            }
         }
     </style>
 </head>
@@ -1099,6 +1437,14 @@
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
         <input type="range" id="volumeSlider" min="0" max="100" value="70">
+    </div>
+
+    <div class="theme-switcher">
+        <select id="themeSelect">
+            <option value="dark">Dark</option>
+            <option value="neon">Neon</option>
+            <option value="retro">Retro</option>
+        </select>
     </div>
 
     <div class="clown-list">Clown list:</div>
@@ -1174,6 +1520,7 @@
                 <div class="audio-info">
                     <div class="song-title" id="songTitle">Kills</div>
                     <div class="artist-name">Now Playing</div>
+                    <div class="loading-spinner" id="loadingSpinner"></div>
                 </div>
                 <div class="audio-controls">
                     <button class="control-btn" id="rewindBtn">
@@ -1193,6 +1540,7 @@
                     </div>
                     <span class="time-display" id="totalTime">0:00</span>
                 </div>
+                <canvas id="audioVisualizer" class="audio-visualizer"></canvas>
                 <audio id="audioPlayer" preload="auto">
                     <source src="assets/kills.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
@@ -1212,6 +1560,21 @@
                 </button>
             </div>
         </div>
+
+        <div class="guestbook-container">
+            <h3 class="guestbook-title">Guestbook</h3>
+            <form id="guestbookForm">
+                <input type="text" id="guestbookInput" placeholder="Leave a message..." maxlength="50">
+                <button type="submit" class="guestbook-submit">Submit</button>
+            </form>
+            <div id="guestbookMessages" class="guestbook-messages"></div>
+        </div>
+    </div>
+
+    <div id="miniGameContainer" class="mini-game-container">
+        <canvas id="miniGameCanvas" class="mini-game-canvas"></canvas>
+        <div id="gameScore" class="game-score">Score: 0</div>
+        <button id="closeGame" class="close-game-button">Close</button>
     </div>
 
     <svg class="eye-logo" viewBox="0 0 100 100">
@@ -1231,15 +1594,11 @@
         // Detect mobile device
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-        // Welcome screen logic
+        // Initialize elements
         const welcomeScreen = document.getElementById('welcomeScreen');
         const body = document.body;
         const video = document.getElementById('backgroundVideo');
-        let hasInteracted = false;
-        let wordEffectActive = false;
         const volumeSlider = document.getElementById('volumeSlider');
-        
-        // Audio player elements
         const audioPlayer = document.getElementById('audioPlayer');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const rewindBtn = document.getElementById('rewindBtn');
@@ -1249,9 +1608,16 @@
         const currentTimeDisplay = document.getElementById('currentTime');
         const totalTimeDisplay = document.getElementById('totalTime');
         const songTitle = document.getElementById('songTitle');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const profileImage = document.getElementById('profileImage');
+        const profileCard = document.getElementById('profileCard');
+        const clickButton = document.getElementById('clickButton');
+        const wordFxContainer = document.getElementById('wordFx');
 
+        let hasInteracted = false;
+        let wordEffectActive = false;
         let isPlaying = false;
-        let currentSongIndex = Math.floor(Math.random() * 6); // Randomize song on page load
+        let currentSongIndex = Math.floor(Math.random() * 6);
         let retryAttempts = 0;
         const maxRetries = 3;
 
@@ -1263,6 +1629,173 @@
             { title: "Popstar", src: "assets/popstar.mp3" },
             { title: "Lambtruck", src: "assets/lamb.mp3" }
         ];
+
+        // Theme switcher
+        const themeSelect = document.getElementById('themeSelect');
+        themeSelect.addEventListener('change', () => {
+            document.body.className = themeSelect.value;
+        });
+
+        // Cursor trail
+        let lastTrailTime = 0;
+        document.addEventListener('mousemove', (e) => {
+            const now = performance.now();
+            if (now - lastTrailTime < 50) return;
+            lastTrailTime = now;
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.left = `${e.clientX}px`;
+            trail.style.top = `${e.clientY}px`;
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), 800);
+        });
+
+        // Guestbook
+        const guestbookForm = document.getElementById('guestbookForm');
+        const guestbookInput = document.getElementById('guestbookInput');
+        const guestbookMessages = document.getElementById('guestbookMessages');
+        const guestId = `Guest-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`;
+        function loadGuestbook() {
+            const comments = JSON.parse(localStorage.getItem('guestbookComments') || '[]');
+            guestbookMessages.innerHTML = '';
+            comments.forEach(comment => {
+                const message = document.createElement('div');
+                message.className = 'guestbook-message';
+                message.textContent = `${comment.user}: ${comment.text}`;
+                guestbookMessages.appendChild(message);
+            });
+            guestbookMessages.scrollTop = guestbookMessages.scrollHeight;
+        }
+        guestbookForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = guestbookInput.value.trim();
+            if (text) {
+                const comments = JSON.parse(localStorage.getItem('guestbookComments') || '[]');
+                comments.push({ user: guestId, text, timestamp: Date.now() });
+                localStorage.setItem('guestbookComments', JSON.stringify(comments));
+                guestbookInput.value = '';
+                loadGuestbook();
+            }
+        });
+        loadGuestbook();
+
+        // Audio visualizer
+        let audioContext, analyser, dataArray;
+        function setupAudioVisualization() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            const source = audioContext.createMediaElementSource(audioPlayer);
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+            const canvas = document.getElementById('audioVisualizer');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            function drawVisualizer() {
+                analyser.getByteFrequencyData(dataArray);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const barWidth = canvas.width / bufferLength * 2;
+                for (let i = 0; i < bufferLength / 2; i++) {
+                    const barHeight = dataArray[i] / 255 * canvas.height;
+                    ctx.fillStyle = 'var(--primary-gradient)';
+                    ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+                }
+                requestAnimationFrame(drawVisualizer);
+            }
+            drawVisualizer();
+        }
+
+        // Mini-game
+        const miniGameContainer = document.getElementById('miniGameContainer');
+        const miniGameCanvas = document.getElementById('miniGameCanvas');
+        const gameScore = document.getElementById('gameScore');
+        const closeGame = document.getElementById('closeGame');
+        let score = 0;
+        let gameActive = false;
+        let collectibles = [];
+        let profileClicks = 0;
+        const ctx = miniGameCanvas.getContext('2d');
+        function startMiniGame() {
+            miniGameContainer.classList.add('active');
+            gameActive = true;
+            score = 0;
+            gameScore.textContent = `Score: ${score}`;
+            miniGameCanvas.width = miniGameCanvas.offsetWidth;
+            miniGameCanvas.height = miniGameCanvas.offsetHeight;
+            collectibles = [];
+            for (let i = 0; i < 5; i++) {
+                collectibles.push({
+                    x: Math.random() * (miniGameCanvas.width - 20),
+                    y: Math.random() * (miniGameCanvas.height - 20),
+                    size: 20
+                });
+            }
+            drawGame();
+        }
+        function drawGame() {
+            if (!gameActive) return;
+            ctx.clearRect(0, 0, miniGameCanvas.width, miniGameCanvas.height);
+            collectibles.forEach(c => {
+                ctx.beginPath();
+                ctx.arc(c.x + c.size / 2, c.y + c.size / 2, c.size / 2, 0, Math.PI * 2);
+                ctx.fillStyle = 'var(--primary-gradient)';
+                ctx.fill();
+            });
+            requestAnimationFrame(drawGame);
+        }
+        miniGameCanvas.addEventListener('click', (e) => {
+            if (!gameActive) return;
+            const rect = miniGameCanvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            collectibles = collectibles.filter(c => {
+                const dx = clickX - (c.x + c.size / 2);
+                const dy = clickY - (c.y + c.size / 2);
+                if (Math.sqrt(dx * dx + dy * dy) < c.size / 2) {
+                    score++;
+                    gameScore.textContent = `Score: ${score}`;
+                    localStorage.setItem('miniGameHighScore', Math.max(score, localStorage.getItem('miniGameHighScore') || 0));
+                    return false;
+                }
+                return true;
+            });
+            if (collectibles.length === 0) {
+                for (let i = 0; i < 5; i++) {
+                    collectibles.push({
+                        x: Math.random() * (miniGameCanvas.width - 20),
+                        y: Math.random() * (miniGameCanvas.height - 20),
+                        size: 20
+                    });
+                }
+            }
+        });
+        closeGame.addEventListener('click', () => {
+            miniGameContainer.classList.remove('active');
+            gameActive = false;
+        });
+        profileImage.addEventListener('click', () => {
+            profileClicks++;
+            if (profileClicks >= 5) {
+                startMiniGame();
+                profileClicks = 0;
+            }
+        });
+
+        // Scroll-triggered animations
+        function setupScrollAnimations() {
+            const elements = document.querySelectorAll('.badge, .bio, .audio-player, .link-button, .click-game-button, .like-dislike-container, .guestbook-container');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            elements.forEach(el => observer.observe(el));
+        }
 
         // Function to shuffle array
         function shuffleArray(array) {
@@ -1278,6 +1811,7 @@
             const song = songs[index];
             audioPlayer.src = song.src;
             songTitle.textContent = song.title;
+            loadingSpinner.classList.add('active');
             audioPlayer.load();
             retryAttempts = 0;
         }
@@ -1291,11 +1825,13 @@
                     playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     isPlaying = true;
                     retryAttempts = 0;
+                    loadingSpinner.classList.remove('active');
                 }).catch(error => {
                     console.log('Audio play failed:', error);
                     if (retryAttempts < maxRetries) {
                         retryAttempts++;
                         songTitle.textContent = 'Loading...';
+                        loadingSpinner.classList.add('active');
                         setTimeout(() => {
                             loadSong(currentSongIndex);
                             playCurrentSong();
@@ -1304,6 +1840,7 @@
                         songTitle.textContent = songs[currentSongIndex].title;
                         isPlaying = false;
                         playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        loadingSpinner.classList.remove('active');
                     }
                 });
             }
@@ -1314,13 +1851,10 @@
         video.muted = true;
         audioPlayer.volume = 0.7;
 
-        // Enable background video for all devices
+        // Enable background video
         video.style.display = 'block';
         video.muted = true;
-        video.volume = 0.5;
-        video.play().catch(error => {
-            console.log('Autoplay blocked:', error);
-        });
+        video.play().catch(error => console.log('Autoplay blocked:', error));
 
         // Start audio after welcome screen
         function startAudio() {
@@ -1329,7 +1863,6 @@
         }
 
         // Profile image rotation
-        const profileImage = document.getElementById('profileImage');
         function autoSpinProfileImage() {
             profileImage.classList.remove('spin');
             void profileImage.offsetWidth;
@@ -1337,10 +1870,8 @@
             setTimeout(autoSpinProfileImage, 15000);
         }
 
-        // Optimized parallax effect
-        const profileCard = document.getElementById('profileCard');
+        // Parallax effect
         let lastUpdate = 0;
-
         function handleParallax(e) {
             if (isMobile) return;
             const now = performance.now();
@@ -1407,347 +1938,200 @@
 
         function typeBioEffect() {
             bioTypewriter.textContent = bioText.slice(0, bioIndex);
-            if (bioDirection === 1) {
-                bioIndex++;
-                if (bioIndex > bioText.length) {
-                    bioDirection = -1;
-                    setTimeout(typeBioEffect, 1000);
-                } else {
-                    setTimeout(typeBioEffect, 200);
-                }
+            if (        bioDirection === 1) {
+            bioIndex++;
+            if (bioIndex > bioText.length) {
+                bioDirection = -1;
+                setTimeout(typeBioEffect, 1000);
             } else {
-                bioIndex--;
-                if (bioIndex === 1) {
-                    bioDirection = 1;
-                    setTimeout(typeBioEffect, 1000);
-                } else {
-                    setTimeout(typeBioEffect, 200);
-                }
+                setTimeout(typeBioEffect, 150);
+            }
+        } else {
+            bioIndex--;
+            if (bioIndex === 0) {
+                bioDirection = 1;
+                setTimeout(typeBioEffect, 1000);
+            } else {
+                setTimeout(typeBioEffect, 150);
             }
         }
+    }
 
-        // Optimized MLG word effect with audio synchronization
-        const wordFxContainer = document.getElementById('wordFx');
-        const words = ['Dank', 'MLG', 'NoScope', 'QuickScope', 'BlazeIt', 'Wow', 'SuchSwag', 'Swag', 'Epik', '420', 'Headshot', 'Yolo', 'Lad', 'Sick', 'Hype'];
-        const maxWords = 3;
+    // Initialize typewriter effects
+    typeNameEffect();
+    typeBioEffect();
 
-        function createWord() {
-            if (!wordEffectActive || wordFxContainer.children.length >= maxWords) return;
-            
-            const word = document.createElement('div');
-            word.className = 'word-element';
-            word.textContent = words[Math.floor(Math.random() * words.length)];
-            
-            const profileRect = profileCard.getBoundingClientRect();
-            const containerRect = document.querySelector('.container').getBoundingClientRect();
-            const safeMargin = 20;
-            let x, y;
-            do {
-                x = Math.random() * (window.innerWidth - 100);
-                y = Math.random() * (window.innerHeight - 50);
-            } while (
-                x > containerRect.left - safeMargin &&
-                x < containerRect.right + safeMargin &&
-                y > containerRect.top - safeMargin &&
-                y < containerRect.bottom + safeMargin
-            );
-            
-            word.style.left = `${x}px`;
-            word.style.top = `${y}px`;
-            
-            wordFxContainer.appendChild(word);
-            setTimeout(() => {
-                if (word.parentNode) {
-                    word.remove();
-                }
-            }, 5000);
+    // Audio player controls
+    playPauseBtn.addEventListener('click', () => {
+        if (isPlaying) {
+            audioPlayer.pause();
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            isPlaying = false;
+        } else {
+            playCurrentSong();
         }
+    });
 
-        function startWordEffect() {
-            if (!wordEffectActive) return;
-            createWord();
-            setTimeout(startWordEffect, 2000);
-        }
+    rewindBtn.addEventListener('click', () => {
+        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+        loadSong(currentSongIndex);
+        playCurrentSong();
+    });
 
-        // Audio visualization for word movement
-        function setupAudioVisualization() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const analyser = audioContext.createAnalyser();
-            const source = audioContext.createMediaElementSource(audioPlayer);
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
-            analyser.fftSize = 256;
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
+    skipBtn.addEventListener('click', () => {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        loadSong(currentSongIndex);
+        playCurrentSong();
+    });
 
-            function updateWordMovement() {
-                analyser.getByteFrequencyData(dataArray);
-                const lowFreq = dataArray.slice(0, 10).reduce((sum, val) => sum + val, 0) / 10;
-                const normalized = Math.min(lowFreq / 255, 1);
-                const bounceScale = 1 + normalized * 0.1;
-                
-                const wordElements = document.querySelectorAll('.word-element');
-                wordElements.forEach(word => {
-                    word.style.animation = `bounceToAudio ${0.5 / (1 + normalized * 0.5)}s ease-in-out infinite, fadeAway 5s ease-out forwards`;
-                });
-                
-                requestAnimationFrame(updateWordMovement);
-            }
-            requestAnimationFrame(updateWordMovement);
-        }
+    audioPlayer.addEventListener('timeupdate', () => {
+        const currentTime = audioPlayer.currentTime;
+        const duration = audioPlayer.duration || 0;
+        const progressPercent = (currentTime / duration) * 100;
+        progressFill.style.width = `${progressPercent}%`;
+        currentTimeDisplay.textContent = formatTime(currentTime);
+        totalTimeDisplay.textContent = formatTime(duration);
+    });
 
-        // Generate or retrieve device ID
-        function getDeviceId() {
-            let deviceId = localStorage.getItem('deviceId');
-            if (!deviceId) {
-                deviceId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                    return v.toString(16);
-                });
-                localStorage.setItem('deviceId', deviceId);
-            }
-            return deviceId;
-        }
+    audioPlayer.addEventListener('ended', () => {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        loadSong(currentSongIndex);
+        playCurrentSong();
+    });
 
-        // Click counter with device ID
-        const deviceId = getDeviceId();
-        let clickCount = localStorage.getItem(`clickCount_${deviceId}`) ? parseInt(localStorage.getItem(`clickCount_${deviceId}`)) : 0;
+    progressBar.addEventListener('click', (e) => {
+        const rect = progressBar.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const width = rect.width;
+        const duration = audioPlayer.duration || 0;
+        audioPlayer.currentTime = (clickX / width) * duration;
+    });
 
-        // Optimized click game button
-        const clickButton = document.getElementById('clickButton');
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        seconds = Math.floor(seconds % 60);
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    // Volume control
+    volumeSlider.addEventListener('input', () => {
+        audioPlayer.volume = volumeSlider.value / 100;
+    });
+
+    // Click effect
+    document.addEventListener('click', (e) => {
+        const shapes = ['▲', '★', '◆', '◇', '●', '○'];
+        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+        const effect = document.createElement('div');
+        effect.className = 'click-effect';
+        effect.textContent = shape;
+        effect.style.left = `${e.clientX}px`;
+        effect.style.top = `${e.clientY}px`;
+        const tx = (Math.random() - 0.5) * 100;
+        const ty = (Math.random() - 0.5) * 100;
+        effect.style.setProperty('--tx', `${tx}px`);
+        effect.style.setProperty('--ty', `${ty}px`);
+        document.body.appendChild(effect);
+        setTimeout(() => effect.remove(), 1200);
+
+        // Word effect on click
+        if (wordEffectActive) return;
+        wordEffectActive = true;
+        const words = ['swag', 'cool', 'vibe', 'hype', 'lit'];
+        const word = words[Math.floor(Math.random() * words.length)];
+        const wordElement = document.createElement('div');
+        wordElement.className = 'word-element';
+        wordElement.textContent = word;
+        wordElement.style.left = `${e.clientX}px`;
+        wordElement.style.top = `${e.clientY}px`;
+        wordFxContainer.appendChild(wordElement);
+        setTimeout(() => {
+            wordElement.remove();
+            wordEffectActive = false;
+        }, 5000);
+    });
+
+    // Like and dislike buttons
+    const likeButton = document.getElementById('likeButton');
+    const dislikeButton = document.getElementById('dislikeButton');
+    const likeCountSpan = document.getElementById('likeCount');
+    const dislikeCountSpan = document.getElementById('dislikeCount');
+
+    let likes = parseInt(localStorage.getItem('likes') || '0');
+    let dislikes = parseInt(localStorage.getItem('dislikes') || '0');
+    let userHasLiked = localStorage.getItem('userHasLiked') === 'true';
+    let userHasDisliked = localStorage.getItem('userHasDisliked') === 'true';
+
+    likeCountSpan.textContent = likes;
+    dislikeCountSpan.textContent = dislikes;
+
+    if (userHasLiked) {
+        likeButton.classList.add('active');
+        dislikeButton.classList.add('disabled');
+    }
+    if (userHasDisliked) {
+        dislikeButton.classList.add('active');
+        likeButton.classList.add('disabled');
+    }
+
+    likeButton.addEventListener('click', () => {
+        if (userHasLiked || userHasDisliked) return;
+        likes++;
+        localStorage.setItem('likes', likes);
+        localStorage.setItem('userHasLiked', 'true');
+        likeCountSpan.textContent = likes;
+        likeButton.classList.add('active');
+        dislikeButton.classList.add('disabled');
+        userHasLiked = true;
+    });
+
+    dislikeButton.addEventListener('click', () => {
+        if (userHasLiked || userHasDisliked) return;
+        dislikes++;
+        localStorage.setItem('dislikes', dislikes);
+        localStorage.setItem('userHasDisliked', 'true');
+        dislikeCountSpan.textContent = dislikes;
+        dislikeButton.classList.add('active');
+        likeButton.classList.add('disabled');
+        userHasDisliked = true;
+    });
+
+    // Click counter
+    let clickCount = parseInt(localStorage.getItem('clickCount') || '0');
+    clickButton.textContent = `Clicks: ${clickCount}`;
+    clickButton.addEventListener('click', () => {
+        clickCount++;
+        localStorage.setItem('clickCount', clickCount);
         clickButton.textContent = `Clicks: ${clickCount}`;
-        clickButton.addEventListener('click', (event) => {
-            clickCount++;
-            localStorage.setItem(`clickCount_${deviceId}`, clickCount);
-            clickButton.textContent = `Clicks: ${clickCount}`;
-            
-            const ripple = document.createElement('div');
-            const rect = clickButton.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = event.clientX - rect.left - size / 2;
-            const y = event.clientY - rect.top - size / 2;
-            
-            ripple.style.cssText = `
-                position: absolute;
-                width: ${size}px;
-                height: ${size}px;
-                background: rgba(255, 255, 255, 0.25);
-                border-radius: 50%;
-                left: ${x}px;
-                top: ${y}px;
-                transform: scale(0);
-                animation: ripple 0.6s ease-out;
-                pointer-events: none;
-            `;
-            
-            clickButton.style.position = 'relative';
-            clickButton.style.overflow = 'hidden';
-            clickButton.appendChild(ripple);
-            
-            setTimeout(() => ripple.remove(), 600);
-        });
+    });
 
-        // Optimized mouse click effect
-        document.addEventListener('click', (e) => {
-            if (e.target === document.body || e.target.id === 'backgroundVideo' || 
-                e.target.classList.contains('vintage-overlay') || 
-                e.target.classList.contains('word-fx') ||
-                e.target.classList.contains('floating-elements')) {
-                
-                const shapes = ['fa-star', 'fa-heart', 'fa-bolt'];
-                const shapeCount = 2;
-                
-                for (let i = 0; i < shapeCount; i++) {
-                    const shape = document.createElement('i');
-                    const shapeClass = shapes[Math.floor(Math.random() * shapes.length)];
-                    
-                    const offsetX = (Math.random() - 0.5) * 15;
-                    const offsetY = (Math.random() - 0.5) * 15;
-                    const tx = (Math.random() - 0.5) * 50;
-                    const ty = (Math.random() - 0.5) * 50;
+    // View counter
+    let viewCount = parseInt(localStorage.getItem('viewCount') || '0');
+    const eyeViewCounter = document.getElementById('eyeViewCounter');
+    viewCount++;
+    localStorage.setItem('viewCount', viewCount);
+    eyeViewCounter.textContent = `Views: ${viewCount}`;
 
-                    shape.className = `click-effect fas ${shapeClass}`;
-                    shape.style.left = `${e.clientX + offsetX}px`;
-                    shape.style.top = `${e.clientY + offsetY}px`;
-                    shape.style.setProperty('--tx', `${tx}px`);
-                    shape.style.setProperty('--ty', `${ty}px`);
-                    shape.style.animationDelay = `${i * 0.08}s`;
+    // Welcome screen
+    setTimeout(() => {
+        welcomeScreen.classList.add('hidden');
+        body.classList.remove('welcome-active');
+        startAudio();
+        autoSpinProfileImage();
+        setupAudioVisualization();
+        setupScrollAnimations();
+    }, 2000);
 
-                    document.body.appendChild(shape);
-                    setTimeout(() => {
-                        if (shape.parentNode) {
-                            shape.remove();
-                        }
-                    }, 1000);
-                }
-            }
-        });
-
-        // Rating system with localStorage
-        let viewCount = localStorage.getItem('viewCount') ? parseInt(localStorage.getItem('viewCount')) : 0;
-        let likeCount = localStorage.getItem('likeCount') ? parseInt(localStorage.getItem('likeCount')) : 0;
-        let dislikeCount = localStorage.getItem('dislikeCount') ? parseInt(localStorage.getItem('dislikeCount')) : 0;
-        let userAction = localStorage.getItem('userAction') || null;
-        let hasViewed = localStorage.getItem('hasViewed') === 'true';
-
-        function updateViewCount() {
-            if (!hasViewed) {
-                viewCount++;
-                localStorage.setItem('viewCount', viewCount);
-                hasViewed = true;
-                localStorage.setItem('hasViewed', 'true');
-            }
-            document.getElementById('eyeViewCounter').textContent = `Views: ${viewCount}`;
+    // Prevent zooming
+    document.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 1) {
+            e.preventDefault();
         }
+    }, { passive: false });
 
-        function updateLikeDislikeCounts() {
-            document.getElementById('likeCount').textContent = likeCount;
-            document.getElementById('dislikeCount').textContent = dislikeCount;
-            const likeButton = document.getElementById('likeButton');
-            const dislikeButton = document.getElementById('dislikeButton');
-            likeButton.classList.toggle('active', userAction === 'like');
-            dislikeButton.classList.toggle('active', userAction === 'dislike');
-            likeButton.classList.toggle('disabled', userAction === 'dislike');
-            dislikeButton.classList.toggle('disabled', userAction === 'like');
-        }
-
-        function handleLike() {
-            if (userAction === 'like') return;
-            if (userAction === 'dislike') {
-                dislikeCount--;
-                localStorage.setItem('dislikeCount', dislikeCount);
-            }
-            likeCount++;
-            userAction = 'like';
-            localStorage.setItem('likeCount', likeCount);
-            localStorage.setItem('userAction', userAction);
-            updateLikeDislikeCounts();
-        }
-
-        function handleDislike() {
-            if (userAction === 'dislike') return;
-            if (userAction === 'like') {
-                likeCount--;
-                localStorage.setItem('likeCount', likeCount);
-            }
-            dislikeCount++;
-            userAction = 'dislike';
-            localStorage.setItem('dislikeCount', dislikeCount);
-            localStorage.setItem('userAction', userAction);
-            updateLikeDislikeCounts();
-        }
-
-        document.getElementById('likeButton').addEventListener('click', handleLike);
-        document.getElementById('dislikeButton').addEventListener('click', handleDislike);
-
-        // Audio player functionality
-        playPauseBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                audioPlayer.pause();
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                isPlaying = false;
-            } else {
-                playCurrentSong();
-            }
-        });
-        
-        rewindBtn.addEventListener('click', () => {
-            audioPlayer.currentTime = 0;
-        });
-        
-        skipBtn.addEventListener('click', () => {
-            const shuffledSongs = shuffleArray([...songs]);
-            currentSongIndex = (shuffledSongs.indexOf(songs[currentSongIndex]) + 1) % songs.length;
-            loadSong(currentSongIndex);
-            playCurrentSong();
-        });
-        
-        audioPlayer.addEventListener('timeupdate', () => {
-            if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
-                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-                progressFill.style.width = `${progress}%`;
-                currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
-                totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
-            }
-        });
-        
-        audioPlayer.addEventListener('loadedmetadata', () => {
-            if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
-                totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
-                songTitle.textContent = songs[currentSongIndex].title;
-            }
-        });
-        
-        audioPlayer.addEventListener('error', () => {
-            console.log('Audio error: Failed to load audio');
-            if (retryAttempts < maxRetries) {
-                retryAttempts++;
-                songTitle.textContent = 'Loading...';
-                setTimeout(() => {
-                    loadSong(currentSongIndex);
-                    playCurrentSong();
-                }, 1000);
-            } else {
-                songTitle.textContent = songs[currentSongIndex].title;
-                isPlaying = false;
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        });
-
-        audioPlayer.addEventListener('ended', () => {
-            const shuffledSongs = shuffleArray([...songs]);
-            currentSongIndex = (shuffledSongs.indexOf(songs[currentSongIndex]) + 1) % songs.length;
-            loadSong(currentSongIndex);
-            playCurrentSong();
-        });
-
-        progressBar.addEventListener('click', (e) => {
-            if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
-                const rect = progressBar.getBoundingClientRect();
-                const clickX = e.clientX - rect.left;
-                const width = rect.width;
-                const percentage = clickX / width;
-                audioPlayer.currentTime = percentage * audioPlayer.duration;
-            }
-        });
-        
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        volumeSlider.addEventListener('input', () => {
-            const volume = volumeSlider.value / 100;
-            audioPlayer.volume = volume;
-        });
-
-        // Welcome screen dismissal
-        welcomeScreen.addEventListener('click', () => {
-            welcomeScreen.classList.add('hidden');
-            body.classList.remove('welcome-active');
-            
-            video.muted = true;
-            video.play().catch(error => {
-                console.log('Video play failed after welcome:', error);
-            });
-            
-            setTimeout(() => {
-                startAudio();
-                setupAudioVisualization();
-                startWordEffect();
-                autoSpinProfileImage();
-            }, 500);
-            
-            typeNameEffect();
-            setTimeout(typeBioEffect, 500);
-            hasInteracted = true;
-            updateViewCount();
-            updateLikeDislikeCounts();
-            
-            wordEffectActive = true;
-        }, { once: true });
-    </script>
+    document.addEventListener('gesturestart', (e) => {
+        e.preventDefault();
+    });
+</script>
 </body>
 </html>
-
