@@ -72,7 +72,7 @@
             opacity: 0.3;
         }
 
-        .foggy-background {
+.foggy-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -82,19 +82,14 @@
     z-index: -2;
     background: linear-gradient(
         to right,
-        rgba(200, 200, 200, 0.5), /* Increased opacity for visibility */
-        rgba(255, 255, 255, 0.2), /* Slightly more transparent for smoky effect */
-        rgba(200, 200, 200, 0.5)
+        rgba(220, 220, 220, 0.6), /* Slightly more opaque for visibility */
+        rgba(255, 255, 255, 0.15), /* More transparent center for wispy effect */
+        rgba(220, 220, 220, 0.6)
     );
-    opacity: 0.6; /* Increased from 0.4 for more visibility */
-    animation: fogScroll 25s linear infinite; /* Slightly faster for dynamic smoke */
-    filter: blur(30px); /* Increased blur for softer, smoky appearance */
+    opacity: 0.7; /* Increased for clearer smoke clouds */
+    animation: fogScroll 20s ease-in-out infinite; /* Faster and smoother for curling smoke */
+    filter: blur(35px); /* Higher blur for soft, cigarette-like diffusion */
 }
-
-        @keyframes fogScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
 
 .fog-layer {
     position: fixed;
@@ -106,26 +101,33 @@
     z-index: -1;
     background: radial-gradient(
         circle at 50% 50%,
-        rgba(255, 255, 255, 0.3), /* Slightly more opaque */
-        transparent 60% /* Tighter gradient for more defined smoke */
+        rgba(255, 255, 255, 0.35), /* More defined for smoky wisps */
+        transparent 50% /* Tighter gradient for concentrated smoke */
     );
-    opacity: 0.5; /* Increased from 0.3 for visibility */
-    animation: fogDrift 35s linear infinite; /* Slightly faster for flowing smoke */
-    filter: blur(25px); /* Added blur for smoother, smoky effect */
-}
-  @media (max-width: 480px) {
-    .foggy-background, .fog-layer {
-        background-size: 75% auto;
-        opacity: 0.4; /* Adjusted for mobile to maintain balance */
-        filter: blur(25px); /* Slightly reduced blur for mobile */
-    }
+    opacity: 0.55; /* Slightly more visible for cloud-like effect */
+    animation: fogDrift 30s ease-in-out infinite; /* Smoother and faster for swirling smoke */
+    filter: blur(30px); /* Increased blur for softer, cigarette-smoke texture */
 }
 
-        @keyframes fogDrift {
-            0% { transform: translateX(-10%) translateY(0); }
-            50% { transform: translateX(10%) translateY(5%); }
-            100% { transform: translateX(-10%) translateY(0); }
-        }
+@keyframes fogScroll {
+    0% { transform: translateX(0) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); } /* Slight scaling for organic movement */
+    100% { transform: translateX(0) scale(1); }
+}
+
+@keyframes fogDrift {
+    0% { transform: translateX(-15%) translateY(0) rotate(2deg); } /* Added slight rotation */
+    50% { transform: translateX(15%) translateY(10%) rotate(-2deg); } /* Swirling effect */
+    100% { transform: translateX(-15%) translateY(0) rotate(2deg); }
+}
+
+@media (max-width: 480px) {
+    .foggy-background, .fog-layer {
+        background-size: 80% auto; /* Slightly larger for mobile visibility */
+        opacity: 0.45; /* Reduced opacity to avoid overwhelming small screens */
+        filter: blur(28px); /* Slightly less blur for mobile clarity */
+    }
+}
 
         .version-text {
             position: fixed;
@@ -1092,7 +1094,7 @@
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.2.5</div>
+    <div class="version-text">v1.2.6</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -1748,3 +1750,4 @@
     </script>
 </body>
 </html>
+
