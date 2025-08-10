@@ -2008,36 +2008,88 @@ body.lavender {
         }
 
         // Typewriter effect for bio
-        const bioTypewriter = document.getElementById('bioTypewriter');
-        const bioText = 'i got swag';
-        let bioIndex = 0;
-        let bioDirection = 1;
-
-        function typeBioEffect() {
-            bioTypewriter.textContent = bioText.slice(0, bioIndex);
-            if (        bioDirection === 1) {
-            bioIndex++;
-            if (bioIndex > bioText.length) {
-                bioDirection = -1;
-                setTimeout(typeBioEffect, 1000);
-            } else {
-                setTimeout(typeBioEffect, 150);
+     async function fetchDiscordStatus() {
+    try {
+        const response = await fetch(DISCORD_API_URL);
+        const data = await response.json();
+        
+        if (data.success && data.data) {
+            const user = data.data;
+            let bioText = 'i got swag'; // Default bio
+            
+            // Check for custom status
+            if (user.activities) {
+                const customStatus = user.activities.find(activity => activity.type === 4);
+                if (customStatus && customStatus.state) {
+                    bioText = customStatus.state;
+                }
             }
-        } else {
-            bioIndex--;
-            if (bioIndex === 0) {
-                bioDirection = 1;
-                setTimeout(typeBioEffect, 1000);
-            } else {
-                setTimeout(typeBioEffect, 150);
-            }
+            
+            // Update the bio text
+            updateBioText(bioText);
+            
+            // Optional: Show online status with a colored indicator
+            updateStatusIndicator(user.discord_status);
         }
+    } catch (error) {
+        console.log('Could not fetch Discord status:', error);
+        // Keep default bio if Discord API fails
     }
+}
 
-    // Initialize typewriter effects
-    typeNameEffect();
+// Function to update bio text with new typewriter effect
+function updateBioText(newText) {
+    const bioTypewriter = document.getElementById('bioTypewriter');
+    bioText = newText; // Update the global bioText variable
+    
+    // Reset the typewriter effect
+    bioIndex = 0;
+    bioDirection = 1;
+    
+    // Clear current text
+    bioTypewriter.textContent = '';
+    
+    // Restart typewriter effect
     typeBioEffect();
+}
 
+// Function to add status indicator
+function updateStatusIndicator(status) {
+    const nameSection = document.querySelector('.name-section');
+    let indicator = document.querySelector('.status-indicator');
+    
+    if (!indicator) {
+        indicator = document.createElement('div');
+        indicator.className = 'status-indicator';
+        nameSection.appendChild(indicator);
+    }
+    
+    const statusColors = {
+        'online': '#43b581',
+        'idle': '#faa61a',
+        'dnd': '#f04747',
+        'offline': '#747f8d'
+    };
+    
+    indicator.style.cssText = `
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: ${statusColors[status] || statusColors.offline};
+        border: 2px solid white;
+        position: absolute;
+        right: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    `;
+}
+
+// Initialize Discord status on page load
+fetchDiscordStatus();
+
+// Refresh Discord status every 30 seconds
+setInterval(fetchDiscordStatus, 30000);
     // Audio player controls
     playPauseBtn.addEventListener('click', () => {
         if (isPlaying) {
@@ -2212,3 +2264,4 @@ body.lavender {
 </script>
 </body>
 </html>
+
