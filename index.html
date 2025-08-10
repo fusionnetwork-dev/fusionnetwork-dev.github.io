@@ -72,50 +72,58 @@
             opacity: 0.3;
         }
 
-        .smoky-haze {
+        .foggy-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 200%;
             height: 100%;
             pointer-events: none;
-            z-index: -5;
-            overflow: hidden;
-            background: url('https://r2.guns.lol/smoke_texture.png') repeat, 
-                        linear-gradient(to right, rgba(200, 200, 200, 0.3), rgba(200, 200, 200, 0.15), transparent);
-            background-size: 50% auto, 100% 100%;
-            opacity: 0.5;
-            animation: smokeDrift 25s ease-in-out infinite;
+            z-index: -2;
+            background: linear-gradient(
+                to right,
+                rgba(200, 200, 200, 0.3),
+                rgba(255, 255, 255, 0.1),
+                rgba(200, 200, 200, 0.3)
+            );
+            opacity: 0.4;
+            animation: fogScroll 30s linear infinite;
+            filter: blur(20px);
         }
 
-        @keyframes smokeDrift {
-            0% { 
-                transform: translateX(0) scale(1); 
-                opacity: 0.5; 
-            }
-            25% { 
-                transform: translateX(-10%) scale(1.05); 
-                opacity: 0.6; 
-            }
-            50% { 
-                transform: translateX(-20%) scale(1.1); 
-                opacity: 0.55; 
-            }
-            75% { 
-                transform: translateX(-15%) scale(1.05); 
-                opacity: 0.6; 
-            }
-            100% { 
-                transform: translateX(0) scale(1); 
-                opacity: 0.5; 
-            }
+        @keyframes fogScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .fog-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: radial-gradient(
+                circle at 50% 50%,
+                rgba(255, 255, 255, 0.2) 0%,
+                transparent 70%
+            );
+            opacity: 0.3;
+            animation: fogDrift 40s linear infinite;
+        }
+
+        @keyframes fogDrift {
+            0% { transform: translateX(-10%) translateY(0); }
+            50% { transform: translateX(10%) translateY(5%); }
+            100% { transform: translateX(-10%) translateY(0); }
         }
 
         .version-text {
             position: fixed;
             bottom: 15px;
             left: 15px;
-            z-index: 10;
+            z-index: 100;
             font-size: 12px;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.7);
@@ -442,17 +450,37 @@
         .name {
             font-size: 22px;
             font-weight: 700;
-            background: linear-gradient(90deg, #000000, #808080);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-            text-shadow: none;
-            animation: gradientText 6s ease infinite;
-            background-size: 200% 200%;
             position: relative;
             display: inline-block;
             cursor: pointer;
+            overflow: hidden;
+        }
+
+        .name span {
+            display: inline-block;
+            background: linear-gradient(90deg, #000000, #808080);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: wave 1s ease-in-out infinite, gradientText 6s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        .name span:nth-child(1) { animation-delay: 0s; }
+        .name span:nth-child(2) { animation-delay: 0.1s; }
+        .name span:nth-child(3) { animation-delay: 0.2s; }
+        .name span:nth-child(4) { animation-delay: 0.3s; }
+        .name span:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .name:hover .uid {
@@ -491,12 +519,6 @@
             color: transparent;
             animation: gradientText 6s ease infinite;
             background-size: 200% 200%;
-        }
-
-        @keyframes gradientText {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .badges {
@@ -794,7 +816,7 @@
             position: fixed;
             bottom: 15px;
             right: 15px;
-            z-index: 10;
+            z-index: 100;
             width: 40px;
             height: 40px;
             animation: pulse 2s ease-in-out infinite;
@@ -1006,9 +1028,9 @@
                 height: 16px;
             }
 
-            .smoky-haze {
-                background-size: 75% auto, 100% 100%;
-                opacity: 0.4;
+            .foggy-background, .fog-layer {
+                background-size: 75% auto;
+                opacity: 0.25;
             }
         }
     </style>
@@ -1029,7 +1051,8 @@
     
     <div class="vintage-overlay"></div>
     
-    <div class="smoky-haze" id="smokyHaze"></div>
+    <div class="foggy-background" id="foggyBackground"></div>
+    <div class="fog-layer"></div>
 
     <div class="floating-elements">
         <i class="floating-element fas fa-cross"></i>
@@ -1057,7 +1080,10 @@
             <div class="profile-image" id="profileImage"></div>
             
             <div class="name-section">
-                <span class="name" id="typewriter">swaqq<span class="uid">UID inf</span></span>
+                <span class="name" id="typewriter">
+                    <span>s</span><span>w</span><span>a</span><span>q</span><span>q</span>
+                    <span class="uid">UID inf</span>
+                </span>
                 <div class="sparkle-effect" style="left: -25px; top: -10px; animation-delay: 0s;"></div>
                 <div class="sparkle-effect" style="right: -25px; top: -10px; animation-delay: 0.5s;"></div>
                 <div class="sparkle-effect" style="left: -25px; bottom: -10px; animation-delay: 1s;"></div>
@@ -1318,7 +1344,13 @@
         let nameDirection = 1;
 
         function typeNameEffect() {
-            nameTypewriter.childNodes[0].textContent = nameText.slice(0, nameIndex);
+            nameTypewriter.querySelectorAll('span:not(.uid)').forEach((span, index) => {
+                if (index < nameIndex) {
+                    span.textContent = nameText[index];
+                } else {
+                    span.textContent = '';
+                }
+            });
             if (nameDirection === 1) {
                 nameIndex++;
                 if (nameIndex > nameText.length) {
@@ -1689,4 +1721,3 @@
     </script>
 </body>
 </html>
-
