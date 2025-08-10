@@ -175,9 +175,13 @@
             font-size: 24px;
             text-transform: uppercase;
             text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-            color: #fff;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc33cc, #ff0000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             white-space: nowrap;
-            animation: bounceToAudio 0.5s ease-in-out infinite, fadeAway 5s ease-out forwards;
+            animation: bounceToAudio 0.5s ease-in-out infinite, fadeAway 5s ease-out forwards, rainbowText 3s linear infinite;
+            background-size: 200% 200%;
         }
 
         @keyframes bounceToAudio {
@@ -189,6 +193,11 @@
             0% { opacity: 1; }
             80% { opacity: 1; }
             100% { opacity: 0; }
+        }
+
+        @keyframes rainbowText {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
         }
 
         .sparkle-effect {
@@ -399,11 +408,18 @@
             border-radius: 50%;
             background: url('https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg') no-repeat center/cover;
             margin: 0 auto 8px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 10px 5px rgba(128, 128, 128, 0.3);
             position: relative;
             overflow: hidden;
             transition: transform 0.4s ease;
             cursor: pointer;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 10px 5px rgba(128, 128, 128, 0.3); }
+            50% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 15px 7px rgba(128, 128, 128, 0.5); }
+            100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 10px 5px rgba(128, 128, 128, 0.3); }
         }
 
         .profile-image:hover {
@@ -655,6 +671,7 @@
         .link-button {
             display: flex;
             align-items: center;
+Landscape
             gap: 8px;
             padding: 8px 15px;
             background: linear-gradient(90deg, #000000, #808080);
@@ -1065,7 +1082,7 @@
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.2.2</div>
+    <div class="version-text">v1.2.4</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -1459,7 +1476,7 @@
                 
                 const wordElements = document.querySelectorAll('.word-element');
                 wordElements.forEach(word => {
-                    word.style.animation = `bounceToAudio ${0.5 / (1 + normalized * 0.5)}s ease-in-out infinite, fadeAway 5s ease-out forwards`;
+                    word.style.animation = `bounceToAudio ${0.5 / (1 + normalized * 0.5)}s ease-in-out infinite, fadeAway 5s ease-out forwards, rainbowText 3s linear infinite`;
                 });
                 
                 requestAnimationFrame(updateWordMovement);
