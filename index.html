@@ -73,45 +73,53 @@
         }
 
         .foggy-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -2;
-            background: linear-gradient(
-                to right,
-                rgba(200, 200, 200, 0.3),
-                rgba(255, 255, 255, 0.1),
-                rgba(200, 200, 200, 0.3)
-            );
-            opacity: 0.4;
-            animation: fogScroll 30s linear infinite;
-            filter: blur(20px);
-        }
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -2;
+    background: linear-gradient(
+        to right,
+        rgba(200, 200, 200, 0.5), /* Increased opacity for visibility */
+        rgba(255, 255, 255, 0.2), /* Slightly more transparent for smoky effect */
+        rgba(200, 200, 200, 0.5)
+    );
+    opacity: 0.6; /* Increased from 0.4 for more visibility */
+    animation: fogScroll 25s linear infinite; /* Slightly faster for dynamic smoke */
+    filter: blur(30px); /* Increased blur for softer, smoky appearance */
+}
 
         @keyframes fogScroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
 
-        .fog-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            background: radial-gradient(
-                circle at 50% 50%,
-                rgba(255, 255, 255, 0.2) 0%,
-                transparent 70%
-            );
-            opacity: 0.3;
-            animation: fogDrift 40s linear infinite;
-        }
+.fog-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(255, 255, 255, 0.3), /* Slightly more opaque */
+        transparent 60% /* Tighter gradient for more defined smoke */
+    );
+    opacity: 0.5; /* Increased from 0.3 for visibility */
+    animation: fogDrift 35s linear infinite; /* Slightly faster for flowing smoke */
+    filter: blur(25px); /* Added blur for smoother, smoky effect */
+}
+  @media (max-width: 480px) {
+    .foggy-background, .fog-layer {
+        background-size: 75% auto;
+        opacity: 0.4; /* Adjusted for mobile to maintain balance */
+        filter: blur(25px); /* Slightly reduced blur for mobile */
+    }
+}
 
         @keyframes fogDrift {
             0% { transform: translateX(-10%) translateY(0); }
@@ -175,13 +183,9 @@
             font-size: 24px;
             text-transform: uppercase;
             text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-            background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc33cc, #ff0000);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: rgba(255, 255, 255, 0.4); /* Changed to white with 0.4 opacity */
             white-space: nowrap;
-            animation: bounceToAudio 0.5s ease-in-out infinite, fadeAway 5s ease-out forwards, rainbowText 3s linear infinite;
-            background-size: 200% 200%;
+            animation: bounceToAudio 0.5s ease-in-out infinite, fadeAway 5s ease-out forwards;
         }
 
         @keyframes bounceToAudio {
@@ -193,11 +197,6 @@
             0% { opacity: 1; }
             80% { opacity: 1; }
             100% { opacity: 0; }
-        }
-
-        @keyframes rainbowText {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
         }
 
         .sparkle-effect {
@@ -408,22 +407,23 @@
             border-radius: 50%;
             background: url('https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg') no-repeat center/cover;
             margin: 0 auto 8px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 10px 5px rgba(128, 128, 128, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); /* Enhanced glow with slightly stronger shadow and spread */
             position: relative;
             overflow: hidden;
-            transition: transform 0.4s ease;
+            transition: transform 0.4s ease, box-shadow 0.4s ease; /* Added box-shadow to transition for smoother glow */
             cursor: pointer;
-            animation: glowPulse 2s ease-in-out infinite;
+            animation: glowPulse 2.5s ease-in-out infinite; /* Slightly slower animation for smoother effect */
         }
 
         @keyframes glowPulse {
-            0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 10px 5px rgba(128, 128, 128, 0.3); }
-            50% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 15px 7px rgba(128, 128, 128, 0.5); }
-            100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1), 0 0 10px 5px rgba(128, 128, 128, 0.3); }
+            0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
+            50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); } /* Increased spread and intensity */
+            100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
         }
 
         .profile-image:hover {
             transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7); /* Stronger glow on hover */
         }
 
         .profile-image.spin {
@@ -671,7 +671,6 @@
         .link-button {
             display: flex;
             align-items: center;
-Landscape
             gap: 8px;
             padding: 8px 15px;
             background: linear-gradient(90deg, #000000, #808080);
@@ -913,6 +912,17 @@ Landscape
                 width: 70px;
                 height: 70px;
                 margin-bottom: 6px;
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5); /* Adjusted for mobile */
+            }
+
+            @keyframes glowPulse {
+                0% { box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5); }
+                50% { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 14px 7px rgba(128, 128, 128, 0.7); }
+                100% { box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5); }
+            }
+
+            .profile-image:hover {
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); /* Adjusted hover for mobile */
             }
 
             .name {
@@ -1082,7 +1092,7 @@ Landscape
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.2.4</div>
+    <div class="version-text">v1.2.5</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -1476,7 +1486,7 @@ Landscape
                 
                 const wordElements = document.querySelectorAll('.word-element');
                 wordElements.forEach(word => {
-                    word.style.animation = `bounceToAudio ${0.5 / (1 + normalized * 0.5)}s ease-in-out infinite, fadeAway 5s ease-out forwards, rainbowText 3s linear infinite`;
+                    word.style.animation = `bounceToAudio ${0.5 / (1 + normalized * 0.5)}s ease-in-out infinite, fadeAway 5s ease-out forwards`;
                 });
                 
                 requestAnimationFrame(updateWordMovement);
