@@ -1,2267 +1,1494 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta property="og:title" content="swaqq's creation">
-    <meta property="og:description" content="my very own biolink page">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Sanct">
+    <meta property="og:description" content="Create your own vibe with Sanct on swaqq.xyz">
     <meta property="og:url" content="https://swaqq.xyz">
     <meta property="og:image" content="https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="theme-color" content="#808080">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>swaqq's creation</title>
-    <link rel="icon" href="https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png?ex=689713b3&is=6895c233&hm=19e2f541e871739a90df5d1f13b4aff59e6152a70d1c9f8688403981ade3ffd7&" type="image/png">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta name="theme-color" content="#FF0000">
+    <title>Sanct</title>
+    <link rel="icon" href="https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png" type="image/png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: url('https://r2.guns.lol/d9488425-e8da-4556-98ef-b37992bc279a.webp') 16 16, auto;
-        }
-
-        *::selection {
-            cursor: url('https://r2.guns.lol/d9488425-e8da-4556-98ef-b37992bc279a.webp') 16 16, text;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
         :root {
-            --primary-gradient: linear-gradient(90deg, #000000, #808080);
-            --smoke-color: rgba(220, 220, 220, 0.6);
-            --smoke-center: rgba(255, 255, 255, 0.15);
+            --primary-gradient: linear-gradient(90deg, #1C2526, #FF0000);
+            --metal-color: #1C2526;
+            --neon-red: #FF0000;
+            --background-opacity: 0.8;
+            --profile-blur: 0px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Orbitron', sans-serif;
             min-height: 100vh;
+            background: var(--primary-gradient);
             overflow-x: hidden;
-            position: relative;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding-top: 20px;
-            background: var(--primary-gradient);
+            margin: 0;
+            color: #fff;
         }
 
-        body.welcome-active * {
-            animation-play-state: paused !important;
-        }
-body.dark {
-    --primary-gradient: linear-gradient(90deg, #000000, #808080);
-    --smoke-color: rgba(220, 220, 220, 0.6);
-    --smoke-center: rgba(255, 255, 255, 0.15);
-}
-
-body.neon {
-    --primary-gradient: linear-gradient(90deg, #ff00ff, #00ffff);
-    --smoke-color: rgba(0, 255, 255, 0.6);
-    --smoke-center: rgba(255, 0, 255, 0.15);
-}
-
-body.retro {
-    --primary-gradient: linear-gradient(90deg, #8b5a2b, #ffa07a);
-    --smoke-color: rgba(255, 160, 122, 0.6);
-    --smoke-center: rgba(139, 90, 43, 0.15);
-}
-
-/* New themes */
-body.pastel {
-    --primary-gradient: linear-gradient(90deg, #f4c4f3, #fcff9e);
-    --smoke-color: rgba(244, 196, 243, 0.6);
-    --smoke-center: rgba(252, 255, 158, 0.15);
-}
-
-body.cyberpunk {
-    --primary-gradient: linear-gradient(90deg, #1a1a3d, #ff2e63);
-    --smoke-color: rgba(255, 46, 99, 0.6);
-    --smoke-center: rgba(26, 26, 61, 0.15);
-}
-
-body.vaporwave {
-    --primary-gradient: linear-gradient(90deg, #ff71ce, #01cdfe);
-    --smoke-color: rgba(1, 205, 254, 0.6);
-    --smoke-center: rgba(255, 113, 206, 0.15);
-}
-
-body.forest {
-    --primary-gradient: linear-gradient(90deg, #1b4332, #95d5b2);
-    --smoke-color: rgba(149, 213, 178, 0.6);
-    --smoke-center: rgba(27, 67, 50, 0.15);
-}
-
-body.ocean {
-    --primary-gradient: linear-gradient(90deg, #003087, #00d4ff);
-    --smoke-color: rgba(0, 212, 255, 0.6);
-    --smoke-center: rgba(0, 48, 135, 0.15);
-}
-
-body.sunset {
-    --primary-gradient: linear-gradient(90deg, #ff4500, #ffd700);
-    --smoke-color: rgba(255, 215, 0, 0.6);
-    --smoke-center: rgba(255, 69, 0, 0.15);
-}
-
-body.monochrome {
-    --primary-gradient: linear-gradient(90deg, #333333, #cccccc);
-    --smoke-color: rgba(204, 204, 204, 0.6);
-    --smoke-center: rgba(51, 51, 51, 0.15);
-}
-
-body.candy {
-    --primary-gradient: linear-gradient(90deg, #ff6f61, #ffb88c);
-    --smoke-color: rgba(255, 184, 140, 0.6);
-    --smoke-center: rgba(255, 111, 97, 0.15);
-}
-
-body.galaxy {
-    --primary-gradient: linear-gradient(90deg, #2a1a5e, #6b48ff);
-    --smoke-color: rgba(107, 72, 255, 0.6);
-    --smoke-center: rgba(42, 26, 94, 0.15);
-}
-
-body.lavender {
-    --primary-gradient: linear-gradient(90deg, #6b728e, #d8b4fe);
-    --smoke-color: rgba(216, 180, 254, 0.6);
-    --smoke-center: rgba(107, 114, 142, 0.15);
-}
-
-        video#backgroundVideo {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            transform: translate(-50%, -50%);
-            z-index: -10;
-            filter: brightness(0.8);
-            display: none;
-        }
-
-        .vintage-overlay {
+        .titlebar {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                to bottom,
-                transparent,
-                transparent 2px,
-                rgba(0, 0, 0, 0.2) 2px,
-                rgba(0, 0, 0, 0.2) 4px
-            );
-            z-index: -1;
-            pointer-events: none;
-            mix-blend-mode: overlay;
-            opacity: 0.3;
-        }
-
-        .foggy-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -2;
-            background: linear-gradient(
-                to right,
-                var(--smoke-color),
-                var(--smoke-center),
-                var(--smoke-color)
-            );
-            opacity: 0.7;
-            animation: fogScroll 20s ease-in-out infinite;
-            filter: blur(35px);
-        }
-
-        .fog-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            background: radial-gradient(
-                circle at 50% 50%,
-                rgba(255, 255, 255, 0.35),
-                transparent 50%
-            );
-            opacity: 0.55;
-            animation: fogDrift 30s ease-in-out infinite;
-            filter: blur(30px);
-        }
-
-        @keyframes fogScroll {
-            0% { transform: translateX(0) scale(1); }
-            50% { transform: translateX(-50%) scale(1.05); }
-            100% { transform: translateX(0) scale(1); }
-        }
-
-        @keyframes fogDrift {
-            0% { transform: translateX(-15%) translateY(0) rotate(2deg); }
-            50% { transform: translateX(15%) translateY(10%) rotate(-2deg); }
-            100% { transform: translateX(-15%) translateY(0) rotate(2deg); }
-        }
-
-        .cursor-trail {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: var(--smoke-color);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1000;
-            opacity: 0.5;
-            animation: trailFade 0.8s ease-out forwards;
-            filter: blur(5px);
-        }
-
-        @keyframes trailFade {
-            0% { opacity: 0.5; transform: scale(1); }
-            100% { opacity: 0; transform: scale(2); }
-        }
-
-       .theme-switcher {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    left: auto;
-    z-index: 10;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    padding: 8px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.theme-switcher:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.theme-switcher select {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    outline: none;
-    padding: 5px;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-        .guestbook-container {
-            background: rgba(220, 220, 220, 0.5);
+            background: rgba(28, 37, 38, 0.9);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 15px;
-            margin-top: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .guestbook-container.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .guestbook-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            margin-bottom: 10px;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        #guestbookForm {
+            padding: 1rem 2rem;
+            z-index: 100;
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        #guestbookInput {
-            flex: 1;
-            padding: 8px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 12px;
-            outline: none;
-        }
-
-        .guestbook-submit {
-            padding: 8px 12px;
-            background: var(--primary-gradient);
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .guestbook-submit:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .guestbook-messages {
-            max-height: 150px;
-            overflow-y: auto;
-            padding: 5px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .guestbook-message {
-            font-size: 12px;
-            color: white;
-            margin: 5px 0;
-            padding: 5px;
-            border-radius: 5px;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .audio-visualizer {
-            width: 100%;
-            height: 30px;
-            margin-top: 5px;
-        }
-
-        .mini-game-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+            justify-content: space-between;
+            border-bottom: 3px solid #FF0000;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
         }
 
-        .mini-game-container.active {
-            opacity: 1;
-            pointer-events: auto;
+        .titlebar img {
+            width: 64px;
+            height: 64px;
+            margin-right: 1rem;
+            filter: drop-shadow(0 0 10px #FF0000);
         }
 
-        .mini-game-canvas {
-            width: 80%;
-            max-width: 400px;
-            height: 400px;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .game-score {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            margin: 10px 0;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .close-game-button {
-            padding: 8px 12px;
-            background: var(--primary-gradient);
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .close-game-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .loading-spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--smoke-color);
-            animation: spinSmoke 1s linear infinite, smokePulse 1.5s ease-in-out infinite;
-            margin: 0 auto;
-        }
-
-        .loading-spinner.active {
-            display: block;
-        }
-
-        @keyframes spinSmoke {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes smokePulse {
-            0% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.2); }
-            100% { opacity: 0.5; transform: scale(1); }
-        }
-
-        .version-text {
-            position: fixed;
-            bottom: 15px;
-            left: 15px;
-            z-index: 100;
-            font-size: 12px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.7);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            pointer-events: none;
-        }
-
-        .click-effect {
-            position: fixed;
-            width: 12px;
-            height: 12px;
-            pointer-events: none;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 12px;
-            opacity: 0.8;
-            animation: shapeFade 1.2s ease-out forwards;
-            border-radius: 50%;
-            z-index: 1000;
-        }
-
-        @keyframes shapeFade {
-            0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
-            100% { transform: scale(2) translate(var(--tx), var(--ty)); opacity: 0; }
-        }
-
-        .word-fx {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .word-element {
-            position: absolute;
-            font-family: 'Impact', sans-serif;
+        .titlebar h1 {
+            font-size: 2.5rem;
             font-weight: 900;
-            font-size: 24px;
-            text-transform: uppercase;
-            text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-            color: rgba(255, 255, 255, 0.4);
-            white-space: nowrap;
-            animation: bounceToAudio 0.5s ease-in-out infinite, fadeAway 5s ease-out forwards;
+            color: #fff;
+            text-shadow: 0 0 10px #FF0000;
         }
 
-        @keyframes bounceToAudio {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.05); }
-        }
-
-        @keyframes fadeAway {
-            0% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        .sparkle-effect {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: url('https://assets.guns.lol/sparkle_white.gif') no-repeat center/cover;
-            opacity: 0.8;
-            animation: sparkleMove 3s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        @keyframes sparkleMove {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-            25% { transform: translate(8px, -10px) scale(1.1); opacity: 1; }
-            50% { transform: translate(-8px, -12px) scale(1); opacity: 0.8; }
-            75% { transform: translate(10px, -8px) scale(1.1); opacity: 1; }
-            100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-        }
-
-        .welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
+        .titlebar-tabs {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            transition: opacity 0.5s ease;
+            gap: 1.5rem;
         }
 
-        .welcome-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
+        .titlebar-tabs button {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid #FF0000;
+            border-radius: 5px;
+            background: rgba(28, 37, 38, 0.7);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .titlebar-tabs button:hover,
+        .titlebar-tabs button.active {
+            background: #FF0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            transform: translateY(-2px);
         }
 
         .welcome-text {
-            font-size: 32px;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: gradientText 6s ease infinite;
-            background-size: 200% 200%;
-            text-align: center;
-            padding: 15px;
+            font-size: 6rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px #FF0000, 0 0 40px #FF0000;
+            animation: neonPulse 1.5s ease-in-out infinite;
         }
 
-        .marquee-container {
-            position: fixed;
-            top: 10px;
-            left: 0;
-            width: 100%;
-            overflow: hidden;
-            z-index: 10;
-        }
-
-        .marquee {
-            display: inline-block;
-            font-size: 20px;
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            white-space: nowrap;
-            animation: marquee 15s linear infinite, gradientText 6s ease infinite;
-            padding-left: 100%;
-            background-size: 200% 200%;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-200%); }
-        }
-
-        .container {
-            max-width: 360px;
-            padding: 15px;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        .volume-control {
-            position: fixed;
-            top: 40px;
-            left: 10px;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 8px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .volume-control:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .volume-control input[type="range"] {
-            width: 80px;
-            -webkit-appearance: none;
-            background: transparent;
-            cursor: pointer;
-        }
-
-        .volume-control input[type="range"]::-webkit-slider-runnable-track {
-            height: 5px;
-            background: var(--primary-gradient);
-            border-radius: 10px;
-        }
-
-        .volume-control input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            background: var(--primary-gradient);
-            border: 2px solid white;
-            border-radius: 50%;
-            margin-top: -5.5px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease;
-        }
-
-        .volume-control input[type="range"]:hover::-webkit-slider-thumb {
-            transform: scale(1.2);
-        }
-
-        .volume-control input[type="range"]::-moz-range-track {
-            height: 5px;
-            background: var(--primary-gradient);
-            border-radius: 10px;
-        }
-
-        .volume-control input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            background: var(--primary-gradient);
-            border: 2px solid white;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .clown-list {
-            position: fixed;
-            top: 90px;
-            left: 10px;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 16px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            text-align: center;
-            font-size: 22px;
-            font-weight: 600;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        .clown-image {
-            position: fixed;
-            top: 140px;
-            left: 10px;
-            z-index: 10;
-            width: 140px;
-            height: auto;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        @keyframes neonPulse {
+            0%, 100% { text-shadow: 0 0 10px #FF0000, 0 0 20px #FF0000; }
+            50% { text-shadow: 0 0 25px #FF0000, 0 0 50px #FF0000; }
         }
 
         .profile-card {
-            background: rgba(220, 220, 220, 0.5);
+            backdrop-filter: blur(var(--profile-blur));
+            background: rgba(28, 37, 38, 0.8);
+            border: 2px solid #FF0000;
+            border-radius: 10px;
+        }
+
+        .dashboard-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 300px;
+            background: rgba(28, 37, 38, 0.9);
             backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 15px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            perspective: 1000px;
-            position: relative;
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            border: 2px solid #FF0000;
+            border-radius: 10px;
+            padding: 1.5rem;
+            z-index: 50;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
         }
 
-        .profile-card:hover {
-            transform: translateY(-5px) scale(1.03) rotate(2deg);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-            border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1;
-            animation: smokyBorder 2s ease-in-out infinite;
-        }
-
-        @keyframes smokyBorder {
-            0% { border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1; }
-            50% { border-image: linear-gradient(45deg, transparent, var(--smoke-color)) 1; }
-            100% { border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1; }
-        }
-
-        .profile-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: url('https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg') no-repeat center/cover;
-            margin: 0 auto 8px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            cursor: pointer;
-            animation: glowPulse 2.5s ease-in-out infinite;
-        }
-
-        @keyframes glowPulse {
-            0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
-            50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
-            100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
-        }
-
-        .profile-image:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7);
-        }
-
-        .profile-image.spin {
-            animation: spin 1.2s ease-out;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            80% { transform: rotate(1080deg); }
-            100% { transform: rotate(350deg); }
-        }
-
-        .profile-image::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transform: rotate(45deg);
-            animation: shimmer 4s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        .name-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            position: relative;
-        }
-
-        .name {
-            font-size: 22px;
-            font-weight: 700;
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            overflow: hidden;
-        }
-
-        .name span {
-            display: inline-block;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: wave 1s ease-in-out infinite, gradientText 6s ease infinite;
-            background-size: 200% 200%;
-        }
-
-        .name span:nth-child(1) { animation-delay: 0s; }
-        .name span:nth-child(2) { animation-delay: 0.1s; }
-        .name span:nth-child(3) { animation-delay: 0.2s; }
-        .name span:nth-child(4) { animation-delay: 0.3s; }
-        .name span:nth-child(5) { animation-delay: 0.4s; }
-
-        @keyframes wave {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        @keyframes gradientText {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .name:hover .uid {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-6px);
-        }
-
-        .uid {
-            position: absolute;
-            top: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 3px 6px;
-            border-radius: 6px;
-            font-size: 9px;
-            white-space: nowrap;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none;
-        }
-
-        .bio {
-            font-size: 13px;
-            line-height: 1.4;
-            margin-bottom: 10px;
-            margin-top: 8px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: gradientText 6s ease infinite;
-            background-size: 200% 200%;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .bio.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .badges {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            animation: gradientText 6s ease infinite;
-            background-size: 200% 200%;
-            transition: transform 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .badge.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .badge:hover {
-            transform: translateY(-2px);
-        }
-
-        .audio-player {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 8px;
-            padding: 5px;
-            margin: 8px 0;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .audio-player.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .audio-player:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .audio-info {
-            text-align: center;
-            margin-bottom: 3px;
-        }
-
-        .song-title {
-            color: white;
-            font-size: 9px;
-            font-weight: 600;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        .audio-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            margin-bottom: 3px;
-        }
-
-        .control-btn {
-            width: 18px;
-            height: 18px;
-            border: none;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
-            color: white;
-            font-size: 7px;
-            cursor: pointer;
+        .auth-buttons button {
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: gradientText 6s ease infinite;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+            border: 2px solid #FF0000;
+            background: rgba(28, 37, 38, 0.7);
         }
 
-        .control-btn:hover {
+        .auth-buttons button:hover {
             transform: scale(1.1);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.9);
+            background: #FF0000;
         }
 
-        .play-pause-btn {
-            width: 22px;
-            height: 22px;
-            font-size: 9px;
+        .search-bar input {
+            background: rgba(28, 37, 38, 0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #FF0000;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            color: #fff;
+            padding: 0.5rem;
         }
 
-        .audio-progress {
-            display: flex;
-            align-items: center;
-            gap: 3px;
+        .search-bar input:focus {
+            box-shadow: 0 0 20px #FF0000;
         }
 
-        .time-display {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 7px;
-            font-weight: 500;
-            min-width: 18px;
+        .cta-button {
+            border: 2px solid #FF0000;
+            background: rgba(28, 37, 38, 0.7);
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
 
-        .progress-bar {
-            flex: 1;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary-gradient);
-            width: 0%;
-            transition: width 0.1s ease;
-        }
-
-        .links-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin-bottom: 10px;
+        .cta-button:hover {
+            background: #FF0000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.9);
+            transform: translateY(-2px);
         }
 
         .link-button {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 15px;
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 30px;
-            color: white;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border: 2px solid #FF0000;
+            background: rgba(28, 37, 38, 0.7);
+            color: #fff;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 12px;
+            border-radius: 5px;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            animation: gradientText 6s ease infinite;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .link-button.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .link-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .link-button:hover::before {
-            left: 100%;
         }
 
         .link-button:hover {
+            background: #FF0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
 
-        .link-icon {
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
-        .link-icon-img {
-            width: 18px;
-            height: 18px;
-            object-fit: contain;
-        }
-
-        .click-game-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 30px;
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
+        .footer {
+            background: rgba(28, 37, 38, 0.9);
             backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            animation: gradientText 6s ease infinite;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-top: 10px;
-            width: 100%;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .click-game-button.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .click-game-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .click-game-button:hover::before {
-            left: 100%;
-        }
-
-        .click-game-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .like-dislike-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .like-dislike-container.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .like-button, .dislike-button {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 25px;
-            color: white;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            animation: gradientText 6s ease infinite;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-        }
-
-        .like-button::before, .dislike-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .like-button:hover::before, .dislike-button:hover::before {
-            left: 100%;
-        }
-
-        .like-button:hover, .dislike-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .like-button.active, .dislike-button.active {
-            background: linear-gradient(90deg, #00ff00, #000000);
-            transform: scale(1.05);
-        }
-
-        .like-button.disabled, .dislike-button.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .eye-logo {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            z-index: 100;
-            width: 40px;
-            height: 40px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .floating-element {
-            position: absolute;
-            opacity: 0.3;
-            font-size: 16px;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: floatRandom 15s infinite ease-in-out;
-        }
-
-        .floating-element:nth-child(1) { top: 15%; left: 5%; animation-delay: 0s; }
-        .floating-element:nth-child(2) { top: 65%; right: 10%; animation-delay: 2s; }
-        .floating-element:nth-child(3) { bottom: 25%; left: 15%; animation-delay: 4s; }
-        .floating-element:nth-child(4) { top: 35%; left: 25%; animation-delay: 6s; font-size: 18px; }
-        .floating-element:nth-child(5) { bottom: 15%; right: 20%; animation-delay: 8s; font-size: 14px; }
-        .floating-element:nth-child(6) { top: 75%; left: 35%; animation-delay: 10s; font-size: 20px; }
-
-        @keyframes floatRandom {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(15px, -20px) rotate(4deg); }
-            50% { transform: translate(-10px, 15px) rotate(-4deg); }
-            75% { transform: translate(20px, -15px) rotate(3deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
-
-        @keyframes bounce {
-            0% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-15px) scale(1.1); }
-            100% { transform: translateY(0) scale(1); }
-        }
-
-        @keyframes ripple {
-            to {
-                transform: scale(3);
-                opacity: 0;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                align-items: flex-start;
-                padding-top: 10px;
-            }
-
-            .container {
-                max-width: 90%;
-                padding: 10px;
-            }
-
-            .foggy-background, .fog-layer {
-                background-size: 80% auto;
-                opacity: 0.45;
-                filter: blur(28px);
-            }
-
-           .theme-switcher {
-    top: 8px;
-    right: 8px;
-    padding: 5px;
-}
-
-            .theme-switcher select {
-                font-size: 10px;
-            }
-
-            .guestbook-container {
-                padding: 10px;
-                border-radius: 15px;
-            }
-
-            .guestbook-title {
-                font-size: 16px;
-            }
-
-            #guestbookInput {
-                font-size: 10px;
-                padding: 6px;
-            }
-
-            .guestbook-submit {
-                font-size: 10px;
-                padding: 6px 10px;
-            }
-
-            .guestbook-messages {
-                max-height: 100px;
-            }
-
-            .guestbook-message {
-                font-size: 10px;
-            }
-
-            .audio-visualizer {
-                height: 20px;
-            }
-
-            .mini-game-canvas {
-                width: 90%;
-                height: 300px;
-            }
-
-            .game-score {
-                font-size: 16px;
-            }
-
-            .close-game-button {
-                font-size: 10px;
-                padding: 6px 10px;
-            }
-
-            .profile-card {
-                padding: 12px;
-                border-radius: 25px;
-            }
-
-            .profile-image {
-                width: 70px;
-                height: 70px;
-                margin-bottom: 6px;
-                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5);
-            }
-
-            @keyframes glowPulse {
-                0% { box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5); }
-                50% { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 14px 7px rgba(128, 128, 128, 0.7); }
-                100% { box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5); }
-            }
-
-            .profile-image:hover {
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7);
-            }
-
-            .name {
-                font-size: 18px;
-            }
-
-            .name-section {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .uid {
-                top: -16px;
-                font-size: 8px;
-                padding: 2px 5px;
-            }
-
-            .volume-control {
-                top: 35px;
-                left: 8px;
-                padding: 5px;
-            }
-
-            .volume-control input[type="range"] {
-                width: 60px;
-            }
-
-            .clown-list {
-                top: 80px;
-                left: 8px;
-                font-size: 18px;
-                padding: 12px;
-            }
-
-            .clown-image {
-                top: 115px;
-                left: 8px;
-                width: 110px;
-            }
-
-            .eye-logo {
-                width: 35px;
-                height: 35px;
-                bottom: 8px;
-                right: 8px;
-            }
-
-            .floating-element {
-                font-size: 12px;
-            }
-
-            .welcome-text {
-                font-size: 24px;
-                padding: 8px;
-            }
-
-            .marquee {
-                font-size: 18px;
-            }
-
-            .links-container {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-
-            .link-button {
-                padding: 6px 12px;
-                font-size: 11px;
-            }
-
-            .link-icon {
-                width: 16px;
-                height: 16px;
-                font-size: 13px;
-            }
-
-            .link-icon-img {
-                width: 16px;
-                height: 16px;
-            }
-
-            .click-game-button {
-                padding: 8px;
-                font-size: 12px;
-            }
-
-            .like-dislike-container {
-                gap: 10px;
-            }
-
-            .like-button, .dislike-button {
-                padding: 6px 10px;
-                font-size: 11px;
-            }
-
-            .word-element {
-                font-size: 16px;
-            }
-
-            .badges {
-                gap: 8px;
-            }
-
-            .badge {
-                padding: 2px 6px;
-                font-size: 8px;
-            }
-
-            .bio {
-                font-size: 12px;
-            }
-
-            .audio-player {
-                padding: 4px;
-                margin: 6px 0;
-            }
-
-            .song-title {
-                font-size: 8px;
-            }
-
-            .control-btn {
-                width: 16px;
-                height: 16px;
-                font-size: 6px;
-            }
-
-            .sparkle-effect {
-                width: 16px;
-                height: 16px;
-            }
+            border-top: 2px solid #FF0000;
+            padding: 1rem;
+            text-align: center;
         }
     </style>
 </head>
-<body class="welcome-active">
-    <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-text">Welcome to my creation</div>
-    </div>
+<body>
+    <div id="root"></div>
+    <script type="text/babel" data-presets="env,react">
+        const { useState, useEffect, useRef } = React;
 
-    <div class="marquee-container">
-        <div class="marquee">I made this as a fun project, hope u enjoy ~ swaqq</div>
-    </div>
-
-    <video id="backgroundVideo" autoplay loop playsinline style="display: none;">
-        <source src="assets/popstar.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    
-    <div class="vintage-overlay"></div>
-    
-    <div class="foggy-background" id="foggyBackground"></div>
-    <div class="fog-layer"></div>
-
-    <div class="floating-elements">
-        <i class="floating-element fas fa-cross"></i>
-        <i class="floating-element fas fa-cross"></i>
-        <i class="floating-element fas fa-cross"></i>
-        <i class="floating-element fas fa-cross"></i>
-        <i class="floating-element fas fa-cross"></i>
-        <i class="floating-element fas fa-cross"></i>
-    </div>
-
-    <div class="word-fx" id="wordFx"></div>
-
-    <div class="version-text">v1.2.6</div>
-
-    <div class="volume-control">
-        <i class="fas fa-volume-up"></i>
-        <input type="range" id="volumeSlider" min="0" max="100" value="70">
-    </div>
-
-  <div class="theme-switcher">
-    <select id="themeSelect">
-        <option value="dark">Dark</option>
-        <option value="neon">Neon</option>
-        <option value="retro">Retro</option>
-        <option value="pastel">Pastel</option>
-        <option value="cyberpunk">Cyberpunk</option>
-        <option value="vaporwave">Vaporwave</option>
-        <option value="forest">Forest</option>
-        <option value="ocean">Ocean</option>
-        <option value="sunset">Sunset</option>
-        <option value="monochrome">Monochrome</option>
-        <option value="candy">Candy</option>
-        <option value="galaxy">Galaxy</option>
-        <option value="lavender">Lavender</option>
-    </select>
-</div>
-
-    <div class="clown-list">Clown list:</div>
-    <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1403220757181632662/image.png?ex=6896c2ab&is=6895712b&hm=3e45282e323925a70e0155c72c5c68d6b8fd0e03280be253eae47e805d113856&" alt="Clown Image" class="clown-image">
-
-    <div class="container">
-        <div class="profile-card" id="profileCard">
-            <div class="profile-image" id="profileImage"></div>
-            
-            <div class="name-section">
-                <span class="name" id="typewriter">
-                    <span>s</span><span>w</span><span>a</span><span>q</span><span>q</span>
-                    <span class="uid">UID inf</span>
-                </span>
-                <div class="sparkle-effect" style="left: -25px; top: -10px; animation-delay: 0s;"></div>
-                <div class="sparkle-effect" style="right: -25px; top: -10px; animation-delay: 0.5s;"></div>
-                <div class="sparkle-effect" style="left: -25px; bottom: -10px; animation-delay: 1s;"></div>
-                <div class="sparkle-effect" style="right: -25px; bottom: -10px; animation-delay: 1.5s;"></div>
-            </div>
-            
-            <div class="badges">
-                <span class="badge owner">
-                    <i class="fas fa-crown"></i>
-                    Owner
-                </span>
-                <span class="badge swag">
-                    <i class="fas fa-fire"></i>
-                    #swag
-                </span>
-                <span class="badge hasswag">
-                    <i class="fas fa-star"></i>
-                    #hasswag
-                </span>
-                <span class="badge igotswag">
-                    <i class="fas fa-trophy"></i>
-                    #igotswag
-                </span>
-                <span class="badge swaggedup">
-                    <i class="fas fa-gem"></i>
-                    #swaggedup
-                </span>
-            </div>
-            
-            <p class="bio" id="bioTypewriter"></p>
-            
-            <div class="links-container">
-                <a href="https://www.roblox.com/users/8156657037/profile" class="link-button">
-                    <div class="link-icon">
-                        <img src="https://www.citypng.com/public/uploads/preview/hd-roblox-white-symbol-sign-icon-logo-png-701751694787435ra1r2desi8.png" alt="Roblox" class="link-icon-img">
-                    </div>
-                    <span class="link-text">Roblox</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-                
-                <a href="https://discord.com/users/1084576683262230548" class="link-button">
-                    <div class="link-icon">
-                        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-white-icon.png" alt="Discord" class="link-icon-img">
-                    </div>
-                    <span class="link-text">Discord</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-                
-                <a href="https://www.youtube.com/@faintche" class="link-button">
-                    <div class="link-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/YouTube_light_icon_%282017%29.svg/1280px-YouTube_light_icon_%282017%29.svg.png" alt="YouTube" class="link-icon-img">
-                    </div>
-                    <span class="link-text">YouTube</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-            
-            <div class="audio-player">
-                <div class="audio-info">
-                    <div class="song-title" id="songTitle">Kills</div>
-                    <div class="artist-name">Now Playing</div>
-                    <div class="loading-spinner" id="loadingSpinner"></div>
-                </div>
-                <div class="audio-controls">
-                    <button class="control-btn" id="rewindBtn">
-                        <i class="fas fa-backward"></i>
-                    </button>
-                    <button class="control-btn play-pause-btn" id="playPauseBtn">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="control-btn" id="skipBtn">
-                        <i class="fas fa-forward"></i>
-                    </button>
-                </div>
-                <div class="audio-progress">
-                    <span class="time-display" id="currentTime">0:00</span>
-                    <div class="progress-bar" id="progressBar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <span class="time-display" id="totalTime">0:00</span>
-                </div>
-                <canvas id="audioVisualizer" class="audio-visualizer"></canvas>
-                <audio id="audioPlayer" preload="auto">
-                    <source src="assets/kills.mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
-            </div>
-            
-            <button class="click-game-button" id="clickButton">Clicks: 0</button>
-            
-            <div class="like-dislike-container">
-                <button class="like-button" id="likeButton">
-                    <i class="fas fa-thumbs-up"></i>
-                    <span id="likeCount">0</span>
-                </button>
-                <button class="dislike-button" id="dislikeButton">
-                    <i class="fas fa-thumbs-down"></i>
-                    <span id="dislikeCount">0</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="guestbook-container">
-            <h3 class="guestbook-title">Guestbook</h3>
-            <form id="guestbookForm">
-                <input type="text" id="guestbookInput" placeholder="Leave a message..." maxlength="50">
-                <button type="submit" class="guestbook-submit">Submit</button>
-            </form>
-            <div id="guestbookMessages" class="guestbook-messages"></div>
-        </div>
-    </div>
-
-    <div id="miniGameContainer" class="mini-game-container">
-        <canvas id="miniGameCanvas" class="mini-game-canvas"></canvas>
-        <div id="gameScore" class="game-score">Score: 0</div>
-        <button id="closeGame" class="close-game-button">Close</button>
-    </div>
-
-    <svg class="eye-logo" viewBox="0 0 100 100">
-        <ellipse cx="50" cy="50" rx="40" ry="25" fill="none" stroke="url(#eyeGradient)" stroke-width="5"/>
-        <circle cx="50" cy="50" r="15" fill="#ffffff"/>
-        <circle cx="50" cy="50" r="7" fill="#000000"/>
-        <defs>
-            <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#000000" />
-                <stop offset="100%" style="stop-color:#808080" />
-            </linearGradient>
-        </defs>
-        <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
-    </svg>
-
-    <script>
-        // Detect mobile device
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-        // Initialize elements
-        const welcomeScreen = document.getElementById('welcomeScreen');
-        const body = document.body;
-        const video = document.getElementById('backgroundVideo');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const rewindBtn = document.getElementById('rewindBtn');
-        const skipBtn = document.getElementById('skipBtn');
-        const progressBar = document.getElementById('progressBar');
-        const progressFill = document.getElementById('progressFill');
-        const currentTimeDisplay = document.getElementById('currentTime');
-        const totalTimeDisplay = document.getElementById('totalTime');
-        const songTitle = document.getElementById('songTitle');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const profileImage = document.getElementById('profileImage');
-        const profileCard = document.getElementById('profileCard');
-        const clickButton = document.getElementById('clickButton');
-        const wordFxContainer = document.getElementById('wordFx');
-
-        let hasInteracted = false;
-        let wordEffectActive = false;
-        let isPlaying = false;
-        let currentSongIndex = Math.floor(Math.random() * 6);
-        let retryAttempts = 0;
-        const maxRetries = 3;
-
-        const songs = [
-            { title: "Kills", src: "assets/kills.mp3" },
-            { title: "For Da Flex", src: "assets/fdf.mp3" },
-            { title: "Baghdad", src: "assets/baghdad.mp3" },
-            { title: "Cartel", src: "assets/cartel.mp3" },
-            { title: "Popstar", src: "assets/popstar.mp3" },
-            { title: "Lambtruck", src: "assets/lamb.mp3" }
-        ];
-
-        // Theme switcher
-        const themeSelect = document.getElementById('themeSelect');
-        themeSelect.addEventListener('change', () => {
-            document.body.className = themeSelect.value;
-        });
-
-        // Cursor trail
-        let lastTrailTime = 0;
-        document.addEventListener('mousemove', (e) => {
-            const now = performance.now();
-            if (now - lastTrailTime < 50) return;
-            lastTrailTime = now;
-            const trail = document.createElement('div');
-            trail.className = 'cursor-trail';
-            trail.style.left = `${e.clientX}px`;
-            trail.style.top = `${e.clientY}px`;
-            document.body.appendChild(trail);
-            setTimeout(() => trail.remove(), 800);
-        });
-
-        // Guestbook
-        const guestbookForm = document.getElementById('guestbookForm');
-        const guestbookInput = document.getElementById('guestbookInput');
-        const guestbookMessages = document.getElementById('guestbookMessages');
-        const guestId = `Guest-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`;
-        function loadGuestbook() {
-            const comments = JSON.parse(localStorage.getItem('guestbookComments') || '[]');
-            guestbookMessages.innerHTML = '';
-            comments.forEach(comment => {
-                const message = document.createElement('div');
-                message.className = 'guestbook-message';
-                message.textContent = `${comment.user}: ${comment.text}`;
-                guestbookMessages.appendChild(message);
-            });
-            guestbookMessages.scrollTop = guestbookMessages.scrollHeight;
-        }
-        guestbookForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const text = guestbookInput.value.trim();
-            if (text) {
-                const comments = JSON.parse(localStorage.getItem('guestbookComments') || '[]');
-                comments.push({ user: guestId, text, timestamp: Date.now() });
-                localStorage.setItem('guestbookComments', JSON.stringify(comments));
-                guestbookInput.value = '';
-                loadGuestbook();
-            }
-        });
-        loadGuestbook();
-
-        // Audio visualizer
-        let audioContext, analyser, dataArray;
-        function setupAudioVisualization() {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
-            const source = audioContext.createMediaElementSource(audioPlayer);
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
-            analyser.fftSize = 256;
-            const bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
-            const canvas = document.getElementById('audioVisualizer');
-            const ctx = canvas.getContext('2d');
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            function drawVisualizer() {
-                analyser.getByteFrequencyData(dataArray);
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                const barWidth = canvas.width / bufferLength * 2;
-                for (let i = 0; i < bufferLength / 2; i++) {
-                    const barHeight = dataArray[i] / 255 * canvas.height;
-                    ctx.fillStyle = 'var(--primary-gradient)';
-                    ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
-                }
-                requestAnimationFrame(drawVisualizer);
-            }
-            drawVisualizer();
-        }
-
-        // Mini-game
-        const miniGameContainer = document.getElementById('miniGameContainer');
-        const miniGameCanvas = document.getElementById('miniGameCanvas');
-        const gameScore = document.getElementById('gameScore');
-        const closeGame = document.getElementById('closeGame');
-        let score = 0;
-        let gameActive = false;
-        let collectibles = [];
-        let profileClicks = 0;
-        const ctx = miniGameCanvas.getContext('2d');
-        function startMiniGame() {
-            miniGameContainer.classList.add('active');
-            gameActive = true;
-            score = 0;
-            gameScore.textContent = `Score: ${score}`;
-            miniGameCanvas.width = miniGameCanvas.offsetWidth;
-            miniGameCanvas.height = miniGameCanvas.offsetHeight;
-            collectibles = [];
-            for (let i = 0; i < 5; i++) {
-                collectibles.push({
-                    x: Math.random() * (miniGameCanvas.width - 20),
-                    y: Math.random() * (miniGameCanvas.height - 20),
-                    size: 20
-                });
-            }
-            drawGame();
-        }
-        function drawGame() {
-            if (!gameActive) return;
-            ctx.clearRect(0, 0, miniGameCanvas.width, miniGameCanvas.height);
-            collectibles.forEach(c => {
-                ctx.beginPath();
-                ctx.arc(c.x + c.size / 2, c.y + c.size / 2, c.size / 2, 0, Math.PI * 2);
-                ctx.fillStyle = 'var(--primary-gradient)';
-                ctx.fill();
-            });
-            requestAnimationFrame(drawGame);
-        }
-        miniGameCanvas.addEventListener('click', (e) => {
-            if (!gameActive) return;
-            const rect = miniGameCanvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
-            collectibles = collectibles.filter(c => {
-                const dx = clickX - (c.x + c.size / 2);
-                const dy = clickY - (c.y + c.size / 2);
-                if (Math.sqrt(dx * dx + dy * dy) < c.size / 2) {
-                    score++;
-                    gameScore.textContent = `Score: ${score}`;
-                    localStorage.setItem('miniGameHighScore', Math.max(score, localStorage.getItem('miniGameHighScore') || 0));
-                    return false;
-                }
-                return true;
-            });
-            if (collectibles.length === 0) {
-                for (let i = 0; i < 5; i++) {
-                    collectibles.push({
-                        x: Math.random() * (miniGameCanvas.width - 20),
-                        y: Math.random() * (miniGameCanvas.height - 20),
-                        size: 20
+        // Simulated backend with localStorage
+        const initializeBackend = () => {
+            try {
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                if (!users.find(u => u.uid === 0)) {
+                    users.push({
+                        uid: 0,
+                        username: 'swaqq',
+                        password: 'password',
+                        isPremium: true,
+                        badges: ['owner', 'swag', 'hasswag', 'igotswag', 'swaggedup'],
+                        gradientStart: '#1C2526',
+                        gradientEnd: '#FF0000',
+                        backgroundOpacity: 0.8,
+                        profileBlur: 0,
+                        background: '',
+                        music: [],
+                        links: [
+                            { url: 'https://www.roblox.com/users/8156657037/profile', label: 'Roblox' },
+                            { url: 'https://discord.com/users/1084576683262230548', label: 'Discord' }
+                        ],
+                        gradient: true,
+                        wavyEffect: true,
+                        welcomeScreen: true,
+                        customBadges: []
                     });
+                    localStorage.setItem('users', JSON.stringify(users));
                 }
+                return users;
+            } catch (e) {
+                console.error('Error initializing backend:', e);
+                return [];
             }
-        });
-        closeGame.addEventListener('click', () => {
-            miniGameContainer.classList.remove('active');
-            gameActive = false;
-        });
-        profileImage.addEventListener('click', () => {
-            profileClicks++;
-            if (profileClicks >= 5) {
-                startMiniGame();
-                profileClicks = 0;
-            }
-        });
+        };
 
-        // Scroll-triggered animations
-        function setupScrollAnimations() {
-            const elements = document.querySelectorAll('.badge, .bio, .audio-player, .link-button, .click-game-button, .like-dislike-container, .guestbook-container');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
+        // Error Boundary
+        class ErrorBoundary extends React.Component {
+            state = { hasError: false, error: null };
+            static getDerivedStateFromError(error) {
+                console.error('ErrorBoundary caught:', error);
+                return { hasError: true, error };
+            }
+            render() {
+                if (this.state.hasError) {
+                    return (
+                        <div className="text-white text-center mt-10">
+                            <h1>Something went wrong.</h1>
+                            <p>{this.state.error?.message || 'Please refresh the page.'}</p>
+                        </div>
+                    );
+                }
+                return this.props.children;
+            }
+        }
+
+        // App Component
+        const App = () => {
+            const [user, setUser] = useState(null);
+            const [page, setPage] = useState('home');
+            const [viewUser, setViewUser] = useState(null);
+            const [activeTab, setActiveTab] = useState('home');
+
+            useEffect(() => {
+                try {
+                    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+                    if (loggedInUser) {
+                        setUser(loggedInUser);
+                        document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(90deg, ${loggedInUser.gradientStart}, ${loggedInUser.gradientEnd})`);
+                        document.documentElement.style.setProperty('--background-opacity', loggedInUser.backgroundOpacity);
+                        document.documentElement.style.setProperty('--profile-blur', `${loggedInUser.profileBlur}px`);
                     }
-                });
-            }, { threshold: 0.1 });
-            elements.forEach(el => observer.observe(el));
-        }
 
-        // Function to shuffle array
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+                    const path = window.location.pathname;
+                    const users = initializeBackend();
+                    if (path.startsWith('/uid/')) {
+                        const uid = parseInt(path.split('/uid/')[1]);
+                        const foundUser = users.find(u => u.uid === uid);
+                        if (foundUser) {
+                            setViewUser(foundUser);
+                            setPage('viewProfile');
+                            setActiveTab('profile');
+                        } else {
+                            setPage('home');
+                            setActiveTab('home');
+                            window.history.pushState({}, '', '/');
+                        }
+                    } else if (path !== '/' && path !== '/home') {
+                        const username = path.slice(1);
+                        const foundUser = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+                        if (foundUser) {
+                            setViewUser(foundUser);
+                            setPage('viewProfile');
+                            setActiveTab('profile');
+                        } else {
+                            setPage('home');
+                            setActiveTab('home');
+                            window.history.pushState({}, '', '/');
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error in App useEffect:', e);
+                }
+            }, []);
 
-        // Function to load a song
-        function loadSong(index) {
-            const song = songs[index];
-            audioPlayer.src = song.src;
-            songTitle.textContent = song.title;
-            loadingSpinner.classList.add('active');
-            audioPlayer.load();
-            retryAttempts = 0;
-        }
-
-        // Function to play the current song with retry logic
-        function playCurrentSong() {
-            songTitle.textContent = songs[currentSongIndex].title;
-            const playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    isPlaying = true;
-                    retryAttempts = 0;
-                    loadingSpinner.classList.remove('active');
-                }).catch(error => {
-                    console.log('Audio play failed:', error);
-                    if (retryAttempts < maxRetries) {
-                        retryAttempts++;
-                        songTitle.textContent = 'Loading...';
-                        loadingSpinner.classList.add('active');
-                        setTimeout(() => {
-                            loadSong(currentSongIndex);
-                            playCurrentSong();
-                        }, 1000);
+            const handleLogin = (username, password) => {
+                try {
+                    const users = initializeBackend();
+                    const foundUser = users.find(u => u.username === username && u.password === password);
+                    if (foundUser) {
+                        localStorage.setItem('loggedInUser', JSON.stringify(foundUser));
+                        setUser(foundUser);
+                        document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(90deg, ${foundUser.gradientStart}, ${foundUser.gradientEnd})`);
+                        document.documentElement.style.setProperty('--background-opacity', foundUser.backgroundOpacity);
+                        document.documentElement.style.setProperty('--profile-blur', `${foundUser.profileBlur}px`);
+                        setPage('profile');
+                        setActiveTab('profile');
+                        window.history.pushState({}, '', '/');
                     } else {
-                        songTitle.textContent = songs[currentSongIndex].title;
-                        isPlaying = false;
-                        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        loadingSpinner.classList.remove('active');
+                        alert('Invalid credentials');
                     }
-                });
-            }
-        }
-
-        // Set initial volumes
-        video.volume = 0.5;
-        video.muted = true;
-        audioPlayer.volume = 0.7;
-
-        // Enable background video
-        video.style.display = 'block';
-        video.muted = true;
-        video.play().catch(error => console.log('Autoplay blocked:', error));
-
-        // Start audio after welcome screen
-        function startAudio() {
-            loadSong(currentSongIndex);
-            playCurrentSong();
-        }
-
-        // Profile image rotation
-        function autoSpinProfileImage() {
-            profileImage.classList.remove('spin');
-            void profileImage.offsetWidth;
-            profileImage.classList.add('spin');
-            setTimeout(autoSpinProfileImage, 15000);
-        }
-
-        // Parallax effect
-        let lastUpdate = 0;
-        function handleParallax(e) {
-            if (isMobile) return;
-            const now = performance.now();
-            if (now - lastUpdate < 33) return;
-            lastUpdate = now;
-            const rect = profileCard.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const mouseX = e.clientX - centerX;
-            const mouseY = e.clientY - centerY;
-            const maxTilt = 8;
-            const rotateX = (mouseY / rect.height) * -maxTilt;
-            const rotateY = (mouseX / rect.width) * maxTilt;
-            profileCard.style.transform = `perspective(1000px) translateY(-5px) scale(1.03) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            profileCard.style.transition = 'transform 0.1s ease-out';
-        }
-
-        if (!isMobile) {
-            profileCard.addEventListener('mousemove', handleParallax);
-            profileCard.addEventListener('mouseleave', () => {
-                profileCard.style.transform = 'translateY(0) scale(1)';
-                profileCard.style.transition = 'transform 0.3s ease';
-            });
-        }
-
-        // Typewriter effect for name
-        const nameTypewriter = document.getElementById('typewriter');
-        const nameText = 'swaqq';
-        let nameIndex = 0;
-        let nameDirection = 1;
-
-        function typeNameEffect() {
-            nameTypewriter.querySelectorAll('span:not(.uid)').forEach((span, index) => {
-                if (index < nameIndex) {
-                    span.textContent = nameText[index];
-                } else {
-                    span.textContent = '';
+                } catch (e) {
+                    console.error('Login error:', e);
+                    alert('Error during login. Please try again.');
                 }
-            });
-            if (nameDirection === 1) {
-                nameIndex++;
-                if (nameIndex > nameText.length) {
-                    nameDirection = -1;
-                    setTimeout(typeNameEffect, 1000);
-                } else {
-                    setTimeout(typeNameEffect, 200);
+            };
+
+            const handleSignup = (username, password) => {
+                try {
+                    const users = initializeBackend();
+                    if (users.find(u => u.username === username)) {
+                        alert('Username already exists');
+                        return;
+                    }
+                    const newUid = users.length > 0 ? Math.max(...users.map(u => u.uid)) + 1 : 0;
+                    const newUser = {
+                        uid: newUid,
+                        username,
+                        password,
+                        isPremium: false,
+                        badges: ['swag'],
+                        gradientStart: '#1C2526',
+                        gradientEnd: '#FF0000',
+                        backgroundOpacity: 0.8,
+                        profileBlur: 0,
+                        background: '',
+                        music: [],
+                        links: [],
+                        gradient: false,
+                        wavyEffect: false,
+                        welcomeScreen: false,
+                        customBadges: []
+                    };
+                    users.push(newUser);
+                    localStorage.setItem('users', JSON.stringify(users));
+                    localStorage.setItem('loggedInUser', JSON.stringify(newUser));
+                    setUser(newUser);
+                    document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(90deg, ${newUser.gradientStart}, ${newUser.gradientEnd})`);
+                    document.documentElement.style.setProperty('--background-opacity', newUser.backgroundOpacity);
+                    document.documentElement.style.setProperty('--profile-blur', `${newUser.profileBlur}px`);
+                    setPage('profile');
+                    setActiveTab('profile');
+                    window.history.pushState({}, '', '/');
+                } catch (e) {
+                    console.error('Signup error:', e);
+                    alert('Error during signup. Please try again.');
                 }
-            } else {
-                nameIndex--;
-                if (nameIndex === 1) {
-                    nameDirection = 1;
-                    setTimeout(typeNameEffect, 1000);
-                } else {
-                    setTimeout(typeNameEffect, 200);
+            };
+
+            const handleLogout = () => {
+                try {
+                    localStorage.removeItem('loggedInUser');
+                    setUser(null);
+                    setPage('home');
+                    setActiveTab('home');
+                    window.history.pushState({}, '', '/');
+                } catch (e) {
+                    console.error('Logout error:', e);
                 }
-            }
-        }
+            };
 
-        // Typewriter effect for bio
-     async function fetchDiscordStatus() {
-    try {
-        const response = await fetch(DISCORD_API_URL);
-        const data = await response.json();
-        
-        if (data.success && data.data) {
-            const user = data.data;
-            let bioText = 'i got swag'; // Default bio
-            
-            // Check for custom status
-            if (user.activities) {
-                const customStatus = user.activities.find(activity => activity.type === 4);
-                if (customStatus && customStatus.state) {
-                    bioText = customStatus.state;
+            const handleSearch = (query) => {
+                try {
+                    const users = initializeBackend();
+                    const foundUser = users.find(u => u.username.toLowerCase() === query.toLowerCase() || u.uid === parseInt(query));
+                    if (foundUser) {
+                        setViewUser(foundUser);
+                        setPage('viewProfile');
+                        setActiveTab('profile');
+                        window.history.pushState({}, '', `/uid/${foundUser.uid}`);
+                    } else {
+                        alert('User not found');
+                    }
+                } catch (e) {
+                    console.error('Search error:', e);
+                    alert('Error searching for user');
                 }
-            }
-            
-            // Update the bio text
-            updateBioText(bioText);
-            
-            // Optional: Show online status with a colored indicator
-            updateStatusIndicator(user.discord_status);
+            };
+
+            return (
+                <ErrorBoundary>
+                    <div className="min-h-screen flex flex-col">
+                        <div className="titlebar">
+                            <div className="flex items-center">
+                                <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png" alt="Sanct Icon" />
+                                <h1>Sanct</h1>
+                            </div>
+                            <div className="titlebar-tabs">
+                                <button className={activeTab === 'home' ? 'active' : ''} onClick={() => { setPage('home'); setActiveTab('home'); window.history.pushState({}, '', '/'); }}>Home</button>
+                                <button className={activeTab === 'profile' ? 'active' : ''} onClick={() => { if (user) { setPage('profile'); setActiveTab('profile'); window.history.pushState({}, '', '/'); } else alert('Please log in'); }}>Profile</button>
+                                <button className={activeTab === 'dashboard' ? 'active' : ''} onClick={() => { if (user) { setPage('dashboard'); setActiveTab('dashboard'); window.history.pushState({}, '', '/'); } else alert('Please log in'); }}>Dashboard</button>
+                                <button className={activeTab === 'search' ? 'active' : ''} onClick={() => { setPage('search'); setActiveTab('search'); window.history.pushState({}, '', '/'); }}>Search</button>
+                            </div>
+                        </div>
+                        {page === 'home' && <Home setPage={setPage} user={user} setUser={setUser} handleLogout={handleLogout} handleSearch={handleSearch} />}
+                        {page === 'signup' && <Signup onSignup={handleSignup} setPage={setPage} />}
+                        {page === 'login' && <Login onLogin={handleLogin} setPage={setPage} />}
+                        {page === 'profile' && user && <Profile user={user} setUser={setUser} setPage={setPage} />}
+                        {page === 'viewProfile' && viewUser && <ViewProfile user={viewUser} setPage={setPage} />}
+                        {page === 'dashboard' && user && <Dashboard user={user} setUser={setUser} setPage={setPage} handleLogout={handleLogout} />}
+                        {page === 'search' && <Search handleSearch={handleSearch} setPage={setPage} />}
+                    </div>
+                </ErrorBoundary>
+            );
+        };
+
+        // Home Component
+        const Home = ({ setPage, user, setUser, handleLogout, handleSearch }) => {
+            const [searchQuery, setSearchQuery] = useState('');
+
+            const onSearch = (e) => {
+                e.preventDefault();
+                if (searchQuery) {
+                    handleSearch(searchQuery);
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex items-center justify-center pt-20">
+                    <div className="text-center z-10">
+                        <h1 className="welcome-text mb-6">Sanct</h1>
+                        <p className="text-white text-2xl mb-8">Create Your Arsenal</p>
+                        <div className="search-bar mb-8">
+                            <form onSubmit={onSearch}>
+                                <input
+                                    type="text"
+                                    placeholder="Search by username or UID"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-80 p-2 rounded-none text-white search-bar focus:outline-none"
+                                />
+                            </form>
+                        </div>
+                        <div className="auth-buttons flex space-x-4 mb-8">
+                            {!user && (
+                                <>
+                                    <button
+                                        className="cta-button"
+                                        onClick={() => setPage('signup')}
+                                    >
+                                        Join Now
+                                    </button>
+                                    <button
+                                        className="cta-button"
+                                        onClick={() => setPage('login')}
+                                    >
+                                        Log In
+                                    </button>
+                                </>
+                            )}
+                            {user && (
+                                <div className="dashboard-panel">
+                                    <CompactDashboard user={user} setUser={setUser} setPage={setPage} handleLogout={handleLogout} />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <footer className="footer w-full mt-auto">
+                        <div className="flex justify-center gap-4">
+                            <a href="https://www.roblox.com/users/8156657037/profile" className="text-white border-2 border-red-600 p-2 rounded hover:bg-red-600">
+                                <i className="fab fa-roblox"></i>
+                            </a>
+                            <a href="https://discord.com/users/1084576683262230548" className="text-white border-2 border-red-600 p-2 rounded hover:bg-red-600">
+                                <i className="fab fa-discord"></i>
+                            </a>
+                        </div>
+                        <p className="text-sm mt-2">© 2025 Sanct - Built with <span className="text-red-600">FIRE</span></p>
+                    </footer>
+                </div>
+            );
+        };
+
+        // Signup Component
+        const Signup = ({ onSignup, setPage }) => {
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!username || !password) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                onSignup(username, password);
+            };
+
+            return (
+                <div className="flex items-center justify-center min-h-screen pt-20">
+                    <div className="bg-gray-800 bg-opacity-80 backdrop-blur-lg p-6 rounded-lg border-2 border-red-600">
+                        <h2 className="text-2xl text-white mb-4">Sign Up</h2>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <input
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="w-full p-2 rounded bg-gray-700 text-white border border-red-600"
+                            />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full p-2 rounded bg-gray-700 text-white border border-red-600"
+                            />
+                            <button
+                                type="submit"
+                                className="w-full p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                            >
+                                Sign Up
+                            </button>
+                        </form>
+                        <p className="text-white mt-4">
+                            Already have an account?{' '}
+                            <span className="text-red-600 cursor-pointer" onClick={() => setPage('login')}>
+                                Log In
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        // Login Component
+        const Login = ({ onLogin, setPage }) => {
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!username || !password) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                onLogin(username, password);
+            };
+
+            return (
+                <div className="flex items-center justify-center min-h-screen pt-20">
+                    <div className="bg-gray-800 bg-opacity-80 backdrop-blur-lg p-6 rounded-lg border-2 border-red-600">
+                        <h2 className="text-2xl text-white mb-4">Log In</h2>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <input
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="w-full p-2 rounded bg-gray-700 text-white border border-red-600"
+                            />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full p-2 rounded bg-gray-700 text-white border border-red-600"
+                            />
+                            <button
+                                type="submit"
+                                className="w-full p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                            >
+                                Log In
+                            </button>
+                        </form>
+                        <p className="text-white mt-4">
+                            Don’t have an account?{' '}
+                            <span className="text-red-600 cursor-pointer" onClick={() => setPage('signup')}>
+                                Sign Up
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        // Profile Component
+        const Profile = ({ user, setUser, setPage }) => {
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [currentSongIndex, setCurrentSongIndex] = useState(0);
+
+            useEffect(() => {
+                const audioPlayer = document.getElementById('audioPlayer');
+                if (!audioPlayer) return;
+                if (user.welcomeScreen) {
+                    setTimeout(() => {
+                        const welcomeScreen = document.getElementById('welcomeScreen');
+                        if (welcomeScreen) welcomeScreen.classList.add('hidden');
+                        if (user.music.length > 0) {
+                            audioPlayer.play().catch(e => console.error('Audio play failed:', e));
+                            setIsPlaying(true);
+                        }
+                    }, 2000);
+                } else if (user.music.length > 0) {
+                    audioPlayer.play().catch(e => console.error('Audio play failed:', e));
+                    setIsPlaying(true);
+                }
+            }, [currentSongIndex, user.music]);
+
+            return (
+                <div className="min-h-screen flex justify-center items-start pt-20">
+                    {user.welcomeScreen && (
+                        <div id="welcomeScreen" className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-lg flex items-center justify-center z-50">
+                            <div className="welcome-text">Welcome to {user.username}'s Sanct</div>
+                        </div>
+                    )}
+                    <div className="container max-w-md mx-auto text-center">
+                        <div className="profile-card p-6">
+                            {user.background && (
+                                <video
+                                    id="backgroundVideo"
+                                    autoPlay
+                                    loop
+                                    playsInline
+                                    className="fixed top-1/2 left-1/2 w-screen h-screen object-cover -translate-x-1/2 -translate-y-1/2 z-[-10]"
+                                    style={{ opacity: 'var(--background-opacity)' }}
+                                >
+                                    <source src={user.background} type="video/mp4" />
+                                </video>
+                            )}
+                            <div
+                                className="w-24 h-24 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-red-600"
+                                style={{ backgroundImage: `url('https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg')` }}
+                            ></div>
+                            <div className="name-section flex items-center justify-center gap-2 flex-wrap relative">
+                                <span className={`text-2xl ${user.wavyEffect ? 'wavy' : ''}`}>
+                                    {user.username.split('').map((char, i) => (
+                                        <span key={i} style={{ animationDelay: `${i * 0.1}s` }}>{char}</span>
+                                    ))}
+                                    <span className="uid absolute -top-6 left-1/2 -translate-x-1/2 text-sm text-red-600">UID {user.uid}</span>
+                                </span>
+                            </div>
+                            <div className="badges flex flex-wrap justify-center gap-2 mt-2">
+                                {user.badges.map((badge, i) => (
+                                    <span key={i} className="bg-gray-800 text-white px-2 py-1 rounded text-sm border border-red-600">
+                                        <i className={`fas fa-${badge === 'owner' ? 'crown' : badge === 'swag' ? 'fire' : 'star'} mr-1`}></i>
+                                        {badge}
+                                    </span>
+                                ))}
+                                {user.customBadges.map((badge, i) => (
+                                    <span key={i} className="bg-gray-800 text-white px-2 py-1 rounded text-sm border border-red-600">{badge}</span>
+                                ))}
+                            </div>
+                            <p className="text-white mt-2">I got swag</p>
+                            <div className="links-container flex flex-col items-center gap-2 mt-4">
+                                {user.links.map((link, i) => (
+                                    <a href={link.url} key={i} className="link-button" target="_blank" rel="noopener noreferrer">
+                                        {link.label}
+                                    </a>
+                                ))}
+                            </div>
+                            {user.music.length > 0 && (
+                                <div className="audio-player mt-4">
+                                    <div className="audio-info text-white mb-2">
+                                        <div className="song-title">{user.music[currentSongIndex].title}</div>
+                                    </div>
+                                    <div className="audio-controls flex justify-center gap-4">
+                                        <button
+                                            className="bg-gray-800 text-white px-3 py-2 rounded border border-red-600 hover:bg-red-600"
+                                            onClick={() => setCurrentSongIndex((currentSongIndex - 1 + user.music.length) % user.music.length)}
+                                        >
+                                            <i className="fas fa-backward"></i>
+                                        </button>
+                                        <button
+                                            className="bg-gray-800 text-white px-3 py-2 rounded border border-red-600 hover:bg-red-600"
+                                            onClick={() => {
+                                                const audio = document.getElementById('audioPlayer');
+                                                if (isPlaying) {
+                                                    audio.pause();
+                                                    setIsPlaying(false);
+                                                } else {
+                                                    audio.play().catch(e => console.error('Audio play failed:', e));
+                                                    setIsPlaying(true);
+                                                }
+                                            }}
+                                        >
+                                            <i className={`fas fa-${isPlaying ? 'pause' : 'play'}`}></i>
+                                        </button>
+                                        <button
+                                            className="bg-gray-800 text-white px-3 py-2 rounded border border-red-600 hover:bg-red-600"
+                                            onClick={() => setCurrentSongIndex((currentSongIndex + 1) % user.music.length)}
+                                        >
+                                            <i className="fas fa-forward"></i>
+                                        </button>
+                                    </div>
+                                    <audio id="audioPlayer" src={user.music[currentSongIndex].src}></audio>
+                                </div>
+                            )}
+                            <button
+                                className="mt-4 px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                                onClick={() => setPage('dashboard')}
+                            >
+                                Enter Dashboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // View Profile Component
+        const ViewProfile = ({ user, setPage }) => {
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [currentSongIndex, setCurrentSongIndex] = useState(0);
+
+            useEffect(() => {
+                const audioPlayer = document.getElementById('audioPlayer');
+                if (!audioPlayer) return;
+                if (user.welcomeScreen) {
+                    setTimeout(() => {
+                        const welcomeScreen = document.getElementById('welcomeScreen');
+                        if (welcomeScreen) welcomeScreen.classList.add('hidden');
+                        if (user.music.length > 0) {
+                            audioPlayer.play().catch(e => console.error('Audio play failed:', e));
+                            setIsPlaying(true);
+                        }
+                    }, 2000);
+                } else if (user.music.length > 0) {
+                    audioPlayer.play().catch(e => console.error('Audio play failed:', e));
+                    setIsPlaying(true);
+                }
+            }, [currentSongIndex, user.music]);
+
+            return (
+                <div className="min-h-screen flex justify-center items-start pt-20">
+                    {user.welcomeScreen && (
+                        <div id="welcomeScreen" className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-lg flex items-center justify-center z-50">
+                            <div className="welcome-text">Welcome to {user.username}'s Sanct</div>
+                        </div>
+                    )}
+                    <div className="container max-w-md mx-auto text-center">
+                        <div className="profile-card p-6">
+                            {user.background && (
+                                <video
+                                    id="backgroundVideo"
+                                    autoPlay
+                                    loop
+                                    playsInline
+                                    className="fixed top-1/2 left-1/2 w-screen h-screen object-cover -translate-x-1/2 -translate-y-1/2 z-[-10]"
+                                    style={{ opacity: 'var(--background-opacity)' }}
+                                >
+                                    <source src={user.background} type="video/mp4" />
+                                </video>
+                            )}
+                            <div
+                                className="w-24 h-24 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-red-600"
+                                style={{ backgroundImage: `url('https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg')` }}
+                            ></div>
+                            <div className="name-section flex items-center justify-center gap-2 flex-wrap relative">
+                                <span className={`text-2xl ${user.wavyEffect ? 'wavy' : ''}`}>
+                                    {user.username.split('').map((char, i) => (
+                                        <span key={i} style={{ animationDelay: `${i * 0.1}s` }}>{char}</span>
+                                    ))}
+                                    <span className="uid absolute -top-6 left-1/2 -translate-x-1/2 text-sm text-red-600">UID {user.uid}</span>
+                                </span>
+                            </div>
+                            <div className="badges flex flex-wrap justify-center gap-2 mt-2">
+                                {user.badges.map((badge, i) => (
+                                    <span key={i} className="bg-gray-800 text-white px-2 py-1 rounded text-sm border border-red-600">
+                                        <i className={`fas fa-${badge === 'owner' ? 'crown' : badge === 'swag' ? 'fire' : 'star'} mr-1`}></i>
+                                        {badge}
+                                    </span>
+                                ))}
+                                {user.customBadges.map((badge, i) => (
+                                    <span key={i} className="bg-gray-800 text-white px-2 py-1 rounded text-sm border border-red-600">{badge}</span>
+                                ))}
+                            </div>
+                            <p className="text-white mt-2">I got swag</p>
+                            <div className="links-container flex flex-col items-center gap-2 mt-4">
+                                {user.links.map((link, i) => (
+                                    <a href={link.url} key={i} className="link-button" target="_blank" rel="noopener noreferrer">
+                                        {link.label}
+                                    </a>
+                                ))}
+                            </div>
+                            {user.music.length > 0 && (
+                                <div className="audio-player mt-4">
+                                    <div className="audio-info text-white mb-2">
+                                        <div className="song-title">{user.music[currentSongIndex].title}</div>
+                                    </div>
+                                    <div className="audio-controls flex justify-center gap-4">
+                                        <button
+                                            className="bg-gray-800 text-white px-3 py-2 rounded border border-red-600 hover:bg-red-600"
+                                            onClick={() => setCurrentSongIndex((currentSongIndex - 1 + user.music.length) % user.music.length)}
+                                        >
+                                            <i className="fas fa-backward"></i>
+                                        </button>
+                                        <button
+                                            className="bg-gray-800 text-white px-3 py-2 rounded border border-red-600 hover:bg-red-600"
+                                            onClick={() => {
+                                                const audio = document.getElementById('audioPlayer');
+                                                if (isPlaying) {
+                                                    audio.pause();
+                                                    setIsPlaying(false);
+                                                } else {
+                                                    audio.play().catch(e => console.error('Audio play failed:', e));
+                                                    setIsPlaying(true);
+                                                }
+                                            }}
+                                        >
+                                            <i className={`fas fa-${isPlaying ? 'pause' : 'play'}`}></i>
+                                        </button>
+                                        <button
+                                            className="bg-gray-800 text-white px-3 py-2 rounded border border-red-600 hover:bg-red-600"
+                                            onClick={() => setCurrentSongIndex((currentSongIndex + 1) % user.music.length)}
+                                        >
+                                            <i className="fas fa-forward"></i>
+                                        </button>
+                                    </div>
+                                    <audio id="audioPlayer" src={user.music[currentSongIndex].src}></audio>
+                                </div>
+                            )}
+                            <button
+                                className="mt-4 px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                                onClick={() => setPage('home')}
+                            >
+                                Back to Base
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Search Component
+        const Search = ({ handleSearch, setPage }) => {
+            const [searchQuery, setSearchQuery] = useState('');
+
+            const onSearch = (e) => {
+                e.preventDefault();
+                if (searchQuery) {
+                    handleSearch(searchQuery);
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex items-center justify-center pt-20">
+                    <div className="bg-gray-800 bg-opacity-80 backdrop-blur-lg p-6 rounded-lg border-2 border-red-600">
+                        <h2 className="text-2xl text-white mb-4">Search Users</h2>
+                        <form onSubmit={onSearch} className="space-y-4">
+                            <input
+                                type="text"
+                                placeholder="Enter username or UID"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full p-2 rounded bg-gray-700 text-white border border-red-600"
+                            />
+                            <button
+                                type="submit"
+                                className="w-full p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                            >
+                                Search
+                            </button>
+                        </form>
+                        <button
+                            className="mt-4 w-full p-2 bg-gray-700 text-white rounded border border-red-600 hover:bg-red-600 transition"
+                            onClick={() => setPage('home')}
+                        >
+                            Return to Home
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        // Compact Dashboard Component
+        const CompactDashboard = ({ user, setUser, setPage, handleLogout }) => {
+            const [background, setBackground] = useState(user.background);
+            const [musicFiles, setMusicFiles] = useState(user.music);
+            const [links, setLinks] = useState(user.links);
+            const [gradientStart, setGradientStart] = useState(user.gradientStart);
+            const [gradientEnd, setGradientEnd] = useState(user.gradientEnd);
+            const [backgroundOpacity, setBackgroundOpacity] = useState(user.backgroundOpacity);
+            const [profileBlur, setProfileBlur] = useState(user.profileBlur);
+            const [gradient, setGradient] = useState(user.gradient);
+            const [wavyEffect, setWavyEffect] = useState(user.wavyEffect);
+            const [welcomeScreen, setWelcomeScreen] = useState(user.welcomeScreen);
+            const [newLinkUrl, setNewLinkUrl] = useState('');
+            const [newLinkLabel, setNewLinkLabel] = useState('');
+
+            const handleSave = () => {
+                try {
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    const updatedUsers = users.map(u =>
+                        u.uid === user.uid
+                            ? {
+                                  ...u,
+                                  background,
+                                  music: musicFiles,
+                                  links,
+                                  gradientStart,
+                                  gradientEnd,
+                                  backgroundOpacity,
+                                  profileBlur,
+                                  gradient,
+                                  wavyEffect,
+                                  welcomeScreen
+                              }
+                            : u
+                    );
+                    localStorage.setItem('users', JSON.stringify(updatedUsers));
+                    setUser({
+                        ...user,
+                        background,
+                        music: musicFiles,
+                        links,
+                        gradientStart,
+                        gradientEnd,
+                        backgroundOpacity,
+                        profileBlur,
+                        gradient,
+                        wavyEffect,
+                        welcomeScreen
+                    });
+                    document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(90deg, ${gradientStart}, ${gradientEnd})`);
+                    document.documentElement.style.setProperty('--background-opacity', backgroundOpacity);
+                    document.documentElement.style.setProperty('--profile-blur', `${profileBlur}px`);
+                    setPage('profile');
+                } catch (e) {
+                    console.error('Save error:', e);
+                    alert('Error saving changes. Please try again.');
+                }
+            };
+
+            const handleAddMusic = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (musicFiles.length >= (user.isPremium ? 5 : 3)) {
+                    alert(user.isPremium ? 'Max 5 music files' : 'Max 3 music files. Upgrade for more.');
+                    return;
+                }
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File size must be under 2MB.');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = () => {
+                    setMusicFiles([...musicFiles, { title: file.name, src: reader.result }]);
+                };
+                reader.onerror = () => alert('Error reading file');
+                reader.readAsDataURL(file);
+            };
+
+            const handleAddLink = () => {
+                if (!newLinkUrl || !newLinkLabel) {
+                    alert('Please enter both URL and label.');
+                    return;
+                }
+                if (links.length >= (user.isPremium ? 10 : 5)) {
+                    alert(user.isPremium ? 'Max 10 links' : 'Max 5 links. Upgrade for more.');
+                    return;
+                }
+                setLinks([...links, { url: newLinkUrl, label: newLinkLabel }]);
+                setNewLinkUrl('');
+                setNewLinkLabel('');
+            };
+
+            const handlePurchasePremium = () => {
+                alert('Redirecting to payment gateway...');
+                try {
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    const updatedUsers = users.map(u =>
+                        u.uid === user.uid ? { ...u, isPremium: true } : u
+                    );
+                    localStorage.setItem('users', JSON.stringify(updatedUsers));
+                    setUser({ ...user, isPremium: true });
+                } catch (e) {
+                    console.error('Premium purchase error:', e);
+                    alert('Error processing premium purchase.');
+                }
+            };
+
+            const handleAddCustomBadge = (badge) => {
+                if (!user.isPremium) {
+                    alert('Custom badges require premium.');
+                    return;
+                }
+                if (badge) {
+                    try {
+                        const users = JSON.parse(localStorage.getItem('users') || '[]');
+                        const updatedUsers = users.map(u =>
+                            u.uid === user.uid ? { ...u, customBadges: [...u.customBadges, badge] } : u
+                        );
+                        localStorage.setItem('users', JSON.stringify(updatedUsers));
+                        setUser({ ...user, customBadges: [...user.customBadges, badge] });
+                    } catch (e) {
+                        console.error('Add badge error:', e);
+                        alert('Error adding badge.');
+                    }
+                }
+            };
+
+            return (
+                <div className="space-y-4">
+                    <h2 className="text-xl text-white font-bold">Quick Customize</h2>
+                    <div>
+                        <label className="text-white text-sm">Background Video</label>
+                        <input
+                            type="file"
+                            accept="video/mp4"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file && file.size <= 10 * 1024 * 1024) {
+                                    const reader = new FileReader();
+                                    reader.onload = () => setBackground(reader.result);
+                                    reader.readAsDataURL(file);
+                                } else {
+                                    alert('Video size must be under 10MB.');
+                                }
+                            }}
+                            className="w-full p-1 rounded bg-gray-700 text-white border border-red-600"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-white text-sm">Music Files (Max {user.isPremium ? 5 : 3})</label>
+                        <input
+                            type="file"
+                            accept="audio/*"
+                            onChange={handleAddMusic}
+                            className="w-full p-1 rounded bg-gray-700 text-white border border-red-600"
+                        />
+                        <ul className="text-white text-sm mt-1">
+                            {musicFiles.map((file, i) => (
+                                <li key={i}>{file.title}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div>
+                        <label className="text-white text-sm">Links (Max {user.isPremium ? 10 : 5})</label>
+                        <input
+                            type="text"
+                            placeholder="URL"
+                            value={newLinkUrl}
+                            onChange={(e) => setNewLinkUrl(e.target.value)}
+                            className="w-full p-1 rounded bg-gray-700 text-white border border-red-600 mb-1"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Label"
+                            value={newLinkLabel}
+                            onChange={(e) => setNewLinkLabel(e.target.value)}
+                            className="w-full p-1 rounded bg-gray-700 text-white border border-red-600 mb-1"
+                        />
+                        <button
+                            onClick={handleAddLink}
+                            className="w-full p-1 bg-red-600 text-white rounded hover:bg-red-700"
+                        >
+                            Add Link
+                        </button>
+                        <ul className="text-white text-sm mt-1">
+                            {links.map((link, i) => (
+                                <li key={i}>{link.label}: {link.url}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div>
+                        <label className="text-white text-sm">Gradient Start</label>
+                        <input
+                            type="color"
+                            value={gradientStart}
+                            onChange={(e) => setGradientStart(e.target.value)}
+                            className="w-full h-8 rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-white text-sm">Gradient End</label>
+                        <input
+                            type="color"
+                            value={gradientEnd}
+                            onChange={(e) => setGradientEnd(e.target.value)}
+                            className="w-full h-8 rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-white text-sm">Background Opacity ({backgroundOpacity})</label>
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.1"
+                            value={backgroundOpacity}
+                            onChange={(e) => setBackgroundOpacity(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-white text-sm">Profile Blur ({profileBlur}px)</label>
+                        <input
+                            type="range"
+                            min="0"
+                            max="10"
+                            step="1"
+                            value={profileBlur}
+                            onChange={(e) => setProfileBlur(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
+                    {user.isPremium && (
+                        <>
+                            <div>
+                                <label className="text-white text-sm">
+                                    <input
+                                        type="checkbox"
+                                        checked={gradient}
+                                        onChange={(e) => setGradient(e.target.checked)}
+                                    /> Gradient Effect
+                                </label>
+                            </div>
+                            <div>
+                                <label className="text-white text-sm">
+                                    <input
+                                        type="checkbox"
+                                        checked={wavyEffect}
+                                        onChange={(e) => setWavyEffect(e.target.checked)}
+                                    /> Wavy Effect
+                                </label>
+                            </div>
+                            <div>
+                                <label className="text-white text-sm">
+                                    <input
+                                        type="checkbox"
+                                        checked={welcomeScreen}
+                                        onChange={(e) => setWelcomeScreen(e.target.checked)}
+                                    /> Welcome Screen
+                                </label>
+                            </div>
+                            <div>
+                                <label className="text-white text-sm">Custom Badge</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter badge"
+                                    onBlur={(e) => handleAddCustomBadge(e.target.value)}
+                                    className="w-full p-1 rounded bg-gray-700 text-white border border-red-600"
+                                />
+                            </div>
+                        </>
+                    )}
+                    {!user.isPremium && (
+                        <button
+                            onClick={handlePurchasePremium}
+                            className="w-full p-1 bg-gray-700 text-white rounded border border-red-600 hover:bg-red-600"
+                        >
+                            Unlock Premium
+                        </button>
+                    )}
+                    <button
+                        onClick={handleSave}
+                        className="w-full p-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    >
+                        Save Loadout
+                    </button>
+                    <button
+                        onClick={handleLogout}
+                        className="w-full p-1 bg-gray-700 text-white rounded border border-red-600 hover:bg-red-600"
+                    >
+                        Log Out
+                    </button>
+                    <button
+                        onClick={() => setPage('dashboard')}
+                        className="w-full p-1 bg-gray-700 text-white rounded border border-red-600 hover:bg-red-600"
+                    >
+                        Full Dashboard
+                    </button>
+                </div>
+            );
+        };
+
+        // Dashboard Component
+        const Dashboard = ({ user, setUser, setPage, handleLogout }) => {
+            const [background, setBackground] = useState(user.background);
+            const [musicFiles, setMusicFiles] = useState(user.music);
+            const [links, setLinks] = useState(user.links);
+            const [gradientStart, setGradientStart] = useState(user.gradientStart);
+            const [gradientEnd, setGradientEnd] = useState(user.gradientEnd);
+            const [backgroundOpacity, setBackgroundOpacity] = useState(user.backgroundOpacity);
+            const [profileBlur, setProfileBlur] = useState(user.profileBlur);
+            const [gradient, setGradient] = useState(user.gradient);
+            const [wavyEffect, setWavyEffect] = useState(user.wavyEffect);
+            const [welcomeScreen, setWelcomeScreen] = useState(user.welcomeScreen);
+            const [newLinkUrl, setNewLinkUrl] = useState('');
+            const [newLinkLabel, setNewLinkLabel] = useState('');
+
+            const handleSave = () => {
+                try {
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    const updatedUsers = users.map(u =>
+                        u.uid === user.uid
+                            ? {
+                                  ...u,
+                                  background,
+                                  music: musicFiles,
+                                  links,
+                                  gradientStart,
+                                  gradientEnd,
+                                  backgroundOpacity,
+                                  profileBlur,
+                                  gradient,
+                                  wavyEffect,
+                                  welcomeScreen
+                              }
+                            : u
+                    );
+                    localStorage.setItem('users', JSON.stringify(updatedUsers));
+                    setUser({
+                        ...user,
+                        background,
+                        music: musicFiles,
+                        links,
+                        gradientStart,
+                        gradientEnd,
+                        backgroundOpacity,
+                        profileBlur,
+                        gradient,
+                        wavyEffect,
+                        welcomeScreen
+                    });
+                    document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(90deg, ${gradientStart}, ${gradientEnd})`);
+                    document.documentElement.style.setProperty('--background-opacity', backgroundOpacity);
+                    document.documentElement.style.setProperty('--profile-blur', `${profileBlur}px`);
+                    setPage('profile');
+                    window.history.pushState({}, '', '/');
+                } catch (e) {
+                    console.error('Save error:', e);
+                    alert('Error saving changes. Please try again.');
+                }
+            };
+
+            const handleAddMusic = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (musicFiles.length >= (user.isPremium ? 5 : 3)) {
+                    alert(user.isPremium ? 'Max 5 music files' : 'Max 3 music files. Upgrade for more.');
+                    return;
+                }
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File size must be under 2MB.');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = () => {
+                    setMusicFiles([...musicFiles, { title: file.name, src: reader.result }]);
+                };
+                reader.onerror = () => alert('Error reading file');
+                reader.readAsDataURL(file);
+            };
+
+            const handleAddLink = () => {
+                if (!newLinkUrl || !newLinkLabel) {
+                    alert('Please enter both URL and label.');
+                    return;
+                }
+                if (links.length >= (user.isPremium ? 10 : 5)) {
+                    alert(user.isPremium ? 'Max 10 links' : 'Max 5 links. Upgrade for more.');
+                    return;
+                }
+                setLinks([...links, { url: newLinkUrl, label: newLinkLabel }]);
+                setNewLinkUrl('');
+                setNewLinkLabel('');
+            };
+
+            const handlePurchasePremium = () => {
+                alert('Redirecting to payment gateway...');
+                try {
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    const updatedUsers = users.map(u =>
+                        u.uid === user.uid ? { ...u, isPremium: true } : u
+                    );
+                    localStorage.setItem('users', JSON.stringify(updatedUsers));
+                    setUser({ ...user, isPremium: true });
+                } catch (e) {
+                    console.error('Premium purchase error:', e);
+                    alert('Error processing premium purchase.');
+                }
+            };
+
+            const handleAddCustomBadge = (badge) => {
+                if (!user.isPremium) {
+                    alert('Custom badges require premium.');
+                    return;
+                }
+                if (badge) {
+                    try {
+                        const users = JSON.parse(localStorage.getItem('users') || '[]');
+                        const updatedUsers = users.map(u =>
+                            u.uid === user.uid ? { ...u, customBadges: [...u.customBadges, badge] } : u
+                        );
+                        localStorage.setItem('users', JSON.stringify(updatedUsers));
+                        setUser({ ...user, customBadges: [...user.customBadges, badge] });
+                    } catch (e) {
+                        console.error('Add badge error:', e);
+                        alert('Error adding badge.');
+                    }
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex justify-center items-start pt-20">
+                    <div className="bg-gray-800 bg-opacity-80 backdrop-blur-lg p-6 rounded-lg border-2 border-red-600 max-w-md w-full">
+                        <h2 className="text-2xl text-white mb-4">Dashboard</h2>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-white">Background Video</label>
+                                <input
+                                    type="file"
+                                    accept="video/mp4"
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file && file.size <= 10 * 1024 * 1024) {
+                                            const reader = new FileReader();
+                                            reader.onload = () => setBackground(reader.result);
+                                            reader.readAsDataURL(file);
+                                        } else {
+                                            alert('Video size must be under 10MB.');
+                                        }
+                                    }}
+                                    className="w-full p-2 rounded bg-gray-700 text-white border border-red-600"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-white">Music Files (Max {user.isPremium ? 5 : 3})</label>
+                                <input
+                                    type="file"
+                                    accept="audio/*"
+                                    onChange={handleAddMusic}
+                                    className="w-full p-2 rounded bg-gray-700 text-white border border-red-600"
+                                />
+                                <ul className="text-white mt-2">
+                                    {musicFiles.map((file, i) => (
+                                        <li key={i}>{file.title}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div>
+                                <label className="text-white">Links (Max {user.isPremium ? 10 : 5})</label>
+                                <input
+                                    type="text"
+                                    placeholder="URL"
+                                    value={newLinkUrl}
+                                    onChange={(e) => setNewLinkUrl(e.target.value)}
+                                    className="w-full p-2 rounded bg-gray-700 text-white border border-red-600 mb-1"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Label"
+                                    value={newLinkLabel}
+                                    onChange={(e) => setNewLinkLabel(e.target.value)}
+                                    className="w-full p-2 rounded bg-gray-700 text-white border border-red-600 mb-1"
+                                />
+                                <button
+                                    onClick={handleAddLink}
+                                    className="w-full p-2 bg-red-600 text-white rounded hover:bg-red-700"
+                                >
+                                    Add Link
+                                </button>
+                                <ul className="text-white mt-2">
+                                    {links.map((link, i) => (
+                                        <li key={i}>{link.label}: {link.url}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div>
+                                <label className="text-white">Gradient Start</label>
+                                <input
+                                    type="color"
+                                    value={gradientStart}
+                                    onChange={(e) => setGradientStart(e.target.value)}
+                                    className="w-full h-10 rounded"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-white">Gradient End</label>
+                                <input
+                                    type="color"
+                                    value={gradientEnd}
+                                    onChange={(e) => setGradientEnd(e.target.value)}
+                                    className="w-full h-10 rounded"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-white">Background Opacity ({backgroundOpacity})</label>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="1"
+                                    step="0.1"
+                                    value={backgroundOpacity}
+                                    onChange={(e) => setBackgroundOpacity(e.target.value)}
+                                    className="w-full"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-white">Profile Blur ({profileBlur}px)</label>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="10"
+                                    step="1"
+                                    value={profileBlur}
+                                    onChange={(e) => setProfileBlur(e.target.value)}
+                                    className="w-full"
+                                />
+                            </div>
+                            {user.isPremium && (
+                                <>
+                                    <div>
+                                        <label className="text-white">
+                                            <input
+                                                type="checkbox"
+                                                checked={gradient}
+                                                onChange={(e) => setGradient(e.target.checked)}
+                                            /> Gradient Effect
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label className="text-white">
+                                            <input
+                                                type="checkbox"
+                                                checked={wavyEffect}
+                                                onChange={(e) => setWavyEffect(e.target.checked)}
+                                            /> Wavy Effect
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label className="text-white">
+                                            <input
+                                                type="checkbox"
+                                                checked={welcomeScreen}
+                                                onChange={(e) => setWelcomeScreen(e.target.checked)}
+                                            /> Welcome Screen
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label className="text-white">Custom Badge</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter badge"
+                                            onBlur={(e) => handleAddCustomBadge(e.target.value)}
+                                            className="w-full p-2 rounded bg-gray-700 text-white border border-red-600"
+                                        />
+                                    </div>
+                                </>
+                            )}
+                            {!user.isPremium && (
+                                <button
+                                    onClick={handlePurchasePremium}
+                                    className="w-full p-2 bg-gray-700 text-white rounded border border-red-600 hover:bg-red-600"
+                                >
+                                    Unlock Premium
+                                </button>
+                            )}
+                            <button
+                                onClick={handleSave}
+                                className="w-full p-2 bg-red-600 text-white rounded hover:bg-red-700"
+                            >
+                                Save Loadout
+                            </button>
+                            <button
+                                onClick={handleLogout}
+                                className="w-full p-2 bg-gray-700 text-white rounded border border-red-600 hover:bg-red-600"
+                            >
+                                Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        try {
+            ReactDOM.render(<App />, document.getElementById('root'));
+        } catch (e) {
+            console.error('ReactDOM render error:', e);
+            document.getElementById('root').innerHTML = '<h1 class="text-white text-center mt-10">Failed to load. Reload.</h1>';
         }
-    } catch (error) {
-        console.log('Could not fetch Discord status:', error);
-        // Keep default bio if Discord API fails
-    }
-}
-
-// Function to update bio text with new typewriter effect
-function updateBioText(newText) {
-    const bioTypewriter = document.getElementById('bioTypewriter');
-    bioText = newText; // Update the global bioText variable
-    
-    // Reset the typewriter effect
-    bioIndex = 0;
-    bioDirection = 1;
-    
-    // Clear current text
-    bioTypewriter.textContent = '';
-    
-    // Restart typewriter effect
-    typeBioEffect();
-}
-
-// Function to add status indicator
-function updateStatusIndicator(status) {
-    const nameSection = document.querySelector('.name-section');
-    let indicator = document.querySelector('.status-indicator');
-    
-    if (!indicator) {
-        indicator = document.createElement('div');
-        indicator.className = 'status-indicator';
-        nameSection.appendChild(indicator);
-    }
-    
-    const statusColors = {
-        'online': '#43b581',
-        'idle': '#faa61a',
-        'dnd': '#f04747',
-        'offline': '#747f8d'
-    };
-    
-    indicator.style.cssText = `
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background-color: ${statusColors[status] || statusColors.offline};
-        border: 2px solid white;
-        position: absolute;
-        right: -15px;
-        top: 50%;
-        transform: translateY(-50%);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    `;
-}
-
-// Initialize Discord status on page load
-fetchDiscordStatus();
-
-// Refresh Discord status every 30 seconds
-setInterval(fetchDiscordStatus, 30000);
-    // Audio player controls
-    playPauseBtn.addEventListener('click', () => {
-        if (isPlaying) {
-            audioPlayer.pause();
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            isPlaying = false;
-        } else {
-            playCurrentSong();
-        }
-    });
-
-    rewindBtn.addEventListener('click', () => {
-        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-        loadSong(currentSongIndex);
-        playCurrentSong();
-    });
-
-    skipBtn.addEventListener('click', () => {
-        currentSongIndex = (currentSongIndex + 1) % songs.length;
-        loadSong(currentSongIndex);
-        playCurrentSong();
-    });
-
-    audioPlayer.addEventListener('timeupdate', () => {
-        const currentTime = audioPlayer.currentTime;
-        const duration = audioPlayer.duration || 0;
-        const progressPercent = (currentTime / duration) * 100;
-        progressFill.style.width = `${progressPercent}%`;
-        currentTimeDisplay.textContent = formatTime(currentTime);
-        totalTimeDisplay.textContent = formatTime(duration);
-    });
-
-    audioPlayer.addEventListener('ended', () => {
-        currentSongIndex = (currentSongIndex + 1) % songs.length;
-        loadSong(currentSongIndex);
-        playCurrentSong();
-    });
-
-    progressBar.addEventListener('click', (e) => {
-        const rect = progressBar.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const width = rect.width;
-        const duration = audioPlayer.duration || 0;
-        audioPlayer.currentTime = (clickX / width) * duration;
-    });
-
-    function formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        seconds = Math.floor(seconds % 60);
-        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    }
-
-    // Volume control
-    volumeSlider.addEventListener('input', () => {
-        audioPlayer.volume = volumeSlider.value / 100;
-    });
-
-    // Click effect
-    document.addEventListener('click', (e) => {
-        const shapes = ['▲', '★', '◆', '◇', '●', '○'];
-        const shape = shapes[Math.floor(Math.random() * shapes.length)];
-        const effect = document.createElement('div');
-        effect.className = 'click-effect';
-        effect.textContent = shape;
-        effect.style.left = `${e.clientX}px`;
-        effect.style.top = `${e.clientY}px`;
-        const tx = (Math.random() - 0.5) * 100;
-        const ty = (Math.random() - 0.5) * 100;
-        effect.style.setProperty('--tx', `${tx}px`);
-        effect.style.setProperty('--ty', `${ty}px`);
-        document.body.appendChild(effect);
-        setTimeout(() => effect.remove(), 1200);
-
-        // Word effect on click
-        if (wordEffectActive) return;
-        wordEffectActive = true;
-        const words = ['swag', 'cool', 'vibe', 'hype', 'lit'];
-        const word = words[Math.floor(Math.random() * words.length)];
-        const wordElement = document.createElement('div');
-        wordElement.className = 'word-element';
-        wordElement.textContent = word;
-        wordElement.style.left = `${e.clientX}px`;
-        wordElement.style.top = `${e.clientY}px`;
-        wordFxContainer.appendChild(wordElement);
-        setTimeout(() => {
-            wordElement.remove();
-            wordEffectActive = false;
-        }, 5000);
-    });
-
-    // Like and dislike buttons
-    const likeButton = document.getElementById('likeButton');
-    const dislikeButton = document.getElementById('dislikeButton');
-    const likeCountSpan = document.getElementById('likeCount');
-    const dislikeCountSpan = document.getElementById('dislikeCount');
-
-    let likes = parseInt(localStorage.getItem('likes') || '0');
-    let dislikes = parseInt(localStorage.getItem('dislikes') || '0');
-    let userHasLiked = localStorage.getItem('userHasLiked') === 'true';
-    let userHasDisliked = localStorage.getItem('userHasDisliked') === 'true';
-
-    likeCountSpan.textContent = likes;
-    dislikeCountSpan.textContent = dislikes;
-
-    if (userHasLiked) {
-        likeButton.classList.add('active');
-        dislikeButton.classList.add('disabled');
-    }
-    if (userHasDisliked) {
-        dislikeButton.classList.add('active');
-        likeButton.classList.add('disabled');
-    }
-
-    likeButton.addEventListener('click', () => {
-        if (userHasLiked || userHasDisliked) return;
-        likes++;
-        localStorage.setItem('likes', likes);
-        localStorage.setItem('userHasLiked', 'true');
-        likeCountSpan.textContent = likes;
-        likeButton.classList.add('active');
-        dislikeButton.classList.add('disabled');
-        userHasLiked = true;
-    });
-
-    dislikeButton.addEventListener('click', () => {
-        if (userHasLiked || userHasDisliked) return;
-        dislikes++;
-        localStorage.setItem('dislikes', dislikes);
-        localStorage.setItem('userHasDisliked', 'true');
-        dislikeCountSpan.textContent = dislikes;
-        dislikeButton.classList.add('active');
-        likeButton.classList.add('disabled');
-        userHasDisliked = true;
-    });
-
-    // Click counter
-    let clickCount = parseInt(localStorage.getItem('clickCount') || '0');
-    clickButton.textContent = `Clicks: ${clickCount}`;
-    clickButton.addEventListener('click', () => {
-        clickCount++;
-        localStorage.setItem('clickCount', clickCount);
-        clickButton.textContent = `Clicks: ${clickCount}`;
-    });
-
-    // View counter
-    let viewCount = parseInt(localStorage.getItem('viewCount') || '0');
-    const eyeViewCounter = document.getElementById('eyeViewCounter');
-    viewCount++;
-    localStorage.setItem('viewCount', viewCount);
-    eyeViewCounter.textContent = `Views: ${viewCount}`;
-
-    // Welcome screen
-    setTimeout(() => {
-        welcomeScreen.classList.add('hidden');
-        body.classList.remove('welcome-active');
-        startAudio();
-        autoSpinProfileImage();
-        setupAudioVisualization();
-        setupScrollAnimations();
-    }, 2000);
-
-    // Prevent zooming
-    document.addEventListener('touchstart', (e) => {
-        if (e.touches.length > 1) {
-            e.preventDefault();
-        }
-    }, { passive: false });
-
-    document.addEventListener('gesturestart', (e) => {
-        e.preventDefault();
-    });
-</script>
+    </script>
 </body>
 </html>
-
