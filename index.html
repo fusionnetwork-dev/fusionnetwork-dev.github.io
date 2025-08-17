@@ -353,7 +353,6 @@
             font-family: 'Impact', sans-serif;
             font-weight: 900;
             font-size: 24px;
-            text-transform: uppercase;
             text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
             color: rgba(255, 255, 255, 0.4);
             white-space: nowrap;
@@ -1064,7 +1063,7 @@
     <div class="version-text">v1.3.9</div>
 
     <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-text">swaqq's website</div>
+        <div class="welcome-text">welcome to swaqq's page!</div>
     </div>
 
     <div class="mini-game-container" id="miniGameContainer">
@@ -1145,7 +1144,8 @@
 
             const clowns = [
                 { name: 'Clown 1', image: 'https://i.pinimg.com/736x/80/e7/84/80e78465c0836511a21f6620573e8787.jpg' },
-                { name: 'Clown 2', image: 'https://i.pinimg.com/736x/80/e7/84/80e78465c0836511a21f6620573e8787.jpg' }
+                { name: 'Clown 2', image: 'https://i.pinimg.com/736x/77/b0/88/77b08845e2365a2d04a796e95c1a7001.jpg' },
+                { name: 'Clown 3', image: 'https://i.pinimg.com/564x/c9/11/ed/c911ed81e053f3e79392e21245084935.jpg' }
             ];
 
             const videos = [
@@ -1562,8 +1562,8 @@
                 }
             });
 
-            // Set \"Roster\" as the first song to play
-            currentSongIndex = 6; // Index of \"Roster\" in the songs array
+            // Set "Roster" as the first song to play
+            currentSongIndex = 6; // Index of "Roster" in the songs array
             loadSong(currentSongIndex);
 
             // Ensure audio context resumes on user interaction for mobile devices
