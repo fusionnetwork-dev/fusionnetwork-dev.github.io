@@ -13,19 +13,12 @@
     <title>ur da best</title>
     <link rel="icon" href="https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png?ex=689713b3&is=6895c233&hm=19e2f541e871739a90df5d1f13b4aff59e6152a70d1c9f8688403981ade3ffd7&" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             cursor: url('https://r2.guns.lol/d9488425-e8da-4556-98ef-b37992bc279a.webp') 16 16, auto;
-            animation: cursorPulse 1s infinite alternate;
-        }
-
-        @keyframes cursorPulse {
-            0% { filter: brightness(1); }
-            100% { filter: brightness(1.5); }
         }
 
         *::selection {
@@ -192,7 +185,6 @@
             opacity: 0.7;
             animation: fogScroll 20s ease-in-out infinite;
             filter: blur(35px);
-            background-attachment: fixed;
         }
 
         .fog-layer {
@@ -211,7 +203,6 @@
             opacity: 0.55;
             animation: fogDrift 30s ease-in-out infinite;
             filter: blur(30px);
-            background-attachment: fixed;
         }
 
         @keyframes fogScroll {
@@ -509,7 +500,7 @@
             font-size: 24px;
             text-transform: uppercase;
             text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-            color: rgba(255, 255, 255, 0.4);
+           color: rgba(255, 255, 255, 0.4);
             white-space: nowrap;
             animation: bounceToAudio 0.5s ease-in-out infinite, fadeAway 5s ease-out forwards;
         }
@@ -735,38 +726,6 @@
             100% { border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1; }
         }
 
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        }
-
-        .profile-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-        }
-
-        .flip-card-front {
-            background-color: #bbb;
-            color: black;
-        }
-
-        .flip-card-back {
-            background-color: #2980b9;
-            color: white;
-            transform: rotateY(180deg);
-        }
-
         .profile-image {
             width: 80px;
             height: 80px;
@@ -945,37 +904,6 @@
 
         .badge:hover {
             transform: translateY(-2px);
-        }
-
-        .achievements {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
-        .achievement {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            animation: gradientText 6s ease infinite;
-            background-size: 200% 200%;
-            transition: transform 0.3s ease;
-            opacity: 0.5;
-        }
-
-        .achievement.unlocked {
-            opacity: 1;
         }
 
         .audio-player {
@@ -1331,29 +1259,6 @@
             }
         }
 
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -3;
-        }
-
-        #weather-widget {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 8px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            font-size: 12px;
-        }
-
         @media (max-width: 480px) {
             body {
                 align-items: flex-start;
@@ -1554,7 +1459,6 @@
     </style>
 </head>
 <body class="welcome-active">
-    <div id="particles-js"></div>
     <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-text">hello, hi, konnichiwa</div>
     </div>
@@ -1613,124 +1517,112 @@
 
     <div class="container">
         <div class="profile-card" id="profileCard">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <div class="profile-image" id="profileImage"></div>
+            <div class="profile-image" id="profileImage"></div>
             
-                    <div class="name-section">
-                        <span class="name" id="typewriter">
-                            <span>s</span><span>w</span><span>a</span><span>q</span><span>q</span>
-                            <span class="uid">UID inf</span>
-                        </span>
-                        <div class="sparkle-effect" style="left: -25px; top: -10px; animation-delay: 0s;"></div>
-                        <div class="sparkle-effect" style="right: -25px; top: -10px; animation-delay: 0.5s;"></div>
-                        <div class="sparkle-effect" style="left: -25px; bottom: -10px; animation-delay: 1s;"></div>
-                        <div class="sparkle-effect" style="right: -25px; bottom: -10px; animation-delay: 1.5s;"></div>
+            <div class="name-section">
+                <span class="name" id="typewriter">
+                    <span>s</span><span>w</span><span>a</span><span>q</span><span>q</span>
+                    <span class="uid">UID inf</span>
+                </span>
+                <div class="sparkle-effect" style="left: -25px; top: -10px; animation-delay: 0s;"></div>
+                <div class="sparkle-effect" style="right: -25px; top: -10px; animation-delay: 0.5s;"></div>
+                <div class="sparkle-effect" style="left: -25px; bottom: -10px; animation-delay: 1s;"></div>
+                <div class="sparkle-effect" style="right: -25px; bottom: -10px; animation-delay: 1.5s;"></div>
+            </div>
+            
+            <div class="badges">
+                <span class="badge owner">
+                    <i class="fas fa-crown"></i>
+                    Owner
+                </span>
+                <span class="badge swag">
+                    <i class="fas fa-fire"></i>
+                    #swag
+                </span>
+                <span class="badge hasswag">
+                    <i class="fas fa-star"></i>
+                    #hasswag
+                </span>
+                <span class="badge igotswag">
+                    <i class="fas fa-trophy"></i>
+                    #igotswag
+                </span>
+                <span class="badge swaggedup">
+                    <i class="fas fa-gem"></i>
+                    #swaggedup
+                </span>
+            </div>
+            
+            <p class="bio" id="bioTypewriter"></p>
+            
+            <div class="links-container">
+                <a href="https://www.roblox.com/users/8156657037/profile" class="link-button">
+                    <div class="link-icon">
+                        <img src="https://www.citypng.com/public/uploads/preview/hd-roblox-white-symbol-sign-icon-logo-png-701751694787435ra1r2desi8.png" alt="Roblox" class="link-icon-img">
                     </div>
-            
-                    <div class="badges">
-                        <span class="badge owner">
-                            <i class="fas fa-crown"></i>
-                            Owner
-                        </span>
-                        <span class="badge swag">
-                            <i class="fas fa-fire"></i>
-                            #swag
-                        </span>
-                        <span class="badge hasswag">
-                            <i class="fas fa-star"></i>
-                            #hasswag
-                        </span>
-                        <span class="badge igotswag">
-                            <i class="fas fa-trophy"></i>
-                            #igotswag
-                        </span>
-                        <span class="badge swaggedup">
-                            <i class="fas fa-gem"></i>
-                            #swaggedup
-                        </span>
+                    <span class="link-text">Roblox</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                
+                <a href="https://discord.com/users/1084576683262230548" class="link-button">
+                    <div class="link-icon">
+                        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-white-icon.png" alt="Discord" class="link-icon-img">
                     </div>
-            
-                    <p class="bio" id="bioTypewriter"></p>
-            
-                    <div class="links-container">
-                        <a href="https://www.roblox.com/users/8156657037/profile" class="link-button">
-                            <div class="link-icon">
-                                <img src="https://www.citypng.com/public/uploads/preview/hd-roblox-white-symbol-sign-icon-logo-png-701751694787435ra1r2desi8.png" alt="Roblox" class="link-icon-img">
-                            </div>
-                            <span class="link-text">Roblox</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        
-                        <a href="https://discord.com/users/1084576683262230548" class="link-button">
-                            <div class="link-icon">
-                                <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-white-icon.png" alt="Discord" class="link-icon-img">
-                            </div>
-                            <span class="link-text">Discord</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        
-                        <a href="https://www.youtube.com/@faintche" class="link-button">
-                            <div class="link-icon">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/YouTube_light_icon_%282017%29.svg/1280px-YouTube_light_icon_%282017%29.svg.png" alt="YouTube" class="link-icon-img">
-                            </div>
-                            <span class="link-text">YouTube</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
+                    <span class="link-text">Discord</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                
+                <a href="https://www.youtube.com/@faintche" class="link-button">
+                    <div class="link-icon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/YouTube_light_icon_%282017%29.svg/1280px-YouTube_light_icon_%282017%29.svg.png" alt="YouTube" class="link-icon-img">
                     </div>
+                    <span class="link-text">YouTube</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
             
-                    <div class="audio-player">
-                        <div class="audio-info">
-                            <div class="song-title" id="songTitle"> kills</div>
-                            <div class="artist-name">Now Playing</div>
-                            <div class="loading-spinner" id="loadingSpinner"></div>
-                        </div>
-                        <div class="audio-controls">
-                            <button class="control-btn" id="rewindBtn">
-                                <i class="fas fa-backward"></i>
-                            </button>
-                            <button class="control-btn play-pause-btn" id="playPauseBtn">
-                                <i class="fas fa-play"></i>
-                            </button>
-                            <button class="control-btn" id="skipBtn">
-                                <i class="fas fa-forward"></i>
-                            </button>
-                        </div>
-                        <div class="audio-progress">
-                            <span class="time-display" id="currentTime">0:00</span>
-                            <div class="progress-bar" id="progressBar">
-                                <div class="progress-fill" id="progressFill"></div>
-                            </div>
-                            <span class="time-display" id="totalTime">0:00</span>
-                        </div>
-                        <canvas id="audioVisualizer" class="audio-visualizer"></canvas>
-                        <audio id="audioPlayer" preload="auto">
-                            <source src="assets/kills.mp3" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>
-            
-                    <button class="click-game-button" id="clickButton">Clicks: 0</button>
-            
-                    <div class="like-dislike-container">
-                        <button class="like-button" id="likeButton">
-                            <i class="fas fa-thumbs-up"></i>
-                            <span id="likeCount">0</span>
-                        </button>
-                        <button class="dislike-button" id="dislikeButton">
-                            <i class="fas fa-thumbs-down"></i>
-                            <span id="dislikeCount">0</span>
-                        </button>
-                    </div>
-                    <div class="achievements" id="achievements">
-                        <span class="achievement" id="ach1">Achievement 1</span>
-                        <span class="achievement" id="ach2">Achievement 2</span>
-                    </div>
-                    <div id="weather-widget">Loading weather...</div>
+            <div class="audio-player">
+                <div class="audio-info">
+                    <div class="song-title" id="songTitle"> kills</div>
+                    <div class="artist-name">Now Playing</div>
+                    <div class="loading-spinner" id="loadingSpinner"></div>
                 </div>
-                <div class="flip-card-back">
-                    <p>Additional Info</p>
+                <div class="audio-controls">
+                    <button class="control-btn" id="rewindBtn">
+                        <i class="fas fa-backward"></i>
+                    </button>
+                    <button class="control-btn play-pause-btn" id="playPauseBtn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn" id="skipBtn">
+                        <i class="fas fa-forward"></i>
+                    </button>
                 </div>
+                <div class="audio-progress">
+                    <span class="time-display" id="currentTime">0:00</span>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="time-display" id="totalTime">0:00</span>
+                </div>
+                <canvas id="audioVisualizer" class="audio-visualizer"></canvas>
+                <audio id="audioPlayer" preload="auto">
+                    <source src="assets/kills.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            
+            <button class="click-game-button" id="clickButton">Clicks: 0</button>
+            
+            <div class="like-dislike-container">
+                <button class="like-button" id="likeButton">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span id="likeCount">0</span>
+                </button>
+                <button class="dislike-button" id="dislikeButton">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span id="dislikeCount">0</span>
+                </button>
             </div>
         </div>
     </div>
@@ -1754,120 +1646,7 @@
         <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
     </svg>
 
-    <audio id="hoverSound" src="assets/hover.mp3"></audio>
-    <audio id="clickSound" src="assets/click.mp3"></audio>
-
     <script>
-        // Particles
-        particlesJS("particles-js", {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
-                    }
-                },
-                "color": {
-                    "value": "#ffffff"
-                },
-                "shape": {
-                    "type": "circle"
-                },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false
-                },
-                "size": {
-                    "value": 3,
-                    "random": true
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#ffffff",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 6,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "repulse"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    },
-                    "resize": true
-                },
-                "modes": {
-                    "repulse": {
-                        "distance": 200,
-                        "duration": 0.4
-                    },
-                    "push": {
-                        "particles_nb": 4
-                    }
-                }
-            },
-            "retina_detect": true
-        });
-
-        // Sound effects
-        const hoverSound = document.getElementById('hoverSound');
-        const clickSound = document.getElementById('clickSound');
-
-        document.querySelectorAll('button, a, .profile-image').forEach(el => {
-            el.addEventListener('mouseover', () => hoverSound.play());
-            el.addEventListener('click', () => clickSound.play());
-        });
-
-        // Achievements
-        let achievements = JSON.parse(localStorage.getItem('achievements')) || {ach1: false, ach2: false};
-
-        function updateAchievements() {
-            document.getElementById('ach1').classList.toggle('unlocked', achievements.ach1);
-            document.getElementById('ach2').classList.toggle('unlocked', achievements.ach2);
-        }
-
-        function unlockAchievement(id) {
-            achievements[id] = true;
-            localStorage.setItem('achievements', JSON.stringify(achievements));
-            updateAchievements();
-        }
-
-        // Example unlock on 10 clicks
-        let totalClicks = 0;
-        document.addEventListener('click', () => {
-            totalClicks++;
-            if (totalClicks === 10) unlockAchievement('ach1');
-            if (totalClicks === 20) unlockAchievement('ach2');
-        });
-
-        updateAchievements();
-
-        // Weather
-        fetch('https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true')
-            .then(response => response.json())
-            .then(data => {
-                const weather = data.current_weather;
-                document.getElementById('weather-widget').innerText = `${weather.temperature}°C, ${weather.weathercode}`;
-            })
-            .catch(() => document.getElementById('weather-widget').innerText = 'Weather unavailable');
-
-        // Rest of the script remains the same
         // Detect mobile device
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
