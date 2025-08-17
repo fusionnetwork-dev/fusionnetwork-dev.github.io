@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta property="og:title" content="swaqq's creation">
-    <meta property="og:description" content="my very own biolink page">
+    <meta property="og:title" content="created by swaqq">
+    <meta property="og:description" content="da best">
     <meta property="og:url" content="https://swaqq.xyz">
-    <meta property="og:image" content="https://i.pinimg.com/736x/40/3b/fa/403bfa953c43f049260d2398947e4704.jpg">
+    <meta property="og:image" content="https://i.pinimg.com/1200x/45/2e/d1/452ed1a394f7b5db992b14b3d8dffe51.jpg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#808080">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>swaqq's creation</title>
+    <title>ur the best // swaqq</title>
     <link rel="icon" href="https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png?ex=689713b3&is=6895c233&hm=19e2f541e871739a90df5d1f13b4aff59e6152a70d1c9f8688403981ade3ffd7&" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -511,33 +511,45 @@
             padding: 15px;
         }
 
-        .marquee-container {
-            position: fixed;
-            top: 10px;
-            left: 0;
-            width: 100%;
-            overflow: hidden;
-            z-index: 10;
-        }
 
-        .marquee {
-            display: inline-block;
-            font-size: 20px;
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            white-space: nowrap;
-            animation: marquee 15s linear infinite, gradientText 6s ease infinite;
-            padding-left: 100%;
-            background-size: 200% 200%;
-        }
+.marquee-container:first-child {
+    position: fixed;
+    top: 10px;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    z-index: 10;
+}
 
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-200%); }
-        }
+
+.marquee-container:last-child {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    z-index: 10;
+}
+
+
+.marquee {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 700;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+    animation: marquee 15s linear infinite, gradientText 6s ease infinite;
+    padding-left: 100%;
+    background-size: 200% 200%;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-200%); }
+}
 
         .container {
             max-width: 360px;
@@ -1397,6 +1409,86 @@
                 height: 16px;
             }
         }
+        .update-log {
+    position: fixed;
+    top: 150px;
+    right: 10px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.update-log-toggle {
+    background: var(--primary-gradient);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.update-log-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.update-log-content {
+    display: none;
+    padding: 10px;
+    max-width: 250px;
+    font-size: 12px;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.update-log-content.active {
+    display: block;
+}
+
+.update-log-content h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.update-log-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.update-log-content li {
+    margin-bottom: 6px;
+}
+
+@media (max-width: 480px) {
+    .update-log {
+        top: 120px;
+        right: 8px;
+    }
+
+    .update-log-toggle {
+        font-size: 10px;
+        padding: 5px 10px;
+    }
+
+    .update-log-content {
+        max-width: 200px;
+        font-size: 10px;
+    }
+
+    .update-log-content h3 {
+        font-size: 12px;
+    }
+}
     </style>
 </head>
 <body class="welcome-active">
@@ -1406,6 +1498,10 @@
 
     <div class="marquee-container">
         <div class="marquee">welcome to swaqq's page gng :3</div>
+    </div>
+    
+    <div class="marquee-container">
+        <div class="marquee">i luv you all</div>
     </div>
 
     <video id="backgroundVideo" autoplay loop playsinline style="display: none;">
@@ -1429,7 +1525,7 @@
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.2.6</div>
+    <div class="version-text">v1.3.1</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -1453,9 +1549,19 @@
         <button class="theme-button" data-theme="swaqfirstpersonal">swaqq's 1st preset</button>
         <button class="theme-button" data-theme="swaqsecondpersonal">swaqq's 2nd preset</button>
     </div>
-
-    <div class="clown-list">Clown list:</div>
-    <img src="https://cdn.discordapp.com/attachments/1400222624956547182/1403220757181632662/image.png?ex=6896c2ab&is=6895712b&hm=3e45282e323925a70e0155c72c5c68d6b8fd0e03280be253eae47e805d113856&" alt="Clown Image" class="clown-image">
+    
+<div class="update-log" id="updateLog">
+    <button class="update-log-toggle" id="updateLogToggle">Update Log</button>
+    <div class="update-log-content" id="updateLogContent">
+        <h3>Update Log</h3>
+        <ul>
+            <li><strong>v1.3.1</strong> - Added second marquee at bottom, improved theme switching (Aug 16, 2025)</li>
+            <li><strong>v1.3.0</strong> - Introduced mini-game feature, enhanced audio visualizer (Jul 2025)</li>
+            <li><strong>v1.2.0</strong> - Added theme presets, cursor trail effects (Jun 2025)</li>
+        </ul>
+    </div>
+</div>
+  
 
     <div class="container">
         <div class="profile-card" id="profileCard">
@@ -1651,7 +1757,7 @@
         });
 
         // Set default theme
-        const savedTheme = localStorage.getItem('theme') || 'monochrome';
+        const savedTheme = localStorage.getItem('theme') || 'swaqfirstpersonal';
         document.body.className = savedTheme;
         document.querySelector(`.theme-button[data-theme="${savedTheme}"]`).classList.add('active');
 
@@ -2071,8 +2177,15 @@
     });
 
     // Initialize scroll animations
-    setupScrollAnimations();
+setupScrollAnimations();
+ const updateLogToggle = document.getElementById('updateLogToggle');
+const updateLogContent = document.getElementById('updateLogContent');
+
+updateLogToggle.addEventListener('click', () => {
+    updateLogContent.classList.toggle('active');
+});
 </script>
 </body>
 </html>
+
 
