@@ -124,6 +124,17 @@
             --smoke-color: rgba(216, 180, 254, 0.6);
             --smoke-center: rgba(107, 114, 142, 0.15);
         }
+        body.swaqfirstpersonal {
+            --primary-gradient: linear-gradient(90deg, #991914, #eeeeee);
+            --smoke-color: rgba(188, 2, 0, 0.8);
+            --smoke-center: rgba(236, 236, 236, 0.8);
+        }
+        
+        body.swaqsecondpersonal {
+            --primary-gradient: linear-gradient(90deg, #991914, #2b2b2b);
+            --smoke-color: rgba(188, 2, 0, 0.8);
+            --smoke-center: rgba(41, 41, 41, 0.97);
+        }
 
         video#backgroundVideo {
             position: fixed;
@@ -1390,11 +1401,11 @@
 </head>
 <body class="welcome-active">
     <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-text">Welcome to my creation</div>
+        <div class="welcome-text">hello, hi, konnichiwa</div>
     </div>
 
     <div class="marquee-container">
-        <div class="marquee">I made this as a fun project, hope u enjoy ~ swaqq</div>
+        <div class="marquee">welcome to swaqq's page gng :3</div>
     </div>
 
     <video id="backgroundVideo" autoplay loop playsinline style="display: none;">
@@ -1426,19 +1437,21 @@
     </div>
 
     <div class="theme-switcher">
-        <button class="theme-button" data-theme="dark">Dark</button>
-        <button class="theme-button" data-theme="neon">Neon</button>
-        <button class="theme-button" data-theme="retro">Retro</button>
-        <button class="theme-button" data-theme="pastel">Pastel</button>
-        <button class="theme-button" data-theme="cyberpunk">Cyberpunk</button>
-        <button class="theme-button" data-theme="vaporwave">Vaporwave</button>
-        <button class="theme-button" data-theme="forest">Forest</button>
-        <button class="theme-button" data-theme="ocean">Ocean</button>
-        <button class="theme-button" data-theme="sunset">Sunset</button>
-        <button class="theme-button" data-theme="monochrome">Monochrome</button>
-        <button class="theme-button" data-theme="candy">Candy</button>
-        <button class="theme-button" data-theme="galaxy">Galaxy</button>
-        <button class="theme-button" data-theme="lavender">Lavender</button>
+        <button class="theme-button" data-theme="dark">dark</button>
+        <button class="theme-button" data-theme="neon">neon</button>
+        <button class="theme-button" data-theme="retro">retro</button>
+        <button class="theme-button" data-theme="pastel">pastel</button>
+        <button class="theme-button" data-theme="cyberpunk">cyberpunk</button>
+        <button class="theme-button" data-theme="vaporwave">vaporwave</button>
+        <button class="theme-button" data-theme="forest">forest</button>
+        <button class="theme-button" data-theme="ocean">ocean</button>
+        <button class="theme-button" data-theme="sunset">sunset</button>
+        <button class="theme-button" data-theme="monochrome">mono</button>
+        <button class="theme-button" data-theme="candy">candy</button>
+        <button class="theme-button" data-theme="galaxy">galaxy</button>
+        <button class="theme-button" data-theme="lavender">lavender</button>
+        <button class="theme-button" data-theme="swaqfirstpersonal">swaqq's 1st preset</button>
+        <button class="theme-button" data-theme="swaqsecondpersonal">swaqq's 2nd preset</button>
     </div>
 
     <div class="clown-list">Clown list:</div>
@@ -1638,7 +1651,7 @@
         });
 
         // Set default theme
-        const savedTheme = localStorage.getItem('theme') || 'dark';
+        const savedTheme = localStorage.getItem('theme') || 'monochrome';
         document.body.className = savedTheme;
         document.querySelector(`.theme-button[data-theme="${savedTheme}"]`).classList.add('active');
 
@@ -1922,7 +1935,7 @@
     }
 
     // Bio text
-    const bioText = "Crafting digital vibes with a touch of swag.";
+    const bioText = "i got swag";
     typeWriter(bioTypewriter, bioText, 100, () => {
         bioTypewriter.classList.add('visible');
     });
@@ -2062,3 +2075,4 @@
 </script>
 </body>
 </html>
+
