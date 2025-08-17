@@ -124,6 +124,7 @@
             --smoke-color: rgba(216, 180, 254, 0.6);
             --smoke-center: rgba(107, 114, 142, 0.15);
         }
+
         body.swaqfirstpersonal {
             --primary-gradient: linear-gradient(90deg, #991914, #eeeeee);
             --smoke-color: rgba(188, 2, 0, 0.8);
@@ -511,45 +512,48 @@
             padding: 15px;
         }
 
+        .marquee-container.top {
+            position: fixed;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            z-index: 10;
+        }
 
-.marquee-container:first-child {
-    position: fixed;
-    top: 10px;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    z-index: 10;
-}
+        .marquee-container.bottom {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            z-index: 10;
+        }
 
+        .marquee {
+            display: inline-block;
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            white-space: nowrap;
+            animation: marquee 15s linear infinite, gradientText 6s ease infinite;
+            padding-left: 100%;
+            background-size: 200% 200%;
+        }
 
-.marquee-container:last-child {
-    position: fixed;
-    bottom: 10px;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    z-index: 10;
-}
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-200%); }
+        }
 
-
-.marquee {
-    display: inline-block;
-    font-size: 20px;
-    font-weight: 700;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    white-space: nowrap;
-    animation: marquee 15s linear infinite, gradientText 6s ease infinite;
-    padding-left: 100%;
-    background-size: 200% 200%;
-}
-
-@keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-200%); }
-}
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         .container {
             max-width: 360px;
@@ -769,12 +773,6 @@
         @keyframes wave {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-5px); }
-        }
-
-        @keyframes gradientText {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .name:hover .uid {
@@ -1212,6 +1210,66 @@
             }
         }
 
+        .update-log {
+            position: fixed;
+            top: 150px;
+            right: 10px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .update-log-toggle {
+            background: var(--primary-gradient);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .update-log-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .update-log-content {
+            display: none;
+            padding: 10px;
+            max-width: 250px;
+            font-size: 12px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .update-log-content.active {
+            display: block;
+        }
+
+        .update-log-content h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .update-log-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .update-log-content li {
+            margin-bottom: 6px;
+        }
+
         @media (max-width: 480px) {
             body {
                 align-items: flex-start;
@@ -1408,87 +1466,26 @@
                 width: 16px;
                 height: 16px;
             }
+
+            .update-log {
+                top: 120px;
+                right: 8px;
+            }
+
+            .update-log-toggle {
+                font-size: 10px;
+                padding: 5px 10px;
+            }
+
+            .update-log-content {
+                max-width: 200px;
+                font-size: 10px;
+            }
+
+            .update-log-content h3 {
+                font-size: 12px;
+            }
         }
-        .update-log {
-    position: fixed;
-    top: 150px;
-    right: 10px;
-    z-index: 10;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
-}
-
-.update-log-toggle {
-    background: var(--primary-gradient);
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 8px;
-    color: white;
-    font-weight: 600;
-    font-size: 12px;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.update-log-toggle:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.update-log-content {
-    display: none;
-    padding: 10px;
-    max-width: 250px;
-    font-size: 12px;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.update-log-content.active {
-    display: block;
-}
-
-.update-log-content h3 {
-    font-size: 14px;
-    margin-bottom: 8px;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.update-log-content ul {
-    list-style: none;
-    padding: 0;
-}
-
-.update-log-content li {
-    margin-bottom: 6px;
-}
-
-@media (max-width: 480px) {
-    .update-log {
-        top: 120px;
-        right: 8px;
-    }
-
-    .update-log-toggle {
-        font-size: 10px;
-        padding: 5px 10px;
-    }
-
-    .update-log-content {
-        max-width: 200px;
-        font-size: 10px;
-    }
-
-    .update-log-content h3 {
-        font-size: 12px;
-    }
-}
     </style>
 </head>
 <body class="welcome-active">
@@ -1496,24 +1493,13 @@
         <div class="welcome-text">hello, hi, konnichiwa</div>
     </div>
 
-    <div class="marquee-container">
+    <div class="marquee-container top">
         <div class="marquee">welcome to swaqq's page gng :3</div>
     </div>
-    
-    <div class="marquee-container">
-        <div class="marquee">i luv you all</div>
-    </div>
 
-    <video id="backgroundVideo" autoplay loop playsinline style="display: none;">
-        <source src="assets/popstar.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    
     <div class="vintage-overlay"></div>
-    
     <div class="foggy-background" id="foggyBackground"></div>
     <div class="fog-layer"></div>
-
     <div class="floating-elements">
         <i class="floating-element fas fa-cross"></i>
         <i class="floating-element fas fa-cross"></i>
@@ -1522,16 +1508,12 @@
         <i class="floating-element fas fa-cross"></i>
         <i class="floating-element fas fa-cross"></i>
     </div>
-
     <div class="word-fx" id="wordFx"></div>
-
     <div class="version-text">v1.3.1</div>
-
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
         <input type="range" id="volumeSlider" min="0" max="100" value="70">
     </div>
-
     <div class="theme-switcher">
         <button class="theme-button" data-theme="dark">dark</button>
         <button class="theme-button" data-theme="neon">neon</button>
@@ -1549,24 +1531,20 @@
         <button class="theme-button" data-theme="swaqfirstpersonal">swaqq's 1st preset</button>
         <button class="theme-button" data-theme="swaqsecondpersonal">swaqq's 2nd preset</button>
     </div>
-    
-<div class="update-log" id="updateLog">
-    <button class="update-log-toggle" id="updateLogToggle">Update Log</button>
-    <div class="update-log-content" id="updateLogContent">
-        <h3>Update Log</h3>
-        <ul>
-            <li><strong>v1.3.1</strong> - Added second marquee at bottom, improved theme switching (Aug 16, 2025)</li>
-            <li><strong>v1.3.0</strong> - Introduced mini-game feature, enhanced audio visualizer (Jul 2025)</li>
-            <li><strong>v1.2.0</strong> - Added theme presets, cursor trail effects (Jun 2025)</li>
-        </ul>
+    <div class="update-log" id="updateLog">
+        <button class="update-log-toggle" id="updateLogToggle">Update Log</button>
+        <div class="update-log-content" id="updateLogContent">
+            <h3>Update Log</h3>
+            <ul>
+                <li><strong>v1.3.1</strong> - Added second marquee at bottom, improved theme switching (Aug 16, 2025)</li>
+                <li><strong>v1.3.0</strong> - Introduced mini-game feature, enhanced audio visualizer (Jul 2025)</li>
+                <li><strong>v1.2.0</strong> - Added theme presets, cursor trail effects (Jun 2025)</li>
+            </ul>
+        </div>
     </div>
-</div>
-  
-
     <div class="container">
         <div class="profile-card" id="profileCard">
             <div class="profile-image" id="profileImage"></div>
-            
             <div class="name-section">
                 <span class="name" id="typewriter">
                     <span>s</span><span>w</span><span>a</span><span>q</span><span>q</span>
@@ -1577,7 +1555,6 @@
                 <div class="sparkle-effect" style="left: -25px; bottom: -10px; animation-delay: 1s;"></div>
                 <div class="sparkle-effect" style="right: -25px; bottom: -10px; animation-delay: 1.5s;"></div>
             </div>
-            
             <div class="badges">
                 <span class="badge owner">
                     <i class="fas fa-crown"></i>
@@ -1600,9 +1577,7 @@
                     #swaggedup
                 </span>
             </div>
-            
             <p class="bio" id="bioTypewriter"></p>
-            
             <div class="links-container">
                 <a href="https://www.roblox.com/users/8156657037/profile" class="link-button">
                     <div class="link-icon">
@@ -1611,7 +1586,6 @@
                     <span class="link-text">Roblox</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
-                
                 <a href="https://discord.com/users/1084576683262230548" class="link-button">
                     <div class="link-icon">
                         <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-white-icon.png" alt="Discord" class="link-icon-img">
@@ -1619,7 +1593,6 @@
                     <span class="link-text">Discord</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
-                
                 <a href="https://www.youtube.com/@faintche" class="link-button">
                     <div class="link-icon">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/YouTube_light_icon_%282017%29.svg/1280px-YouTube_light_icon_%282017%29.svg.png" alt="YouTube" class="link-icon-img">
@@ -1628,7 +1601,6 @@
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
-            
             <div class="audio-player">
                 <div class="audio-info">
                     <div class="song-title" id="songTitle">Kills</div>
@@ -1659,9 +1631,7 @@
                     Your browser does not support the audio element.
                 </audio>
             </div>
-            
             <button class="click-game-button" id="clickButton">Clicks: 0</button>
-            
             <div class="like-dislike-container">
                 <button class="like-button" id="likeButton">
                     <i class="fas fa-thumbs-up"></i>
@@ -1674,13 +1644,14 @@
             </div>
         </div>
     </div>
-
+    <div class="marquee-container bottom">
+        <div class="marquee">i luv you all</div>
+    </div>
     <div id="miniGameContainer" class="mini-game-container">
         <canvas id="miniGameCanvas" class="mini-game-canvas"></canvas>
         <div id="gameScore" class="game-score">Score: 0</div>
         <button id="closeGame" class="close-game-button">Close</button>
     </div>
-
     <svg class="eye-logo" viewBox="0 0 100 100">
         <ellipse cx="50" cy="50" rx="40" ry="25" fill="none" stroke="url(#eyeGradient)" stroke-width="5"/>
         <circle cx="50" cy="50" r="15" fill="#ffffff"/>
@@ -1693,7 +1664,10 @@
         </defs>
         <text x="50" y="90" text-anchor="middle" font-size="12" fill="rgba(255, 255, 255, 0.95)" text-shadow="0 1px 2px rgba(0, 0, 0, 0.1)" id="eyeViewCounter">Views: 0</text>
     </svg>
-
+    <video id="backgroundVideo" autoplay loop playsinline style="display: none;">
+        <source src="assets/popstar.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     <script>
         // Detect mobile device
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -1914,208 +1888,125 @@
         });
 
         // Scroll-triggered animations
-        function setupScrollAnimations() {
-            const elements = document.querySelectorAll('.badge, .bio, .audio-player, .link-button, .click-game-button, .like-dislike-container');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.1 });
-            elements.forEach(el => observer.observe(el));
-        }
-
-        // Function to shuffle array
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        // Function to load a song
-        function loadSong(index) {
-            const song = songs[index];
-            audioPlayer.src = song.src;
-            songTitle.textContent = song.title;
-            loadingSpinner.classList.add('active');
-            audioPlayer.load();
-            retryAttempts = 0;
-        }
-
-        // Function to play the current song with retry logic
-        function playCurrentSong() {
-            songTitle.textContent = songs[currentSongIndex].title;
-            const playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    isPlaying = true;
-                    retryAttempts = 0;
-                    loadingSpinner.classList.remove('active');
-                    if (!audioContext) setupAudioVisualization();
-                }).catch(error => {
-                    console.log('Audio play failed:', error);
-                    if (retryAttempts < maxRetries) {
-                        retryAttempts++;
-                        songTitle.textContent = 'Loading...';
-                        loadingSpinner.classList.add('active');
-                        setTimeout(() => {
-                            loadSong(currentSongIndex);
-                            playCurrentSong();
-                        }, 1000);
-                    } else {
-                        songTitle.textContent = songs[currentSongIndex].title;
-                        isPlaying = false;
-                        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        loadingSpinner.classList.remove('active');
-                    }
-                });
-            }
-        }
-
-        // Set initial volumes
-        video.volume = 0.5;
-        video.muted = true;
-        audioPlayer.volume = 0.7;
-
-        // Enable background video
-        video.style.display = 'block';
-        video.muted = true;
-        video.play().catch(error => console.log('Autoplay blocked:', error));
-
-        // Start audio after welcome screen
-        function startAudio() {
-            loadSong(currentSongIndex);
-            playCurrentSong();
-        }
-
-        // Profile image rotation
-        function autoSpinProfileImage() {
-            profileImage.classList.remove('spin');
-            void profileImage.offsetWidth;
-            profileImage.classList.add('spin');
-            setTimeout(autoSpinProfileImage, 15000);
-        }
-
-        // Parallax effect
-        let lastUpdate = 0;
-        function handleParallax(e) {
-            if (isMobile) return;
-            const now = performance.now();
-            if (now - lastUpdate < 33) return;
-            lastUpdate = now;
-            const rect = profileCard.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const mouseX = e.clientX - centerX;
-            const mouseY = e.clientY - centerY;
-            const maxTilt = 8;
-            const rotateX = (mouseY / rect.height) * -maxTilt;
-            const rotateY = (mouseX / rect.width) * maxTilt;
-            profileCard.style.transform = `perspective(1000px) translateY(-5px) scale(1.03) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            profileCard.style.transition = 'transform 0.1s ease-out';
-        }
-
-        if (!isMobile) {
-            profileCard.addEventListener('mousemove', handleParallax);
-            profileCard.addEventListener('mouseleave', () => {
-                profileCard.style.transform = 'translateY(0) scale(1)';
-                profileCard.style.transition = 'transform 0.3s ease';
+      function setupScrollAnimations() {
+        const elements = document.querySelectorAll('.badge, .bio, .audio-player, .link-button, .click-game-button, .like-dislike-container');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
             });
-        }
-    function typeWriter(element, text, speed, callback) {
+        }, { threshold: 0.1 });
+
+        elements.forEach(element => observer.observe(element));
+    }
+
+    // Typewriter effect for bio
+    function typewriterEffect(element, text, speed = 50) {
         let i = 0;
+        element.innerHTML = '';
         function type() {
             if (i < text.length) {
                 element.innerHTML += text.charAt(i);
                 i++;
                 setTimeout(type, speed);
-            } else if (callback) {
-                callback();
+            } else {
+                element.classList.add('visible');
             }
         }
         type();
     }
 
-    // Bio text
-    const bioText = "i got swag";
-    typeWriter(bioTypewriter, bioText, 100, () => {
-        bioTypewriter.classList.add('visible');
+    // Audio player controls
+    function loadSong(index) {
+        const song = songs[index];
+        songTitle.textContent = song.title;
+        audioPlayer.src = song.src;
+        audioPlayer.load();
+        loadingSpinner.classList.add('active');
+        retryAttempts = 0;
+        audioPlayer.play().then(() => {
+            isPlaying = true;
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            loadingSpinner.classList.remove('active');
+            wordEffectActive = true;
+            setupAudioVisualization();
+        }).catch(error => {
+            console.warn('Playback failed:', error);
+            if (retryAttempts < maxRetries) {
+                retryAttempts++;
+                setTimeout(() => loadSong(index), 1000);
+            } else {
+                loadingSpinner.classList.remove('active');
+                songTitle.textContent = 'Error loading song';
+            }
+        });
+    }
+
+    audioPlayer.addEventListener('loadedmetadata', () => {
+        totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
     });
 
-    // Welcome screen hide
-    setTimeout(() => {
-        welcomeScreen.classList.add('hidden');
-        body.classList.remove('welcome-active');
-        startAudio();
-        autoSpinProfileImage();
-    }, 2000);
+    audioPlayer.addEventListener('timeupdate', () => {
+        const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        progressFill.style.width = `${progress}%`;
+        currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
+    });
 
-    // Audio player controls
+    audioPlayer.addEventListener('ended', () => {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        loadSong(currentSongIndex);
+    });
+
     playPauseBtn.addEventListener('click', () => {
+        if (!hasInteracted) {
+            hasInteracted = true;
+            welcomeScreen.classList.add('hidden');
+            body.classList.remove('welcome-active');
+            setTimeout(() => welcomeScreen.remove(), 500);
+        }
         if (isPlaying) {
             audioPlayer.pause();
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
             isPlaying = false;
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            wordEffectActive = false;
         } else {
-            playCurrentSong();
+            audioPlayer.play().then(() => {
+                isPlaying = true;
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                wordEffectActive = true;
+            }).catch(error => console.warn('Playback failed:', error));
         }
     });
 
     rewindBtn.addEventListener('click', () => {
         currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
         loadSong(currentSongIndex);
-        playCurrentSong();
     });
 
     skipBtn.addEventListener('click', () => {
         currentSongIndex = (currentSongIndex + 1) % songs.length;
         loadSong(currentSongIndex);
-        playCurrentSong();
-    });
-
-    audioPlayer.addEventListener('timeupdate', () => {
-        const currentTime = audioPlayer.currentTime;
-        const duration = audioPlayer.duration || 0;
-        const progressPercent = (currentTime / duration) * 100;
-        progressFill.style.width = `${progressPercent}%`;
-        currentTimeDisplay.textContent = formatTime(currentTime);
-        totalTimeDisplay.textContent = formatTime(duration);
-    });
-
-    audioPlayer.addEventListener('ended', () => {
-        currentSongIndex = (currentSongIndex + 1) % songs.length;
-        loadSong(currentSongIndex);
-        playCurrentSong();
     });
 
     progressBar.addEventListener('click', (e) => {
         const rect = progressBar.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const width = rect.width;
-        const duration = audioPlayer.duration || 0;
-        audioPlayer.currentTime = (clickX / width) * duration;
+        const pos = (e.clientX - rect.left) / rect.width;
+        audioPlayer.currentTime = pos * audioPlayer.duration;
     });
 
-    function formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        seconds = Math.floor(seconds % 60);
-        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    }
-
-    // Volume control
     volumeSlider.addEventListener('input', () => {
         audioPlayer.volume = volumeSlider.value / 100;
         localStorage.setItem('volume', volumeSlider.value);
     });
 
-    // Restore volume
-    const savedVolume = localStorage.getItem('volume') || 70;
-    volumeSlider.value = savedVolume;
-    audioPlayer.volume = savedVolume / 100;
+    // Format time for audio player
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        seconds = Math.floor(seconds % 60);
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
 
     // Click counter
     clickButton.addEventListener('click', () => {
@@ -2124,68 +2015,72 @@
         localStorage.setItem('clickCount', clickCount);
     });
 
-    // Restore click count
-    clickCount = parseInt(localStorage.getItem('clickCount') || '0');
-    clickButton.textContent = `Clicks: ${clickCount}`;
-
     // Like/Dislike functionality
-    let hasLiked = localStorage.getItem('hasLiked') === 'true';
-    let hasDisliked = localStorage.getItem('hasDisliked') === 'true';
-
-    likeCount = parseInt(localStorage.getItem('likeCount') || '0');
-    dislikeCount = parseInt(localStorage.getItem('dislikeCount') || '0');
-    likeCountDisplay.textContent = likeCount;
-    dislikeCountDisplay.textContent = dislikeCount;
-
-    likeButton.classList.toggle('disabled', hasDisliked);
-    dislikeButton.classList.toggle('disabled', hasLiked);
-
     likeButton.addEventListener('click', () => {
-        if (!hasLiked && !hasDisliked) {
+        if (!likeButton.classList.contains('disabled')) {
             likeCount++;
             likeCountDisplay.textContent = likeCount;
-            localStorage.setItem('likeCount', likeCount);
-            localStorage.setItem('hasLiked', 'true');
-            hasLiked = true;
+            likeButton.classList.add('active', 'disabled');
             dislikeButton.classList.add('disabled');
-            likeButton.classList.add('active');
+            localStorage.setItem('likeCount', likeCount);
+            localStorage.setItem('hasVoted', 'true');
         }
     });
 
     dislikeButton.addEventListener('click', () => {
-        if (!hasDisliked && !hasLiked) {
+        if (!dislikeButton.classList.contains('disabled')) {
             dislikeCount++;
             dislikeCountDisplay.textContent = dislikeCount;
-            localStorage.setItem('dislikeCount', dislikeCount);
-            localStorage.setItem('hasDisliked', 'true');
-            hasDisliked = true;
+            dislikeButton.classList.add('active', 'disabled');
             likeButton.classList.add('disabled');
-            dislikeButton.classList.add('active');
+            localStorage.setItem('dislikeCount', dislikeCount);
+            localStorage.setItem('hasVoted', 'true');
         }
     });
 
-    // View counter
+    // Load saved states
+    clickCount = parseInt(localStorage.getItem('clickCount') || '0');
+    clickButton.textContent = `Clicks: ${clickCount}`;
+    likeCount = parseInt(localStorage.getItem('likeCount') || '0');
+    dislikeCount = parseInt(localStorage.getItem('dislikeCount') || '0');
+    likeCountDisplay.textContent = likeCount;
+    dislikeCountDisplay.textContent = dislikeCount;
+    if (localStorage.getItem('hasVoted') === 'true') {
+        likeButton.classList.add('disabled');
+        dislikeButton.classList.add('disabled');
+        if (likeCount > 0) likeButton.classList.add('active');
+        if (dislikeCount > 0) dislikeButton.classList.add('active');
+    }
     localStorage.setItem('viewCount', viewCount);
     eyeViewCounter.textContent = `Views: ${viewCount}`;
 
-    // Enable word effect on interaction
-    document.addEventListener('click', () => {
-        if (!hasInteracted) {
-            hasInteracted = true;
-            wordEffectActive = true;
-        }
+    // Initialize volume
+    const savedVolume = localStorage.getItem('volume') || '70';
+    volumeSlider.value = savedVolume;
+    audioPlayer.volume = savedVolume / 100;
+
+    // Initialize profile image spin
+    profileImage.addEventListener('click', () => {
+        profileImage.classList.add('spin');
+        setTimeout(() => profileImage.classList.remove('spin'), 1200);
     });
 
-    // Initialize scroll animations
-setupScrollAnimations();
- const updateLogToggle = document.getElementById('updateLogToggle');
-const updateLogContent = document.getElementById('updateLogContent');
+    // Initialize bio typewriter
+    typewriterEffect(bioTypewriter, 'i got swag', 50);
 
-updateLogToggle.addEventListener('click', () => {
-    updateLogContent.classList.toggle('active');
-});
+    // Initialize page
+    setupScrollAnimations();
+    loadSong(currentSongIndex);
+
+    // Update log toggle
+    const updateLogToggle = document.getElementById('updateLogToggle');
+    const updateLogContent = document.getElementById('updateLogContent');
+    updateLogToggle.addEventListener('click', () => {
+        updateLogContent.classList.toggle('active');
+    });
+
+    // Prevent right-click
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
 </script>
 </body>
 </html>
-
-
