@@ -1281,6 +1281,107 @@
             }
         }
 
+        .guestbook-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .guestbook-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .guestbook-title {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .guestbook-section form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .guestbook-section label {
+            color: white;
+            font-weight: 600;
+        }
+
+        .guestbook-section input, .guestbook-section textarea {
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .guestbook-section button {
+            padding: 8px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .lyrics {
+            color: white;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 101;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-content label {
+            color: white;
+        }
+
+        .modal-content button {
+            padding: 8px;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
         @media (max-width: 480px) {
             body {
                 align-items: flex-start;
@@ -1513,7 +1614,7 @@
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.2.7 : added presets, removed clown list, removed guestbook, (click my profile 5 times), changed pfp</div>
+    <div class="version-text">v1.3.0: MAJOR UPDATE!!!</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -1536,6 +1637,15 @@
         <button class="theme-button" data-theme="lavender">lavender</button>
         <button class="theme-button" data-theme="swaqfirstpersonal">swaqq's 1st preset</button>
         <button class="theme-button" data-theme="swaqsecondpersonal">swaqq's 2nd preset</button>
+        <button id="customThemeBtn" class="theme-button">Custom Theme</button>
+    </div>
+
+    <div id="themeModal" class="modal hidden">
+        <div class="modal-content">
+            <label>Gradient Start: <input type="color" id="gradStart"></label>
+            <label>Gradient End: <input type="color" id="gradEnd"></label>
+            <button id="applyCustom">Apply</button>
+        </div>
     </div>
 
     <div class="clown-list">removed buh</div>
@@ -1631,6 +1741,7 @@
                     <span class="time-display" id="totalTime">0:00</span>
                 </div>
                 <canvas id="audioVisualizer" class="audio-visualizer"></canvas>
+                <div id="lyricsDisplay" class="lyrics"></div>
                 <audio id="audioPlayer" preload="auto">
                     <source src="assets/kills.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
@@ -1649,6 +1760,17 @@
                     <span id="dislikeCount">0</span>
                 </button>
             </div>
+        </div>
+
+        <div class="guestbook-section">
+            <h2 class="guestbook-title">Guestbook Form</h2>
+            <form name="guestbook" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+                <input type="hidden" name="form-name" value="guestbook">
+                <p hidden><label>Don’t fill this: <input name="bot-field"></label></p>
+                <label>Name: <input type="text" name="name" required></label>
+                <label>Message: <textarea name="message" required></textarea></label>
+                <button type="submit">Submit</button>
+            </form>
         </div>
     </div>
 
@@ -1713,6 +1835,12 @@ function onCaptchaSuccess(token) {
         const dislikeCountDisplay = document.getElementById('dislikeCount');
         const eyeViewCounter = document.getElementById('eyeViewCounter');
         const bioTypewriter = document.getElementById('bioTypewriter');
+        const lyricsDisplay = document.getElementById('lyricsDisplay');
+        const customThemeBtn = document.getElementById('customThemeBtn');
+        const themeModal = document.getElementById('themeModal');
+        const applyCustom = document.getElementById('applyCustom');
+        const gradStart = document.getElementById('gradStart');
+        const gradEnd = document.getElementById('gradEnd');
 
         let hasInteracted = false;
         let wordEffectActive = false;
@@ -1735,10 +1863,310 @@ function onCaptchaSuccess(token) {
             { title: "Roster", src: "assets/roster.mp3" }
         ];
 
+        const lyrics = {
+  ' kills': `Flex, flex, flex, flex, flex, flex, beep, beep
+Yeah, yeah, yeah, yeah, yeah
+Slime, yeah, yeah, slatt, uh-huh
+Oh yeah, yeah, yeah, yeah
+
+Brand- new Chanel (Beep), baby, just tell me how you feel (Yeah)
+Slime made it, yeah (Slime), no, I can't fail
+Slatt pour me up (Slatt), crack brand-new seals (Yeah, lean, lean)
+Red kills (Flex, flex, flex, flex, flex, flex)
+Red kills (Yeah, yeah, yeah, yeah, yeah)
+Red kills (Slime, yeah, yeah, slatt, uh-huh)
+Red kills (Oh yeah, yeah, yeah, yeah)
+Red kills
+
+Flex, flex, flex, flex, flex, flex, beep, beep
+Yeah, yeah, yeah yeah, yeah
+Slime, yeah, yeah, slatt, uh-huh
+Oh yeah, yeah, yeah, yeah
+
+Brand-new Chanel, baby, just tell me how you feel
+Slime made it, yeah, no, I can't fail
+Slatt pour me up, crack brand-new seals
+Red kills`,
+  'For Da Flex': `Brand-new BM dub-ski
+All the sudden, all the hoes wanna fuck me (Bih')
+Pull up, brand new chain bussin'
+My slime still pourin' up Tussion' (Mud, mud)
+Can't come in here, I got the bucks in here (Bee, bee)
+Wassup, we don't give fucks in here
+Wassup, knock a bitch down, I don't care (Buh, buh, buh, buh, buh, buh)
+Percs just kicked in, let's get it (Let's get it)
+I ain't even know these hoes were friends (Yuh, yuh, yuh)
+I was just fuckin' on two best friends
+Brand-new foreign whip, had to hit Ben
+Brand-new foreign bitch wanna get in
+Slime catch a opp, make him pay for his sins (Buh, buh, buh, buh, buh, buh)
+Bitch, me and slime goin' for the win (Yeah)
+Bitch, me and slime goin' for the win (Yeah)
+Bitch, me and slime goin' for the win (Yeah)
+Bitch, me and slime goin' for the win (Yeah)
+Flex, bank account, ten by ten (Bee, bee, bee, bee)
+
+Flex, new whip, what am I in?
+Flex, bitch I'm Lil' O, not him (Lil O)
+Flex, new Drac' caught like ten (Buh, buh, buh, buh)
+Flex, bih' go pick up yo' man
+Fle-flex, brand-new flight to Japan
+Flex, won't hit you when I land
+Flex (Bee)
+Spent some racks on Percs, I spent some money on some drank (Yeah, yeah, bee)
+Rick Owens jeans, nigga, what do you think? (Yeah)
+Got three damn choppas in the tank
+Hit him with a .556, leave him stank
+You ain't talkin' 'bout shit, you don't got no stain
+You ain't talkin' 'bout shit, you don't got no stain
+You ain't talkin' 'bout shit, you don't got no stain
+
+Brand-new BM dub-ski
+All the sudden, all the hoes wanna fuck me (Bih')
+Pull up, brand new chain bussin'
+My slime still pourin' up Tussion' (Mud, mud)
+Can't come in here, I got the bucks in here (Bee, bee)
+Wassup, we don't give fucks in here
+Wassup, knock a bitch down, I don't care (Buh, buh, buh, buh)
+Percs just kicked in, let's get it (Let's get it)
+I ain't even know these hoes were friends (Yuh, yuh, yuh)
+I was just fuckin' on two best friends
+Brand-new foreign whip, had to hit Ben
+Brand-new foreign bitch wanna get in
+Slime catch a opp, make him pay for his sins (Buh, buh, buh, buh, buh, buh)
+Bitch, me and slime goin' for the win (Yeah)
+Bitch, me and slime goin' for the win (Yeah)
+Bitch, me and slime goin' for the win (Yeah)
+Bitch, me and slime goin' for the win (Yeah)
+Flex, bank account, ten by ten (Bee-bee, bee-bee)`,
+            
+'Baghdad': `Bag, fucked it up
+
+Pour more, not enough (Nah)
+It's too hot in here (Pipe up, pipe up)
+Hit yo' block and chop it up ( Me and Rok gon' rock and roll)
+And this lil' ho talk too much ( We gon' be ok)
+Goyard bag, I filled it up
+I'm on P, I flipped that truck
+Bet yo' crew won't fuck with us (Buh, buh, buh, buh)
+Bet yo' crew can't fuck with us (Yuh)
+What would you do for a little bit of money? (Bee)
+Call slime, wipe yo' nose for a hundred (Slime)
+Lil' nigga know that shit ain't nothin' (Slime)
+Coupe take off like jet, just punchin'
+Boy, you hear that engine run (Bee)
+I just bought some brand-new guns
+Better not talk 'bout shit, not nothin' (Not nothin')
+Bih', my double cup, DJ Pun (Lean)
+Love when they run, that shit be fun
+You ain't tryna hit, lil' nigga, say somethin' (Say somethin')
+Got some shit that'll send you to the sun
+Hit up twin, "Where the bags at?"
+We got sticks, just like Baghdad
+See it, want it, then I have that (Bee)
+Foreign bih', I'ma bag that
+I'ma flex on my ex
+Stef still pourin' up Hi-Tech
+
+I'm still scorin'
+Check the net
+Where was you going?
+Catch some lead
+Goin' fed, goin' fed
+In the whip, I'm goin' fed
+Tell that bitch I'm pourin' red
+Tell that bitch I'm pourin' red
+In that truck, I'm full of meds
+In that truck, a fully man
+This AR a bully, man
+Put holes in your hoodie, man
+
+Bag, fucked it up
+Pour more, not enough (Nah)
+It's too hot in here (Pipe up, pipe up)
+Hit yo' block and chop it up
+And this lil' ho talk too much
+Goyard bag, I filled it up
+I'm on P, I flipped that truck
+Bet yo' crew won't fuck with us (Buh, buh, buh, buh)
+Bet yo' crew can't fuck with us (Yuh)
+What would you do for a little bit of money? (Bee)
+Call slime, wipe yo' nose for a hundred (Slime)
+Lil' nigga, know that shit ain't nothin' (Slime)
+Coupe take off like jet, just punchin'
+Boy, you hear that engine run (Bee)
+I just bought some brand-new guns
+Better not talk 'bout shit, not nothin' (Not nothin')
+Bih', my double cup, DJ Pun (Lean)
+Love when they run, that shit be fun
+You ain't tryna hit, lil' nigga, say somethin' (Say somethin')
+Got some shit that'll send you to the sun
+Hit up twin, "Where the bags at?"
+We got sticks, just like Baghdad
+See it, want it, then I have that (Bee)
+Foreign bih', I'ma bag that
+I'ma flex on my ex
+Stef still pourin' up Hi-Tech`,
+            
+'Cartel': `Throw ya' Dracos in the air
+
+This that Flex Musix
+
+Uh, yuh, yuh
+Nigga, yo' mans get hit with a switch
+[I been on flex time, I can't miss]
+[Get a cream soda and mix it with the Tris]
+[I been outside, I ain't worried 'bout niggas]
+Pull up to the city, let me see how you live
+Whippin' that new Jeep, check just hit
+[Bad bitch talkin' 'bout this and this]
+Hit twin, got a brand new lick
+Drop that shit, got a brand new whip
+Spent like ten on my teeth, I'm hip
+Flexin' that shit, like bih' come here
+I been gettin' money all goddamn year
+Push up, gang tryna whack some', yeah
+Nigga yo' slime died, oh-oh well
+[Who got the stick? Baby Chop? Lil Rell?]
+[Who got the lean? Tryna pour up twelve]
+Feds tryna sеnd me, I'm goin' to hell
+Bih', I don’t give a fuck how you feel
+[Wе got sticks like the new cartel]
+Niggas tryna keep up, we can tell
+Twenty for ya' head, boy, I wish you well
+Ho said she gon' pull up now
+Who you playin' with? I ain't no damn clown
+Bih' talking shit, get the fuck from 'round
+Flip that whip, turn the whole shit down
+Broke ass nigga tryna flex for a freak ho
+Shoot him at the limb, like a goddamn free throw
+Pourin' up mud, but the shit not free though
+[Nigga goin' broke, tryna keep up with me ho]
+[Yeah, I'm the flexer, huh, Lil' O]
+Wouldn't be shit, got to shout out my 'migo
+Boy, I got Celine, man, you know I got mink coat
+[Rehab, rockin' that shit for free though]
+[Rockstar flow, lil' bad ho, mijo]
+Since you dropped the bag, I ain't doin' no free show
+Bet that stick go wherever I go
+[Foreign drive by, I ain't whipping no Tahoe]
+Pourin' up mud, drop the whole damn bottle
+[Put the ho' on molly, now she goin' full throttle]`,
+  'Popstar': `This bitch know who I am, yeah, L-I-L O
+Lil' O geeked off contraband
+Double cross, we slime your mans
+Five hundred, fill that cup again
+I just fucked it up again
+Spilled the lean, fucked up my pants
+Brand-new coupe 'cause I recoup
+Double cup still in my hand
+Bitch, I'm ballin' like 24, 'cause the rock can't leave my hand
+Got a rocket for your man
+Rock the baby straight to bed
+We got hella fuckin' lean, so they wanna kick it, yeah
+
+Nigga, fuck a VIP, in that back door, you get hit
+I got sticks on me, don't you end up in a ditch
+Chrome Heart and Balenci', what I got, can't cop that shit
+Pockets fatter than a bitch, got my racks, you throw a fit
+Brr, brr, you already know what time it is
+I can flex my brand-new bitch
+I can flеx my brand-new kicks
+Or I can flex this fast-ass whip
+Double cup, I'm fat as shit
+Oh, you said you got thеm sticks? Let's link up and do that shit
+I got clothes that cost a brick, bitch, you not livin' like this
+Damn, ran off on the plug like, "You gon' have to catch me, kid"
+Hood rich, now they all love us 'cause we lit
+Bitch tryin' to keep up, you can't keep up with this shit
+
+This bitch know who I am, yeah, L-I-L O
+Lil' O geeked off contraband
+Double cross, we slime your mans
+Five hundred, fill that cup again
+I just fucked it up again
+Spilled the lean, fucked up my pants
+Brand-new coupe 'cause I recoup
+Double cup still in my hand
+Bitch, I'm ballin' like 24, 'cause the rock can't leave my hand
+Got a rocket for your man
+Rock the baby straight to bed
+We got hella fuckin' lean, so they wanna kick it, yeah`,
+  'Lambtruck': `Finna take the Lamb' truck to Japan (Skrrt)
+I'm like, "Lil' nigga, get your bands up, yes, you can"
+Yeah, my slime up in that trap, still whip the pan, yeah, yeah
+Push up, we gon' flip the van, huh, yeah, yeah
+This bitch know we got hella bands (Beep), yeah, yeah, yeah
+Get your mans whacked for the slick shit that you sayin' (Yeah, yeah)
+Walked in YSL, Helmut Lang, bitch, I ain't paying
+I still do Percs
+I'ma make it work
+Make the two door jerk
+Your ho, she a jerk
+Came through, I'm tryna hit somethin', don't make it worse
+I know my slime tryna blick somethin', I seen it first
+
+Drop bands on some shirts, Osama the worst
+MP5 burst leave you in the dirt
+Chopper on me ARP, chopper on me ARP
+My bro just picked up the lean, my bro just picked up the lean
+Hoes nagging and the jeans sagging
+Popped an eight, lasting, this ho ain't lasting
+Bain jacket, hoes jacking, I'm having
+Scored on Dracos, run 'em down like a savage
+
+Finna take the Lamb' truck to Japan (Skrrt)
+I'm like, "Lil' nigga, get your bands up, yes, you can"
+Yeah, my slime up in that trap, still whip the pan, yeah, yeah
+Push up, we gon' flip the van, huh, yeah, yeah
+This bitch know we got hella bands (Beep), yeah, yeah, yeah
+Get your mans whacked for the slick shit that you sayin' (Yeah, yeah)
+Walked in YSL, Helmut Lang, bitch, I ain't paying
+I still do Percs
+I'ma make it work
+Make the two door jerk
+Your ho, she a jerk
+Came through, I'm tryna hit somethin', don't make it worse
+I know my slime tryna blick somethin', I seen it first`,
+  'Roster': `Bitch, I've been sayin' that these niggas don't want problems (Beep, beep)
+Get the block to sprayin', you know we gon' hit 'em all up
+My slime ready to crash out, singin', "I got shots for my shotta" (For my shotta)
+I was just pourin' it all up (Pourin' it all up), I was just pourin' it all up (Oh woah)
+I've been fuckin' these broads, yeah, too high, can't pull my draws up
+Chrome Heart ain't come from the mall, nah, see it, I buy it all, yeah (Beep)
+That bitch like a rasta, only bad hoes on my roster (Beep)
+
+Pourin' up mud, gon' nod (Yeah), I'm just smokin' on pounds (Yeah)
+I was just in your town, facts, scoop and look around
+You get hit, bitch, you're goin' down
+I'm off the lean and the Percs right now
+Yeah, I know my slime gon' look out (Slime)
+Pourin' that shit now, pourin' it out (Point)
+5.6, .308, bitch, point out (Boop-boop, boop-boop)
+Yeah, I ain't do this for no clout (Let's go)
+I just mixed and matched my ho, but I think I want a new bitch now (Beep, beep, beep, beep)
+They say they want that shit get loud (Yeah, yeah)
+I'm tryna punch my shit in the crowd
+Oh, you wanna do it? Let's do it right now
+Oh, you wanna do it? Let's do it right now (Bitch)
+
+Bitch, I've been sayin' that these niggas don't want problems (Beep, beep)
+Get the block to sprayin', you know we gon' hit 'em all up
+My slime ready to crash out, singin', "I got shots for my shotta" (For my shotta)
+I was just pourin' it all up (Pourin' it all up), I was just pourin' it all up (Oh woah)
+I've been fuckin' these broads, yeah, too high, can't pull my draws up
+Chrome Heart, ain't come from the mall, nah, see it, I buy it all, yeah (Beep)
+That bitch like a rasta, only bad hoes on my roster (Beep)`
+};
+
         // Theme switcher
         const themeButtons = document.querySelectorAll('.theme-button');
         themeButtons.forEach(button => {
             button.addEventListener('click', () => {
+                if (button.id === 'customThemeBtn') {
+                    themeModal.classList.remove('hidden');
+                    return;
+                }
                 themeButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
                 document.body.className = button.dataset.theme;
@@ -1746,10 +2174,25 @@ function onCaptchaSuccess(token) {
             });
         });
 
+        // Custom theme
+        applyCustom.addEventListener('click', () => {
+            const start = gradStart.value;
+            const end = gradEnd.value;
+            document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(90deg, ${start}, ${end})`);
+            localStorage.setItem('customGradient', `${start},${end}`);
+            themeModal.classList.add('hidden');
+        });
+
+        const savedGrad = localStorage.getItem('customGradient');
+        if (savedGrad) {
+            const [start, end] = savedGrad.split(',');
+            document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(90deg, ${start}, ${end})`);
+        }
+
         // Set default theme
         const savedTheme = localStorage.getItem('theme') || 'swaqfirstpersonal';
         document.body.className = savedTheme;
-        document.querySelector(`.theme-button[data-theme="${savedTheme}"]`).classList.add('active');
+        document.querySelector(`.theme-button[data-theme="${savedTheme}"]`)?.classList.add('active');
 
         // Cursor trail
         let lastTrailTime = 0;
@@ -1924,7 +2367,7 @@ function onCaptchaSuccess(token) {
 
         // Scroll-triggered animations
         function setupScrollAnimations() {
-            const elements = document.querySelectorAll('.badge, .bio, .audio-player, .link-button, .click-game-button, .like-dislike-container');
+            const elements = document.querySelectorAll('.badge, .bio, .audio-player, .link-button, .click-game-button, .like-dislike-container, .guestbook-section');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1940,6 +2383,7 @@ function onCaptchaSuccess(token) {
             const song = songs[index];
             audioPlayer.src = song.src;
             songTitle.textContent = song.title;
+            lyricsDisplay.textContent = lyrics[song.title] || '';
             loadingSpinner.classList.add('active');
             audioPlayer.load();
             retryAttempts = 0;
@@ -2092,6 +2536,11 @@ function onCaptchaSuccess(token) {
         progressFill.style.width = `${progressPercent}%`;
         currentTimeDisplay.textContent = formatTime(currentTime);
         totalTimeDisplay.textContent = formatTime(duration);
+
+        // Lyrics update
+        const songLyrics = lyrics[songs[currentSongIndex].title] || [];
+        const currentLyric = songLyrics.find(l => l.time <= currentTime && (songLyrics[songLyrics.indexOf(l) + 1]?.time > currentTime || true));
+        lyricsDisplay.textContent = currentLyric ? currentLyric.text : '';
     });
 
     audioPlayer.addEventListener('ended', () => {
@@ -2125,11 +2574,25 @@ function onCaptchaSuccess(token) {
     volumeSlider.value = savedVolume;
     audioPlayer.volume = savedVolume / 100;
 
-    // Click counter
+    // Click counter and achievements
+    let achievements = JSON.parse(localStorage.getItem('achievements')) || [];
+    function unlockAchievement(name) {
+        if (!achievements.includes(name)) {
+            achievements.push(name);
+            localStorage.setItem('achievements', JSON.stringify(achievements));
+            const badgesDiv = document.querySelector('.badges');
+            const newBadge = document.createElement('span');
+            newBadge.className = 'badge';
+            newBadge.innerHTML = `<i class="fas fa-unlock"></i> ${name}`;
+            badgesDiv.appendChild(newBadge);
+        }
+    }
+
     clickButton.addEventListener('click', () => {
         clickCount++;
         clickButton.textContent = `Clicks: ${clickCount}`;
         localStorage.setItem('clickCount', clickCount);
+        if (clickCount >= 100) unlockAchievement('Click Master');
     });
 
     // Restore click count
