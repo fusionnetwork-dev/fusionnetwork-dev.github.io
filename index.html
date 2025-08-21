@@ -762,6 +762,17 @@
             animation: glowPulse 2.5s ease-in-out infinite;
         }
 
+.profile-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://r2.haunt.gg/decorations/28_years_later.png') no-repeat center/cover;
+            opacity: 0.8;
+        }
+
         @keyframes glowPulse {
             0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
             50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
@@ -1281,6 +1292,17 @@
             }
         }
 
+        .notes-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
         .notes-section {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
@@ -1291,11 +1313,13 @@
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
+            display: none;
         }
 
         .notes-section.visible {
             opacity: 1;
             transform: translateY(0);
+            display: block;
         }
 
         .notes-title {
@@ -1646,7 +1670,7 @@
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.3.1: more music + huge update</div>
+    <div class="version-text">v1.3.2: MAJOR UPD!!</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -1706,10 +1730,11 @@
                     <span>a</span><span>y</span><span>a</span><span>r</span><span>p</span>
                     <span class="uid">UID inf</span>
                 </span>
-                <div class="sparkle-effect" style="left: -25px; top: -10px; animation-delay: 0s;"></div>
-                <div class="sparkle-effect" style="right: -25px; top: -10px; animation-delay: 0.5s;"></div>
-                <div class="sparkle-effect" style="left: -25px; bottom: -10px; animation-delay: 1s;"></div>
-                <div class="sparkle-effect" style="right: -25px; bottom: -10px; animation-delay: 1.5s;"></div>
+                <span class="username">(@1ayarp)</span>
+                <div class="sparkle-effect" style="left: 0; top: 0; animation-delay: 0s;"></div>
+                <div class="sparkle-effect" style="right: 0; top: 0; animation-delay: 0.5s;"></div>
+                <div class="sparkle-effect" style="left: 0; bottom: 0; animation-delay: 1s;"></div>
+                <div class="sparkle-effect" style="right: 0; bottom: 0; animation-delay: 1.5s;"></div>
             </div>
             
             <div class="badges">
@@ -1740,7 +1765,7 @@
             <div class="links-container">
                 <a href="https://www.roblox.com/users/8156657037/profile" class="link-button">
                     <div class="link-icon">
-                        <img src="https://www.citypng.com/public/uploads/preview/hd-roblox-white-symbol-sign-icon-logo-png-701751694787435ra1r2desi8.png" alt="Roblox" class="link-icon-img">
+                        <img src="assets/diamondspin.gif" alt="Roblox" class="link-icon-img">
                     </div>
                     <span class="link-text">Roblox</span>
                     <i class="fas fa-arrow-right"></i>
@@ -1748,7 +1773,7 @@
                 
                 <a href="https://discord.com/users/1084576683262230548" class="link-button">
                     <div class="link-icon">
-                        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/discord-white-icon.png" alt="Discord" class="link-icon-img">
+                        <img src="assets/gunspin.gif" alt="Discord" class="link-icon-img">
                     </div>
                     <span class="link-text">Discord</span>
                     <i class="fas fa-arrow-right"></i>
@@ -1756,7 +1781,7 @@
                 
                 <a href="https://www.youtube.com/@faintche" class="link-button">
                     <div class="link-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/YouTube_light_icon_%282017%29.svg/1280px-YouTube_light_icon_%282017%29.svg.png" alt="YouTube" class="link-icon-img">
+                        <img src="assets/skimaskspin.gif" alt="YouTube" class="link-icon-img">
                     </div>
                     <span class="link-text">YouTube</span>
                     <i class="fas fa-arrow-right"></i>
@@ -1807,13 +1832,13 @@
                     <span id="dislikeCount">0</span>
                 </button>
             </div>
-        </div>
-
-        <div class="notes-section">
-            <h2 class="notes-title">Notes</h2>
-            <input type="text" id="noteInput" placeholder="Add a note...">
-            <button id="addNoteBtn">Add</button>
-            <div id="notesList"></div>
+            <button class="notes-toggle" id="notesToggle">&gt;</button>
+            <div class="notes-section" id="notesSection">
+                <h2 class="notes-title">Notes</h2>
+                <input type="text" id="noteInput" placeholder="Add a note...">
+                <button id="addNoteBtn">Add</button>
+                <div id="notesList"></div>
+            </div>
         </div>
     </div>
 
@@ -1844,7 +1869,6 @@ function onCaptchaSuccess(token) {
   setTimeout(() => {
     welcomeScreen.classList.add('hidden');
     document.body.classList.remove('welcome-active');
-    startAudio();
     autoSpinProfileImage();
   }, 2000);
   // Optionally, send token to your server for verification
@@ -1899,6 +1923,8 @@ function onCaptchaSuccess(token) {
         const noteInput = document.getElementById('noteInput');
         const addNoteBtn = document.getElementById('addNoteBtn');
         const notesList = document.getElementById('notesList');
+        const notesToggle = document.getElementById('notesToggle');
+        const notesSection = document.getElementById('notesSection');
 
         let hasInteracted = false;
         let wordEffectActive = false;
@@ -1924,326 +1950,324 @@ function onCaptchaSuccess(token) {
         ];
 
         const lyrics = {
-  ' kills': `Flex, flex, flex, flex, flex, flex, beep, beep
-Yeah, yeah, yeah, yeah, yeah
-Slime, yeah, yeah, slatt, uh-huh
-Oh yeah, yeah, yeah, yeah
-
-Brand- new Chanel (Beep), baby, just tell me how you feel (Yeah)
-Slime made it, yeah (Slime), no, I can't fail
-Slatt pour me up (Slatt), crack brand-new seals (Yeah, lean, lean)
-Red kills (Flex, flex, flex, flex, flex, flex)
-Red kills (Yeah, yeah, yeah, yeah, yeah)
-Red kills (Slime, yeah, yeah, slatt, uh-huh)
-Red kills (Oh yeah, yeah, yeah, yeah)
-Red kills
-
-Flex, flex, flex, flex, flex, flex, beep, beep
-Yeah, yeah, yeah yeah, yeah
-Slime, yeah, yeah, slatt, uh-huh
-Oh yeah, yeah, yeah, yeah
-
-Brand-new Chanel, baby, just tell me how you feel
-Slime made it, yeah, no, I can't fail
-Slatt pour me up, crack brand-new seals
-Red kills`,
-  'For Da Flex': `Brand-new BM dub-ski
-All the sudden, all the h*es wanna f*ck me (B*h')
-Pull up, brand new chain bussin'
-My slime still pourin' up Tussion' (Mud, mud)
-Can't come in here, I got the bucks in here (Bee, bee)
-Wassup, we don't give f*cks in here
-Wassup, knock a b*tch down, I don't care (Buh, buh, buh, buh, buh, buh)
-Percs just kicked in, let's get it (Let's get it)
-I ain't even know these h*es were friends (Yuh, yuh, yuh)
-I was just f*ckin' on two best friends
-Brand-new foreign whip, had to hit Ben
-Brand-new foreign b*tch wanna get in
-Slime catch a opp, make him pay for his sins (Buh, buh, buh, buh, buh, buh)
-B*tch, me and slime goin' for the win (Yeah)
-B*tch, me and slime goin' for the win (Yeah)
-B*tch, me and slime goin' for the win (Yeah)
-B*tch, me and slime goin' for the win (Yeah)
-Flex, bank account, ten by ten (Bee, bee, bee, bee)
-
-Flex, new whip, what am I in?
-Flex, b*tch I'm Lil' O, not him (Lil O)
-Flex, new Drac' caught like ten (Buh, buh, buh, buh)
-Flex, b*h' go pick up yo' man
-Fle-flex, brand-new flight to Japan
-Flex, won't hit you when I land
-Flex (Bee)
-Spent some racks on Percs, I spent some money on some drank (Yeah, yeah, bee)
-Rick Owens jeans, n*gga, what do you think? (Yeah)
-Got three damn choppas in the tank
-Hit him with a .556, leave him stank
-You ain't talkin' 'bout sh*t, you don't got no stain
-You ain't talkin' 'bout sh*t, you don't got no stain
-You ain't talkin' 'bout sh*t, you don't got no stain
-
-Brand-new BM dub-ski
-All the sudden, all the h*es wanna f*ck me (B*h')
-Pull up, brand new chain bussin'
-My slime still pourin' up Tussion' (Mud, mud)
-Can't come in here, I got the bucks in here (Bee, bee)
-Wassup, we don't give f*cks in here
-Wassup, knock a b*tch down, I don't care (Buh, buh, buh, buh)
-Percs just kicked in, let's get it (Let's get it)
-I ain't even know these h*es were friends (Yuh, yuh, yuh)
-I was just f*ckin' on two best friends
-Brand-new foreign whip, had to hit Ben
-Brand-new foreign b*tch wanna get in
-Slime catch a opp, make him pay for his sins (Buh, buh, buh, buh, buh, buh)
-B*tch, me and slime goin' for the win (Yeah)
-B*tch, me and slime goin' for the win (Yeah)
-B*tch, me and slime goin' for the win (Yeah)
-B*tch, me and slime goin' for the win (Yeah)
-Flex, bank account, ten by ten (Bee-bee, bee-bee)`,
-            
-'Baghdad': `Bag, f*cked it up
-
-Pour more, not enough (Nah)
-It's too hot in here (Pipe up, pipe up)
-Hit yo' block and chop it up ( Me and Rok gon' rock and roll)
-And this lil' h* talk too much ( We gon' be ok)
-Goyard bag, I filled it up
-I'm on P, I flipped that truck
-Bet yo' crew won't f*ck with us (Buh, buh, buh, buh)
-Bet yo' crew can't f*ck with us (Yuh)
-What would you do for a little bit of money? (Bee)
-Call slime, wipe yo' nose for a hundred (Slime)
-Lil' n*gga know that sh*t ain't nothin' (Slime)
-Coupe take off like jet, just punchin'
-Boy, you hear that engine run (Bee)
-I just bought some brand-new guns
-Better not talk 'bout sh*t, not nothin' (Not nothin')
-B*h', my double cup, DJ Pun (Lean)
-Love when they run, that sh*t be fun
-You ain't tryna hit, lil' n*gga, say somethin' (Say somethin')
-Got some sh*t that'll send you to the sun
-Hit up twin, "Where the bags at?"
-We got sticks, just like Baghdad
-See it, want it, then I have that (Bee)
-Foreign b*h', I'ma bag that
-I'ma flex on my ex
-Stef still pourin' up Hi-Tech
-
-I'm still scorin'
-Check the net
-Where was you going?
-Catch some lead
-Goin' fed, goin' fed
-In the whip, I'm goin' fed
-Tell that b*tch I'm pourin' red
-Tell that b*tch I'm pourin' red
-In that truck, I'm full of meds
-In that truck, a fully man
-This AR a bully, man
-Put holes in your hoodie, man
-
-Bag, f*cked it up
-Pour more, not enough (Nah)
-It's too hot in here (Pipe up, pipe up)
-Hit yo' block and chop it up
-And this lil' h* talk too much
-Goyard bag, I filled it up
-I'm on P, I flipped that truck
-Bet yo' crew won't f*ck with us (Buh, buh, buh, buh)
-Bet yo' crew can't f*ck with us (Yuh)
-What would you do for a little bit of money? (Bee)
-Call slime, wipe yo' nose for a hundred (Slime)
-Lil' n*gga, know that sh*t ain't nothin' (Slime)
-Coupe take off like jet, just punchin'
-Boy, you hear that engine run (Bee)
-I just bought some brand-new guns
-Better not talk 'bout sh*t, not nothin' (Not nothin')
-B*h', my double cup, DJ Pun (Lean)
-Love when they run, that sh*t be fun
-You ain't tryna hit, lil' n*gga, say somethin' (Say somethin')
-Got some sh*t that'll send you to the sun
-Hit up twin, "Where the bags at?"
-We got sticks, just like Baghdad
-See it, want it, then I have that (Bee)
-Foreign b*h', I'ma bag that
-I'ma flex on my ex
-Stef still pourin' up Hi-Tech`,
-            
-'Cartel': `Throw ya' Dracos in the air
-
-This that Flex Musix
-
-Uh, yuh, yuh
-N*gga, yo' mans get hit with a switch
-[I been on flex time, I can't miss]
-[Get a cream soda and mix it with the Tris]
-[I been outside, I ain't worried 'bout n*ggas]
-Pull up to the city, let me see how you live
-Whippin' that new Jeep, check just hit
-[Bad b*tch talkin' 'bout this and this]
-Hit twin, got a brand new lick
-Drop that sh*t, got a brand new whip
-Spent like ten on my teeth, I'm hip
-Flexin' that sh*t, like b*h' come here
-I been gettin' money all goddamn year
-Push up, gang tryna whack some', yeah
-N*gga yo' slime died, oh-oh well
-[Who got the stick? Baby Chop? Lil Rell?]
-[Who got the lean? Tryna pour up twelve]
-Feds tryna sеnd me, I'm goin' to hell
-B*h', I don’t give a f*ck how you feel
-[Wе got sticks like the new cartel]
-N*ggas tryna keep up, we can tell
-Twenty for ya' head, boy, I wish you well
-H* said she gon' pull up now
-Who you playin' with? I ain't no damn clown
-B*h' talking sh*t, get the f*ck from 'round
-Flip that whip, turn the whole sh*t down
-Broke ass n*gga tryna flex for a freak h*
-Shoot him at the limb, like a goddamn free throw
-Pourin' up mud, but the sh*t not free though
-[N*gga goin' broke, tryna keep up with me h*]
-[Yeah, I'm the flexer, huh, Lil' O]
-Wouldn't be sh*t, got to shout out my 'migo
-Boy, I got Celine, man, you know I got mink coat
-[Rehab, rockin' that sh*t for free though]
-[Rockstar flow, lil' bad h*, mijo]
-Since you dropped the bag, I ain't doin' no free show
-Bet that stick go wherever I go
-[Foreign drive by, I ain't whipping no Tahoe]
-Pourin' up mud, drop the whole damn bottle
-[Put the h*' on molly, now she goin' full throttle]`,
-  'Popstar': `This b*tch know who I am, yeah, L-I-L O
-Lil' O geeked off contraband
-Double cross, we slime your mans
-Five hundred, fill that cup again
-I just f*cked it up again
-Spilled the lean, f*cked up my pants
-Brand-new coupe 'cause I recoup
-Double cup still in my hand
-B*tch, I'm ballin' like 24, 'cause the rock can't leave my hand
-Got a rocket for your man
-Rock the baby straight to bed
-We got hella f*ckin' lean, so they wanna kick it, yeah
-
-N*gga, f*ck a VIP, in that back door, you get hit
-I got sticks on me, don't you end up in a ditch
-Chrome Heart and Balenci', what I got, can't cop that sh*t
-Pockets fatter than a b*tch, got my racks, you throw a fit
-Brr, brr, you already know what time it is
-I can flex my brand-new b*tch
-I can flеx my brand-new kicks
-Or I can flex this fast-ass whip
-Double cup, I'm fat as sh*t
-Oh, you said you got thеm sticks? Let's link up and do that sh*t
-I got clothes that cost a brick, b*tch, you not livin' like this
-Damn, ran off on the plug like, "You gon' have to catch me, kid"
-Hood rich, now they all love us 'cause we lit
-B*tch tryin' to keep up, you can't keep up with this sh*t
-
-This b*tch know who I am, yeah, L-I-L O
-Lil' O geeked off contraband
-Double cross, we slime your mans
-Five hundred, fill that cup again
-I just f*cked it up again
-Spilled the lean, f*cked up my pants
-Brand-new coupe 'causeI recoup
-Double cup still in my hand
-B*tch, I'm ballin' like 24, 'cause the rock can't leave my hand
-Got a rocket for your man
-Rock the baby straight to bed
-We got hella f*ckin' lean, so they wanna kick it, yeah`,
-  'Lambtruck': `Finna take the Lamb' truck to Japan (Skrrt)
-I'm like, "Lil' n*gga, get your bands up, yes, you can"
-Yeah, my slime up in that trap, still whip the pan, yeah, yeah
-Push up, we gon' flip the van, huh, yeah, yeah
-This b*tch know we got hella bands (Beep), yeah, yeah, yeah
-Get your mans whacked for the slick sh*t that you sayin' (Yeah, yeah)
-Walked in YSL, Helmut Lang, b*tch, I ain't paying
-I still do Percs
-I'ma make it work
-Make the two door jerk
-Your h*, she a jerk
-Came through, I'm tryna hit somethin', don't make it worse
-I know my slime tryna blick somethin', I seen it first
-
-Drop bands on some shirts, Osama the worst
-MP5 burst leave you in the dirt
-Chopper on me ARP, chopper on me ARP
-My bro just picked up the lean, my bro just picked up the lean
-H*es nagging and the jeans sagging
-Popped an eight, lasting, this h* ain't lasting
-Bain jacket, h*es jacking, I'm having
-Scored on Dracos, run 'em down like a savage
-
-Finna take the Lamb' truck to Japan (Skrrt)
-I'm like, "Lil' n*gga, get your bands up, yes, you can"
-Yeah, my slime up in that trap, still whip the pan, yeah, yeah
-Push up, we gon' flip the van, huh, yeah, yeah
-This b*tch know we got hella bands (Beep), yeah, yeah, yeah
-Get your mans whacked for the slick sh*t that you sayin' (Yeah, yeah)
-Walked in YSL, Helmut Lang, b*tch, I ain't paying
-I still do Percs
-I'ma make it work
-Make the two door jerk
-Your h*, she a jerk
-Came through, I'm tryna hit somethin', don't make it worse
-I know my slime tryna blick somethin', I seen it first`,
-  'Roster': `B*tch, I've been sayin' that these n*ggas don't want problems (Beep, beep)
-Get the block to sprayin', you know we gon' hit 'em all up
-My slime ready to crash out, singin', "I got shots for my shotta" (For my shotta)
-I was just pourin' it all up (Pourin' it all up), I was just pourin' it all up (Oh woah)
-I've been f*ckin' these broads, yeah, too high, can't pull my draws up
-Chrome Heart ain't come from the mall, nah, see it, I buy it all, yeah (Beep)
-That b*tch like a rasta, only bad h*es on my roster (Beep)
-
-Pourin' up mud, gon' nod (Yeah), I'm just smokin' on pounds (Yeah)
-I was just in your town, facts, scoop and look around
-You get hit, b*tch, you're goin' down
-I'm off the lean and the Percs right now
-Yeah, I know my slime gon' look out (Slime)
-Pourin' that sh*t now, pourin' it out (Point)
-5.6, .308, b*tch, point out (Boop-boop, boop-boop)
-Yeah, I ain't do this for no clout (Let's go)
-I just mixed and matched my h*, but I think I want a new b*tch now (Beep, beep, beep, beep)
-They say they want that sh*t get loud (Yeah, yeah)
-I'm tryna punch my sh*t in the crowd
-Oh, you wanna do it? Let's do it right now
-Oh, you wanna do it? Let's do it right now (B*tch)
-
-B*tch, I've been sayin' that these n*ggas don't want problems (Beep, beep)
-Get the block to sprayin', you know we gon' hit 'em all up
-My slime ready to crash out, singin', "I got shots for my shotta" (For my shotta)
-I was just pourin' it all up (Pourin' it all up), I was just pourin' it all up (Oh woah)
-I've been f*ckin' these broads, yeah, too high, can't pull my draws up
-Chrome Heart, ain't come from the mall, nah, see it, I buy it all, yeah (Beep)
-That b*tch like a rasta, only bad h*es on my roster (Beep)`,
+  ' kills': [
+    { time: 0, text: "Flex, flex, flex, flex, flex, flex, beep, beep" },
+    { time: 4, text: "Yeah, yeah, yeah, yeah, yeah" },
+    { time: 8, text: "Slime, yeah, yeah, slatt, uh-huh" },
+    { time: 12, text: "Oh yeah, yeah, yeah, yeah" },
+    { time: 16, text: "Brand- new Chanel (Beep), baby, just tell me how you feel (Yeah)" },
+    { time: 20, text: "Slime made it, yeah (Slime), no, I can't fail" },
+    { time: 24, text: "Slatt pour me up (Slatt), crack brand-new seals (Yeah, lean, lean)" },
+    { time: 28, text: "Red kills (Flex, flex, flex, flex, flex, flex)" },
+    { time: 32, text: "Red kills (Yeah, yeah, yeah, yeah, yeah)" },
+    { time: 36, text: "Red kills (Slime, yeah, yeah, slatt, uh-huh)" },
+    { time: 40, text: "Red kills (Oh yeah, yeah, yeah, yeah)" },
+    { time: 44, text: "Red kills" },
+    { time: 48, text: "Flex, flex, flex, flex, flex, flex, beep, beep" },
+    { time: 52, text: "Yeah, yeah, yeah yeah, yeah" },
+    { time: 56, text: "Slime, yeah, yeah, slatt, uh-huh" },
+    { time: 60, text: "Oh yeah, yeah, yeah, yeah" },
+    { time: 64, text: "Brand-new Chanel, baby, just tell me how you feel" },
+    { time: 68, text: "Slime made it, yeah, no, I can't fail" },
+    { time: 72, text: "Slatt pour me up, crack brand-new seals" },
+    { time: 76, text: "Red kills" }
+  ],
+  'For Da Flex': [
+    { time: 0, text: "Brand-new BM dub-ski" },
+    { time: 3, text: "All the sudden, all the h*es wanna f*ck me (B*h')" },
+    { time: 6, text: "Pull up, brand new chain bussin'" },
+    { time: 9, text: "My slime still pourin' up Tussion' (Mud, mud)" },
+    { time: 12, text: "Can't come in here, I got the bucks in here (Bee, bee)" },
+    { time: 15, text: "Wassup, we don't give f*cks in here" },
+    { time: 18, text: "Wassup, knock a b*tch down, I don't care (Buh, buh, buh, buh, buh, buh)" },
+    { time: 21, text: "Percs just kicked in, let's get it (Let's get it)" },
+    { time: 24, text: "I ain't even know these h*es were friends (Yuh, yuh, yuh)" },
+    { time: 27, text: "I was just f*ckin' on two best friends" },
+    { time: 30, text: "Brand-new foreign whip, had to hit Ben" },
+    { time: 33, text: "Brand-new foreign b*tch wanna get in" },
+    { time: 36, text: "Slime catch a opp, make him pay for his sins (Buh, buh, buh, buh, buh, buh)" },
+    { time: 39, text: "B*tch, me and slime goin' for the win (Yeah)" },
+    { time: 42, text: "B*tch, me and slime goin' for the win (Yeah)" },
+    { time: 45, text: "B*tch, me and slime goin' for the win (Yeah)" },
+    { time: 48, text: "B*tch, me and slime goin' for the win (Yeah)" },
+    { time: 51, text: "Flex, bank account, ten by ten (Bee, bee, bee, bee)" },
+    { time: 54, text: "Flex, new whip, what am I in?" },
+    { time: 57, text: "Flex, b*tch I'm Lil' O, not him (Lil O)" },
+    { time: 60, text: "Flex, new Drac' caught like ten (Buh, buh, buh, buh)" },
+    { time: 63, text: "Flex, b*h' go pick up yo' man" },
+    { time: 66, text: "Fle-flex, brand-new flight to Japan" },
+    { time: 69, text: "Flex, won't hit you when I land" },
+    { time: 72, text: "Flex (Bee)" },
+    { time: 75, text: "Spent some racks on Percs, I spent some money on some drank (Yeah, yeah, bee)" },
+    { time: 78, text: "Rick Owens jeans, n*gga, what do you think? (Yeah)" },
+    { time: 81, text: "Got three damn choppas in the tank" },
+    { time: 84, text: "Hit him with a .556, leave him stank" },
+    { time: 87, text: "You ain't talkin' 'bout sh*t, you don't got no stain" },
+    { time: 90, text: "You ain't talkin' 'bout sh*t, you don't got no stain" },
+    { time: 93, text: "You ain't talkin' 'bout sh*t, you don't got no stain" },
+    { time: 96, text: "Brand-new BM dub-ski" },
+    { time: 99, text: "All the sudden, all the h*es wanna f*ck me (B*h')" },
+    { time: 102, text: "Pull up, brand new chain bussin'" },
+    { time: 105, text: "My slime still pourin' up Tussion' (Mud, mud)" },
+    { time: 108, text: "Can't come in here, I got the bucks in here (Bee, bee)" },
+    { time: 111, text: "Wassup, we don't give f*cks in here" },
+    { time: 114, text: "Wassup, knock a b*tch down, I don't care (Buh, buh, buh, buh)" },
+    { time: 117, text: "Percs just kicked in, let's get it (Let's get it)" },
+    { time: 120, text: "I ain't even know these h*es were friends (Yuh, yuh, yuh)" },
+    { time: 123, text: "I was just f*ckin' on two best friends" },
+    { time: 126, text: "Brand-new foreign whip, had to hit Ben" },
+    { time: 129, text: "Brand-new foreign b*tch wanna get in" },
+    { time: 132, text: "Slime catch a opp, make him pay for his sins (Buh, buh, buh, buh, buh, buh)" },
+    { time: 135, text: "B*tch, me and slime goin' for the win (Yeah)" },
+    { time: 138, text: "B*tch, me and slime goin' for the win (Yeah)" },
+    { time: 141, text: "B*tch, me and slime goin' for the win (Yeah)" },
+    { time: 144, text: "B*tch, me and slime goin' for the win (Yeah)" },
+    { time: 147, text: "Flex, bank account, ten by ten (Bee-bee, bee-bee)" }
+  ],
+  'Baghdad': [
+    { time: 0, text: "Bag, f*cked it up" },
+    { time: 3, text: "Pour more, not enough (Nah)" },
+    { time: 6, text: "It's too hot in here (Pipe up, pipe up)" },
+    { time: 9, text: "Hit yo' block and chop it up ( Me and Rok gon' rock and roll)" },
+    { time: 12, text: "And this lil' h* talk too much ( We gon' be ok)" },
+    { time: 15, text: "Goyard bag, I filled it up" },
+    { time: 18, text: "I'm on P, I flipped that truck" },
+    { time: 21, text: "Bet yo' crew won't f*ck with us (Buh, buh, buh, buh)" },
+    { time: 24, text: "Bet yo' crew can't f*ck with us (Yuh)" },
+    { time: 27, text: "What would you do for a little bit of money? (Bee)" },
+    { time: 30, text: "Call slime, wipe yo' nose for a hundred (Slime)" },
+    { time: 33, text: "Lil' n*gga know that sh*t ain't nothin' (Slime)" },
+    { time: 36, text: "Coupe take off like jet, just punchin'" },
+    { time: 39, text: "Boy, you hear that engine run (Bee)" },
+    { time: 42, text: "I just bought some brand-new guns" },
+    { time: 45, text: "Better not talk 'bout sh*t, not nothin' (Not nothin')" },
+    { time: 48, text: "B*h', my double cup, DJ Pun (Lean)" },
+    { time: 51, text: "Love when they run, that sh*t be fun" },
+    { time: 54, text: "You ain't tryna hit, lil' n*gga, say somethin' (Say somethin')" },
+    { time: 57, text: "Got some sh*t that'll send you to the sun" },
+    { time: 60, text: "Hit up twin, \"Where the bags at?\"" },
+    { time: 63, text: "We got sticks, just like Baghdad" },
+    { time: 66, text: "See it, want it, then I have that (Bee)" },
+    { time: 69, text: "Foreign b*h', I'ma bag that" },
+    { time: 72, text: "I'ma flex on my ex" },
+    { time: 75, text: "Stef still pourin' up Hi-Tech" },
+    { time: 78, text: "I'm still scorin'" },
+    { time: 81, text: "Check the net" },
+    { time: 84, text: "Where was you going?" },
+    { time: 87, text: "Catch some lead" },
+    { time: 90, text: "Goin' fed, goin' fed" },
+    { time: 93, text: "In the whip, I'm goin' fed" },
+    { time: 96, text: "Tell that b*tch I'm pourin' red" },
+    { time: 99, text: "Tell that b*tch I'm pourin' red" },
+    { time: 102, text: "In that truck, I'm full of meds" },
+    { time: 105, text: "In that truck, a fully man" },
+    { time: 108, text: "This AR a bully, man" },
+    { time: 111, text: "Put holes in your hoodie, man" },
+    { time: 114, text: "Bag, f*cked it up" },
+    { time: 117, text: "Pour more, not enough (Nah)" },
+    { time: 120, text: "It's too hot in here (Pipe up, pipe up)" },
+    { time: 123, text: "Hit yo' block and chop it up" },
+    { time: 126, text: "And this lil' h* talk too much" },
+    { time: 129, text: "Goyard bag, I filled it up" },
+    { time: 132, text: "I'm on P, I flipped that truck" },
+    { time: 135, text: "Bet yo' crew won't f*ck with us (Buh, buh, buh, buh)" },
+    { time: 138, text: "Bet yo' crew can't f*ck with us (Yuh)" },
+    { time: 141, text: "What would you do for a little bit of money? (Bee)" },
+    { time: 144, text: "Call slime, wipe yo' nose for a hundred (Slime)" },
+    { time: 147, text: "Lil' n*gga, know that sh*t ain't nothin' (Slime)" },
+    { time: 150, text: "Coupe take off like jet, just punchin'" },
+    { time: 153, text: "Boy, you hear that engine run (Bee)" },
+    { time: 156, text: "I just bought some brand-new guns" },
+    { time: 159, text: "Better not talk 'bout sh*t, not nothin' (Not nothin')" },
+    { time: 162, text: "B*h', my double cup, DJ Pun (Lean)" },
+    { time: 165, text: "Love when they run, that sh*t be fun" },
+    { time: 168, text: "You ain't tryna hit, lil' n*gga, say somethin' (Say somethin')" },
+    { time: 171, text: "Got some sh*t that'll send you to the sun" },
+    { time: 174, text: "Hit up twin, \"Where the bags at?\"" },
+    { time: 177, text: "We got sticks, just like Baghdad" },
+    { time: 180, text: "See it, want it, then I have that (Bee)" },
+    { time: 183, text: "Foreign b*h', I'ma bag that" },
+    { time: 186, text: "I'ma flex on my ex" },
+    { time: 189, text: "Stef still pourin' up Hi-Tech" }
+  ],
+  'Cartel': [
+    { time: 0, text: "Throw ya' Dracos in the air" },
+    { time: 5, text: "This that Flex Musix" },
+    { time: 10, text: "Uh, yuh, yuh" },
+    { time: 13, text: "N*gga, yo' mans get hit with a switch" },
+    { time: 16, text: "[I been on flex time, I can't miss]" },
+    { time: 19, text: "[Get a cream soda and mix it with the Tris]" },
+    { time: 22, text: "[I been outside, I ain't worried 'bout n*ggas]" },
+    { time: 25, text: "Pull up to the city, let me see how you live" },
+    { time: 28, text: "Whippin' that new Jeep, check just hit" },
+    { time: 31, text: "[Bad b*tch talkin' 'bout this and this]" },
+    { time: 34, text: "Hit twin, got a brand new lick" },
+    { time: 37, text: "Drop that sh*t, got a brand new whip" },
+    { time: 40, text: "Spent like ten on my teeth, I'm hip" },
+    { time: 43, text: "Flexin' that sh*t, like b*h' come here" },
+    { time: 46, text: "I been gettin' money all goddamn year" },
+    { time: 49, text: "Push up, gang tryna whack some', yeah" },
+    { time: 52, text: "N*gga yo' slime died, oh-oh well" },
+    { time: 55, text: "[Who got the stick? Baby Chop? Lil Rell?]" },
+    { time: 58, text: "[Who got the lean? Tryna pour up twelve]" },
+    { time: 61, text: "Feds tryna sеnd me, I'm goin' to hell" },
+    { time: 64, text: "B*h', I don’t give a f*ck how you feel" },
+    { time: 67, text: "[Wе got sticks like the new cartel]" },
+    { time: 70, text: "N*ggas tryna keep up, we can tell" },
+    { time: 73, text: "Twenty for ya' head, boy, I wish you well" },
+    { time: 76, text: "H* said she gon' pull up now" },
+    { time: 79, text: "Who you playin' with? I ain't no damn clown" },
+    { time: 82, text: "B*tch talking sh*t, get the f*ck from 'round" },
+    { time: 85, text: "Flip that whip, turn the whole sh*t down" },
+    { time: 88, text: "Broke ass n*gga tryna flex for a freak h*" },
+    { time: 91, text: "Shoot him at the limb, like a goddamn free throw" },
+    { time: 94, text: "Pourin' up mud, but the sh*t not free though" },
+    { time: 97, text: "[N*gga goin' broke, tryna keep up with me h*]" },
+    { time: 100, text: "[Yeah, I'm the flexer, huh, Lil' O]" },
+    { time: 103, text: "Wouldn't be sh*t, got to shout out my 'migo" },
+    { time: 106, text: "Boy, I got Celine, man, you know I got mink coat" },
+    { time: 109, text: "[Rehab, rockin' that sh*t for free though]" },
+    { time: 112, text: "[Rockstar flow, lil' bad h*, mijo]" },
+    { time: 115, text: "Since you dropped the bag, I ain't doin' no free show" },
+    { time: 118, text: "Bet that stick go wherever I go" },
+    { time: 121, text: "[Foreign drive by, I ain't whipping no Tahoe]" },
+    { time: 124, text: "Pourin' up mud, drop the whole damn bottle" },
+    { time: 127, text: "[Put the h*' on molly, now she goin' full throttle]" }
+  ],
+  'Popstar': [
+    { time: 0, text: "This b*tch know who I am, yeah, L-I-L O" },
+    { time: 3, text: "Lil' O geeked off contraband" },
+    { time: 6, text: "Double cross, we slime your mans" },
+    { time: 9, text: "Five hundred, fill that cup again" },
+    { time: 12, text: "I just f*cked it up again" },
+    { time: 15, text: "Spilled the lean, f*cked up my pants" },
+    { time: 18, text: "Brand-new coupe 'cause I recoup" },
+    { time: 21, text: "Double cup still in my hand" },
+    { time: 24, text: "B*tch, I'm ballin' like 24, 'cause the rock can't leave my hand" },
+    { time: 27, text: "Got a rocket for your man" },
+    { time: 30, text: "Rock the baby straight to bed" },
+    { time: 33, text: "We got hella f*ckin' lean, so they wanna kick it, yeah" },
+    { time: 36, text: "N*gga, f*ck a VIP, in that back door, you get hit" },
+    { time: 39, text: "I got sticks on me, don't you end up in a ditch" },
+    { time: 42, text: "Chrome Heart and Balenci', what I got, can't cop that sh*t" },
+    { time: 45, text: "Pockets fatter than a b*tch, got my racks, you throw a fit" },
+    { time: 48, text: "Brr, brr, you already know what time it is" },
+    { time: 51, text: "I can flex my brand-new b*tch" },
+    { time: 54, text: "I can flеx my brand-new kicks" },
+    { time: 57, text: "Or I can flex this fast-ass whip" },
+    { time: 60, text: "Double cup, I'm fat as sh*t" },
+    { time: 63, text: "Oh, you said you got thеm sticks? Let's link up and do that sh*t" },
+    { time: 66, text: "I got clothes that cost a brick, b*tch, you not livin' like this" },
+    { time: 69, text: "Damn, ran off on the plug like, \"You gon' have to catch me, kid\"" },
+    { time: 72, text: "Hood rich, now they all love us 'cause we lit" },
+    { time: 75, text: "B*tch tryin' to keep up, you can't keep up with this sh*t" },
+    { time: 78, text: "This b*tch know who I am, yeah, L-I-L O" },
+    { time: 81, text: "Lil' O geeked off contraband" },
+    { time: 84, text: "Double cross, we slime your mans" },
+    { time: 87, text: "Five hundred, fill that cup again" },
+    { time: 90, text: "I just f*cked it up again" },
+    { time: 93, text: "Spilled the lean, f*cked up my pants" },
+    { time: 96, text: "Brand-new coupe 'causeI recoup" },
+    { time: 99, text: "Double cup still in my hand" },
+    { time: 102, text: "B*tch, I'm ballin' like 24, 'cause the rock can't leave my hand" },
+    { time: 105, text: "Got a rocket for your man" },
+    { time: 108, text: "Rock the baby straight to bed" },
+    { time: 111, text: "We got hella f*ckin' lean, so they wanna kick it, yeah" }
+  ],
+  'Lambtruck': [
+    { time: 0, text: "Finna take the Lamb' truck to Japan (Skrrt)" },
+    { time: 3, text: "I'm like, \"Lil' n*gga, get your bands up, yes, you can\"" },
+    { time: 6, text: "Yeah, my slime up in that trap, still whip the pan, yeah, yeah" },
+    { time: 9, text: "Push up, we gon' flip the van, huh, yeah, yeah" },
+    { time: 12, text: "This b*tch know we got hella bands (Beep), yeah, yeah, yeah" },
+    { time: 15, text: "Get your mans whacked for the slick sh*t that you sayin' (Yeah, yeah)" },
+    { time: 18, text: "Walked in YSL, Helmut Lang, b*tch, I ain't paying" },
+    { time: 21, text: "I still do Percs" },
+    { time: 24, text: "I'ma make it work" },
+    { time: 27, text: "Make the two door jerk" },
+    { time: 30, text: "Your h*, she a jerk" },
+    { time: 33, text: "Came through, I'm tryna hit somethin', don't make it worse" },
+    { time: 36, text: "I know my slime tryna blick somethin', I seen it first" },
+    { time: 39, text: "Drop bands on some shirts, Osama the worst" },
+    { time: 42, text: "MP5 burst leave you in the dirt" },
+    { time: 45, text: "Chopper on me ARP, chopper on me ARP" },
+    { time: 48, text: "My bro just picked up the lean, my bro just picked up the lean" },
+    { time: 51, text: "H*es nagging and the jeans sagging" },
+    { time: 54, text: "Popped an eight, lasting, this h* ain't lasting" },
+    { time: 57, text: "Bain jacket, h*es jacking, I'm having" },
+    { time: 60, text: "Scored on Dracos, run 'em down like a savage" },
+    { time: 63, text: "Finna take the Lamb' truck to Japan (Skrrt)" },
+    { time: 66, text: "I'm like, \"Lil' n*gga, get your bands up, yes, you can\"" },
+    { time: 69, text: "Yeah, my slime up in that trap, still whip the pan, yeah, yeah" },
+    { time: 72, text: "Push up, we gon' flip the van, huh, yeah, yeah" },
+    { time: 75, text: "This b*tch know we got hella bands (Beep), yeah, yeah, yeah" },
+    { time: 78, text: "Get your mans whacked for the slick sh*t that you sayin' (Yeah, yeah)" },
+    { time: 81, text: "Walked in YSL, Helmut Lang, b*tch, I ain't paying" },
+    { time: 84, text: "I still do Percs" },
+    { time: 87, text: "I'ma make it work" },
+    { time: 90, text: "Make the two door jerk" },
+    { time: 93, text: "Your h*, she a jerk" },
+    { time: 96, text: "Came through, I'm tryna hit somethin', don't make it worse" },
+    { time: 99, text: "I know my slime tryna blick somethin', I seen it first" }
+  ],
+  'Roster': [
+    { time: 0, text: "B*tch, I've been sayin' that these n*ggas don't want problems (Beep, beep)" },
+    { time: 4, text: "Get the block to sprayin', you know we gon' hit 'em all up" },
+    { time: 8, text: "My slime ready to crash out, singin', \"I got shots for my shotta\" (For my shotta)" },
+    { time: 12, text: "I was just pourin' it all up (Pourin' it all up), I was just pourin' it all up (Oh woah)" },
+    { time: 16, text: "I've been f*ckin' these broads, yeah, too high, can't pull my draws up" },
+    { time: 20, text: "Chrome Heart ain't come from the mall, nah, see it, I buy it all, yeah (Beep)" },
+    { time: 24, text: "That b*tch like a rasta, only bad h*es on my roster (Beep)" },
+    { time: 28, text: "Pourin' up mud, gon' nod (Yeah), I'm just smokin' on pounds (Yeah)" },
+    { time: 32, text: "I was just in your town, facts, scoop and look around" },
+    { time: 36, text: "You get hit, b*tch, you're goin' down" },
+    { time: 40, text: "I'm off the lean and the Percs right now" },
+    { time: 44, text: "Yeah, I know my slime gon' look out (Slime)" },
+    { time: 48, text: "Pourin' that sh*t now, pourin' it out (Point)" },
+    { time: 52, text: "5.6, .308, b*tch, point out (Boop-boop, boop-boop)" },
+    { time: 56, text: "Yeah, I ain't do this for no clout (Let's go)" },
+    { time: 60, text: "I just mixed and matched my h*, but I think I want a new b*tch now (Beep, beep, beep, beep)" },
+    { time: 64, text: "They say they want that sh*t get loud (Yeah, yeah)" },
+    { time: 68, text: "I'm tryna punch my sh*t in the crowd" },
+    { time: 72, text: "Oh, you wanna do it? Let's do it right now" },
+    { time: 76, text: "Oh, you wanna do it? Let's do it right now (B*tch)" },
+    { time: 80, text: "B*tch, I've been sayin' that these n*ggas don't want problems (Beep, beep)" },
+    { time: 84, text: "Get the block to sprayin', you know we gon' hit 'em all up" },
+    { time: 88, text: "My slime ready to crash out, singin', \"I got shots for my shotta\" (For my shotta)" },
+    { time: 92, text: "I was just pourin' it all up (Pourin' it all up), I was just pourin' it all up (Oh woah)" },
+    { time: 96, text: "I've been f*ckin' these broads, yeah, too high, can't pull my draws up" },
+    { time: 100, text: "Chrome Heart, ain't come from the mall, nah, see it, I buy it all, yeah (Beep)" },
+    { time: 104, text: "That b*tch like a rasta, only bad h*es on my roster (Beep)" }
+  ],
 'Catch me if u can': 
-`This lil' bitch got me pissed off
-Damn, I ain't learn my lesson, fuck, I'm fuckin' with ya
-You got lean? Yeah, I'm in there
-You got Percs? Yeah, I'm in there
-You know I hop up in there, you know I hop up in there
-You know I hop up in there, you know I hop up in there
-Big two-door jumpin', countin' hundreds, never end
-Niggas tryna come catch me, then come catch me if you can
-Walked in, spent it all, walked in, spent it all
-V12, jump frog, you hell, ah-huh
-I don't want the drugs, I don't do no drugs, shootout with the plug
-Damn, I told her, ''Kick it off,'' bitch, just go and take it off
-Chillin', uh-uh
-Bitch look like a model, flex, ho, get monеy, amaro
-Yeah, I'm dunkin', swerve it, yеah, but I will not drop the bottle
-Why they hatin' on me? I got freak hoes and they on me
-We all off a cup, I got this freak ho leanin' on me
-This lil' bitch got me pissed off
-Damn, I ain't learn my lesson, fuck, I'm fuckin' with ya
-You got lean? Yeah, I'm in there
-You got Percs? Yeah, I'm in there
-You know I hop up in there, you know I hop up in there
-You know I hop up in there, you know I hop up in there
-Big two-door jumpin', countin' hundreds, never end
-Niggas tryna come catch me, then come catch me if you can
-Walked in, spent it all, walked in, spent it all`
+[
+    { time: 0, text: "This lil' bitch got me pissed off" },
+    { time: 3, text: "Damn, I ain't learn my lesson, fuck, I'm fuckin' with ya" },
+    { time: 6, text: "You got lean? Yeah, I'm in there" },
+    { time: 9, text: "You got Percs? Yeah, I'm in there" },
+    { time: 12, text: "You know I hop up in there, you know I hop up in there" },
+    { time: 15, text: "You know I hop up in there, you know I hop up in there" },
+    { time: 18, text: "Big two-door jumpin', countin' hundreds, never end" },
+    { time: 21, text: "Niggas tryna come catch me, then come catch me if you can" },
+    { time: 24, text: "Walked in, spent it all, walked in, spent it all" },
+    { time: 27, text: "V12, jump frog, you hell, ah-huh" },
+    { time: 30, text: "I don't want the drugs, I don't do no drugs, shootout with the plug" },
+    { time: 33, text: "Damn, I told her, ''Kick it off,'' bitch, just go and take it off" },
+    { time: 36, text: "Chillin', uh-uh" },
+    { time: 39, text: "Bitch look like a model, flex, ho, get monеy, amaro" },
+    { time: 42, text: "Yeah, I'm dunkin', swerve it, yеah, but I will not drop the bottle" },
+    { time: 45, text: "Why they hatin' on me? I got freak hoes and they on me" },
+    { time: 48, text: "We all off a cup, I got this freak ho leanin' on me" },
+    { time: 51, text: "This lil' bitch got me pissed off" },
+    { time: 54, text: "Damn, I ain't learn my lesson, fuck, I'm fuckin' with ya" },
+    { time: 57, text: "You got lean? Yeah, I'm in there" },
+    { time: 60, text: "You got Percs? Yeah, I'm in there" },
+    { time: 63, text: "You know I hop up in there, you know I hop up in there" },
+    { time: 66, text: "You know I hop up in there, you know I hop up in there" },
+    { time: 69, text: "Big two-door jumpin', countin' hundreds, never end" },
+    { time: 72, text: "Niggas tryna come catch me, then come catch me if you can" },
+    { time: 75, text: "Walked in, spent it all, walked in, spent it all" }
+  ]
 };
 
         // Theme switcher
@@ -2312,7 +2336,7 @@ Walked in, spent it all, walked in, spent it all`
         let lastTrailTime = 0;
         document.addEventListener('mousemove', (e) => {
             const now = performance.now();
-            if (now - lastTrailTime < 50) return;
+            if (now - lastTrailTime < 100) return;
             lastTrailTime = now;
             const trail = document.createElement('div');
             trail.className = 'cursor-trail';
@@ -2359,7 +2383,7 @@ Walked in, spent it all, walked in, spent it all`
                 const source = audioContext.createMediaElementSource(audioPlayer);
                 source.connect(analyser);
                 analyser.connect(audioContext.destination);
-                analyser.fftSize = 256;
+                analyser.fftSize = 128;
                 const bufferLength = analyser.frequencyBinCount;
                 dataArray = new Uint8Array(bufferLength);
                 const canvas = document.getElementById('audioVisualizer');
@@ -2498,16 +2522,14 @@ Walked in, spent it all, walked in, spent it all`
             audioPlayer.src = song.src;
             songTitle.textContent = song.title;
             lyricsDisplay.innerHTML = '';
-            const lyricText = lyrics[song.title] || '';
-            if (lyricText) {
-                const lines = lyricText.split('\n').filter(line => line.trim() !== '');
-                lines.forEach(line => {
-                    const p = document.createElement('p');
-                    p.className = 'lyric-line';
-                    p.textContent = line;
-                    lyricsDisplay.appendChild(p);
-                });
-            }
+            const lyricData = lyrics[song.title] || [];
+            lyricData.forEach(line => {
+                const p = document.createElement('p');
+                p.className = 'lyric-line';
+                p.textContent = line.text;
+                p.dataset.time = line.time;
+                lyricsDisplay.appendChild(p);
+            });
             loadingSpinner.classList.add('active');
             audioPlayer.load();
             retryAttempts = 0;
@@ -2626,7 +2648,6 @@ Walked in, spent it all, walked in, spent it all`
     setTimeout(() => {
         welcomeScreen.classList.add('hidden');
         body.classList.remove('welcome-active');
-        startAudio();
         autoSpinProfileImage();
     }, 2000);
 
@@ -2663,8 +2684,14 @@ Walked in, spent it all, walked in, spent it all`
 
         const lines = lyricsDisplay.querySelectorAll('.lyric-line');
         if (lines.length > 0) {
-            const interval = duration / lines.length;
-            const currentIndex = Math.min(Math.floor(currentTime / interval), lines.length - 1);
+            let currentIndex = 0;
+            for (let i = 0; i < lines.length; i++) {
+                if (currentTime >= parseFloat(lines[i].dataset.time)) {
+                    currentIndex = i;
+                } else {
+                    break;
+                }
+            }
             lines.forEach((line, idx) => {
                 line.classList.toggle('current', idx === currentIndex);
             });
@@ -2776,6 +2803,7 @@ Walked in, spent it all, walked in, spent it all`
         if (!hasInteracted) {
             hasInteracted = true;
             wordEffectActive = true;
+            startAudio();
         }
     });
 
@@ -2807,6 +2835,11 @@ Walked in, spent it all, walked in, spent it all`
         }
     });
 
+    notesToggle.addEventListener('click', () => {
+        notesSection.classList.toggle('visible');
+        notesToggle.textContent = notesSection.classList.contains('visible') ? 'v' : '>';
+    });
+
     displayNotes();
 
     // Initialize scroll animations
@@ -2814,10 +2847,3 @@ Walked in, spent it all, walked in, spent it all`
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
