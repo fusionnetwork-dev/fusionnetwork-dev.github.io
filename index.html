@@ -895,14 +895,14 @@ body.swaqsecondpersonal {
     margin: 0 auto 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
     position: relative;
-    /* REMOVED overflow: hidden - this was clipping the decoration! */
     transition: transform 0.4s ease, box-shadow 0.4s ease;
     cursor: pointer;
     animation: glowPulse 2.5s ease-in-out infinite;
-    z-index: 3; /* Make sure profile is on top */
+    z-index: 3;
+    overflow: hidden; /* Add this back for shimmer effect */
 }
 
-/* Shimmer effect */
+/* Original shimmer effect - unchanged */
 .profile-image::before {
     content: '';
     position: absolute;
@@ -913,31 +913,35 @@ body.swaqsecondpersonal {
     background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
     transform: rotate(45deg);
     animation: shimmer 4s infinite;
-    z-index: 4; /* Above the profile image */
-    border-radius: 50%; /* Match profile shape */
 }
 
-/* Decoration frame */
+/* Decoration frame - smaller and properly fitted */
 .profile-image::after {
     content: '';
     position: absolute;
     
-    /* Much larger to be visible around the small 80px profile */
-    top: -60px; /* 60px outside the top */
-    left: -60px; /* 60px outside the left */
-    width: calc(100% + 120px); /* 60px on each side */
-    height: calc(100% + 120px); /* 60px on top/bottom */
+    /* Smaller decoration that fits properly around 80px profile */
+    top: -20px;
+    left: -20px;
+    width: calc(100% + 40px); /* Total 120px (80px + 40px) */
+    height: calc(100% + 40px);
     
     background: url('https://r2.haunt.gg/decorations/bloodthirsty.png') no-repeat center/contain;
-    background-size: contain; /* Keep aspect ratio */
-    opacity: 0.9;
+    background-size: contain;
+    opacity: 0.8;
     
-    /* Behind everything else */
-    z-index: 1;
+    z-index: -1; /* Behind the profile */
     pointer-events: none;
     
-    /* Optional: Add a subtle filter */
-    filter: brightness(1.1) contrast(1.2);
+    /* Don't let it spin with the profile */
+    animation: none !important;
+    transform: none !important;
+}
+
+/* Prevent decoration from spinning when profile spins */
+.profile-image.spin::after {
+    animation: none !important;
+    transform: none !important;
 }
 
 /* Animations */
@@ -952,6 +956,7 @@ body.swaqsecondpersonal {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7);
 }
 
+/* Only the profile image spins, not the decoration */
 .profile-image.spin {
     animation: spin 1.2s ease-out;
 }
@@ -3217,6 +3222,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
