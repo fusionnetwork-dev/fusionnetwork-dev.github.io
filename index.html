@@ -32,17 +32,26 @@
             --smoke-center: rgba(255, 255, 255, 0.15);
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding-top: 20px;
-            background: var(--primary-gradient);
-        }
+  /* Define your custom font */
+@font-face {
+    font-family: 'Punktype';
+    src: url('assets/Punktype.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap; /* Improves loading performance */
+}
+
+body {
+    font-family: 'Punktype', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 20px;
+    background: var(--primary-gradient);
+}
 
         body.welcome-active * {
             animation-play-state: paused !important;
@@ -3181,6 +3190,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
