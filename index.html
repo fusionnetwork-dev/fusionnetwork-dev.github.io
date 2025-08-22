@@ -2533,6 +2533,7 @@ function onCaptchaSuccess(token) {
             loadingSpinner.classList.add('active');
             audioPlayer.load();
             retryAttempts = 0;
+            audioPlayer.play();
         }
 
         // Function to play the current song with retry logic
@@ -2847,3 +2848,4 @@ function onCaptchaSuccess(token) {
 </script>
 </body>
 </html>
+
