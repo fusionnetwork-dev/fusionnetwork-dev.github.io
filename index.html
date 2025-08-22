@@ -125,17 +125,125 @@
             --smoke-color: rgba(216, 180, 254, 0.6);
             --smoke-center: rgba(107, 114, 142, 0.15);
         }
-        body.swaqfirstpersonal {
-            --primary-gradient: linear-gradient(90deg, #991914, #eeeeee);
-            --smoke-color: rgba(188, 2, 0, 0.8);
-            --smoke-center: rgba(236, 236, 236, 0.8);
-        }
-        
-        body.swaqsecondpersonal {
-            --primary-gradient: linear-gradient(90deg, #991914, #2b2b2b);
-            --smoke-color: rgba(188, 2, 0, 0.8);
-            --smoke-center: rgba(41, 41, 41, 0.97);
-        }
+    body.swaqfirstpersonal {
+    --primary-gradient: linear-gradient(135deg, 
+        #c0c0c0 0%, 
+        #f5f5f5 15%, 
+        #d3d3d3 25%, 
+        #ffffff 35%, 
+        #e8e8e8 45%, 
+        #c5c5c5 55%, 
+        #f0f0f0 65%, 
+        #d8d8d8 75%, 
+        #ffffff 85%, 
+        #c0c0c0 100%);
+    --smoke-color: rgba(200, 200, 200, 0.9);
+    --smoke-center: rgba(245, 245, 245, 0.95);
+    --metallic-accent: linear-gradient(45deg, #b8b8b8, #ffffff, #d0d0d0);
+    --chrome-highlight: rgba(255, 255, 255, 0.8);
+    --shadow-depth: rgba(0, 0, 0, 0.3);
+}
+
+body.swaqsecondpersonal {
+    --primary-gradient: linear-gradient(135deg, 
+        #4a4a4a 0%, 
+        #6d6d6d 15%, 
+        #2c2c2c 25%, 
+        #787878 35%, 
+        #3f3f3f 45%, 
+        #5a5a5a 55%, 
+        #707070 65%, 
+        #2a2a2a 75%, 
+        #666666 85%, 
+        #404040 100%);
+    --smoke-color: rgba(100, 100, 100, 0.9);
+    --smoke-center: rgba(70, 70, 70, 0.97);
+    --metallic-accent: linear-gradient(45deg, #3a3a3a, #6a6a6a, #4f4f4f);
+    --chrome-highlight: rgba(255, 255, 255, 0.4);
+    --shadow-depth: rgba(0, 0, 0, 0.6);
+}
+
+/* Additional metallic utility classes */
+.metallic-surface {
+    background: var(--primary-gradient);
+    box-shadow: 
+        inset 0 1px 0 var(--chrome-highlight),
+        inset 0 -1px 0 var(--shadow-depth),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.metallic-surface::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        var(--chrome-highlight) 50%,
+        transparent 70%
+    );
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.chrome-text {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 1px 2px var(--shadow-depth);
+    font-weight: bold;
+}
+
+.brushed-metal {
+    background: var(--primary-gradient);
+    position: relative;
+}
+
+.brushed-metal::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 1px,
+        rgba(255, 255, 255, 0.1) 2px,
+        rgba(255, 255, 255, 0.1) 3px
+    );
+    pointer-events: none;
+}
+
+.metallic-button {
+    background: var(--primary-gradient);
+    border: 1px solid var(--shadow-depth);
+    border-radius: 4px;
+    box-shadow: 
+        inset 0 1px 0 var(--chrome-highlight),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+.metallic-button:hover {
+    box-shadow: 
+        inset 0 1px 0 var(--chrome-highlight),
+        0 4px 8px rgba(0, 0, 0, 0.4);
+    transform: translateY(-1px);
+}
+
+.metallic-button:active {
+    box-shadow: 
+        inset 0 2px 4px var(--shadow-depth),
+        0 1px 2px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
+}
 #captchaOverlay {
   position: fixed;
   top: 0;
@@ -1670,7 +1778,7 @@
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.3.2: MAJOR UPD!!</div>
+    <div class="version-text">v1.3.3.1: Changed "ayarp's" theme, 3 new songs (no lyrics)</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -1929,7 +2037,7 @@ function onCaptchaSuccess(token) {
         let hasInteracted = false;
         let wordEffectActive = false;
         let isPlaying = false;
-        let currentSongIndex = 7; // Catch me if u can first
+        let currentSongIndex = 8; // Speakers Never Learn first
         let retryAttempts = 0;
         const maxRetries = 3;
         let clickCount = 0;
@@ -1946,7 +2054,10 @@ function onCaptchaSuccess(token) {
             { title: "Popstar", src: "assets/popstar.mp3" },
             { title: "Lambtruck", src: "assets/lamb.mp3" },
             { title: "Roster", src: "assets/roster.mp3" },
-            { title: "Catch me if u can", src: "assets/cmiuc.mp3" }
+            { title: "Catch me if u can", src: "assets/cmiuc.mp3" },
+            { title: "Speakers Never Learn", src: "assets/snl.mp3" },
+            { title: "2010 Justin Bieber", src: "assets/jb.mp3" },
+            { title: "Ouija", src: "assets/ouija.mp3" }
         ];
 
         const lyrics = {
@@ -2921,5 +3032,6 @@ function displayLyrics(lyricData) {
 </script>
 </body>
 </html>
+
 
 
