@@ -901,16 +901,17 @@ z-index: 3;
 }
 /* Old shimmer with clip-path to confine */
 .profile-image::before {
-content: '';
-position: absolute;
-top: -50%;
-left: -50%;
-width: 200%;
-height: 200%;
-background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-transform: rotate(45deg);
-animation: shimmer 4s infinite;
-clip-path: circle(25% at 50% 50%);
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 4s infinite;
+    z-index: 4; /* Above the profile image */
+    border-radius: 50%; /* Match profile shape */
 }
 /* Tighter decoration */
 .profile-image::after {
@@ -3206,3 +3207,4 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
