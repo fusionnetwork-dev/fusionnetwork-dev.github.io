@@ -747,46 +747,31 @@
             50% { border-image: linear-gradient(45deg, transparent, var(--smoke-color)) 1; }
             100% { border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1; }
         }
- .profile-image {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: url('https://cdn.discordapp.com/avatars/1084576683262230548/1a8a7c61703f98472438d37f23674c07.webp?size=1024') no-repeat center/cover;
-    margin: 0 auto 8px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
-    animation: glowPulse 2.5s ease-in-out infinite;
-    z-index: 1; /* Set base z-index for profile image */
-}
 
-.profile-image::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-    transform: rotate(45deg);
-    animation: shimmer 4s infinite;
-    z-index: 2; /* Higher than profile image to appear on top */
-}
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: url('https://cdn.discordapp.com/avatars/1084576683262230548/1a8a7c61703f98472438d37f23674c07.webp?size=1024') no-repeat center/cover;
+            margin: 0 auto 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            cursor: pointer;
+            animation: glowPulse 2.5s ease-in-out infinite;
+        }
 
 .profile-image::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('https://r2.haunt.gg/decorations/28_years_later.png') no-repeat center/cover;
-    opacity: 0.8;
-    z-index: 3; /* Higher than both profile image and ::before */
-    mix-blend-mode: screen; /* Enhanced FX blending */
-}
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://r2.haunt.gg/decorations/28_years_later.png') no-repeat center/cover;
+            opacity: 0.8;
+        }
 
         @keyframes glowPulse {
             0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
@@ -1877,37 +1862,6 @@
     </svg>
 
     <script>
-        // Preload assets during captcha (runs on page load)
-        function preloadAssets() {
-          const images = [
-            'https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png?ex=689713b3&is=6895c233&hm=19e2f541e871739a90df5d1f13b4aff59e6152a70d1c9f8688403981ade3ffd7&',
-            'https://cdn.discordapp.com/avatars/1084576683262230548/1a8a7c61703f98472438d37f23674c07.webp?size=1024',
-            'https://r2.guns.lol/d9488425-e8da-4556-98ef-b37992bc279a.webp',
-            'https://assets.guns.lol/sparkle_white.gif',
-            'https://r2.haunt.gg/decorations/28_years_later.png',
-            'assets/diamondspin.gif',
-            'assets/gunspin.gif',
-            'assets/skimaskspin.gif'
-          ];
-        
-          images.forEach(src => {
-            const img = new Image();
-            img.src = src;
-          });
-        
-          songs.forEach(song => {
-            const audio = new Audio();
-            audio.src = song.src;
-            audio.preload = 'auto';
-          });
-        
-          // Preload video
-          const vid = document.getElementById('backgroundVideo');
-          vid.load();
-        }
-        
-        // Call preload on load
-        preloadAssets();
 function onCaptchaSuccess(token) {
   document.getElementById('captchaOverlay').classList.add('hidden');
   const welcomeScreen = document.getElementById('welcomeScreen');
@@ -1916,7 +1870,6 @@ function onCaptchaSuccess(token) {
     welcomeScreen.classList.add('hidden');
     document.body.classList.remove('welcome-active');
     autoSpinProfileImage();
-    startAudio(); // Autoplay music after captcha and welcome
   }, 2000);
   // Optionally, send token to your server for verification
   console.log('hCaptcha token:', token);
@@ -1995,61 +1948,7 @@ function onCaptchaSuccess(token) {
             { title: "Roster", src: "assets/roster.mp3" },
             { title: "Catch me if u can", src: "assets/cmiuc.mp3" }
         ];
-// Fetch lyrics from Genius API
-async function fetchLyrics(songTitle) {
-    const apiKey = '62a0baf0famsh4f0405ba187ab49p11d6bfjsnbaf5117d73e4'; // Replace with your actual RapidAPI key
-    const query = encodeURIComponent(songTitle);
-    const url = `https://genius-song-lyrics1.p.rapidapi.com/search?q=${query}`;
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'X-RapidAPI-Key': apiKey,
-                'X-RapidAPI-Host': 'genius-song-lyrics1.p.rapidapi.com'
-            }
-        });
-        const data = await response.json();
-        if (data.response.hits.length > 0) {
-            const songId = data.response.hits[0].result.id;
-            const lyricsResponse = await fetch(`https://genius-song-lyrics1.p.rapidapi.com/songs/${songId}/lyrics`, {
-                method: 'GET',
-                headers: {
-                    'X-RapidAPI-Key': apiKey,
-                    'X-RapidAPI-Host': 'genius-song-lyrics1.p.rapidapi.com'
-                }
-            });
-            const lyricsData = await lyricsResponse.json();
-            return lyricsData.response.lyrics.lyrics.body.text || '';
-        }
-        return '';
-    } catch (error) {
-        console.error('Error fetching lyrics:', error);
-        return '';
-    }
-}
 
-// Analyze audio for timestamps
-async function analyzeAudioForTimestamps(audioSrc, lyricsText) {
-    try {
-        const audioContext = new AudioContext();
-        const response = await fetch(audioSrc);
-        if (!response.ok) throw new Error('Failed to fetch audio');
-        const arrayBuffer = await response.arrayBuffer();
-        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-
-        const lines = lyricsText.split('\n').filter(line => line.trim() !== '');
-        const duration = audioBuffer.duration;
-        const interval = duration / lines.length;
-
-        return lines.map((text, index) => ({
-            time: index * interval,
-            text: text
-        }));
-    } catch (error) {
-        console.error('Error analyzing audio:', error);
-        return [];
-    }
-}
         const lyrics = {
   ' kills': [
     { time: 0, text: "Flex, flex, flex, flex, flex, flex, beep, beep" },
@@ -2422,7 +2321,6 @@ async function analyzeAudioForTimestamps(audioSrc, lyricsText) {
             localStorage.setItem('customSmokeB', smokeB.value);
             localStorage.setItem('customSmokeA', smokeA.value);
             localStorage.setItem('customCenterR', centerR.value);
-            localStorage.setItem('customCenterR', centerR.value);
             localStorage.setItem('customCenterG', centerG.value);
             localStorage.setItem('customCenterB', centerB.value);
             localStorage.setItem('customCenterA', centerA.value);
@@ -2618,35 +2516,24 @@ async function analyzeAudioForTimestamps(audioSrc, lyricsText) {
             elements.forEach(el => observer.observe(el));
         }
 
-       // Load song with lyrics
-async function loadSong(index) {
-    const song = songs[index];
-    audioPlayer.src = song.src;
-    songTitle.textContent = song.title;
-
-    loadingSpinner.classList.add('active');
-    audioPlayer.load();
-    retryAttempts = 0;
-
-    // Attempt to autoplay
-    try {
-        await audioPlayer.play();
-        loadingSpinner.classList.remove('active');
-    } catch (error) {
-        console.error('Autoplay failed:', error);
-        // Fallback: Mute and try again
-        audioPlayer.muted = true;
-        audioPlayer.play().then(() => {
-            loadingSpinner.classList.remove('active');
-            console.log('Autoplay started with muted audio');
-        }).catch(err => {
-            console.error('Muted autoplay also failed:', err);
-            // Show a user prompt to start playback
-            songTitle.textContent = `${song.title} (Click Play to start)`;
-            loadingSpinner.classList.remove('active');
-        });
-    }
-}
+        // Function to load a song
+        function loadSong(index) {
+            const song = songs[index];
+            audioPlayer.src = song.src;
+            songTitle.textContent = song.title;
+            lyricsDisplay.innerHTML = '';
+            const lyricData = lyrics[song.title] || [];
+            lyricData.forEach(line => {
+                const p = document.createElement('p');
+                p.className = 'lyric-line';
+                p.textContent = line.text;
+                p.dataset.time = line.time;
+                lyricsDisplay.appendChild(p);
+            });
+            loadingSpinner.classList.add('active');
+            audioPlayer.load();
+            retryAttempts = 0;
+        }
 
         // Function to play the current song with retry logic
         function playCurrentSong() {
@@ -2787,15 +2674,33 @@ async function loadSong(index) {
         playCurrentSong();
     });
 
-  audioPlayer.addEventListener('timeupdate', () => {
-    const currentTime = audioPlayer.currentTime;
-    const duration = audioPlayer.duration || 0;
-    const progressPercent = (currentTime / duration) * 100;
-    progressFill.style.width = `${progressPercent}%`;
-    currentTimeDisplay.textContent = formatTime(currentTime);
-    totalTimeDisplay.textContent = formatTime(duration);
-});
+    audioPlayer.addEventListener('timeupdate', () => {
+        const currentTime = audioPlayer.currentTime;
+        const duration = audioPlayer.duration || 0;
+        const progressPercent = (currentTime / duration) * 100;
+        progressFill.style.width = `${progressPercent}%`;
+        currentTimeDisplay.textContent = formatTime(currentTime);
+        totalTimeDisplay.textContent = formatTime(duration);
 
+        const lines = lyricsDisplay.querySelectorAll('.lyric-line');
+        if (lines.length > 0) {
+            let currentIndex = 0;
+            for (let i = 0; i < lines.length; i++) {
+                if (currentTime >= parseFloat(lines[i].dataset.time)) {
+                    currentIndex = i;
+                } else {
+                    break;
+                }
+            }
+            lines.forEach((line, idx) => {
+                line.classList.toggle('current', idx === currentIndex);
+            });
+            const currentLine = lines[currentIndex];
+            if (currentLine) {
+                currentLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
 
     audioPlayer.addEventListener('ended', () => {
         currentSongIndex = getRandomSongIndex();
