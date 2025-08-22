@@ -879,7 +879,7 @@ body.swaqsecondpersonal {
             100% { border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1; }
         }
 
-       .profile-container {
+.profile-container {
     position: relative;
     display: inline-block;
     padding: 100px; /* Space for decoration */
@@ -930,7 +930,7 @@ body.swaqsecondpersonal {
     background-size: contain;
     opacity: 0.8;
     
-    z-index: -1; /* Behind the profile */
+    z-index: 4; /* On top of the profile for overlay effect */
     pointer-events: none;
     
     /* Don't let it spin with the profile */
@@ -3222,6 +3222,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
