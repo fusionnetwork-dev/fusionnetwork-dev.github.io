@@ -13,7 +13,7 @@
     <title>ur da best</title>
     <link rel="icon" href="https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png?ex=689713b3&is=6895c233&hm=19e2f541e871739a90df5d1f13b4aff59e6152a70d1c9f8688403981ade3ffd7&" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    
     <style>
         * {
             margin: 0;
@@ -245,26 +245,10 @@ body.swaqsecondpersonal {
         0 1px 2px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
-#captchaOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 102; /* Higher than welcome screen (z-index: 100) */
-  transition: opacity 0.5s ease;
-}
-#captchaOverlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
+
+
         
-.welcome-screen.initially-hidden {
+.welcome-screen {
   display: none;
 }
         video#backgroundVideo {
@@ -1775,10 +1759,8 @@ body.swaqsecondpersonal {
     </style>
 </head>
 <body class="welcome-active">
- <div id="captchaOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 101;">
-<div class="h-captcha" data-sitekey="8dbe1b14-8684-4f50-92a8-268ec3ba8888" data-callback="onCaptchaSuccess"></div>
 </div>
-   <div class="welcome-screen initially-hidden" id="welcomeScreen">
+   <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-text">hello, hi, konnichiwa</div>
     </div>
 
@@ -1999,18 +1981,6 @@ body.swaqsecondpersonal {
     </svg>
 
     <script>
-function onCaptchaSuccess(token) {
-  document.getElementById('captchaOverlay').classList.add('hidden');
-  const welcomeScreen = document.getElementById('welcomeScreen');
-  welcomeScreen.classList.remove('initially-hidden');
-  setTimeout(() => {
-    welcomeScreen.classList.add('hidden');
-    document.body.classList.remove('welcome-active');
-    autoSpinProfileImage();
-  }, 2000);
-  // Optionally, send token to your server for verification
-  console.log('hCaptcha token:', token);
-}
         // Detect mobile device
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -3211,6 +3181,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
