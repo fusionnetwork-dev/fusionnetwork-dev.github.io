@@ -879,27 +879,31 @@ body.swaqsecondpersonal {
             100% { border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1; }
         }
 
-        .profile-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: url('https://cdn.discordapp.com/avatars/1084576683262230548/930b564571f9288c82ceaeb578dd4679.webp?size=1024') no-repeat center/cover;
-            margin: 0 auto 8px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            cursor: pointer;
-            animation: glowPulse 2.5s ease-in-out infinite;
-        }
-        
-        .profile-container, .profile-wrapper {
+       .profile-container {
     position: relative;
+    display: inline-block;
+    padding: 100px; /* Space for decoration */
+    margin: -100px; /* Keep profile in same visual position */
     overflow: visible !important;
-    padding: 80px; /* Give plenty of space */
-    margin: -80px; /* Keep profile in same visual position */
 }
-     .profile-image::before {
+
+.profile-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: url('https://cdn.discordapp.com/avatars/1084576683262230548/930b564571f9288c82ceaeb578dd4679.webp?size=1024') no-repeat center/cover;
+    margin: 0 auto 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
+    position: relative;
+    /* REMOVED overflow: hidden - this was clipping the decoration! */
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+    animation: glowPulse 2.5s ease-in-out infinite;
+    z-index: 3; /* Make sure profile is on top */
+}
+
+/* Shimmer effect */
+.profile-image::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -909,60 +913,59 @@ body.swaqsecondpersonal {
     background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
     transform: rotate(45deg);
     animation: shimmer 4s infinite;
-    z-index: 1; /* Above the profile but below decoration */
+    z-index: 4; /* Above the profile image */
+    border-radius: 50%; /* Match profile shape */
 }
+
+/* Decoration frame */
 .profile-image::after {
     content: '';
     position: absolute;
     
-    /* Position the decoration frame around the profile */
-    top: -80px;
-    left: -80px;
-    width: calc(100% + 160px);
-    height: calc(100% + 160px);
+    /* Much larger to be visible around the small 80px profile */
+    top: -60px; /* 60px outside the top */
+    left: -60px; /* 60px outside the left */
+    width: calc(100% + 120px); /* 60px on each side */
+    height: calc(100% + 120px); /* 60px on top/bottom */
     
     background: url('https://r2.haunt.gg/decorations/bloodthirsty.png') no-repeat center/contain;
+    background-size: contain; /* Keep aspect ratio */
     opacity: 0.9;
     
-    /* Put decoration behind the profile and shimmer */
-    z-index: -1;
+    /* Behind everything else */
+    z-index: 1;
     pointer-events: none;
-}
-        .profile-container, .profile-wrapper {
-    position: relative;
-    overflow: visible !important;
-    padding: 90px;
-    margin: -90px;
+    
+    /* Optional: Add a subtle filter */
+    filter: brightness(1.1) contrast(1.2);
 }
 
-        @keyframes glowPulse {
-            0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
-            50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
-            100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
-        }
+/* Animations */
+@keyframes glowPulse {
+    0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
+    50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
+    100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
+}
 
-        .profile-image:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7);
-        }
+.profile-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7);
+}
 
-        .profile-image.spin {
-            animation: spin 1.2s ease-out;
-        }
+.profile-image.spin {
+    animation: spin 1.2s ease-out;
+}
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            80% { transform: rotate(1080deg); }
-            100% { transform: rotate(350deg); }
-        }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    80% { transform: rotate(1080deg); }
+    100% { transform: rotate(350deg); }
+}
 
-
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
         .name-section {
             display: flex;
             align-items: center;
@@ -3212,6 +3215,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
