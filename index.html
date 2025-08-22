@@ -899,7 +899,6 @@ body.swaqsecondpersonal {
     cursor: pointer;
     animation: glowPulse 2.5s ease-in-out infinite;
     z-index: 3;
-    overflow: hidden; /* Add this back for shimmer effect */
 }
 
 /* Original shimmer effect - unchanged */
@@ -913,18 +912,19 @@ body.swaqsecondpersonal {
     background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
     transform: rotate(45deg);
     animation: shimmer 4s infinite;
+    clip-path: circle(25% at 50% 50%);
 }
 
-/* Decoration frame - smaller and properly fitted */
+/* Decoration frame - larger to position outside */
 .profile-image::after {
     content: '';
     position: absolute;
     
-    /* Smaller decoration that fits properly around 80px profile */
-    top: -20px;
-    left: -20px;
-    width: calc(100% + 40px); /* Total 120px (80px + 40px) */
-    height: calc(100% + 40px);
+    /* Larger decoration to have fangs outside the profile */
+    top: -40px;
+    left: -40px;
+    width: calc(100% + 80px); /* Total 160px */
+    height: calc(100% + 80px);
     
     background: url('https://r2.haunt.gg/decorations/bloodthirsty.png') no-repeat center/contain;
     background-size: contain;
@@ -3222,6 +3222,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
