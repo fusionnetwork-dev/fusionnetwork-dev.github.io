@@ -893,33 +893,24 @@ body.swaqsecondpersonal {
             animation: glowPulse 2.5s ease-in-out infinite;
         }
         
-.profile-container, .profile-wrapper {
-    position: relative;
-    overflow: visible !important;
-    /* Add some padding to prevent decoration from being cut off */
-    padding: 50px;
-    margin: -50px; /* Offset the padding so profile stays in same position */
-}
         
-.profile-image::after {
+profile-image::before {
     content: '';
     position: absolute;
     
-    /* Position COMPLETELY outside the profile bounds */
-    top: -40px;
-    left: -40px;
-    width: calc(100% + 80px);
-    height: calc(100% + 80px);
+    /* Create a frame around the profile image */
+    top: -60px;
+    left: -60px;
+    width: calc(100% + 120px);
+    height: calc(100% + 120px);
     
     background: url('https://r2.haunt.gg/decorations/bloodthirsty.png') no-repeat center/contain;
-    opacity: 0.8;
+    opacity: 0.9;
     
-    /* Make sure it's behind the profile image, not on top */
+    /* Put it behind the profile */
     z-index: -1;
-    
     pointer-events: none;
 }
-
         @keyframes glowPulse {
             0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
             50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
@@ -3207,6 +3198,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
