@@ -893,24 +893,48 @@ body.swaqsecondpersonal {
             animation: glowPulse 2.5s ease-in-out infinite;
         }
         
-        
-profile-image::before {
+        .profile-container, .profile-wrapper {
+    position: relative;
+    overflow: visible !important;
+    padding: 80px; /* Give plenty of space */
+    margin: -80px; /* Keep profile in same visual position */
+}
+     .profile-image::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 4s infinite;
+    z-index: 1; /* Above the profile but below decoration */
+}
+.profile-image::after {
     content: '';
     position: absolute;
     
-    /* Create a frame around the profile image */
-    top: -60px;
-    left: -60px;
-    width: calc(100% + 120px);
-    height: calc(100% + 120px);
+    /* Position the decoration frame around the profile */
+    top: -80px;
+    left: -80px;
+    width: calc(100% + 160px);
+    height: calc(100% + 160px);
     
     background: url('https://r2.haunt.gg/decorations/bloodthirsty.png') no-repeat center/contain;
     opacity: 0.9;
     
-    /* Put it behind the profile */
+    /* Put decoration behind the profile and shimmer */
     z-index: -1;
     pointer-events: none;
 }
+        .profile-container, .profile-wrapper {
+    position: relative;
+    overflow: visible !important;
+    padding: 90px;
+    margin: -90px;
+}
+
         @keyframes glowPulse {
             0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
             50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
@@ -932,17 +956,7 @@ profile-image::before {
             100% { transform: rotate(350deg); }
         }
 
-        .profile-image::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transform: rotate(45deg);
-            animation: shimmer 4s infinite;
-        }
+
 
         @keyframes shimmer {
             0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
@@ -3198,6 +3212,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
