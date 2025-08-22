@@ -1807,11 +1807,11 @@ body.swaqsecondpersonal {
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.3.3.1: Changed "ayarp's" theme, 3 new songs (no lyrics)</div>
+    <div class="version-text">v1.3.4: Changed "ayarp's" theme, 3 new songs, bye bye lyrics :( + visualizer themes, fixed custom theme</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
-        <input type="range" id="volumeSlider" min="0" max="200" value="50">
+        <input type="range" id="volumeSlider" min="0" max="100" value="50">
     </div>
 
     <div class="theme-switcher">
@@ -2445,46 +2445,149 @@ async function getLyricsFromAPI(artist, title) {
         });
 
         // Custom theme load
-        startR.value = localStorage.getItem('customStartR') || 153;
-        startG.value = localStorage.getItem('customStartG') || 25;
-        startB.value = localStorage.getItem('customStartB') || 20;
-        endR.value = localStorage.getItem('customEndR') || 238;
-        endG.value = localStorage.getItem('customEndG') || 238;
-        endB.value = localStorage.getItem('customEndB') || 238;
-        smokeR.value = localStorage.getItem('customSmokeR') || 188;
-        smokeG.value = localStorage.getItem('customSmokeG') || 2;
-        smokeB.value = localStorage.getItem('customSmokeB') || 0;
-        smokeA.value = localStorage.getItem('customSmokeA') || 0.8;
-        centerR.value = localStorage.getItem('customCenterR') || 236;
-        centerG.value = localStorage.getItem('customCenterG') || 236;
-        centerB.value = localStorage.getItem('customCenterB') || 236;
-        centerA.value = localStorage.getItem('customCenterA') || 0.8;
+        let customThemeData = {
+    startR: 153,
+    startG: 25,
+    startB: 20,
+    endR: 238,
+    endG: 238,
+    endB: 238,
+    smokeR: 188,
+    smokeG: 2,
+    smokeB: 0,
+    smokeA: 0.8,
+    centerR: 236,
+    centerG: 236,
+    centerB: 236,
+    centerA: 0.8
+};
 
-        // Custom theme apply
-        applyCustom.addEventListener('click', () => {
-            const start = `rgb(${startR.value}, ${startG.value}, ${startB.value})`;
-            const end = `rgb(${endR.value}, ${endG.value}, ${endB.value})`;
-            document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(90deg, ${start}, ${end})`);
-            const smoke = `rgba(${smokeR.value}, ${smokeG.value}, ${smokeB.value}, ${smokeA.value})`;
-            document.documentElement.style.setProperty('--smoke-color', smoke);
-            const center = `rgba(${centerR.value}, ${centerG.value}, ${centerB.value}, ${centerA.value})`;
-            document.documentElement.style.setProperty('--smoke-center', center);
-            localStorage.setItem('customStartR', startR.value);
-            localStorage.setItem('customStartG', startG.value);
-            localStorage.setItem('customStartB', startB.value);
-            localStorage.setItem('customEndR', endR.value);
-            localStorage.setItem('customEndG', endG.value);
-            localStorage.setItem('customEndB', endB.value);
-            localStorage.setItem('customSmokeR', smokeR.value);
-            localStorage.setItem('customSmokeG', smokeG.value);
-            localStorage.setItem('customSmokeB', smokeB.value);
-            localStorage.setItem('customSmokeA', smokeA.value);
-            localStorage.setItem('customCenterR', centerR.value);
-            localStorage.setItem('customCenterG', centerG.value);
-            localStorage.setItem('customCenterB', centerB.value);
-            localStorage.setItem('customCenterA', centerA.value);
-            themeModal.classList.add('hidden');
+// Set initial values
+startR.value = customThemeData.startR;
+startG.value = customThemeData.startG;
+startB.value = customThemeData.startB;
+endR.value = customThemeData.endR;
+endG.value = customThemeData.endG;
+endB.value = customThemeData.endB;
+smokeR.value = customThemeData.smokeR;
+smokeG.value = customThemeData.smokeG;
+smokeB.value = customThemeData.smokeB;
+smokeA.value = customThemeData.smokeA;
+centerR.value = customThemeData.centerR;
+centerG.value = customThemeData.centerG;
+centerB.value = customThemeData.centerB;
+centerA.value = customThemeData.centerA;
+
+// Function to create and inject custom theme CSS
+function createCustomThemeCSS() {
+    const start = `rgb(${customThemeData.startR}, ${customThemeData.startG}, ${customThemeData.startB})`;
+    const end = `rgb(${customThemeData.endR}, ${customThemeData.endG}, ${customThemeData.endB})`;
+    const smoke = `rgba(${customThemeData.smokeR}, ${customThemeData.smokeG}, ${customThemeData.smokeB}, ${customThemeData.smokeA})`;
+    const center = `rgba(${customThemeData.centerR}, ${customThemeData.centerG}, ${customThemeData.centerB}, ${customThemeData.centerA})`;
+    
+    const cssRule = `
+        body.custom {
+            --primary-gradient: linear-gradient(90deg, ${start}, ${end});
+            --smoke-color: ${smoke};
+            --smoke-center: ${center};
+        }
+        
+        .theme-button[data-theme="custom"] {
+            background: linear-gradient(90deg, ${start}, ${end});
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    `;
+    
+    // Remove existing custom theme style if it exists
+    const existingStyle = document.getElementById('custom-theme-style');
+    if (existingStyle) {
+        existingStyle.remove();
+    }
+    
+    // Add new custom theme style
+    const styleElement = document.createElement('style');
+    styleElement.id = 'custom-theme-style';
+    styleElement.textContent = cssRule;
+    document.head.appendChild(styleElement);
+}
+
+// Custom theme apply
+applyCustom.addEventListener('click', () => {
+    // Update stored values
+    customThemeData.startR = startR.value;
+    customThemeData.startG = startG.value;
+    customThemeData.startB = startB.value;
+    customThemeData.endR = endR.value;
+    customThemeData.endG = endG.value;
+    customThemeData.endB = endB.value;
+    customThemeData.smokeR = smokeR.value;
+    customThemeData.smokeG = smokeG.value;
+    customThemeData.smokeB = smokeB.value;
+    customThemeData.smokeA = smokeA.value;
+    customThemeData.centerR = centerR.value;
+    customThemeData.centerG = centerG.value;
+    customThemeData.centerB = centerB.value;
+    customThemeData.centerA = centerA.value;
+    
+    // Create and inject the CSS
+    createCustomThemeCSS();
+    
+    // Apply the custom theme
+    document.body.className = 'custom';
+    
+    // Update active theme button if you have theme buttons
+    document.querySelectorAll('.theme-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    const customButton = document.querySelector('.theme-button[data-theme="custom"]');
+    if (customButton) {
+        customButton.classList.add('active');
+    }
+    
+    // Close modal
+    themeModal.classList.add('hidden');
+    
+    console.log('Custom theme applied successfully!');
+});
+
+// Initialize custom theme CSS on page load
+createCustomThemeCSS();
+
+// Optional: Real-time preview while adjusting sliders
+function setupRealtimePreview() {
+    const inputs = [startR, startG, startB, endR, endG, endB, smokeR, smokeG, smokeB, smokeA, centerR, centerG, centerB, centerA];
+    
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            // Only update preview if custom theme is currently active
+            if (document.body.classList.contains('custom')) {
+                customThemeData.startR = startR.value;
+                customThemeData.startG = startG.value;
+                customThemeData.startB = startB.value;
+                customThemeData.endR = endR.value;
+                customThemeData.endG = endG.value;
+                customThemeData.endB = endB.value;
+                customThemeData.smokeR = smokeR.value;
+                customThemeData.smokeG = smokeG.value;
+                customThemeData.smokeB = smokeB.value;
+                customThemeData.smokeA = smokeA.value;
+                customThemeData.centerR = centerR.value;
+                customThemeData.centerG = centerG.value;
+                customThemeData.centerB = centerB.value;
+                customThemeData.centerA = centerA.value;
+                
+                createCustomThemeCSS();
+            }
         });
+    });
+}
+
+// Enable real-time preview (optional)
+setupRealtimePreview();
 
         // Set default theme
         const savedTheme = localStorage.getItem('theme') || 'swaqfirstpersonal';
@@ -2530,43 +2633,129 @@ async function getLyricsFromAPI(artist, title) {
         });
 
         // Audio visualizer
-        let audioContext, analyser, dataArray;
-        function setupAudioVisualization() {
-            if (!window.AudioContext && !window.webkitAudioContext) {
-                console.warn('AudioContext not supported on this device');
-                return;
-            }
-            try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                const source = audioContext.createMediaElementSource(audioPlayer);
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
-                analyser.fftSize = 128;
-                const bufferLength = analyser.frequencyBinCount;
-                dataArray = new Uint8Array(bufferLength);
-                const canvas = document.getElementById('audioVisualizer');
-                const ctx = canvas.getContext('2d');
-                canvas.width = canvas.offsetWidth;
-                canvas.height = canvas.offsetHeight;
-                function drawVisualizer() {
-                    if (!analyser) return;
-                    analyser.getByteFrequencyData(dataArray);
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    const barWidth = canvas.width / bufferLength * 2;
-                    for (let i = 0; i < bufferLength / 2; i++) {
-                        const barHeight = dataArray[i] / 255 * canvas.height;
-                        ctx.fillStyle = 'var(--primary-gradient)';
-                        ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
-                    }
-                    requestAnimationFrame(drawVisualizer);
-                }
-                drawVisualizer();
-            } catch (error) {
-                console.warn('Audio visualization setup failed:', error);
-            }
-        }
+       let audioContext, analyser, dataArray;
 
+function setupAudioVisualization() {
+    if (!window.AudioContext && !window.webkitAudioContext) {
+        console.warn('AudioContext not supported on this device');
+        return;
+    }
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaElementSource(audioPlayer);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 128;
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+        
+        const canvas = document.getElementById('audioVisualizer');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        
+        // Get current theme colors
+        function getCurrentThemeColors() {
+            const bodyStyle = getComputedStyle(document.body);
+            
+            // For metallic themes, use the primary gradient colors
+            if (document.body.classList.contains('swaqfirstpersonal') || 
+                document.body.classList.contains('swaqsecondpersonal')) {
+                const smokeColor = bodyStyle.getPropertyValue('--smoke-color').trim();
+                const smokeCenterColor = bodyStyle.getPropertyValue('--smoke-center').trim();
+                return { primary: smokeColor, secondary: smokeCenterColor };
+            }
+            
+            // For other themes, extract colors from the gradient
+            const gradient = bodyStyle.getPropertyValue('--primary-gradient').trim();
+            const colors = gradient.match(/#[0-9a-fA-F]{6}/g);
+            
+            if (colors && colors.length >= 2) {
+                return { primary: colors[0], secondary: colors[1] };
+            }
+            
+            // Fallback colors
+            return { primary: '#808080', secondary: '#cccccc' };
+        }
+        
+        function drawVisualizer() {
+            if (!analyser) return;
+            
+            analyser.getByteFrequencyData(dataArray);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const colors = getCurrentThemeColors();
+            const barWidth = canvas.width / bufferLength * 2;
+            
+            for (let i = 0; i < bufferLength / 2; i++) {
+                const barHeight = dataArray[i] / 255 * canvas.height;
+                const intensity = dataArray[i] / 255;
+                
+                // Create gradient that matches theme
+                const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
+                
+                // Use theme colors with intensity-based opacity
+                if (document.body.classList.contains('swaqfirstpersonal') || 
+                    document.body.classList.contains('swaqsecondpersonal')) {
+                    // Metallic themes - use smoke colors
+                    gradient.addColorStop(0, `rgba(215, 215, 215, ${0.3 + intensity * 0.7})`);
+                    gradient.addColorStop(1, `rgba(180, 180, 180, ${0.6 + intensity * 0.4})`);
+                    
+                    if (document.body.classList.contains('swaqsecondpersonal')) {
+                        gradient.addColorStop(0, `rgba(100, 100, 100, ${0.3 + intensity * 0.7})`);
+                        gradient.addColorStop(1, `rgba(70, 70, 70, ${0.6 + intensity * 0.4})`);
+                    }
+                } else {
+                    // Other themes - use primary gradient colors
+                    const primaryRgb = hexToRgb(colors.primary);
+                    const secondaryRgb = hexToRgb(colors.secondary);
+                    
+                    gradient.addColorStop(0, `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${0.3 + intensity * 0.7})`);
+                    gradient.addColorStop(1, `rgba(${secondaryRgb.r}, ${secondaryRgb.g}, ${secondaryRgb.b}, ${0.6 + intensity * 0.4})`);
+                }
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+                
+                // Add metallic shine effect for metallic themes
+                if (document.body.classList.contains('swaqfirstpersonal') || 
+                    document.body.classList.contains('swaqsecondpersonal')) {
+                    const shineGradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
+                    shineGradient.addColorStop(0, `rgba(255, 255, 255, ${intensity * 0.3})`);
+                    shineGradient.addColorStop(0.5, `rgba(255, 255, 255, ${intensity * 0.1})`);
+                    shineGradient.addColorStop(1, 'transparent');
+                    
+                    ctx.fillStyle = shineGradient;
+                    ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+                }
+            }
+            
+            requestAnimationFrame(drawVisualizer);
+        }
+        
+        // Helper function to convert hex to RGB
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 128, g: 128, b: 128 };
+        }
+        
+        drawVisualizer();
+        
+    } catch (error) {
+        console.warn('Audio visualization setup failed:', error);
+    }
+}
+
+// Call this function whenever the theme changes to update visualizer colors
+function updateVisualizerTheme() {
+    // The visualizer will automatically pick up new colors on next frame
+    // due to the getCurrentThemeColors() function being called in drawVisualizer
+}
         // Mini-game (Snake)
         const miniGameContainer = document.getElementById('miniGameContainer');
         const miniGameCanvas = document.getElementById('miniGameCanvas');
@@ -2696,53 +2885,14 @@ const artistMap = {
     "Catch me if u can": "OsamaSon"
 };
 
-function displayLyrics(lyricData) {
-    lyricsDisplay.innerHTML = '';
-    if (!lyricData || lyricData.length === 0) return;
-    
-    lyricData.forEach(line => {
-        const p = document.createElement('p');
-        p.className = 'lyric-line';
-        p.textContent = typeof line === 'string' ? line : line.text;
-        p.dataset.time = typeof line === 'object' ? line.time : 0;
-        lyricsDisplay.appendChild(p);
-    });
-}
+
         
         // Function to load a song
-      async function loadSong(index) {
+     
+async function loadSong(index) {
     const song = songs[index];
     audioPlayer.src = song.src;
     songTitle.textContent = song.title;
-    lyricsDisplay.innerHTML = '';
-    
-    // First check if manual lyrics exist
-    let lyricData = lyrics[song.title];
-    
-    if (!lyricData || lyricData.length === 0) {
-        // Try to fetch lyrics automatically
-        console.log(`Fetching lyrics for: ${song.title}`);
-        const artist = artistMap[song.title];
-        
-        if (artist) {
-            const fetchedLyrics = await getLyricsFromAPI(artist, song.title);
-            if (fetchedLyrics && fetchedLyrics.length > 0) {
-                // Wait for audio metadata to get duration
-                audioPlayer.addEventListener('loadedmetadata', () => {
-                    const duration = audioPlayer.duration;
-                    lyricData = smartAutoSync(fetchedLyrics, duration);
-                    displayLyrics(lyricData);
-                }, { once: true });
-            } else {
-                console.log('No lyrics found, using manual lyrics or empty');
-                displayLyrics(lyricData || []);
-            }
-        } else {
-            displayLyrics(lyricData || []);
-        }
-    } else {
-        displayLyrics(lyricData);
-    }
     
     loadingSpinner.classList.add('active');
     audioPlayer.load();
@@ -3061,6 +3211,7 @@ function displayLyrics(lyricData) {
 </script>
 </body>
 </html>
+
 
 
 
