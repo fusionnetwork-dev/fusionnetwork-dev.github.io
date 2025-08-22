@@ -2589,31 +2589,29 @@ async function loadSong(index) {
     const song = songs[index];
     audioPlayer.src = song.src;
     songTitle.textContent = song.title;
-    lyricsDisplay.innerHTML = '';
-
-    // Check cache first
-    let lyricData = JSON.parse(localStorage.getItem(`lyrics_${song.title}`));
-    if (!lyricData) {
-        const lyricsText = await fetchLyrics(song.title);
-        if (lyricsText) {
-            lyricData = await analyzeAudioForTimestamps(song.src, lyricsText);
-            localStorage.setItem(`lyrics_${song.title}`, JSON.stringify(lyricData));
-        } else {
-            lyricData = [{ time: 0, text: 'Lyrics not available' }]; // Fallback message
-        }
-    }
-
-    lyricData.forEach(line => {
-        const p = document.createElement('p');
-        p.className = 'lyric-line';
-        p.textContent = line.text;
-        p.dataset.time = line.time;
-        lyricsDisplay.appendChild(p);
-    });
 
     loadingSpinner.classList.add('active');
     audioPlayer.load();
     retryAttempts = 0;
+
+    // Attempt to autoplay
+    try {
+        await audioPlayer.play();
+        loadingSpinner.classList.remove('active');
+    } catch (error) {
+        console.error('Autoplay failed:', error);
+        // Fallback: Mute and try again
+        audioPlayer.muted = true;
+        audioPlayer.play().then(() => {
+            loadingSpinner.classList.remove('active');
+            console.log('Autoplay started with muted audio');
+        }).catch(err => {
+            console.error('Muted autoplay also failed:', err);
+            // Show a user prompt to start playback
+            songTitle.textContent = `${song.title} (Click Play to start)`;
+            loadingSpinner.classList.remove('active');
+        });
+    }
 }
 
         // Function to play the current song with retry logic
@@ -2755,33 +2753,15 @@ async function loadSong(index) {
         playCurrentSong();
     });
 
-    audioPlayer.addEventListener('timeupdate', () => {
+  audioPlayer.addEventListener('timeupdate', () => {
     const currentTime = audioPlayer.currentTime;
     const duration = audioPlayer.duration || 0;
     const progressPercent = (currentTime / duration) * 100;
     progressFill.style.width = `${progressPercent}%`;
     currentTimeDisplay.textContent = formatTime(currentTime);
     totalTimeDisplay.textContent = formatTime(duration);
-
-    const lines = lyricsDisplay.querySelectorAll('.lyric-line');
-    if (lines.length > 0) {
-        let currentIndex = 0;
-        for (let i = 0; i < lines.length; i++) {
-            if (currentTime >= parseFloat(lines[i].dataset.time)) {
-                currentIndex = i;
-            } else {
-                break;
-            }
-        }
-        lines.forEach((line, idx) => {
-            line.classList.toggle('current', idx === currentIndex);
-        });
-        const currentLine = lines[currentIndex];
-        if (currentLine) {
-            currentLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }
 });
+
 
     audioPlayer.addEventListener('ended', () => {
         currentSongIndex = getRandomSongIndex();
@@ -2928,4 +2908,5 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
