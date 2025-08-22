@@ -880,96 +880,79 @@ body.swaqsecondpersonal {
         }
 
 .profile-container {
-    position: relative;
-    display: inline-block;
-    padding: 100px; /* Space for decoration */
-    margin: -100px; /* Keep profile in same visual position */
-    overflow: visible !important;
+position: relative;
+display: inline-block;
+padding: 30px; /* Reduced space for smaller decoration /
+margin: -30px; / Keep profile in same visual position */
+overflow: visible !important;
 }
-
 .profile-image {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: url('https://cdn.discordapp.com/avatars/1084576683262230548/930b564571f9288c82ceaeb578dd4679.webp?size=1024') no-repeat center/cover;
-    margin: 0 auto 8px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
-    position: relative;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
-    animation: glowPulse 2.5s ease-in-out infinite;
-    z-index: 3;
+width: 80px;
+height: 80px;
+border-radius: 50%;
+background: url('https://cdn.discordapp.com/avatars/1084576683262230548/930b564571f9288c82ceaeb578dd4679.webp?size=1024') no-repeat center/cover;
+margin: 0 auto 8px;
+box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
+position: relative;
+transition: transform 0.4s ease, box-shadow 0.4s ease;
+cursor: pointer;
+animation: glowPulse 2.5s ease-in-out infinite;
+z-index: 3;
 }
-
-/* Original shimmer effect - unchanged */
+/* Old shimmer effect */
 .profile-image::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-    transform: rotate(45deg);
-    animation: shimmer 4s infinite;
-    clip-path: circle(25% at 50% 50%);
+content: '';
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+transform: rotate(45deg);
+animation: shimmer 4s infinite;
 }
-
-/* Decoration frame - larger to position outside */
+/* Smaller decoration */
 .profile-image::after {
-    content: '';
-    position: absolute;
-    
-    /* Larger decoration to have fangs outside the profile */
-    top: -40px;
-    left: -40px;
-    width: calc(100% + 80px); /* Total 160px */
-    height: calc(100% + 80px);
-    
-    background: url('https://r2.haunt.gg/decorations/bloodthirsty.png') no-repeat center/contain;
-    background-size: contain;
-    opacity: 0.8;
-    
-    z-index: 4; /* On top of the profile for overlay effect */
-    pointer-events: none;
-    
-    /* Don't let it spin with the profile */
-    animation: none !important;
-    transform: none !important;
+content: '';
+position: absolute;
+top: -20px;
+left: -20px;
+width: calc(100% + 40px);
+height: calc(100% + 40px);
+background: url('https://r2.haunt.gg/decorations/bloodthirsty.png') no-repeat center/contain;
+opacity: 0.8;
+z-index: 4;
+pointer-events: none;
 }
-
-/* Prevent decoration from spinning when profile spins */
-.profile-image.spin::after {
-    animation: none !important;
-    transform: none !important;
-}
-
 /* Animations */
 @keyframes glowPulse {
-    0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
-    50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
-    100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
+0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
+50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
+100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
 }
-
 .profile-image:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7);
+transform: scale(1.05);
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7);
 }
-
-/* Only the profile image spins, not the decoration */
 .profile-image.spin {
-    animation: spin 1.2s ease-out;
+animation: spin 1.2s ease-out;
 }
-
+.profile-image.spin::after {
+animation: counterSpin 1.2s ease-out;
+}
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    80% { transform: rotate(1080deg); }
-    100% { transform: rotate(350deg); }
+0% { transform: rotate(0deg); }
+80% { transform: rotate(1080deg); }
+100% { transform: rotate(350deg); }
 }
-
+@keyframes counterSpin {
+0% { transform: rotate(0deg); }
+80% { transform: rotate(-1080deg); }
+100% { transform: rotate(-350deg); }
+}
 @keyframes shimmer {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
         .name-section {
             display: flex;
@@ -3222,6 +3205,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
