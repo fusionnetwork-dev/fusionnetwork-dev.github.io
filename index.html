@@ -899,19 +899,8 @@ cursor: pointer;
 animation: glowPulse 2.5s ease-in-out infinite;
 z-index: 3;
 }
-/* Old shimmer with clip-path to confine */
+
 .profile-image::before {
-    content: '';
-    position: absolute;
-    width: 80%;
-    height: 80%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-    transform: rotate(45deg);
-    z-index: 4; /* Above the profile image */
-    border-radius: 50%; /* Match profile shape */
-}
-/* Tighter decoration */
-.profile-image::after {
 content: '';
 position: absolute;
 top: -10px;
@@ -923,6 +912,7 @@ opacity: 0.8;
 z-index: 4;
 pointer-events: none;
 }
+
 /* Animations */
 @keyframes glowPulse {
 0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
@@ -3200,6 +3190,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
