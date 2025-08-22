@@ -747,90 +747,85 @@
             50% { border-image: linear-gradient(45deg, transparent, var(--smoke-color)) 1; }
             100% { border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1; }
         }
-.profile-image-wrapper {
-    width: 100px; /* Larger than profile image to create outer effect */
-    height: 100px;
-    position: relative;
-    margin: 0 auto 8px;
-}
-
-.profile-image {
-    width: 80px; /* Original image size */
+ .profile-image {
+    width: 80px;
     height: 80px;
     border-radius: 50%;
     background: url('https://cdn.discordapp.com/avatars/1084576683262230548/1a8a7c61703f98472438d37f23674c07.webp?size=1024') no-repeat center/cover;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: 0 auto 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
-    z-index: 2; /* Image above effects */
-    cursor: pointer;
+    position: relative;
+    overflow: hidden;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+    animation: glowPulse 2.5s ease-in-out infinite;
+    z-index: 1; /* Set base z-index for profile image */
 }
 
-.profile-image:hover {
-    transform: translate(-50%, -50%) scale(1.1);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 16px 8px rgba(128, 128, 128, 0.6);
-}
-
-.profile-image-wrapper::before {
+.profile-image::before {
     content: '';
     position: absolute;
-    top: -10px; /* Extend beyond image to create outer ring */
-    left: -10px;
-    width: 120px; /* Larger than wrapper to create halo effect */
-    height: 120px;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
     background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-    border-radius: 50%;
     transform: rotate(45deg);
     animation: shimmer 4s infinite;
-    z-index: 1; /* Below image but above background */
+    z-index: 2; /* Higher than profile image to appear on top */
 }
 
-.profile-image-wrapper::after {
+.profile-image::after {
     content: '';
     position: absolute;
-    top: -10px;
-    left: -10px;
-    width: 120px;
-    height: 120px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: url('https://r2.haunt.gg/decorations/28_years_later.png') no-repeat center/cover;
-    border-radius: 50%;
     opacity: 0.8;
-    z-index: 1; /* Below image */
-    animation: glowPulse 2.5s ease-in-out infinite;
+    z-index: 3; /* Higher than both profile image and ::before */
+    mix-blend-mode: screen; /* Enhanced FX blending */
 }
 
-@keyframes shimmer {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        @keyframes glowPulse {
+            0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
+            50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
+            100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
+        }
 
-@keyframes glowPulse {
-    0% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
-    50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
-    100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
-}
+        .profile-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7);
+        }
 
-#progress-fill {
-    height: 5px;
-    background: #00ff00;
-    transition: width 0.1s;
-}
+        .profile-image.spin {
+            animation: spin 1.2s ease-out;
+        }
 
-#song-title, #current-time, #total-time {
-    color: #fff;
-}
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            80% { transform: rotate(1080deg); }
+            100% { transform: rotate(350deg); }
+        }
 
-#loading-spinner {
-    display: none;
-}
+        .profile-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 4s infinite;
+        }
 
-#loading-spinner.active {
-    display: block;
-    color: #888;
-}
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
         .name-section {
             display: flex;
             align-items: center;
@@ -1882,6 +1877,37 @@
     </svg>
 
     <script>
+        // Preload assets during captcha (runs on page load)
+        function preloadAssets() {
+          const images = [
+            'https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png?ex=689713b3&is=6895c233&hm=19e2f541e871739a90df5d1f13b4aff59e6152a70d1c9f8688403981ade3ffd7&',
+            'https://cdn.discordapp.com/avatars/1084576683262230548/1a8a7c61703f98472438d37f23674c07.webp?size=1024',
+            'https://r2.guns.lol/d9488425-e8da-4556-98ef-b37992bc279a.webp',
+            'https://assets.guns.lol/sparkle_white.gif',
+            'https://r2.haunt.gg/decorations/28_years_later.png',
+            'assets/diamondspin.gif',
+            'assets/gunspin.gif',
+            'assets/skimaskspin.gif'
+          ];
+        
+          images.forEach(src => {
+            const img = new Image();
+            img.src = src;
+          });
+        
+          songs.forEach(song => {
+            const audio = new Audio();
+            audio.src = song.src;
+            audio.preload = 'auto';
+          });
+        
+          // Preload video
+          const vid = document.getElementById('backgroundVideo');
+          vid.load();
+        }
+        
+        // Call preload on load
+        preloadAssets();
 function onCaptchaSuccess(token) {
   document.getElementById('captchaOverlay').classList.add('hidden');
   const welcomeScreen = document.getElementById('welcomeScreen');
@@ -1890,6 +1916,7 @@ function onCaptchaSuccess(token) {
     welcomeScreen.classList.add('hidden');
     document.body.classList.remove('welcome-active');
     autoSpinProfileImage();
+    startAudio(); // Autoplay music after captcha and welcome
   }, 2000);
   // Optionally, send token to your server for verification
   console.log('hCaptcha token:', token);
@@ -2394,6 +2421,7 @@ async function analyzeAudioForTimestamps(audioSrc, lyricsText) {
             localStorage.setItem('customSmokeG', smokeG.value);
             localStorage.setItem('customSmokeB', smokeB.value);
             localStorage.setItem('customSmokeA', smokeA.value);
+            localStorage.setItem('customCenterR', centerR.value);
             localStorage.setItem('customCenterR', centerR.value);
             localStorage.setItem('customCenterG', centerG.value);
             localStorage.setItem('customCenterB', centerB.value);
@@ -2914,6 +2942,3 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
-
-
-
