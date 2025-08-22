@@ -894,15 +894,23 @@ body.swaqsecondpersonal {
         }
 
 .profile-image::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://r2.haunt.gg/decorations/28_years_later.png') no-repeat center/cover;
-            opacity: 0.8;
-        }
+    content: '';
+    position: absolute;
+    /* Make it bigger than the profile image */
+    top: -20px;    /* Move up */
+    left: -20px;   /* Move left */
+    width: calc(100% + 40px);  /* 20px extra on each side */
+    height: calc(100% + 40px); /* 20px extra on top/bottom */
+    
+    background: url('https://r2.haunt.gg/decorations/bloodthirsty.png') no-repeat center/cover;
+    opacity: 0.8;
+    
+    /* Make sure it's above the profile image */
+    z-index: 1;
+    
+    /* Don't block clicks on the profile */
+    pointer-events: none;
+}
 
         @keyframes glowPulse {
             0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
@@ -3191,6 +3199,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
