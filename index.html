@@ -2533,7 +2533,6 @@ function onCaptchaSuccess(token) {
             loadingSpinner.classList.add('active');
             audioPlayer.load();
             retryAttempts = 0;
-            audioPlayer.play();
         }
 
         // Function to play the current song with retry logic
@@ -2650,6 +2649,7 @@ function onCaptchaSuccess(token) {
         welcomeScreen.classList.add('hidden');
         body.classList.remove('welcome-active');
         autoSpinProfileImage();
+        startAudio();
     }, 2000);
 
     // Audio player controls
@@ -2848,4 +2848,5 @@ function onCaptchaSuccess(token) {
 </script>
 </body>
 </html>
+
 
