@@ -1788,8 +1788,37 @@
                 </a>
             </div>
             
-            <!-- Replaced custom audio player with Spotify embed for Unmusique -->
-            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/4hP6GKbrQjCCeJ8B0MfBXQ?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <div class="audio-player">
+                <div class="audio-info">
+                    <div class="song-title" id="songTitle"> kills</div>
+                    <div class="artist-name">Now Playing</div>
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                </div>
+                <div class="audio-controls">
+                    <button class="control-btn" id="rewindBtn">
+                        <i class="fas fa-backward"></i>
+                    </button>
+                    <button class="control-btn play-pause-btn" id="playPauseBtn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn" id="skipBtn">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                </div>
+                <div class="audio-progress">
+                    <span class="time-display" id="currentTime">0:00</span>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="time-display" id="totalTime">0:00</span>
+                </div>
+                <canvas id="audioVisualizer" class="audio-visualizer"></canvas>
+                <div id="lyricsDisplay" class="lyrics-container"></div>
+                <audio id="audioPlayer" preload="auto">
+                    <source src="assets/kills.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
             
             <button class="click-game-button" id="clickButton">Clicks: 0</button>
             
@@ -2892,3 +2921,5 @@ function displayLyrics(lyricData) {
 </script>
 </body>
 </html>
+
+
