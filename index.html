@@ -43,14 +43,14 @@
 
 body {
     font-family: 'Punktype', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    font-size: 20px
+    font-size: 16px;
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding-top: 20px;
+    padding-top: 10px;
     background: var(--primary-gradient);
 }
 
@@ -374,6 +374,8 @@ body.swaqsecondpersonal {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            overflow-y: auto;
+            max-height: 80vh;
         }
 
         .theme-switcher:hover {
@@ -752,8 +754,8 @@ body.swaqsecondpersonal {
         }
 
         .container {
-            max-width: 360px;
-            padding: 15px;
+            max-width: 95%;
+            padding: 10px;
             text-align: center;
             position: relative;
             z-index: 10;
@@ -1568,13 +1570,14 @@ animation: counterSpin 1.2s ease-out;
 
         @media (max-width: 480px) {
             body {
+                font-size: 14px;
                 align-items: flex-start;
-                padding-top: 10px;
+                padding-top: 5px;
             }
 
             .container {
-                max-width: 90%;
-                padding: 10px;
+                max-width: 100%;
+                padding: 5px;
             }
 
             .foggy-background, .fog-layer {
@@ -1584,9 +1587,10 @@ animation: counterSpin 1.2s ease-out;
             }
 
             .theme-switcher {
-                top: 8px;
-                right: 8px;
-                padding: 5px;
+                top: 5px;
+                right: 5px;
+                padding: 4px;
+                max-height: 60vh;
             }
 
             .theme-switcher select, .theme-button {
@@ -1612,14 +1616,14 @@ animation: counterSpin 1.2s ease-out;
             }
 
             .profile-card {
-                padding: 12px;
-                border-radius: 25px;
+                padding: 10px;
+                border-radius: 20px;
             }
 
             .profile-image {
-                width: 70px;
-                height: 70px;
-                margin-bottom: 6px;
+                width: 60px;
+                height: 60px;
+                margin-bottom: 4px;
                 box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5);
             }
 
@@ -1634,24 +1638,24 @@ animation: counterSpin 1.2s ease-out;
             }
 
             .name {
-                font-size: 18px;
+                font-size: 16px;
             }
 
             .name-section {
                 flex-direction: column;
-                gap: 5px;
+                gap: 3px;
             }
 
             .uid {
-                top: -16px;
-                font-size: 8px;
-                padding: 2px 5px;
+                top: -14px;
+                font-size: 7px;
+                padding: 2px 4px;
             }
 
             .volume-control {
-                top: 35px;
-                left: 8px;
-                padding: 5px;
+                top: 30px;
+                left: 5px;
+                padding: 4px;
             }
 
             .volume-control input[type="range"] {
@@ -1659,57 +1663,57 @@ animation: counterSpin 1.2s ease-out;
             }
 
             .clown-list {
-                top: 80px;
-                left: 8px;
-                font-size: 18px;
-                padding: 12px;
+                top: 70px;
+                left: 5px;
+                font-size: 16px;
+                padding: 10px;
             }
 
             .clown-image {
-                top: 115px;
-                left: 8px;
-                width: 110px;
+                top: 100px;
+                left: 5px;
+                width: 100px;
             }
 
             .eye-logo {
-                width: 35px;
-                height: 35px;
-                bottom: 8px;
-                right: 8px;
+                width: 30px;
+                height: 30px;
+                bottom: 5px;
+                right: 5px;
             }
 
             .floating-element {
-                font-size: 12px;
+                font-size: 10px;
             }
 
             .welcome-text {
-                font-size: 24px;
-                padding: 8px;
+                font-size: 20px;
+                padding: 5px;
             }
 
             .marquee {
-                font-size: 18px;
+                font-size: 16px;
             }
 
             .links-container {
                 grid-template-columns: 1fr;
-                gap: 8px;
+                gap: 6px;
             }
 
             .link-button {
                 padding: 6px 12px;
-                font-size: 11px;
+                font-size: 10px;
             }
 
             .link-icon {
-                width: 16px;
-                height: 16px;
-                font-size: 13px;
+                width: 14px;
+                height: 14px;
+                font-size: 12px;
             }
 
             .link-icon-img {
-                width: 16px;
-                height: 16px;
+                width: 14px;
+                height: 14px;
             }
 
             .click-game-button {
@@ -1723,7 +1727,7 @@ animation: counterSpin 1.2s ease-out;
 
             .like-button, .dislike-button {
                 padding: 6px 10px;
-                font-size: 11px;
+                font-size: 10px;
             }
 
             .word-element {
@@ -2154,8 +2158,8 @@ animation: counterSpin 1.2s ease-out;
     { time: 21, text: "Bet yo' crew won't f*ck with us (Buh, buh, buh, buh)" },
     { time: 24, text: "Bet yo' crew can't f*ck with us (Yuh)" },
     { time: 27, text: "What would you do for a little bit of money? (Bee)" },
-    { time: 30, text: "Call slime, wipe yo' nose for a hundred (Slime)" },
-    { time: 33, text: "Lil' n*gga know that sh*t ain't nothin' (Slime)" },
+    { time: 30, text: "Call slime, wipe yo' nose for a hundred (Mud)" },
+    { time: 33, text: "Lil' n*gga know that sh*t ain't nothin' (Mud)" },
     { time: 36, text: "Coupe take off like jet, just punchin'" },
     { time: 39, text: "Boy, you hear that engine run (Bee)" },
     { time: 42, text: "I just bought some brand-new guns" },
@@ -2230,7 +2234,7 @@ animation: counterSpin 1.2s ease-out;
     { time: 55, text: "[Who got the stick? Baby Chop? Lil Rell?]" },
     { time: 58, text: "[Who got the lean? Tryna pour up twelve]" },
     { time: 61, text: "Feds tryna sеnd me, I'm goin' to hell" },
-    { time: 64, text: "B*h', I don’t give a f*ck how you feel" },
+    { time: 64, text: "B*h, I don’t give a f*ck how you feel" },
     { time: 67, text: "[Wе got sticks like the new cartel]" },
     { time: 70, text: "N*ggas tryna keep up, we can tell" },
     { time: 73, text: "Twenty for ya' head, boy, I wish you well" },
@@ -2297,7 +2301,7 @@ animation: counterSpin 1.2s ease-out;
     { time: 0, text: "Finna take the Lamb' truck to Japan (Skrrt)" },
     { time: 3, text: "I'm like, \"Lil' n*gga, get your bands up, yes, you can\"" },
     { time: 6, text: "Yeah, my slime up in that trap, still whip the pan, yeah, yeah" },
-    { time: 9, text: "Push up, we gon' flip the van, huh, yeah, yeah" },
+    { time: 9, text: "Push up to the van, huh, yeah, yeah" },
     { time: 12, text: "This b*tch know we got hella bands (Beep), yeah, yeah, yeah" },
     { time: 15, text: "Get your mans whacked for the slick sh*t that you sayin' (Yeah, yeah)" },
     { time: 18, text: "Walked in YSL, Helmut Lang, b*tch, I ain't paying" },
@@ -2317,7 +2321,7 @@ animation: counterSpin 1.2s ease-out;
     { time: 60, text: "Scored on Dracos, run 'em down like a savage" },
     { time: 63, text: "Finna take the Lamb' truck to Japan (Skrrt)" },
     { time: 66, text: "I'm like, \"Lil' n*gga, get your bands up, yes, you can\"" },
-    { time: 69, text: "Yeah, my slime up in that trap, still whip the pan, yeah, yeah" },
+    { time: 69, text: "My slime up in that trap, still whip the pan, yeah, yeah" },
     { time: 72, text: "Push up, we gon' flip the van, huh, yeah, yeah" },
     { time: 75, text: "This b*tch know we got hella bands (Beep), yeah, yeah, yeah" },
     { time: 78, text: "Get your mans whacked for the slick sh*t that you sayin' (Yeah, yeah)" },
@@ -3190,10 +3194,3 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
