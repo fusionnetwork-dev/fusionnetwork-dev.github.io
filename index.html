@@ -2047,30 +2047,30 @@ animation: counterSpin 1.2s ease-out;
         const notesToggle = document.getElementById('notesToggle');
         const notesSection = document.getElementById('notesSection');
 
-        let hasInteracted = false;
-        let wordEffectActive = false;
-        let isPlaying = false;
-        let currentSongIndex = 10; // Trap first
-        let retryAttempts = 0;
-        const maxRetries = 3;
-        let clickCount = 0;
-        let likeCount = 0;
-        let dislikeCount = 0;
-        let viewCount = parseInt(localStorage.getItem('viewCount') || '0') + 1;
-        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+       let hasInteracted = false;
+let wordEffectActive = false;
+let isPlaying = false;
+let currentSongIndex = 9; // Adjusted to valid index (0-9, Trap is last)
+let retryAttempts = 0;
+const maxRetries = 3;
+let clickCount = 0;
+let likeCount = 0;
+let dislikeCount = 0;
+let viewCount = parseInt(localStorage.getItem('viewCount') || '0', 10) + 1;
+let notes = JSON.parse(localStorage.getItem('notes') || '[]');
 
-        const songs = [
-            { title: "kills", src: "assets/kills.mp3" },
-            { title: "For Da Flex", src: "assets/fdf.mp3" },
-            { title: "Baghdad", src: "assets/baghdad.mp3" },
-            { title: "Cartel", src: "assets/cartel.mp3" },
-            { title: "Popstar", src: "assets/popstar.mp3" },
-            { title: "Lambtruck", src: "assets/lamb.mp3" },
-            { title: "Roster", src: "assets/roster.mp3" },
-            { title: "Catch me if u can", src: "assets/cmiuc.mp3" },
-            { title: "Ouija", src: "assets/ouija.mp3" },
-            { title: "Trap", src: "assets/Trap.mp3" }
-        ];
+const songs = [
+  { title: "kills", src: "assets/kills.mp3" },
+  { title: "For Da Flex", src: "assets/fdf.mp3" },
+  { title: "Baghdad", src: "assets/baghdad.mp3" },
+  { title: "Cartel", src: "assets/cartel.mp3" },
+  { title: "Popstar", src: "assets/popstar.mp3" },
+  { title: "Lambtruck", src: "assets/lamb.mp3" },
+  { title: "Roster", src: "assets/roster.mp3" },
+  { title: "Catch me if u can", src: "assets/cmiuc.mp3" },
+  { title: "Ouija", src: "assets/ouija.mp3" },
+  { title: "Trap", src: "assets/Trap.mp3" }
+];
 
         const lyrics = {
   ' kills': [
@@ -3194,6 +3194,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
