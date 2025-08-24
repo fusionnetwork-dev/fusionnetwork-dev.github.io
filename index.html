@@ -1801,7 +1801,7 @@ animation: counterSpin 1.2s ease-out;
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.3.5.1: Changed theme once again, +1 new song, New Layout, More Mobile Optimizations + Bug fixes</div>
+    <div class="version-text">v1.3.5.2: Changed theme once again, +1 new song, removed 2 other songs, New Layout, More Mobile Optimizations + Bug fixes</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -2050,7 +2050,7 @@ animation: counterSpin 1.2s ease-out;
         let hasInteracted = false;
         let wordEffectActive = false;
         let isPlaying = false;
-        let currentSongIndex = 11; // Trap first
+        let currentSongIndex = 10; // Trap first
         let retryAttempts = 0;
         const maxRetries = 3;
         let clickCount = 0;
@@ -2068,8 +2068,6 @@ animation: counterSpin 1.2s ease-out;
             { title: "Lambtruck", src: "assets/lamb.mp3" },
             { title: "Roster", src: "assets/roster.mp3" },
             { title: "Catch me if u can", src: "assets/cmiuc.mp3" },
-            { title: "Speakers Never Learn", src: "assets/snl.mp3" },
-            { title: "2010 Justin Bieber", src: "assets/jb.mp3" },
             { title: "Ouija", src: "assets/ouija.mp3" },
             { title: "Trap", src: "assets/Trap.mp3"}
         ];
@@ -3196,6 +3194,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
