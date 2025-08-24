@@ -2050,7 +2050,7 @@ animation: counterSpin 1.2s ease-out;
         let hasInteracted = false;
         let wordEffectActive = false;
         let isPlaying = false;
-        let currentSongIndex = 10; // Trap first
+        let currentSongIndex = 9; // Trap first
         let retryAttempts = 0;
         const maxRetries = 3;
         let clickCount = 0;
@@ -2060,7 +2060,7 @@ animation: counterSpin 1.2s ease-out;
         let notes = JSON.parse(localStorage.getItem('notes')) || [];
 
         const songs = [
-            { title: " kills", src: "assets/kills.mp3" },
+            { title: "Kills", src: "assets/kills.mp3" },
             { title: "For Da Flex", src: "assets/fdf.mp3" },
             { title: "Baghdad", src: "assets/baghdad.mp3" },
             { title: "Cartel", src: "assets/cartel.mp3" },
@@ -2068,7 +2068,6 @@ animation: counterSpin 1.2s ease-out;
             { title: "Lambtruck", src: "assets/lamb.mp3" },
             { title: "Roster", src: "assets/roster.mp3" },
             { title: "Catch me if u can", src: "assets/cmiuc.mp3" },
-            { title: "Ouija", src: "assets/ouija.mp3" },
             { title: "Trap", src: "assets/Trap.mp3"}
         ];
 
@@ -3194,6 +3193,7 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
 
 
 
