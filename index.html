@@ -773,6 +773,56 @@ body.swaqsecondpersonal {
             padding: 20px;
         }
 
+        .container.complex .profile-container {
+            display: grid;
+            grid-template-areas:
+                "image name"
+                "badges bio"
+                "audio audio"
+                "links links"
+                "click like"
+                "notes notes";
+            gap: 10px;
+        }
+
+        .container.complex .profile-image {
+            grid-area: image;
+        }
+
+        .container.complex .name-section {
+            grid-area: name;
+        }
+
+        .container.complex .badges {
+            grid-area: badges;
+        }
+
+        .container.complex .bio {
+            grid-area: bio;
+        }
+
+        .container.complex .audio-player {
+            grid-area: audio;
+        }
+
+        .container.complex .links-container {
+            grid-area: links;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .container.complex .click-game-button {
+            grid-area: click;
+        }
+
+        .container.complex .like-dislike-container {
+            grid-area: like;
+        }
+
+        .container.complex .notes-section {
+            grid-area: notes;
+        }
+
         .container.wide {
             max-width: 1200px;
             margin: 0 auto;
@@ -883,6 +933,17 @@ body.swaqsecondpersonal {
             perspective: 1000px;
             position: relative;
             border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .profile-card.idle {
+            animation: idleParallax 10s ease-in-out infinite;
+        }
+
+        @keyframes idleParallax {
+            0%, 100% { transform: perspective(1000px) translateY(0) scale(1) rotateX(0deg) rotateY(0deg); }
+            25% { transform: perspective(1000px) translateY(-2px) scale(1.01) rotateX(1deg) rotateY(2deg); }
+            50% { transform: perspective(1000px) translateY(0) scale(1) rotateX(0deg) rotateY(0deg); }
+            75% { transform: perspective(1000px) translateY(-2px) scale(1.01) rotateX(-1deg) rotateY(-2deg); }
         }
 
         .profile-card:hover {
@@ -2215,7 +2276,7 @@ const songs = [
     { time: 9, text: "Hit yo' block and chop it up ( Me and Rok gon' rock and roll)" },
     { time: 12, text: "And this lil' h* talk too much ( We gon' be ok)" },
     { time: 15, text: "Goyard bag, I filled it up" },
-    { time: 18, text: "I'm on P, I flipped that truck" },
+    { time: 18, text: "I'm on P, I flipped that truck"},
     { time: 21, text: "Bet yo' crew won't f*ck with us (Buh, buh, buh, buh)" },
     { time: 24, text: "Bet yo' crew can't f*ck with us (Yuh)" },
     { time: 27, text: "What would you do for a little bit of money? (Bee)" },
@@ -2401,7 +2462,7 @@ const songs = [
     { time: 12, text: "I was just pourin' it all up (Pourin' it all up), I was just pourin' it all up (Oh woah)" },
     { time: 16, text: "I've been f*ckin' these broads, yeah, too high, can't pull my draws up" },
     { time: 20, text: "Chrome Heart ain't come from the mall, nah, see it, I buy it all, yeah (Beep)" },
-    { time: 24, text: "That b*tch like a rasta, only bad h*es on my roster (Beep)" },
+    { time: 24, text: "That b*tch like a rosta, only bad h*es on my roster (Beep)" },
     { time: 28, text: "Pourin' up mud, gon' nod (Yeah), I'm just smokin' on pounds (Yeah)" },
     { time: 32, text: "I was just in your town, facts, scoop and look around" },
     { time: 36, text: "You get hit, b*tch, you're goin' down" },
@@ -2421,7 +2482,7 @@ const songs = [
     { time: 92, text: "I was just pourin' it all up (Pourin' it all up), I was just pourin' it all up (Oh woah)" },
     { time: 96, text: "I've been f*ckin' these broads, yeah, too high, can't pull my draws up" },
     { time: 100, text: "Chrome Heart, ain't come from the mall, nah, see it, I buy it all, yeah (Beep)" },
-    { time: 104, text: "That b*tch like a rasta, only bad h*es on my roster (Beep)" }
+    { time: 104, text: "That b*tch like a rosta, only bad h*es on my roster (Beep)" }
   ],
 'Catch me if u can': 
 [
@@ -3025,8 +3086,6 @@ async function loadSong(index) {
 
         // Profile image rotation
         function autoSpinProfileImage() {
-            profileImage.classList.remove('spin');
-            void profileImage.offsetWidth;
             profileImage.classList.add('spin');
             setTimeout(autoSpinProfileImage, 15000);
         }
@@ -3052,10 +3111,13 @@ async function loadSong(index) {
 
         if (!isMobile) {
             profileCard.addEventListener('mousemove', handleParallax);
+            profileCard.addEventListener('mouseenter', () => profileCard.classList.remove('idle'));
             profileCard.addEventListener('mouseleave', () => {
-                profileCard.style.transform = 'translateY(0) scale(1)';
+                profileCard.style.transform = '';
                 profileCard.style.transition = 'transform 0.3s ease';
+                profileCard.classList.add('idle');
             });
+            profileCard.classList.add('idle');
         }
     function typeWriter(element, text, speed, callback) {
         let i = 0;
@@ -3281,4 +3343,3 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
-
