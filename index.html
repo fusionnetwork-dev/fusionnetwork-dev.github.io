@@ -13,6 +13,7 @@
     <title>ur da best</title>
     <link rel="icon" href="https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png?ex=68ac2bb3&is=68aada33&hm=67839e04dc06552906cc387ebbbe0e740eb2cb161ef452d94b3d521d30cb2287&" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <style>
         * {
@@ -30,6 +31,9 @@
             --primary-gradient: linear-gradient(90deg, #000000, #808080);
             --smoke-color: rgba(220, 220, 220, 0.6);
             --smoke-center: rgba(255, 255, 255, 0.15);
+            --neu-bg: #e0e0e0;
+            --neu-shadow-light: rgba(255, 255, 255, 0.7);
+            --neu-shadow-dark: rgba(0, 0, 0, 0.2);
         }
 
   /* Define your custom font */
@@ -62,6 +66,9 @@ body {
             --primary-gradient: linear-gradient(90deg, #000000, #808080);
             --smoke-color: rgba(220, 220, 220, 0.6);
             --smoke-center: rgba(255, 255, 255, 0.15);
+            --neu-bg: #2c2c2c;
+            --neu-shadow-light: rgba(255, 255, 255, 0.05);
+            --neu-shadow-dark: rgba(0, 0, 0, 0.4);
         }
 
         body.neon {
@@ -365,11 +372,11 @@ body.swaqsecondpersonal {
             top: 10px;
             right: 10px;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            background: var(--neu-bg);
+            box-shadow:  6px 6px 12px var(--neu-shadow-dark), 
+                         -6px -6px 12px var(--neu-shadow-light);
             padding: 8px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
@@ -380,139 +387,61 @@ body.swaqsecondpersonal {
 
         .theme-switcher:hover {
             transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow:  8px 8px 16px var(--neu-shadow-dark), 
+                         -8px -8px 16px var(--neu-shadow-light);
         }
 
         .theme-switcher select {
-            background: transparent;
+            background: var(--neu-bg);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
             border: none;
-            color: white;
+            color: inherit;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             outline: none;
             padding: 5px;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            border-radius: 8px;
             transition: transform 0.3s ease;
         }
 
         .theme-switcher select:hover {
-            transform: scale(1.05);
+            transform: translateY(-1px);
         }
 
         .theme-button {
             padding: 6px 12px;
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
             border-radius: 8px;
-            color: white;
+            color: inherit;
             font-weight: 600;
             font-size: 12px;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
             text-align: center;
         }
 
-        .theme-button[data-theme="dark"] {
-            background: linear-gradient(90deg, #000000, #808080);
-        }
-
-        .theme-button[data-theme="neon"] {
-            background: linear-gradient(90deg, #ff00ff, #00ffff);
-        }
-
-        .theme-button[data-theme="retro"] {
-            background: linear-gradient(90deg, #8b5a2b, #ffa07a);
-        }
-
-        .theme-button[data-theme="pastel"] {
-            background: linear-gradient(90deg, #f4c4f3, #fcff9e);
-        }
-
-        .theme-button[data-theme="cyberpunk"] {
-            background: linear-gradient(90deg, #1a1a3d, #ff2e63);
-        }
-
-        .theme-button[data-theme="vaporwave"] {
-            background: linear-gradient(90deg, #ff71ce, #01cdfe);
-        }
-
-        .theme-button[data-theme="forest"] {
-            background: linear-gradient(90deg, #1b4332, #95d5b2);
-        }
-
-        .theme-button[data-theme="ocean"] {
-            background: linear-gradient(90deg, #003087, #00d4ff);
-        }
-
-        .theme-button[data-theme="sunset"] {
-            background: linear-gradient(90deg, #ff4500, #ffd700);
-        }
-
-        .theme-button[data-theme="monochrome"] {
-            background: linear-gradient(90deg, #333333, #cccccc);
-        }
-
-        .theme-button[data-theme="candy"] {
-            background: linear-gradient(90deg, #ff6f61, #ffb88c);
-        }
-
-        .theme-button[data-theme="galaxy"] {
-            background: linear-gradient(90deg, #2a1a5e, #6b48ff);
-        }
-
-        .theme-button[data-theme="lavender"] {
-            background: linear-gradient(90deg, #6b728e, #d8b4fe);
-        }
-
-.theme-button[data-theme="swaqfirstpersonal"] {
-    background: linear-gradient(135deg, 
-        #2a2a2a 0%, 
-        #8b0000 15%, 
-        #3c3c3c 25%, 
-        #4e4e4e 35%, 
-        #353535 45%, 
-        #8b0000 55%, 
-        #464646 65%, 
-        #303030 75%, 
-        #4a4a4a 85%, 
-        #2a2a2a 100%);
-    border: 1px solid rgba(0, 0, 0, 0.35);
-    box-shadow: 
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-
-.theme-button[data-theme="swaqsecondpersonal"] {
-    background: linear-gradient(135deg, 
-        #4a4a4a 0%, 
-        #000000 15%, 
-        #2c2c2c 25%, 
-        #787878 35%, 
-        #3f3f3f 45%, 
-        #000000 55%, 
-        #707070 65%, 
-        #2a2a2a 75%, 
-        #666666 85%, 
-        #404040 100%);
-    border: 1px solid rgba(0, 0, 0, 0.6);
-    box-shadow: 
-        inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
         .theme-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow:  2px 2px 4px var(--neu-shadow-dark), 
+                         -2px -2px 4px var(--neu-shadow-light);
+            transform: translateY(1px);
         }
 
         .theme-button.active {
-            background: linear-gradient(90deg, #00ff00, #000000);
-            transform: scale(1.05);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
         }
+
+        .theme-button[data-theme="dark"] {
+            --neu-bg: #2c2c2c;
+            --neu-shadow-light: rgba(255, 255, 255, 0.05);
+            --neu-shadow-dark: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Add similar for other themes as needed */
 
         .audio-visualizer {
             width: 100%;
@@ -836,17 +765,18 @@ body.swaqsecondpersonal {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
             padding: 8px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .volume-control:hover {
             transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow:  6px 6px 12px var(--neu-shadow-dark), 
+                         -6px -6px 12px var(--neu-shadow-light);
         }
 
         .volume-control input[type="range"] {
@@ -867,11 +797,12 @@ body.swaqsecondpersonal {
             width: 16px;
             height: 16px;
             background: var(--primary-gradient);
-            border: 2px solid white;
+            border: none;
             border-radius: 50%;
             margin-top: -5.5px;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow:  2px 2px 4px var(--neu-shadow-dark), 
+                         -2px -2px 4px var(--neu-shadow-light);
             transition: transform 0.2s ease;
         }
 
@@ -889,10 +820,11 @@ body.swaqsecondpersonal {
             width: 16px;
             height: 16px;
             background: var(--primary-gradient);
-            border: 2px solid white;
+            border: none;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow:  2px 2px 4px var(--neu-shadow-dark), 
+                         -2px -2px 4px var(--neu-shadow-light);
         }
 
         .clown-list {
@@ -900,16 +832,16 @@ body.swaqsecondpersonal {
             top: 90px;
             left: 10px;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
             padding: 16px;
             border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             text-align: center;
             font-size: 22px;
             font-weight: 600;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            color: inherit;
+            text-shadow: none;
         }
 
         .clown-image {
@@ -920,19 +852,19 @@ body.swaqsecondpersonal {
             width: 140px;
             height: auto;
             border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
         }
 
         .profile-card {
-            background: rgba(220, 220, 220, 0.5);
-            backdrop-filter: blur(10px);
+            background: var(--neu-bg);
+            box-shadow:  12px 12px 24px var(--neu-shadow-dark), 
+                         -12px -12px 24px var(--neu-shadow-light);
             border-radius: 30px;
             padding: 15px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             perspective: 1000px;
             position: relative;
-            border: 2px solid rgba(255, 255, 255, 0.8);
         }
 
         .profile-card.idle {
@@ -948,7 +880,8 @@ body.swaqsecondpersonal {
 
         .profile-card:hover {
             transform: translateY(-5px) scale(1.03) rotate(2deg);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            box-shadow:  16px 16px 32px var(--neu-shadow-dark), 
+                         -16px -16px 32px var(--neu-shadow-light);
             border-image: linear-gradient(45deg, var(--smoke-color), transparent) 1;
             animation: smokyBorder 2s ease-in-out infinite;
         }
@@ -972,7 +905,8 @@ height: 80px;
 border-radius: 50%;
 background: url('https://cdn.discordapp.com/avatars/1084576683262230548/291e94b81cfec9a4ea48fd98aaf9c547.webp?size=1024') no-repeat center/cover;
 margin: 0 auto 8px;
-box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
+box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+             -4px -4px 8px var(--neu-shadow-light);
 position: relative;
 transition: transform 0.4s ease, box-shadow 0.4s ease;
 cursor: pointer;
@@ -995,13 +929,17 @@ pointer-events: none;
 
 /* Animations */
 @keyframes glowPulse {
-0% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
-50% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7); }
-100% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5); }
+0% { box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                 -4px -4px 8px var(--neu-shadow-light); }
+50% { box-shadow:  6px 6px 12px var(--neu-shadow-dark), 
+                 -6px -6px 12px var(--neu-shadow-light); }
+100% { box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                  -4px -4px 8px var(--neu-shadow-light); }
 }
 .profile-image:hover {
 transform: scale(1.05);
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 18px 10px rgba(128, 128, 128, 0.7);
+box-shadow:  6px 6px 12px var(--neu-shadow-dark), 
+             -6px -6px 12px var(--neu-shadow-light);
 }
 .profile-image.spin {
 animation: spin 1.2s ease-out;
@@ -1075,8 +1013,10 @@ animation: counterSpin 1.2s ease-out;
             top: -18px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
+            color: inherit;
             padding: 3px 6px;
             border-radius: 6px;
             font-size: 9px;
@@ -1092,7 +1032,7 @@ animation: counterSpin 1.2s ease-out;
             line-height: 1.4;
             margin-bottom: 10px;
             margin-top: 8px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            text-shadow: none;
             display: inline-block;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
@@ -1148,13 +1088,12 @@ animation: counterSpin 1.2s ease-out;
         }
 
         .audio-player {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            background: var(--neu-bg);
+            box-shadow:  6px 6px 12px var(--neu-shadow-dark), 
+                         -6px -6px 12px var(--neu-shadow-light);
             border-radius: 8px;
             padding: 5px;
             margin: 8px 0;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             opacity: 0;
             transform: translateY(20px);
@@ -1167,7 +1106,8 @@ animation: counterSpin 1.2s ease-out;
 
         .audio-player:hover {
             transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            box-shadow:  8px 8px 16px var(--neu-shadow-dark), 
+                         -8px -8px 16px var(--neu-shadow-light);
         }
 
         .audio-info {
@@ -1176,10 +1116,10 @@ animation: counterSpin 1.2s ease-out;
         }
 
         .song-title {
-            color: white;
+            color: inherit;
             font-size: 9px;
             font-weight: 600;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            text-shadow: none;
         }
 
         .audio-controls {
@@ -1195,22 +1135,22 @@ animation: counterSpin 1.2s ease-out;
             height: 18px;
             border: none;
             border-radius: 50%;
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
-            color: white;
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
+            color: inherit;
             font-size: 7px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: gradientText 6s ease infinite;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .control-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            transform: translateY(1px);
         }
 
         .play-pause-btn {
@@ -1226,7 +1166,7 @@ animation: counterSpin 1.2s ease-out;
         }
 
         .time-display {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(0, 0, 0, 0.8);
             font-size: 7px;
             font-weight: 500;
             min-width: 18px;
@@ -1235,7 +1175,9 @@ animation: counterSpin 1.2s ease-out;
         .progress-bar {
             flex: 1;
             height: 2px;
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--neu-bg);
+            box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), 
+                        inset -2px -2px 4px var(--neu-shadow-light);
             border-radius: 2px;
             overflow: hidden;
             cursor: pointer;
@@ -1260,20 +1202,17 @@ animation: counterSpin 1.2s ease-out;
             align-items: center;
             gap: 8px;
             padding: 8px 15px;
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
             border-radius: 30px;
-            color: white;
+            color: inherit;
             text-decoration: none;
             font-weight: 600;
             font-size: 12px;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
-            animation: gradientText 6s ease infinite;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             opacity: 0;
             transform: translateY(20px);
         }
@@ -1283,24 +1222,10 @@ animation: counterSpin 1.2s ease-out;
             transform: translateY(0);
         }
 
-        .link-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .link-button:hover::before {
-            left: 100%;
-        }
-
         .link-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            transform: translateY(1px);
         }
 
         .link-icon {
@@ -1323,20 +1248,17 @@ animation: counterSpin 1.2s ease-out;
             align-items: center;
             justify-content: center;
             padding: 10px;
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
             border-radius: 30px;
-            color: white;
+            color: inherit;
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
-            animation: gradientText 6s ease infinite;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             margin-top: 10px;
             width: 100%;
             opacity: 0;
@@ -1348,24 +1270,10 @@ animation: counterSpin 1.2s ease-out;
             transform: translateY(0);
         }
 
-        .click-game-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .click-game-button:hover::before {
-            left: 100%;
-        }
-
         .click-game-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            transform: translateY(1px);
         }
 
         .like-dislike-container {
@@ -1388,44 +1296,28 @@ animation: counterSpin 1.2s ease-out;
             align-items: center;
             gap: 6px;
             padding: 8px 12px;
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
             border-radius: 25px;
-            color: white;
+            color: inherit;
             font-weight: 600;
             font-size: 12px;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
-            animation: gradientText 6s ease infinite;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             cursor: pointer;
         }
 
-        .like-button::before, .dislike-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .like-button:hover::before, .dislike-button:hover::before {
-            left: 100%;
-        }
-
         .like-button:hover, .dislike-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            transform: translateY(1px);
         }
 
         .like-button.active, .dislike-button.active {
-            background: linear-gradient(90deg, #00ff00, #000000);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
             transform: scale(1.05);
         }
 
@@ -1506,18 +1398,18 @@ animation: counterSpin 1.2s ease-out;
             right: 10px;
             background: transparent;
             border: none;
-            color: white;
+            color: inherit;
             font-size: 20px;
             cursor: pointer;
         }
 
         .notes-section {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            background: var(--neu-bg);
+            box-shadow:  6px 6px 12px var(--neu-shadow-dark), 
+                         -6px -6px 12px var(--neu-shadow-light);
             border-radius: 15px;
             padding: 15px;
             margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
@@ -1543,21 +1435,31 @@ animation: counterSpin 1.2s ease-out;
 
         .notes-section input {
             padding: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: var(--neu-bg);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            border: none;
             border-radius: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            color: inherit;
             width: 100%;
         }
 
         .notes-section button {
             padding: 8px;
-            background: var(--primary-gradient);
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
             border: none;
             border-radius: 5px;
-            color: white;
+            color: inherit;
             cursor: pointer;
             margin-top: 10px;
+        }
+
+        .notes-section button:hover {
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            transform: translateY(1px);
         }
 
         #notesList {
@@ -1565,7 +1467,9 @@ animation: counterSpin 1.2s ease-out;
         }
 
         #notesList div {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--neu-bg);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
             padding: 8px;
             border-radius: 5px;
             margin-bottom: 5px;
@@ -1576,12 +1480,14 @@ animation: counterSpin 1.2s ease-out;
 
         #notesList button {
             padding: 4px 8px;
-            background: red;
+            background: #ff0000;
+            box-shadow:  2px 2px 4px var(--neu-shadow-dark), 
+                         -2px -2px 4px var(--neu-shadow-light);
             margin: 0;
         }
 
         .lyrics-container {
-            color: white;
+            color: inherit;
             font-size: 12px;
             margin-top: 5px;
             text-align: center;
@@ -1592,12 +1498,12 @@ animation: counterSpin 1.2s ease-out;
 
         .lyric-line {
             margin: 5px 0;
-            color: rgba(255,255,255,0.5);
+            color: rgba(0,0,0,0.5);
             transition: color 0.3s, font-weight 0.3s;
         }
 
         .lyric-line.current {
-            color: white;
+            color: inherit;
             font-weight: bold;
         }
 
@@ -1619,7 +1525,9 @@ animation: counterSpin 1.2s ease-out;
         }
 
         .modal-content {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--neu-bg);
+            box-shadow:  12px 12px 24px var(--neu-shadow-dark), 
+                         -12px -12px 24px var(--neu-shadow-light);
             padding: 20px;
             border-radius: 10px;
             display: flex;
@@ -1630,7 +1538,7 @@ animation: counterSpin 1.2s ease-out;
         }
 
         .modal-content label {
-            color: white;
+            color: inherit;
             display: block;
         }
 
@@ -1652,11 +1560,11 @@ animation: counterSpin 1.2s ease-out;
             left: 10px;
             transform: translateY(-50%);
             z-index: 10;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            background: var(--neu-bg);
+            box-shadow:  6px 6px 12px var(--neu-shadow-dark), 
+                         -6px -6px 12px var(--neu-shadow-light);
             padding: 8px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -1664,24 +1572,131 @@ animation: counterSpin 1.2s ease-out;
 
         .layout-button {
             padding: 6px 12px;
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
             border-radius: 8px;
-            color: white;
+            color: inherit;
             font-weight: 600;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: var(--primary-gradient);
         }
 
         .layout-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            transform: translateY(1px);
         }
 
         .layout-button.active {
-            background: linear-gradient(90deg, #00ff00, #000000);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
             transform: scale(1.05);
+        }
+
+        #weatherToggle {
+            position: fixed;
+            top: 80px;
+            left: 10px;
+            z-index: 10;
+            padding: 8px 12px;
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
+            border-radius: 8px;
+            color: inherit;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #weatherToggle:hover {
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            transform: translateY(1px);
+        }
+
+        #gameHubButton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
+            border-radius: 30px;
+            color: inherit;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        #gameHubButton.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #gameHubButton:hover {
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            transform: translateY(1px);
+        }
+
+        #gameHub {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #gameHub.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .game-button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: var(--neu-bg);
+            box-shadow:  4px 4px 8px var(--neu-shadow-dark), 
+                         -4px -4px 8px var(--neu-shadow-light);
+            border-radius: 8px;
+            color: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-button:hover {
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), 
+                        inset -4px -4px 8px var(--neu-shadow-light);
+            transform: translateY(1px);
+        }
+
+        #threeCanvas {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 8px;
         }
 
         @media (max-width: 480px) {
@@ -1736,21 +1751,16 @@ animation: counterSpin 1.2s ease-out;
                 border-radius: 20px;
             }
 
-            .profile-image {
+            .profile-image, #threeCanvas {
                 width: 60px;
                 height: 60px;
                 margin-bottom: 4px;
-                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5);
             }
 
             @keyframes glowPulse {
-                0% { box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5); }
-                50% { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 14px 7px rgba(128, 128, 128, 0.7); }
-                100% { box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px 5px rgba(128, 128, 128, 0.5); }
-            }
-
-            .profile-image:hover {
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 16px 8px rgba(128, 128, 128, 0.7);
+                0% { box-shadow:  4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light); }
+                50% { box-shadow:  6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light); }
+                100% { box-shadow:  4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light); }
             }
 
             .name {
@@ -1886,7 +1896,6 @@ animation: counterSpin 1.2s ease-out;
     </style>
 </head>
 <body class="welcome-active">
-</div>
    <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-text">hello, hi, konnichiwa, device s i d e w a y s, p l s (mobile)</div>
     </div>
@@ -1973,10 +1982,12 @@ animation: counterSpin 1.2s ease-out;
 
     <div class="clown-list">removed buh</div>
 
+    <button id="weatherToggle">Weather Effects: Off</button>
+
     <div class="container">
         <div class="profile-card" id="profileCard">
             <div class="profile-container">
-            <div class="profile-image" id="profileImage"></div>
+            <canvas id="threeCanvas"></canvas>
             
             <div class="name-section">
                 <span class="name" id="typewriter">
@@ -2075,6 +2086,8 @@ animation: counterSpin 1.2s ease-out;
             
             <button class="click-game-button" id="clickButton">Clicks: 0</button>
             
+            <button id="gameHubButton" class="click-game-button">Open Game Hub</button>
+            
             <div class="like-dislike-container">
                 <button class="like-button" id="likeButton">
                     <i class="fas fa-thumbs-up"></i>
@@ -2100,6 +2113,12 @@ animation: counterSpin 1.2s ease-out;
         <canvas id="miniGameCanvas" class="mini-game-canvas"></canvas>
         <div id="gameScore" class="game-score">Score: 0</div>
         <button id="closeGame" class="close-game-button">Close</button>
+    </div>
+
+    <div id="gameHub" class="mini-game-container">
+        <button class="game-button" id="playSnake">Play Snake</button>
+        <button class="game-button" id="playTicTacToe">Play Tic-Tac-Toe</button>
+        <button class="close-game-button" id="closeHub">Close Hub</button>
     </div>
 
     <svg class="eye-logo" viewBox="0 0 100 100">
@@ -2135,6 +2154,7 @@ animation: counterSpin 1.2s ease-out;
         const songTitle = document.getElementById('songTitle');
         const loadingSpinner = document.getElementById('loadingSpinner');
         const profileImage = document.getElementById('profileImage');
+        const threeCanvas = document.getElementById('threeCanvas');
         const profileCard = document.getElementById('profileCard');
         const clickButton = document.getElementById('clickButton');
         const wordFxContainer = document.getElementById('wordFx');
@@ -2168,6 +2188,12 @@ animation: counterSpin 1.2s ease-out;
         const notesToggle = document.getElementById('notesToggle');
         const notesSection = document.getElementById('notesSection');
         const container = document.querySelector('.container');
+        const weatherToggle = document.getElementById('weatherToggle');
+        const gameHubButton = document.getElementById('gameHubButton');
+        const gameHub = document.getElementById('gameHub');
+        const playSnake = document.getElementById('playSnake');
+        const playTicTacToe = document.getElementById('playTicTacToe');
+        const closeHub = document.getElementById('closeHub');
 
        let hasInteracted = false;
 let wordEffectActive = false;
@@ -2180,6 +2206,8 @@ let likeCount = 0;
 let dislikeCount = 0;
 let viewCount = parseInt(localStorage.getItem('viewCount') || '0', 10) + 1;
 let notes = JSON.parse(localStorage.getItem('notes') || '[]');
+let weatherEnabled = false;
+const apiKey = '3897da3414ff44bea4d200045252408'; // Replace with your actual API key
 
 const songs = [
   { title: "kills", src: "assets/kills.mp3" },
@@ -2189,7 +2217,7 @@ const songs = [
   { title: "Popstar", src: "assets/popstar.mp3" },
   { title: "Lambtruck", src: "assets/lamb.mp3" },
   { title: "Roster", src: "assets/roster.mp3" },
-  { title: "Catch me if u can", src: "assets/cmiuc.mp3" },
+  { time: "Catch me if u can", src: "assets/cmiuc.mp3" },
   { title: "Ouija", src: "assets/ouija.mp3" },
   { title: "Trap", src: "assets/Trap.mp3" }
 ];
@@ -2546,8 +2574,22 @@ async function getLyricsFromAPI(artist, title) {
                 button.classList.add('active');
                 document.body.className = button.dataset.theme;
                 localStorage.setItem('theme', button.dataset.theme);
+                updateNeuShadows(button.dataset.theme);
             });
         });
+
+        function updateNeuShadows(theme) {
+            if (theme === 'dark') {
+                document.documentElement.style.setProperty('--neu-bg', '#2c2c2c');
+                document.documentElement.style.setProperty('--neu-shadow-light', 'rgba(255, 255, 255, 0.05)');
+                document.documentElement.style.setProperty('--neu-shadow-dark', 'rgba(0, 0, 0, 0.4)');
+            } else {
+                document.documentElement.style.setProperty('--neu-bg', '#e0e0e0');
+                document.documentElement.style.setProperty('--neu-shadow-light', 'rgba(255, 255, 255, 0.7)');
+                document.documentElement.style.setProperty('--neu-shadow-dark', 'rgba(0, 0, 0, 0.2)');
+            }
+            // Add more theme adjustments as needed
+        }
 
         // Custom theme load
         let customThemeData = {
@@ -2698,6 +2740,7 @@ setupRealtimePreview();
         const savedTheme = localStorage.getItem('theme') || 'swaqfirstpersonal';
         document.body.className = savedTheme;
         document.querySelector(`.theme-button[data-theme="${savedTheme}"]`)?.classList.add('active');
+        updateNeuShadows(savedTheme);
 
         // Layout switcher
         const layoutButtons = document.querySelectorAll('.layout-button');
@@ -2942,7 +2985,7 @@ function updateVisualizerTheme() {
             requestAnimationFrame(drawGame);
         }
 
-        function startMiniGame() {
+        function startSnake() {
             miniGameContainer.classList.add('active');
             gameActive = true;
             score = 0;
@@ -2961,6 +3004,108 @@ function updateVisualizerTheme() {
             drawGame();
         }
 
+        class TicTacToe {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.cellSize = canvas.width / 3;
+                this.board = Array(9).fill('');
+                this.currentPlayer = 'X';
+                this.gameOver = false;
+                this.canvas.addEventListener('click', (e) => this.handleClick(e));
+                this.drawBoard();
+            }
+
+            drawBoard() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.strokeStyle = '#000';
+                this.ctx.lineWidth = 2;
+
+                for (let i = 1; i < 3; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(i * this.cellSize, 0);
+                    this.ctx.lineTo(i * this.cellSize, this.canvas.height);
+                    this.ctx.stroke();
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, i * this.cellSize);
+                    this.ctx.lineTo(this.canvas.width, i * this.cellSize);
+                    this.ctx.stroke();
+                }
+
+                this.board.forEach((symbol, i) => {
+                    if (symbol) {
+                        const x = (i % 3) * this.cellSize + this.cellSize / 2;
+                        const y = Math.floor(i / 3) * this.cellSize + this.cellSize / 2;
+                        this.ctx.font = `${this.cellSize / 2}px Arial`;
+                        this.ctx.textAlign = 'center';
+                        this.ctx.textBaseline = 'middle';
+                        this.ctx.fillText(symbol, x, y);
+                    }
+                });
+            }
+
+            handleClick(e) {
+                if (this.gameOver) return;
+                const rect = this.canvas.getBoundingClientRect();
+                const col = Math.floor((e.clientX - rect.left) / this.cellSize);
+                const row = Math.floor((e.clientY - rect.top) / this.cellSize);
+                const index = row * 3 + col;
+                if (this.board[index] === '') {
+                    this.board[index] = this.currentPlayer;
+                    this.drawBoard();
+                    if (this.checkWin()) {
+                        gameOver = true;
+                        gameScore.textContent = `${this.currentPlayer} wins! Score: ${score}`;
+                        return;
+                    } else if (this.board.every(cell => cell !== '')) {
+                        gameOver = true;
+                        gameScore.textContent = `Draw! Score: ${score}`;
+                        return;
+                    }
+                    this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+                }
+            }
+
+            checkWin() {
+                const wins = [
+                    [0,1,2], [3,4,5], [6,7,8],
+                    [0,3,6], [1,4,7], [2,5,8],
+                    [0,4,8], [2,4,6]
+                ];
+                return wins.some(win => win.every(i => this.board[i] === this.currentPlayer));
+            }
+        }
+
+        let ticTacToe;
+
+        function startTicTacToe() {
+            miniGameContainer.classList.add('active');
+            gameActive = true;
+            score = 0;
+            gameScore.textContent = `Score: ${score}`;
+            miniGameCanvas.width = miniGameCanvas.offsetWidth;
+            miniGameCanvas.height = miniGameCanvas.offsetHeight;
+            ticTacToe = new TicTacToe(miniGameCanvas);
+        }
+
+        playSnake.addEventListener('click', () => {
+            gameHub.classList.remove('active');
+            startSnake();
+        });
+
+        playTicTacToe.addEventListener('click', () => {
+            gameHub.classList.remove('active');
+            startTicTacToe();
+        });
+
+        gameHubButton.addEventListener('click', () => {
+            gameHub.classList.add('active');
+        });
+
+        closeHub.addEventListener('click', () => {
+            gameHub.classList.remove('active');
+        });
+
         document.addEventListener('keydown', (e) => {
             if (e.keyCode === 37 && dx !== 10) { dx = -10; dy = 0; }
             if (e.keyCode === 38 && dy !== 10) { dx = 0; dy = -10; }
@@ -2974,17 +3119,69 @@ function updateVisualizerTheme() {
             clearInterval(gameInterval);
         });
 
-        profileImage.addEventListener('click', () => {
-            profileClicks++;
-            if (profileClicks >= 5) {
-                startMiniGame();
-                profileClicks = 0;
+        profileImage.remove(); // Remove 2D image for 3D
+
+        // 3D Parallax with Three.js
+        let scene, camera, renderer, mesh;
+        function initThree() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, threeCanvas.width / threeCanvas.height, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, alpha: true });
+            renderer.setSize(threeCanvas.width, threeCanvas.height);
+
+            const geometry = new THREE.PlaneGeometry(1, 1);
+            const texture = new THREE.TextureLoader().load('https://cdn.discordapp.com/avatars/1084576683262230548/291e94b81cfec9a4ea48fd98aaf9c547.webp?size=1024');
+            const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            camera.position.z = 1.5;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
             }
-        });
+            animate();
+
+            document.addEventListener('mousemove', (e) => {
+                if (isMobile) return;
+                const rect = threeCanvas.getBoundingClientRect();
+                const mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                const mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+                mesh.rotation.y = mouseX * 0.5;
+                mesh.rotation.x = mouseY * 0.5;
+            });
+        }
+
+        initThree();
+
+        // Dynamic Weather
+      weatherToggle.addEventListener('click', () => {
+    weatherEnabled = !weatherEnabled;
+    weatherToggle.textContent = `Weather Effects: ${weatherEnabled ? 'On' : 'Off'}`;
+    if (weatherEnabled) {
+        navigator.geolocation.getCurrentPosition(position => {
+            fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${position.coords.latitude},${position.coords.longitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    const weather = data.current.condition.text.toLowerCase();
+                    let newTheme = 'dark';
+                    if (weather.includes('clear') || weather.includes('sunny')) newTheme = 'sunset';
+                    if (weather.includes('cloud')) newTheme = 'monochrome';
+                    if (weather.includes('rain')) newTheme = 'ocean';
+                    if (weather.includes('snow')) newTheme = 'pastel';
+                    document.body.className = newTheme;
+                    localStorage.setItem('theme', newTheme);
+                    updateNeuShadows(newTheme);
+                })
+                .catch(error => console.warn('Weather API error:', error));
+        }, () => console.warn('Geolocation denied'));
+    }
+});
 
         // Scroll-triggered animations
         function setupScrollAnimations() {
-            const elements = document.querySelectorAll('.badge, .bio, .audio-player, .link-button, .click-game-button, .like-dislike-container, .notes-section');
+            const elements = document.querySelectorAll('.badge, .bio, .audio-player, .link-button, .click-game-button, #gameHubButton, .like-dislike-container, .notes-section');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -3086,7 +3283,10 @@ async function loadSong(index) {
 
         // Profile image rotation
         function autoSpinProfileImage() {
-            profileImage.classList.add('spin');
+            mesh.rotation.x = 0;
+            mesh.rotation.y = 0;
+            mesh.rotation.z = 0;
+            // Add spin animation if needed
             setTimeout(autoSpinProfileImage, 15000);
         }
 
@@ -3102,19 +3302,17 @@ async function loadSong(index) {
             const centerY = rect.top + rect.height / 2;
             const mouseX = e.clientX - centerX;
             const mouseY = e.clientY - centerY;
-            const maxTilt = 8;
-            const rotateX = (mouseY / rect.height) * -maxTilt;
-            const rotateY = (mouseX / rect.width) * maxTilt;
-            profileCard.style.transform = `perspective(1000px) translateY(-5px) scale(1.03) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            profileCard.style.transition = 'transform 0.1s ease-out';
+            const maxTilt = 0.5; // radians for 3D
+            mesh.rotation.x = (mouseY / rect.height) * -maxTilt;
+            mesh.rotation.y = (mouseX / rect.width) * maxTilt;
         }
 
         if (!isMobile) {
             profileCard.addEventListener('mousemove', handleParallax);
             profileCard.addEventListener('mouseenter', () => profileCard.classList.remove('idle'));
             profileCard.addEventListener('mouseleave', () => {
-                profileCard.style.transform = '';
-                profileCard.style.transition = 'transform 0.3s ease';
+                mesh.rotation.x = 0;
+                mesh.rotation.y = 0;
                 profileCard.classList.add('idle');
             });
             profileCard.classList.add('idle');
