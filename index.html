@@ -1896,7 +1896,7 @@ animation: counterSpin 1.2s ease-out;
     </div>
 
     <video id="backgroundVideo" autoplay loop playsinline style="display: none;">
-        <source src="assets/vogue.mp4" type="video/mp4">
+        <source src="assets/handsup.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
     
@@ -2172,7 +2172,7 @@ animation: counterSpin 1.2s ease-out;
        let hasInteracted = false;
 let wordEffectActive = false;
 let isPlaying = false;
-let currentSongIndex = 9; // Adjusted to valid index (0-9, Trap is last)
+let currentSongIndex = 10; // Adjusted to valid index (0-10, Hands Up is last)
 let retryAttempts = 0;
 const maxRetries = 3;
 let clickCount = 0;
@@ -2191,7 +2191,8 @@ const songs = [
   { title: "Roster", src: "assets/roster.mp3" },
   { title: "Catch me if u can", src: "assets/cmiuc.mp3" },
   { title: "Ouija", src: "assets/ouija.mp3" },
-  { title: "Trap", src: "assets/Trap.mp3" }
+  { title: "Trap", src: "assets/Trap.mp3" },
+    { title: "Hands Up", src: "assets/handsup.mp3" }
 ];
 
         const lyrics = {
@@ -3343,3 +3344,4 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
+
