@@ -2050,7 +2050,7 @@ animation: counterSpin 1.2s ease-out;
         let hasInteracted = false;
         let wordEffectActive = false;
         let isPlaying = false;
-        let currentSongIndex = 9; // Trap first
+        let currentSongIndex = 10; // Trap first
         let retryAttempts = 0;
         const maxRetries = 3;
         let clickCount = 0;
@@ -2060,7 +2060,7 @@ animation: counterSpin 1.2s ease-out;
         let notes = JSON.parse(localStorage.getItem('notes')) || [];
 
         const songs = [
-            { title: "Kills", src: "assets/kills.mp3" },
+            { title: "kills", src: "assets/kills.mp3" },
             { title: "For Da Flex", src: "assets/fdf.mp3" },
             { title: "Baghdad", src: "assets/baghdad.mp3" },
             { title: "Cartel", src: "assets/cartel.mp3" },
@@ -2068,6 +2068,7 @@ animation: counterSpin 1.2s ease-out;
             { title: "Lambtruck", src: "assets/lamb.mp3" },
             { title: "Roster", src: "assets/roster.mp3" },
             { title: "Catch me if u can", src: "assets/cmiuc.mp3" },
+            { title: "Ouija", src: "assets/ouija.mp3" },
             { title: "Trap", src: "assets/Trap.mp3"}
         ];
 
@@ -2614,7 +2615,8 @@ setupRealtimePreview();
             }
         });
 
-let audioContext: AudioContext | undefined, analyser: AnalyserNode | undefined, dataArray: Uint8Array;
+        // Audio visualizer
+       let audioContext, analyser, dataArray;
 
 function setupAudioVisualization() {
     if (!window.AudioContext && !window.webkitAudioContext) {
@@ -2624,7 +2626,6 @@ function setupAudioVisualization() {
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
-        const audioPlayer = document.getElementById('audioPlayer') as HTMLMediaElement;
         const source = audioContext.createMediaElementSource(audioPlayer);
         source.connect(analyser);
         analyser.connect(audioContext.destination);
@@ -2632,8 +2633,8 @@ function setupAudioVisualization() {
         const bufferLength = analyser.frequencyBinCount;
         dataArray = new Uint8Array(bufferLength);
         
-        const canvas = document.getElementById('audioVisualizer') as HTMLCanvasElement;
-        const ctx = canvas.getContext('2d')!;
+        const canvas = document.getElementById('audioVisualizer');
+        const ctx = canvas.getContext('2d');
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
         
@@ -2678,42 +2679,46 @@ function setupAudioVisualization() {
                 const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
                 
                 // Use theme colors with intensity-based opacity
-                if (document.body.classList.contains('swaqfirstpersonal')) {
-                    gradient.addColorStop(0, `rgba(42, 42, 42, ${0.3 + intensity * 0.7})`); // #2a2a2a
-                    gradient.addColorStop(1, `rgba(139, 0, 0, ${0.6 + intensity * 0.4})`); // #8b0000
-                } else if (document.body.classList.contains('swaqsecondpersonal')) {
-                    gradient.addColorStop(0, `rgba(74, 74, 74, ${0.3 + intensity * 0.7})`); // #4a4a4a
-                    gradient.addColorStop(1, `rgba(0, 0, 0, ${0.6 + intensity * 0.4})`); // #000000
-                } else {
-                    // Other themes - use primary gradient colors
-                    const primaryRgb = hexToRgb(colors.primary);
-                    const secondaryRgb = hexToRgb(colors.secondary);
-                    
-                    gradient.addColorStop(0, `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${0.3 + intensity * 0.7})`);
-                    gradient.addColorStop(1, `rgba(${secondaryRgb.r}, ${secondaryRgb.g}, ${secondaryRgb.b}, ${0.6 + intensity * 0.4})`);
-                }
+           if (document.body.classList.contains('swaqfirstpersonal') || 
+    document.body.classList.contains('swaqsecondpersonal')) {
+    // Metallic themes - use smoke colors
+    gradient.addColorStop(0, `rgba(80, 80, 80, ${0.3 + intensity * 0.7})`);
+    gradient.addColorStop(1, `rgba(100, 100, 100, ${0.6 + intensity * 0.4})`);
+    
+    if (document.body.classList.contains('swaqsecondpersonal')) {
+        gradient.addColorStop(0, `rgba(100, 100, 100, ${0.3 + intensity * 0.7})`);
+        gradient.addColorStop(1, `rgba(70, 70, 70, ${0.6 + intensity * 0.4})`);
+    }
+} else {
+    // Other themes - use primary gradient colors
+    const primaryRgb = hexToRgb(colors.primary);
+    const secondaryRgb = hexToRgb(colors.secondary);
+    
+    gradient.addColorStop(0, `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${0.3 + intensity * 0.7})`);
+    gradient.addColorStop(1, `rgba(${secondaryRgb.r}, ${secondaryRgb.g}, ${secondaryRgb.b}, ${0.6 + intensity * 0.4})`);
+}
 
-                ctx.fillStyle = gradient;
-                ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+ctx.fillStyle = gradient;
+ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
 
-                // Add metallic shine effect for metallic themes
-                if (document.body.classList.contains('swaqfirstpersonal') || 
-                    document.body.classList.contains('swaqsecondpersonal')) {
-                    const shineGradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
-                    shineGradient.addColorStop(0, `rgba(255, 255, 255, ${intensity * 0.3})`);
-                    shineGradient.addColorStop(0.5, `rgba(255, 255, 255, ${intensity * 0.1})`);
-                    shineGradient.addColorStop(1, 'transparent');
-                    
-                    ctx.fillStyle = shineGradient;
-                    ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
-                }
+// Add metallic shine effect for metallic themes
+if (document.body.classList.contains('swaqfirstpersonal') || 
+    document.body.classList.contains('swaqsecondpersonal')) {
+    const shineGradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
+    shineGradient.addColorStop(0, `rgba(255, 255, 255, ${intensity * 0.3})`);
+    shineGradient.addColorStop(0.5, `rgba(255, 255, 255, ${intensity * 0.1})`);
+    shineGradient.addColorStop(1, 'transparent');
+    
+    ctx.fillStyle = shineGradient;
+    ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+}
             }
             
             requestAnimationFrame(drawVisualizer);
         }
         
         // Helper function to convert hex to RGB
-        function hexToRgb(hex: string) {
+        function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
                 r: parseInt(result[1], 16),
@@ -3189,9 +3194,6 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
-
-
-
 
 
 
