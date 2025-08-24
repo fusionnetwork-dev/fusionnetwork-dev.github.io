@@ -762,6 +762,22 @@ body.swaqsecondpersonal {
             z-index: 10;
         }
 
+        .container.skinny {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .container.complex {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .container.wide {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .volume-control {
             position: fixed;
             top: 40px;
@@ -1569,6 +1585,44 @@ animation: counterSpin 1.2s ease-out;
             cursor: pointer;
         }
 
+        .layout-switcher {
+            position: fixed;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .layout-button {
+            padding: 6px 12px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--primary-gradient);
+        }
+
+        .layout-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .layout-button.active {
+            background: linear-gradient(90deg, #00ff00, #000000);
+            transform: scale(1.05);
+        }
+
         @media (max-width: 480px) {
             body {
                 font-size: 14px;
@@ -1850,6 +1904,12 @@ animation: counterSpin 1.2s ease-out;
         </div>
     </div>
 
+    <div class="layout-switcher">
+        <button class="layout-button active" data-layout="skinny">Default (Skinny)</button>
+        <button class="layout-button" data-layout="complex">Complex</button>
+        <button class="layout-button" data-layout="wide">Wide</button>
+    </div>
+
     <div class="clown-list">removed buh</div>
 
     <div class="container">
@@ -2046,6 +2106,7 @@ animation: counterSpin 1.2s ease-out;
         const notesList = document.getElementById('notesList');
         const notesToggle = document.getElementById('notesToggle');
         const notesSection = document.getElementById('notesSection');
+        const container = document.querySelector('.container');
 
        let hasInteracted = false;
 let wordEffectActive = false;
@@ -2073,7 +2134,7 @@ const songs = [
 ];
 
         const lyrics = {
-  ' kills': [
+  'kills': [
     { time: 0, text: "Flex, flex, flex, flex, flex, flex, beep, beep" },
     { time: 4, text: "Yeah, yeah, yeah, yeah, yeah" },
     { time: 8, text: "Slime, yeah, yeah, slatt, uh-huh" },
@@ -2577,6 +2638,32 @@ setupRealtimePreview();
         document.body.className = savedTheme;
         document.querySelector(`.theme-button[data-theme="${savedTheme}"]`)?.classList.add('active');
 
+        // Layout switcher
+        const layoutButtons = document.querySelectorAll('.layout-button');
+        let currentLayout = localStorage.getItem('layout') || 'skinny';
+        container.classList.add(currentLayout);
+        document.querySelector(`.layout-button[data-layout="${currentLayout}"]`).classList.add('active');
+
+        layoutButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                layoutButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                container.className = 'container ' + button.dataset.layout;
+                currentLayout = button.dataset.layout;
+                localStorage.setItem('layout', currentLayout);
+            });
+
+            button.addEventListener('mouseover', () => {
+                container.classList.remove(currentLayout);
+                container.classList.add(button.dataset.layout);
+            });
+
+            button.addEventListener('mouseout', () => {
+                container.classList.remove(button.dataset.layout);
+                container.classList.add(currentLayout);
+            });
+        });
+
         // Cursor trail
         let lastTrailTime = 0;
         document.addEventListener('mousemove', (e) => {
@@ -2858,7 +2945,7 @@ function updateVisualizerTheme() {
 }
         
 const artistMap = {
-    " kills": "OsamaSon",
+    "kills": "OsamaSon",
     "For Da Flex": "OsamaSon", 
     "Baghdad": "OsamaSon",
     "Cartel": "OsamaSon",
@@ -3194,13 +3281,3 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
