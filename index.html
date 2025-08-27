@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#808080">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ur da best</title>
+    <title>@1ayarp</title>
     <link rel="icon" href="https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png?ex=68ac2bb3&is=68aada33&hm=67839e04dc06552906cc387ebbbe0e740eb2cb161ef452d94b3d521d30cb2287&" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -1976,9 +1976,9 @@ animation: counterSpin 1.2s ease-out;
     <div class="container">
         <div class="profile-card" id="profileCard">
             <div class="profile-container">
-            <div class="profile-image" id="profileImage"></div>
+            <div class="profile-image bounce-beat" id="profileImage"></div>
             
-            <div class="name-section">
+            <div class="name-section bounce-beat">
                 <span class="name" id="typewriter">
                     <span>a</span><span>y</span><span>a</span><span>r</span><span>p</span>
                     <span class="uid">UID inf</span>
@@ -1990,7 +1990,7 @@ animation: counterSpin 1.2s ease-out;
                 <div class="sparkle-effect" style="right: 0; bottom: 0; animation-delay: 1.5s;"></div>
             </div>
             
-            <div class="badges">
+            <div class="badges bounce-beat">
                 <span class="badge owner">
                     <i class="fas fa-crown"></i>
                     Owner
@@ -2400,7 +2400,7 @@ const songs = [
     { time: 45, text: "Pockets fatter than a b*tch, got my racks, you throw a fit" },
     { time: 48, text: "Brr, brr, you already know what time it is" },
     { time: 51, text: "I can flex my brand-new b*tch" },
-    { time: 54, text: "I can flеx my brand-new kicks" },
+    { time: 54, text: "I can flеx my brand-new brand-new kicks" },
     { time: 57, text: "Or I can flex this fast-ass whip" },
     { time: 60, text: "Double cup, I'm fat as sh*t" },
     { time: 63, text: "Oh, you said you got thеm sticks? Let's link up and do that sh*t" },
@@ -2711,7 +2711,8 @@ setupRealtimePreview();
             button.addEventListener('click', () => {
                 layoutButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-                container.className = 'container ' + button.dataset.layout;
+                container.className = 'container'; // Reset classes
+                container.classList.add(button.dataset.layout);
                 currentLayout = button.dataset.layout;
                 localStorage.setItem('layout', currentLayout);
             });
@@ -2820,6 +2821,20 @@ function setupAudioVisualization() {
             
             const colors = getCurrentThemeColors();
             const barWidth = canvas.width / bufferLength * 2;
+            
+            // Compute bass for bounce
+            let bass = 0;
+            for (let i = 0; i < 10; i++) {
+                bass += dataArray[i];
+            }
+            bass /= (10 * 255);
+            bass = Math.pow(bass, 2); // Make more pronounced
+            
+            // Apply bounce to elements
+            const bounceElements = document.querySelectorAll('.bounce-beat');
+            bounceElements.forEach(el => {
+                el.style.transform = `scale(${1 + bass * 0.2})`;
+            });
             
             for (let i = 0; i < bufferLength / 2; i++) {
                 const barHeight = dataArray[i] / 255 * canvas.height;
@@ -3345,6 +3360,3 @@ async function loadSong(index) {
 </script>
 </body>
 </html>
-
-
-
