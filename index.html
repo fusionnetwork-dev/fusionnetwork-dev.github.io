@@ -1978,7 +1978,28 @@ animation: counterSpin 1.2s ease-out;
                 width: 90%;
                 height: 300px;
             }
-
+.search-bar {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+.search-bar:focus {
+    border-color: var(--smoke-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+@media (max-width: 480px) {
+    .search-bar {
+        font-size: 12px;
+        padding: 6px;
+    }
+}
             .game-score {
                 font-size: 16px;
             }
@@ -2063,7 +2084,30 @@ animation: counterSpin 1.2s ease-out;
                 font-size: 20px;
                 padding: 5px;
             }
-
+            .quote {
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 8px 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientText 6s ease infinite;
+    background-size: 200% 200%;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.quote.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+@media (max-width: 480px) {
+    .quote {
+        font-size: 11px;
+    }
+}
             .marquee {
                 font-size: 16px;
             }
@@ -2139,6 +2183,65 @@ animation: counterSpin 1.2s ease-out;
                 width: 16px;
                 height: 16px;
             }
+            .theme-preview {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 11;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: opacity 0.3s ease;
+}
+.theme-switcher:hover .theme-preview {
+    opacity: 1;
+}
+@media (max-width: 480px) {
+    .theme-preview {
+        width: 40px;
+        height: 40px;
+        right: -50px;
+    }
+}
+.progress-container {
+    margin: 10px 0;
+    text-align: center;
+}
+.progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--primary-gradient);
+    transition: width 0.3s ease;
+}
+.swag-level {
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientText 6s ease infinite;
+    background-size: 200% 200%;
+}
+@media (max-width: 480px) {
+    .progress-bar {
+        height: 6px;
+    }
+    .swag-level {
+        font-size: 10px;
+    }
+}
         }
     </style>
 </head>
@@ -2204,6 +2307,7 @@ animation: counterSpin 1.2s ease-out;
         <button class="theme-button" data-theme="swaqeighthpersonal">ayarp's 8th preset</button>
         <button class="theme-button" data-theme="swaqninthpersonal">ayarp's 9th preset</button>
         <button id="customThemeBtn" class="theme-button">Custom Theme</button>
+        <div id="themePreview" class="theme-preview"></div>
     </div>
 
     <div id="themeModal" class="modal hidden">
@@ -2241,7 +2345,7 @@ animation: counterSpin 1.2s ease-out;
         <div class="profile-card" id="profileCard">
             <div class="profile-container">
             <div class="profile-image bounce-beat" id="profileImage"></div>
-            
+            <input type="text" id="searchInput" placeholder="Search links/notes..." class="search-bar">
             <div class="name-section bounce-beat">
                 <span class="name" id="typewriter">
                     <span>a</span><span>y</span><span>a</span><span>r</span><span>p</span>
@@ -2255,6 +2359,13 @@ animation: counterSpin 1.2s ease-out;
             </div>
             
             <div class="badges bounce-beat">
+                <p id="randomQuote" class="quote"></p>
+                <div class="progress-container">
+    <div class="progress-bar">
+        <div id="swagProgress" class="progress-fill"></div>
+    </div>
+    <span id="swagLevel" class="swag-level">Swag Level: 0%</span>
+</div>
                 <span class="badge owner">
                     <i class="fas fa-crown"></i>
                     Owner
@@ -2813,9 +2924,25 @@ async function getLyricsFromAPI(artist, title) {
                 button.classList.add('active');
                 document.body.className = button.dataset.theme;
                 localStorage.setItem('theme', button.dataset.theme);
+                 updateQuote();
             });
         });
-
+        
+       const themePreview = document.getElementById('themePreview');
+themeButtons.forEach(button => {
+    button.addEventListener('mouseover', () => {
+        if (button.id === 'customThemeBtn') {
+            // For custom, use current custom data or skip/fallback
+            themePreview.style.background = 'linear-gradient(90deg, rgb(0,0,0), rgb(128,128,128))'; // Fallback or compute from sliders if open
+        } else {
+            themePreview.style.background = button.style.background;
+        }
+        themePreview.style.display = 'block';
+    });
+    button.addEventListener('mouseout', () => {
+        themePreview.style.display = 'none';
+    });
+});
         // Custom theme load
         let customThemeData = {
     startR: 153,
@@ -3420,8 +3547,30 @@ async function loadSong(index) {
     const bioText = "i got swag";
     typeWriter(bioTypewriter, bioText, 100, () => {
         bioTypewriter.classList.add('visible');
+        
     });
 
+    const quotes = [
+    "Swag never sleeps 💯",
+    "Flex on 'em daily",
+    "Pour up the vibes",
+    "Hype mode activated",
+    "Boss level swag"
+];
+
+const randomQuote = document.getElementById('randomQuote');
+
+function updateQuote() {
+    randomQuote.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    randomQuote.classList.add('visible');
+}
+
+updateQuote();
+
+
+
+
+        
     // Welcome screen hide
     setTimeout(() => {
         welcomeScreen.classList.add('hidden');
@@ -3531,6 +3680,7 @@ async function loadSong(index) {
         clickCount++;
         clickButton.textContent = `Clicks: ${clickCount}`;
         localStorage.setItem('clickCount', clickCount);
+        updateSwagLevel();
         if (clickCount >= 100) unlockAchievement('Click Master');
     });
 
@@ -3619,11 +3769,46 @@ async function loadSong(index) {
         notesSection.classList.toggle('visible');
         notesToggle.textContent = notesSection.classList.contains('visible') ? 'v' : '>';
     });
+ const swagProgress = document.getElementById('swagProgress');
+const swagLevel = document.getElementById('swagLevel');
+
+function updateSwagLevel() {
+    const level = Math.min(100, (clickCount / 100) * 100);
+    swagProgress.style.width = `${level}%`;
+    swagLevel.textContent = `Swag Level: ${Math.floor(level)}%`;
+    if (level >= 100 && !achievements.includes('Ultimate Swag')) {
+        unlockAchievement('Ultimate Swag');
+    }
+}
+
+// Call on load
+updateSwagLevel();
+
+// In clickButton.addEventListener('click', ...
+// After clickCount++ and localStorage set:
+
 
     displayNotes();
-
+        
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', () => {
+    const searchValue = searchInput.value.toLowerCase();
+    
+    // Filter links
+    document.querySelectorAll('.link-button').forEach(link => {
+        const text = link.textContent.toLowerCase();
+        link.style.display = text.includes(searchValue) ? 'flex' : 'none';
+    });
+    
+    // Filter notes
+    document.querySelectorAll('#notesList div').forEach(note => {
+        const text = note.textContent.toLowerCase();
+        note.style.display = text.includes(searchValue) ? 'flex' : 'none';
+    });
+});
     // Initialize scroll animations
     setupScrollAnimations();
 </script>
 </body>
 </html>
+
