@@ -1939,28 +1939,37 @@ animation: counterSpin 1.2s ease-out;
         }
 
         .settings-menu {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            z-index: 101;
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            width: 80%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            color: white;
-        }
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    z-index: 101;
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    width: 80%;
+    max-width: 400px;
+    max-height: 80vh; /* Limit height to 80% of viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    color: white;
+}
 
         .settings-menu.active {
             display: flex;
         }
+        
+        .settings-menu::-webkit-scrollbar {
+      width: 8px;
+}
 
+.settings-menu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
         .settings-menu h2, .settings-menu h3 {
             margin: 0;
             background: var(--primary-gradient);
@@ -3805,4 +3814,5 @@ displayNotes();
     </script>
 </body>
 </html>
+
 
