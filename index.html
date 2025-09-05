@@ -2547,7 +2547,7 @@ animation: counterSpin 1.2s ease-out;
        let hasInteracted = false;
 let wordEffectActive = false;
 let isPlaying = false;
-let currentSongIndex = 4; // Adjusted to valid index (0-7, GREY AREA is last)
+let currentSongIndex = 7; // Adjusted to valid index (0-7, BLIGHT BIRD is last)
 let retryAttempts = 0;
 const maxRetries = 3;
 let clickCount = 0;
@@ -2563,7 +2563,8 @@ const songs = [
     { title: "CHANGES", src: "assets/CHANGES.mp3" },
     { title: "PLAY UP", src: "assets/playup.mp3" },
     { title: "SWEATHER WEATHER", src: "assets/sweater.mp3" },
-    { title: "GREY AREA", src: "assets/greyarea.mp3" }
+    { title: "GREY AREA", src: "assets/greyarea.mp3" }, 
+    { title: "BLIGHT BIRD", src: "assets/blight.mp3" }
 ];
 
         const lyrics = {
@@ -3805,6 +3806,7 @@ searchInput.addEventListener('input', () => {
 </script>
 </body>
 </html>
+
 
 
 
