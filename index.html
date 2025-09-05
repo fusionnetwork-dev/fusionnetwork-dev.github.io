@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta property="og:title" content="">
+    <meta property="og:title" content="@1yak.">
     <meta property="og:description" content="da best">
     <meta property="og:url" content="https://swaqq.xyz">
     <meta property="og:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/4ff837741baf3ca54124cedd60c518c7.webp?size=1024">
@@ -10,7 +10,9 @@
     <meta name="theme-color" content="#808080">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>@1yak.</title>
+    <title></title>
+
+
     <link rel="icon" href="https://cdn.discordapp.com/attachments/1400222624956547182/1403307765719371796/icon.png?ex=68ac2bb3&is=68aada33&hm=67839e04dc06552906cc387ebbbe0e740eb2cb161ef452d94b3d521d30cb2287&" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -2248,7 +2250,7 @@ animation: counterSpin 1.2s ease-out;
 <body class="welcome-active">
 </div>
    <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-text">hello, hi, konnichiwa, device s i d e w a y s, p l s (mobile)</div>
+        <div class="welcome-text">You may enter.</div>
     </div>
 
     <div class="marquee-container">
@@ -3008,6 +3010,20 @@ function createCustomThemeCSS() {
     document.head.appendChild(styleElement);
 }
 
+ document.addEventListener("DOMContentLoaded", () => {
+    const text = "@1yak.";
+    let i = 0;
+
+    function typeWriter() {
+        if (i <= text.length) {
+            document.title = text.substring(0, i);
+            i++;
+            setTimeout(typeWriter, 200); // typing speed (ms)
+        }
+    }
+
+    typeWriter();
+});
 // Custom theme apply
 applyCustom.addEventListener('click', () => {
     // Update stored values
@@ -3806,6 +3822,7 @@ searchInput.addEventListener('input', () => {
 </script>
 </body>
 </html>
+
 
 
 
