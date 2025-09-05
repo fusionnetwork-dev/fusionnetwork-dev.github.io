@@ -2278,7 +2278,7 @@ animation: counterSpin 1.2s ease-out;
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">v1.3.5.3: Changed theme once again, +1 new song, removed 2 other songs, New Layout, New Background, More Mobile Optimizations + Bug fixes</div>
+    <div class="version-text">v1.5: we are in the big leagues, 6767 mango 41 mustard</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -3010,20 +3010,43 @@ function createCustomThemeCSS() {
     document.head.appendChild(styleElement);
 }
 
- document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const text = "@1yak.";
     let i = 0;
+    let typing = true;
+    let cursorVisible = true;
 
     function typeWriter() {
-        if (i <= text.length) {
-            document.title = text.substring(0, i);
-            i++;
-            setTimeout(typeWriter, 200); // typing speed (ms)
+        if (typing) {
+            if (i <= text.length) {
+                document.title = text.substring(0, i) + (cursorVisible ? "│" : "");
+                i++;
+                setTimeout(typeWriter, Math.random() * 150 + 50); // random 50–200ms
+            } else {
+                typing = false;
+                setTimeout(typeWriter, 1000); // pause before erasing
+            }
+        } else {
+            if (i >= 0) {
+                document.title = text.substring(0, i) + (cursorVisible ? "│" : "");
+                i--;
+                setTimeout(typeWriter, Math.random() * 100 + 50); // erase speed
+            } else {
+                typing = true;
+                setTimeout(typeWriter, 500); // pause before retyping
+            }
         }
     }
 
+    // Cursor blink toggle
+    setInterval(() => {
+        cursorVisible = !cursorVisible;
+    }, 400);
+
     typeWriter();
 });
+
+
 // Custom theme apply
 applyCustom.addEventListener('click', () => {
     // Update stored values
@@ -3822,6 +3845,7 @@ searchInput.addEventListener('input', () => {
 </script>
 </body>
 </html>
+
 
 
 
