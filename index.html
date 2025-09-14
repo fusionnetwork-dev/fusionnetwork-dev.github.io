@@ -4048,16 +4048,24 @@ fogToggle.addEventListener('change', () => {
     localStorage.setItem('fogEnabled', fogToggle.checked);
 });
 
+const fogLayer = document.getElementById('fogLayer');
+const foggyBackground = document.getElementById('foggyBackground');
+const fogToggle = document.getElementById('fogToggle');
+
+if (!fogLayer || !foggyBackground || !fogToggle) {
+  console.error('Missing element(s):', { fogLayer, foggyBackground, fogToggle });
+  return;
+}
+
 const savedFog = localStorage.getItem('fogEnabled');
 if (savedFog !== null) {
-    fogToggle.checked = JSON.parse(savedFog);
-    const display = fogToggle.checked ? 'block' : 'none';
-    foggyBackground.style.display = display;
-    fogLayer.style.display = display;
+  fogToggle.checked = JSON.parse(savedFog);
+  const display = fogToggle.checked ? 'block' : 'none';
+  foggyBackground.style.display = display;
+  fogLayer.style.display = display;
 } else {
-    // Default to enabled
-    foggyBackground.style.display = 'block';
-    fogLayer.style.display = 'block';
+  foggyBackground.style.display = 'block';
+  fogLayer.style.display = 'block';
 }
 
 lowGfxToggle.addEventListener('change', () => {
@@ -4164,5 +4172,6 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
