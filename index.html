@@ -387,11 +387,15 @@ body.gachiakuta {
         #FF0000 75%, 
         #000000 85%, 
         #2F4F4F 100%);
-    --smoke-color: rgba(47, 79, 79, 0.9);
-    --smoke-center: rgba(255, 0, 0, 0.95);
+     --smoke-color: rgba(139, 69, 19, 0.8); /* Brownish trash tint */
+    --smoke-center: rgba(255, 0, 0, 0.3); /* Red anima glow */
     --metallic-accent: linear-gradient(45deg, #2F4F4F, #FF0000, #000000);
     --chrome-highlight: rgba(255, 255, 255, 0.6);
     --shadow-depth: rgba(0, 0, 0, 0.5);
+    background-image: 
+        linear-gradient(135deg, #2F4F4F 0%, #FF0000 15%, #000000 25%, #2F4F4F 35%, #FF0000 45%, #000000 55%, #2F4F4F 65%, #FF0000 75%, #000000 85%, #2F4F4F 100%),
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,0,0,0.1) 2px, rgba(255,0,0,0.1) 4px); /* Graffiti lines */
+    background-blend-mode: overlay;
 }
 
 /* Additional metallic utility classes */
@@ -919,7 +923,24 @@ body.gachiakuta {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
+.gachi-power-badge, .theme-button[data-theme="gachiakuta"]:hover, .link-button:hover {
+    animation: animaPulse 1.5s infinite;
+    box-shadow: 
+        0 0 10px rgba(255, 0, 0, 0.5), 
+        inset 0 0 10px rgba(255, 69, 0, 0.3); /* Red/orange glow */
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+}
 
+@keyframes animaPulse {
+    0%, 100% { 
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); 
+        transform: scale(1); 
+    }
+    50% { 
+        box-shadow: 0 0 20px rgba(255, 0, 0, 1), 0 0 30px rgba(255, 69, 0, 0.7); 
+        transform: scale(1.05); 
+    }
+}
         .theme-button.active {
             background: linear-gradient(90deg, #00ff00, #000000);
             transform: scale(1.05);
@@ -2427,6 +2448,50 @@ animation: counterSpin 1.2s ease-out;
             50% { transform: scale(1.5); opacity: 0.4; }
             100% { transform: scale(0); opacity: 0; }
         }
+.profile-card.gachi-freakout {
+    perspective: 500px; /* Closer for distortion */
+    transition: none;
+}
+
+.profile-card.gachi-freakout:hover {
+    filter: perspective(300px) rotateX(10deg) rotateY(10deg); /* Fisheye-like warp */
+    transform: scale(1.1) !important;
+    animation: freakoutShake 0.5s ease-in-out;
+}
+
+@keyframes freakoutShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+        .gachi-trash-particle {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: 
+        radial-gradient(circle, #8B4513 0%, #654321 50%, #2F4F4F 100%), /* Trash texture */
+        url('https://www.pngmart.com/files/16/Trash-Bin-PNG-Photos.png') no-repeat center/cover; /* Optional: SVG trash icon; replace with real URL if available */
+    opacity: 0.6;
+    animation: trashFall 5s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Anima glow */
+}
+
+@keyframes trashFall {
+    0% { 
+        transform: translateY(-100vh) rotate(0deg) scale(0.5); 
+        opacity: 0.6; 
+    }
+    50% { 
+        transform: translateY(50vh) rotate(180deg) scale(1); 
+        opacity: 0.8; 
+    }
+    100% { 
+        transform: translateY(100vh) rotate(360deg) scale(0.5); 
+        opacity: 0; 
+    }
+}
     </style>
 </head>
 <body class="welcome-active">
@@ -3239,7 +3304,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setInterval(() => cursorVisible = !cursorVisible, 400);
-
+    setTimeout(initGachiakutaEffects, 1000);
     typeWriter();
 });
 
@@ -3331,7 +3396,19 @@ document.addEventListener('click', (e) => {
 });
 
 let audioContext, analyser, dataArray;
-
+        
+function spawnAnimaBurst(x, y) {
+        for (let i = 0; i < 8; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'enhanced-particle';
+            particle.style.left = `${x + (Math.random() - 0.5) * 100}px`;
+            particle.style.top = `${y + (Math.random() - 0.5) * 100}px`;
+            particle.style.background = 'radial-gradient(circle, red, orange)'; // Anima colors
+            particle.style.animationDuration = '1.5s';
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 1500);
+        }
+    }
 function setupAudioVisualization() {
     if (!window.AudioContext && !window.webkitAudioContext || body.classList.contains('low-gfx')) {
         console.warn('Audio visualization disabled');
@@ -3387,6 +3464,8 @@ function setupAudioVisualization() {
             }
             bass /= (10 * 255);
             bass = Math.pow(bass, 2);
+            
+            if (bass > 0.5) { spawnAnimaBurst(e.clientX, e.clientY); }
             
             const bounceElements = document.querySelectorAll('.bounce-beat');
             bounceElements.forEach(el => {
@@ -3541,6 +3620,10 @@ closeGame.addEventListener('click', () => {
 });
 
 profileImage.addEventListener('click', () => {
+    if (body.classList.contains('gachiakuta')) {
+            profileCard.classList.add('gachi-freakout');
+            setTimeout(() => profileCard.classList.remove('gachi-freakout'), 1000);
+        }
     profileClicks++;
     if (profileClicks >= 5) {
         startMiniGame();
@@ -4036,16 +4119,42 @@ displayNotes();
                 setTimeout(() => particle.remove(), 1000);
             }
         });
+        function initGachiakutaEffects() {
+    // Enhanced Trash Particles (spawn more during music playback)
+    function spawnTrash() {
+        if (body.classList.contains('gachiakuta') && isPlaying) { // Only in Gachiakuta theme during music
+            for (let i = 0; i < 3; i++) { // Spawn 3 per interval
+                setTimeout(() => createTrashParticle(), i * 500);
+            }
+        }
+    }
+    setInterval(spawnTrash, 2000); // Every 2 seconds
 
+    // Function to create trash particle (enhanced version)
+    function createTrashParticle() {
+        const particle = document.createElement('div');
+        particle.className = 'gachi-trash-particle';
+        particle.style.left = `${Math.random() * 100}vw`;
+        particle.style.top = `${Math.random() * 100}vh`;
+        particle.style.animationDuration = `${3 + Math.random() * 4}s`; // Random speed
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 7000);
+    }
         // Make some badges Gachiakuta-powered
         document.querySelectorAll('.badge').forEach((badge, index) => {
             if (index % 2 === 0) {
                 badge.classList.add('gachi-power-badge');
             }
         });
+document.addEventListener('mousemove', (e) => {
+        if (body.classList.contains('gachiakuta') && Math.random() < 0.1) { // 10% chance
+            spawnAnimaBurst(e.clientX, e.clientY);
+        }
+    });
     </script>
 </body>
 </html>
+
 
 
 
