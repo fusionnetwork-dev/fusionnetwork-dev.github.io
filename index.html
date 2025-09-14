@@ -148,7 +148,7 @@ body.lavender {
     --smoke-center: rgba(107, 114, 142, 0.15);
 }
 
-.swaqfirstpersonal {
+body.swaqfirstpersonal {
     --primary-gradient: linear-gradient(135deg, 
         #1a3c34 0%, 
         #ff69b4 15%, 
@@ -316,6 +316,82 @@ body.swaqninthpersonal {
     --metallic-accent: linear-gradient(45deg, #008b8b, #a9a9a9, #00ffff);
     --chrome-highlight: rgba(255, 255, 255, 0.6);
     --shadow-depth: rgba(0, 0, 0, 0.35);
+}
+
+body.redmetallic1 {
+    --primary-gradient: linear-gradient(135deg, 
+        #8B0000 0%, 
+        #C0C0C0 15%, 
+        #FF0000 25%, 
+        #8B0000 35%, 
+        #C0C0C0 45%, 
+        #FF0000 55%, 
+        #8B0000 65%, 
+        #C0C0C0 75%, 
+        #FF0000 85%, 
+        #8B0000 100%);
+    --smoke-color: rgba(255, 0, 0, 0.9);
+    --smoke-center: rgba(192, 192, 192, 0.95);
+    --metallic-accent: linear-gradient(45deg, #8B0000, #C0C0C0, #FF0000);
+    --chrome-highlight: rgba(255, 255, 255, 0.7);
+    --shadow-depth: rgba(0, 0, 0, 0.45);
+}
+
+body.redmetallic2 {
+    --primary-gradient: linear-gradient(135deg, 
+        #B22222 0%, 
+        #FFD700 15%, 
+        #DC143C 25%, 
+        #B22222 35%, 
+        #FFD700 45%, 
+        #DC143C 55%, 
+        #B22222 65%, 
+        #FFD700 75%, 
+        #DC143C 85%, 
+        #B22222 100%);
+    --smoke-color: rgba(220, 20, 60, 0.9);
+    --smoke-center: rgba(255, 215, 0, 0.95);
+    --metallic-accent: linear-gradient(45deg, #B22222, #FFD700, #DC143C);
+    --chrome-highlight: rgba(255, 255, 255, 0.7);
+    --shadow-depth: rgba(0, 0, 0, 0.45);
+}
+
+body.redmetallic3 {
+    --primary-gradient: linear-gradient(135deg, 
+        #FF4500 0%, 
+        #A52A2A 15%, 
+        #FF6347 25%, 
+        #FF4500 35%, 
+        #A52A2A 45%, 
+        #FF6347 55%, 
+        #FF4500 65%, 
+        #A52A2A 75%, 
+        #FF6347 85%, 
+        #FF4500 100%);
+    --smoke-color: rgba(255, 99, 71, 0.9);
+    --smoke-center: rgba(165, 42, 42, 0.95);
+    --metallic-accent: linear-gradient(45deg, #FF4500, #A52A2A, #FF6347);
+    --chrome-highlight: rgba(255, 255, 255, 0.7);
+    --shadow-depth: rgba(0, 0, 0, 0.45);
+}
+
+body.gachiakuta {
+    --primary-gradient: linear-gradient(135deg, 
+        #2F4F4F 0%, 
+        #FF0000 15%, 
+        #000000 25%, 
+        #2F4F4F 35%, 
+        #FF0000 45%, 
+        #000000 55%, 
+        #2F4F4F 65%, 
+        #FF0000 75%, 
+        #000000 85%, 
+        #2F4F4F 100%);
+    --smoke-color: rgba(47, 79, 79, 0.9);
+    --smoke-center: rgba(255, 0, 0, 0.95);
+    --metallic-accent: linear-gradient(45deg, #2F4F4F, #FF0000, #000000);
+    --chrome-highlight: rgba(255, 255, 255, 0.6);
+    --shadow-depth: rgba(0, 0, 0, 0.5);
 }
 
 /* Additional metallic utility classes */
@@ -762,6 +838,78 @@ body.swaqninthpersonal {
         #00ffff 85%, 
         #008b8b 100%);
     border: 1px solid rgba(0, 0, 0, 0.35);
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.theme-button[data-theme="redmetallic1"] {
+    background: linear-gradient(135deg, 
+        #8B0000 0%, 
+        #C0C0C0 15%, 
+        #FF0000 25%, 
+        #8B0000 35%, 
+        #C0C0C0 45%, 
+        #FF0000 55%, 
+        #8B0000 65%, 
+        #C0C0C0 75%, 
+        #FF0000 85%, 
+        #8B0000 100%);
+    border: 1px solid rgba(0, 0, 0, 0.45);
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.theme-button[data-theme="redmetallic2"] {
+    background: linear-gradient(135deg, 
+        #B22222 0%, 
+        #FFD700 15%, 
+        #DC143C 25%, 
+        #B22222 35%, 
+        #FFD700 45%, 
+        #DC143C 55%, 
+        #B22222 65%, 
+        #FFD700 75%, 
+        #DC143C 85%, 
+        #B22222 100%);
+    border: 1px solid rgba(0, 0, 0, 0.45);
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.theme-button[data-theme="redmetallic3"] {
+    background: linear-gradient(135deg, 
+        #FF4500 0%, 
+        #A52A2A 15%, 
+        #FF6347 25%, 
+        #FF4500 35%, 
+        #A52A2A 45%, 
+        #FF6347 55%, 
+        #FF4500 65%, 
+        #A52A2A 75%, 
+        #FF6347 85%, 
+        #FF4500 100%);
+    border: 1px solid rgba(0, 0, 0, 0.45);
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.theme-button[data-theme="gachiakuta"] {
+    background: linear-gradient(135deg, 
+        #2F4F4F 0%, 
+        #FF0000 15%, 
+        #000000 25%, 
+        #2F4F4F 35%, 
+        #FF0000 45%, 
+        #000000 55%, 
+        #2F4F4F 65%, 
+        #FF0000 75%, 
+        #000000 85%, 
+        #2F4F4F 100%);
+    border: 1px solid rgba(0, 0, 0, 0.5);
     box-shadow: 
         inset 0 1px 0 rgba(255, 255, 255, 0.6),
         0 2px 4px rgba(0, 0, 0, 0.3);
@@ -2230,6 +2378,55 @@ animation: counterSpin 1.2s ease-out;
                 font-size: 11px;
             }
         }
+
+        /* Gachiakuta-inspired elements */
+        .gachi-trash-particle {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: url('https://example.com/gachiakuta-trash.gif') no-repeat center/cover; /* Replace with actual Gachiakuta trash image/gif */
+            opacity: 0.6;
+            animation: trashFall 5s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes trashFall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 0.6; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .gachi-power-badge {
+            background: linear-gradient(45deg, #FF0000, #000000);
+            color: white;
+            box-shadow: 0 0 10px red;
+            animation: powerPulse 2s infinite;
+        }
+
+        @keyframes powerPulse {
+            0% { box-shadow: 0 0 10px red; }
+            50% { box-shadow: 0 0 20px red; }
+            100% { box-shadow: 0 0 10px red; }
+        }
+
+        /* Enhanced particle effects for cooler look */
+        .enhanced-particle {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            background: var(--smoke-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1001;
+            opacity: 0.7;
+            animation: particleBurst 1s ease-out forwards;
+        }
+
+        @keyframes particleBurst {
+            0% { transform: scale(0); opacity: 0.7; }
+            50% { transform: scale(1.5); opacity: 0.4; }
+            100% { transform: scale(0); opacity: 0; }
+        }
     </style>
 </head>
 <body class="welcome-active">
@@ -2297,6 +2494,10 @@ animation: counterSpin 1.2s ease-out;
             <button class="theme-button" data-theme="swaqseventhpersonal">yak's 7th preset</button>
             <button class="theme-button" data-theme="swaqeighthpersonal">yak's 8th preset</button>
             <button class="theme-button" data-theme="swaqninthpersonal">yak's 9th preset</button>
+            <button class="theme-button" data-theme="redmetallic1">Red Metallic 1</button>
+            <button class="theme-button" data-theme="redmetallic2">Red Metallic 2</button>
+            <button class="theme-button" data-theme="redmetallic3">Red Metallic 3</button>
+            <button class="theme-button" data-theme="gachiakuta">Gachiakuta</button>
             <button id="customThemeBtn" class="theme-button">Custom Theme</button>
             <div id="themePreview" class="theme-preview"></div>
         </div>
@@ -3811,10 +4012,37 @@ const sortable = new Sortable(sortableSongs, {
 });
 
 displayNotes();
+
+        // Add Gachiakuta trash particles
+        function createTrashParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'gachi-trash-particle';
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 5000);
+        }
+
+        setInterval(createTrashParticle, 1000);
+
+        // Add enhanced particle on click
+        document.addEventListener('click', (e) => {
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'enhanced-particle';
+                particle.style.left = `${e.clientX + Math.random() * 20 - 10}px`;
+                particle.style.top = `${e.clientY + Math.random() * 20 - 10}px`;
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        });
+
+        // Make some badges Gachiakuta-powered
+        document.querySelectorAll('.badge').forEach((badge, index) => {
+            if (index % 2 === 0) {
+                badge.classList.add('gachi-power-badge');
+            }
+        });
     </script>
 </body>
 </html>
-
-
-
-
