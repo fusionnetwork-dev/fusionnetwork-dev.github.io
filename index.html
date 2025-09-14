@@ -2790,7 +2790,7 @@ animation: counterSpin 1.2s ease-out;
        let hasInteracted = false;
 let wordEffectActive = false;
 let isPlaying = false;
-let currentSongIndex = 7;
+let currentSongIndex = 8;
 let retryAttempts = 0;
 const maxRetries = 3;
 let clickCount = 0;
@@ -2799,7 +2799,6 @@ let dislikeCount = 0;
 let notes = JSON.parse(localStorage.getItem('notes') || '[]');
 
 let songs = [
-    { title: "kills", src: "assets/kills.mp3" },
     { title: "Roster", src: "assets/roster.mp3" },
     { title: "Catch me if u can", src: "assets/cmiuc.mp3" },
     { title: "Ouija", src: "assets/ouija.mp3" },
@@ -2807,7 +2806,8 @@ let songs = [
     { title: "PLAY UP", src: "assets/playup.mp3" },
     { title: "SWEATHER WEATHER", src: "assets/sweater.mp3" },
     { title: "GREY AREA", src: "assets/greyarea.mp3" }, 
-    { title: "BLIGHT BIRD", src: "assets/blight.mp3" }
+    { title: "BLIGHT BIRD", src: "assets/blight.mp3" },
+    { title: "Still the Same! 2", src: "assets/sts.mp3" }
 ];
 
         const lyrics = {
@@ -4120,6 +4120,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
