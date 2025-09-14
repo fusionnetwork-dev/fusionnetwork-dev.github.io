@@ -4058,11 +4058,7 @@ if (savedFog !== null) {
   const display = fogToggle.checked ? 'block' : 'none';
   foggyBackground.style.display = display;
   fogLayer.style.display = display;
-} else {
-  foggyBackground.style.display = 'block';
-  fogLayer.style.display = 'block';
 }
-
 lowGfxToggle.addEventListener('change', () => {
     body.classList.toggle('low-gfx', lowGfxToggle.checked);
     localStorage.setItem('lowGfx', lowGfxToggle.checked);
@@ -4167,6 +4163,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
