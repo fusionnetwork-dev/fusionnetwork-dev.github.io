@@ -387,18 +387,18 @@ body.gachiakuta {
         #FF0000 75%, 
         #000000 85%, 
         #2F4F4F 100%);
-     --smoke-color: rgba(139, 69, 19, 0.8); /* Brownish trash tint */
-    --smoke-center: rgba(255, 0, 0, 0.3); /* Red anima glow */
+     --smoke-color: rgba(139, 69, 19, 0.8); 
+    --smoke-center: rgba(255, 0, 0, 0.3); 
     --metallic-accent: linear-gradient(45deg, #2F4F4F, #FF0000, #000000);
     --chrome-highlight: rgba(255, 255, 255, 0.6);
     --shadow-depth: rgba(0, 0, 0, 0.5);
     background-image: 
         linear-gradient(135deg, #2F4F4F 0%, #FF0000 15%, #000000 25%, #2F4F4F 35%, #FF0000 45%, #000000 55%, #2F4F4F 65%, #FF0000 75%, #000000 85%, #2F4F4F 100%),
-        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,0,0,0.1) 2px, rgba(255,0,0,0.1) 4px); /* Graffiti lines */
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,0,0,0.1) 2px, rgba(255,0,0,0.1) 4px); 
     background-blend-mode: overlay;
 }
 
-/* Additional metallic utility classes */
+
 .metallic-surface {
     background: var(--primary-gradient);
     box-shadow: 
@@ -585,7 +585,7 @@ body.gachiakuta {
  .theme-switcher {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    padding: 32px; /* Increased padding */
+    padding: 32px; 
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     transition: all 0.3s ease;
@@ -927,7 +927,7 @@ body.gachiakuta {
     animation: animaPulse 1.5s infinite;
     box-shadow: 
         0 0 10px rgba(255, 0, 0, 0.5), 
-        inset 0 0 10px rgba(255, 69, 0, 0.3); /* Red/orange glow */
+        inset 0 0 10px rgba(255, 69, 0, 0.3); 
     text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
 }
 
@@ -2122,8 +2122,8 @@ animation: counterSpin 1.2s ease-out;
     gap: 15px;
     width: 80%;
     max-width: 400px;
-    max-height: 80vh; /* Limit height to 80% of viewport height */
-    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 80vh; 
+    overflow-y: auto; 
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     color: white;
 }
@@ -2400,11 +2400,11 @@ animation: counterSpin 1.2s ease-out;
             }
         }
 
-        /* Gachiakuta-inspired elements */
+        
 .gachi-trash-particle {
     position: fixed;
-    top: -20px; /* start just above the screen */
-    left: 50%; /* or randomized with JS */
+    top: -20px; 
+    left: 50%; 
     width: 20px;
     height: 20px;
     background: url('https://www.pngmart.com/files/16/Trash-Bin-PNG-Photos.png') no-repeat center/cover;
@@ -2439,7 +2439,7 @@ animation: counterSpin 1.2s ease-out;
             100% { box-shadow: 0 0 10px red; }
         }
 
-        /* Enhanced particle effects for cooler look */
+        
         .enhanced-particle {
             position: fixed;
             width: 5px;
@@ -2458,12 +2458,12 @@ animation: counterSpin 1.2s ease-out;
             100% { transform: scale(0); opacity: 0; }
         }
 .profile-card.gachi-freakout {
-    perspective: 500px; /* Closer for distortion */
+    perspective: 500px; 
     transition: none;
 }
 
 .profile-card.gachi-freakout:hover {
-    filter: perspective(300px) rotateX(10deg) rotateY(10deg); /* Fisheye-like warp */
+    filter: perspective(300px) rotateX(10deg) rotateY(10deg); 
     transform: scale(1.1) !important;
     animation: freakoutShake 0.5s ease-in-out;
 }
@@ -4120,6 +4120,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
