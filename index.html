@@ -4,7 +4,7 @@
     <meta property="og:title" content="@1yak.">
     <meta property="og:description" content="da best">
     <meta property="og:url" content="https://swaqq.xyz">
-    <meta property="og:image" content=https://cdn.discordapp.com/avatars/1084576683262230548/5909ae83fdb364999f030e791ee56ca0.webp?size=1024">
+    <meta property="og:image" content=https://cdn.discordapp.com/avatars/1084576683262230548/37ab36a86aecee88a0b5808aa7e94efd.webp?size=1024">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#808080">
@@ -578,19 +578,21 @@ body.gachiakuta {
             100% { opacity: 0; transform: scale(2); }
         }
 
-        .theme-switcher {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 8px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            overflow-y: auto;
-            max-height: 80vh;
-        }
+     .theme-switcher {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    max-height: 80vh;
+    width: 100px; /* Adjust to desired width */
+    height: 200px; /* Adjust to desired height */
+}
 
         .theme-switcher:hover {
             transform: scale(1.05);
@@ -1353,7 +1355,7 @@ overflow: visible !important;
 width: 80px;
 height: 80px;
 border-radius: 50%;
-background: url('https://cdn.discordapp.com/avatars/1084576683262230548/5909ae83fdb364999f030e791ee56ca0.webp?size=1024') no-repeat center/cover;
+background: url('https://cdn.discordapp.com/avatars/1084576683262230548/37ab36a86aecee88a0b5808aa7e94efd.webp?size=1024') no-repeat center/cover;
 margin: 0 auto 8px;
 box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 12px 6px rgba(128, 128, 128, 0.5);
 position: relative;
@@ -1370,7 +1372,7 @@ top: -10px;
 left: -10px;
 width: calc(100% + 20px);
 height: calc(100% + 20px);
-background: url('https://r2.haunt.gg/decorations/bloodthirsty_green.png') no-repeat center/contain;
+background: url('https://r2.haunt.gg/decorations/bloodthirsty.png') no-repeat center/contain;
 opacity: 0.8;
 z-index: 4;
 pointer-events: none;
@@ -2459,7 +2461,7 @@ animation: counterSpin 1.2s ease-out;
 
     <div class="word-fx" id="wordFx"></div>
 
-    <div class="version-text">made by 1yak - v1.5</div>
+    <div class="version-text">made by yak ~ v2</div>
 
     <div class="volume-control">
         <i class="fas fa-volume-up"></i>
@@ -2469,7 +2471,7 @@ animation: counterSpin 1.2s ease-out;
     <div id="settingsOverlay" class="settings-overlay"></div>
     <div id="settingsMenu" class="settings-menu">
         <h2>Settings</h2>
-        <div class="settings-item">Made by 1yak - v1.5</div>
+        <div class="settings-item">made by yak ~ v2</div>
         <h3>Themes</h3>
         <div class="theme-switcher">
             <button class="theme-button" data-theme="dark">dark</button>
@@ -3274,7 +3276,7 @@ themeButtons.forEach(button => {
     });
 });
 
-const savedTheme = localStorage.getItem('theme') || 'swaqfirstpersonal';
+const savedTheme = localStorage.getItem('theme') || 'redmetallic1';
 document.body.className = savedTheme;
 document.querySelector(`.theme-button[data-theme="${savedTheme}"]`)?.classList.add('active');
 
@@ -4046,3 +4048,4 @@ displayNotes();
     </script>
 </body>
 </html>
+
