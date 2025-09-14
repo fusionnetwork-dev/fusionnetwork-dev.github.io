@@ -4048,14 +4048,9 @@ fogToggle.addEventListener('change', () => {
     localStorage.setItem('fogEnabled', fogToggle.checked);
 });
 
-const fogLayer = document.getElementById('fogLayer');
-const foggyBackground = document.getElementById('foggyBackground');
-const fogToggle = document.getElementById('fogToggle');
 
-if (!fogLayer || !foggyBackground || !fogToggle) {
-  console.error('Missing element(s):', { fogLayer, foggyBackground, fogToggle });
-  return;
-}
+
+
 
 const savedFog = localStorage.getItem('fogEnabled');
 if (savedFog !== null) {
@@ -4172,6 +4167,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
