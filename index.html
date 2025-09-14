@@ -2401,33 +2401,30 @@ animation: counterSpin 1.2s ease-out;
         }
 
         /* Gachiakuta-inspired elements */
-        .gachi-trash-particle {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            background: 
-                url('https://www.pngmart.com/files/16/Trash-Bin-PNG-Photos.png') no-repeat center/cover; /* Optional: SVG trash icon; replace with real URL if available */
-            opacity: 0.6;
-            animation: trashFall 5s linear infinite;
-            pointer-events: none;
-            z-index: -1;
-            
-        }
+.gachi-trash-particle {
+    position: fixed;
+    top: -20px; /* start just above the screen */
+    left: 50%; /* or randomized with JS */
+    width: 20px;
+    height: 20px;
+    background: url('https://www.pngmart.com/files/16/Trash-Bin-PNG-Photos.png') no-repeat center/cover;
+    opacity: 0.8;
+    animation: trashFall 5s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+}
 
-        @keyframes trashFall {
-            0% { 
-                transform: translateY(-100vh) rotate(0deg) scale(0.5); 
-                opacity: 0.6; 
-            }
-            50% { 
-                transform: translateY(50vh) rotate(180deg) scale(1); 
-                opacity: 0.8; 
-            }
-            100% { 
-                transform: translateY(100vh) rotate(360deg) scale(0.5); 
-                opacity: 0; 
-            }
-        }
+@keyframes trashFall {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) rotate(360deg) scale(1);
+        opacity: 0;
+    }
+}
+
 
         .gachi-power-badge {
             background: linear-gradient(45deg, #FF0000, #000000);
@@ -4123,6 +4120,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
