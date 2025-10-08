@@ -2791,7 +2791,7 @@ animation: counterSpin 1.2s ease-out;
        let hasInteracted = false;
 let wordEffectActive = false;
 let isPlaying = false;
-let currentSongIndex = 11;
+let currentSongIndex = 12;
 let retryAttempts = 0;
 const maxRetries = 3;
 let clickCount = 0;
@@ -2811,7 +2811,8 @@ let songs = [
     { title: "Still the Same! 2", src: "assets/sts.mp3" },
     { title: "F&N", src: "assets/FN.mp3" },
     { title: "Slime Bidness", src: "assets/sb.mp3" },
-    { title: "Rich Forever", src: "assets/rf.mp3" }
+    { title: "Rich Forever", src: "assets/rf.mp3" },
+    { title: "Beat It", src: "assets/beatit.mp3" }
 ];
 
         const lyrics = {
@@ -3325,7 +3326,7 @@ themeButtons.forEach(button => {
     });
 });
 
-const savedTheme = localStorage.getItem('theme') || 'gachiakuta';
+const savedTheme = localStorage.getItem('theme') || 'swaqfifthpersonal';
 document.body.className = savedTheme;
 document.querySelector(`.theme-button[data-theme="${savedTheme}"]`)?.classList.add('active');
 
@@ -4066,14 +4067,17 @@ const sortable = new Sortable(sortableSongs, {
 displayNotes();
 
         // Add Gachiakuta trash particles
-        function createTrashParticle() {
-            const particle = document.createElement('div');
-            particle.className = 'gachi-trash-particle';
-            particle.style.left = `${Math.random() * 100}vw`;
-            particle.style.animationDelay = `${Math.random() * 5}s`;
-            document.body.appendChild(particle);
-            setTimeout(() => particle.remove(), 5000);
-        }
+       function createTrashParticle() {
+    if (data.theme === 'gachiakuta') {
+        const particle = document.createElement('div');
+        particle.className = 'gachi-trash-particle';
+        particle.style.left = `${Math.random() * 100}vw`;
+        particle.style.top = `${Math.random() * 100}vh`;
+        particle.style.animationDuration = `${3 + Math.random() * 4}s`; // Random speed
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 7000);
+    }
+}
 
         setInterval(createTrashParticle, 1000);
 
@@ -4100,21 +4104,17 @@ displayNotes();
     setInterval(spawnTrash, 2000); // Every 2 seconds
 
     // Function to create trash particle (enhanced version)
-    function createTrashParticle() {
-        const particle = document.createElement('div');
-        particle.className = 'gachi-trash-particle';
-        particle.style.left = `${Math.random() * 100}vw`;
-        particle.style.top = `${Math.random() * 100}vh`;
-        particle.style.animationDuration = `${3 + Math.random() * 4}s`; // Random speed
-        document.body.appendChild(particle);
-        setTimeout(() => particle.remove(), 7000);
-    }
+
+
         // Make some badges Gachiakuta-powered
-        document.querySelectorAll('.badge').forEach((badge, index) => {
-            if (index % 2 === 0) {
-                badge.classList.add('gachi-power-badge');
-            }
-        });
+        if (data.theme === 'gachiakuta') {
+    document.querySelectorAll('.badge').forEach((badge, index) => {
+        if (index % 2 === 0) {
+            badge.classList.add('gachi-power-badge');
+        }
+    });
+}
+
 document.addEventListener('mousemove', (e) => {
         if (body.classList.contains('gachiakuta') && Math.random() < 0.1) { // 10% chance
             spawnAnimaBurst(e.clientX, e.clientY);
@@ -4124,6 +4124,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
