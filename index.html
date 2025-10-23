@@ -2482,7 +2482,7 @@ animation: counterSpin 1.2s ease-out;
     </div>
 
     <div class="marquee-container">
-        <div class="marquee">yves exclusive</div>
+        <div class="marquee">yves     exclusive</div>
     </div>
 
     <video id="backgroundVideo" autoplay loop playsinline style="display: none;">
@@ -2726,10 +2726,9 @@ animation: counterSpin 1.2s ease-out;
         const body = document.body;
         const video = document.getElementById('backgroundVideo');
         const volumeSlider = document.getElementById('volumeSlider');
-        const audioPlayer = document.getElementById('audioPlayer');
+     
         const playPauseBtn = document.getElementById('playPauseBtn');
-        const rewindBtn = document.getElementById('rewindBtn');
-        const skipBtn = document.getElementById('skipBtn');
+      
         const progressBar = document.getElementById('progressBar');
         const progressFill = document.getElementById('progressFill');
         const currentTimeDisplay = document.getElementById('currentTime');
@@ -3350,7 +3349,7 @@ document.addEventListener('click', (e) => {
     document.body.appendChild(effect);
     setTimeout(() => effect.remove(), 1200);
 
-    if (wordEffectActive && audioPlayer.currentTime > 0) {
+    if (wordEffectActive.currentTime > 0) {
         const word = document.createElement('div');
         word.className = 'word-element';
         word.textContent = ['swag', 'hype', 'vibe', 'cool', 'epic'][Math.floor(Math.random() * 5)];
@@ -3773,17 +3772,6 @@ playPauseBtn.addEventListener('click', () => {
     }
 });
         
-if (rewindBtn) {
-    rewindBtn.addEventListener('click', () => {
-        audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 10);
-    });
-}
-
-if (skipBtn) {
-    skipBtn.addEventListener('click', () => {
-        audioPlayer.currentTime = Math.min(audioPlayer.duration, audioPlayer.currentTime + 10);
-    });
-}
 
 video.addEventListener('timeupdate', () => {
     const currentTime = video.currentTime;
@@ -3815,7 +3803,7 @@ volumeSlider.addEventListener('input', () => {
 
 const savedVolume = localStorage.getItem('volume') || 70;
 volumeSlider.value = savedVolume;
-audioPlayer.volume = savedVolume / 100;
+video.volume = savedVolume / 100;
 
 let achievements = JSON.parse(localStorage.getItem('achievements')) || [];
 function unlockAchievement(name) {
@@ -4083,6 +4071,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
