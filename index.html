@@ -3772,7 +3772,18 @@ playPauseBtn.addEventListener('click', () => {
         isPlaying = true;
     }
 });
+        
+if (rewindBtn) {
+    rewindBtn.addEventListener('click', () => {
+        audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 10);
+    });
+}
 
+if (skipBtn) {
+    skipBtn.addEventListener('click', () => {
+        audioPlayer.currentTime = Math.min(audioPlayer.duration, audioPlayer.currentTime + 10);
+    });
+}
 
 audioPlayer.addEventListener('timeupdate', () => {
     const currentTime = audioPlayer.currentTime;
@@ -4083,7 +4094,7 @@ displayNotes();
 
 
         // Make some badges Gachiakuta-powered
-        if (data.theme === 'gachiakuta') {
+        if (document.body.classList.contains('gachiakuta')) {
     document.querySelectorAll('.badge').forEach((badge, index) => {
         if (index % 2 === 0) {
             badge.classList.add('gachi-power-badge');
@@ -4100,6 +4111,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
