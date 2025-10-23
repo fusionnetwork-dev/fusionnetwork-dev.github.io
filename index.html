@@ -3785,34 +3785,6 @@ if (skipBtn) {
     });
 }
 
-audioPlayer.addEventListener('timeupdate', () => {
-    const currentTime = audioPlayer.currentTime;
-    const duration = audioPlayer.duration || 0;
-    const progressPercent = (currentTime / duration) * 100;
-    progressFill.style.width = `${progressPercent}%`;
-    currentTimeDisplay.textContent = formatTime(currentTime);
-    totalTimeDisplay.textContent = formatTime(duration);
-
-    const lines = lyricsDisplay.querySelectorAll('.lyric-line');
-    if (lines.length > 0) {
-        let currentIndex = 0;
-        for (let i = 0; i < lines.length; i++) {
-            if (currentTime >= parseFloat(lines[i].dataset.time)) {
-                currentIndex = i;
-            } else {
-                break;
-            }
-        }
-        lines.forEach((line, idx) => {
-            line.classList.toggle('current', idx === currentIndex);
-        });
-        const currentLine = lines[currentIndex];
-        if (currentLine) {
-            currentLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }
-});
-
 video.addEventListener('timeupdate', () => {
     const currentTime = video.currentTime;
     const duration = video.duration || 0;
@@ -4111,6 +4083,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
