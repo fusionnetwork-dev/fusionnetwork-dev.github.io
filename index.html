@@ -3305,7 +3305,7 @@ themeButtons.forEach(button => {
     });
 });
 
-const savedTheme = localStorage.getItem('theme') || 'swaqfifthpersonal';
+const savedTheme = localStorage.getItem('theme') || 'swaqfirstpersonal';
 document.body.className = savedTheme;
 document.querySelector(`.theme-button[data-theme="${savedTheme}"]`)?.classList.add('active');
 
@@ -4043,8 +4043,8 @@ const sortable = new Sortable(sortableSongs, {
 displayNotes();
 
         // Add Gachiakuta trash particles
-       function createTrashParticle() {
-    if (data.theme === 'gachiakuta') {
+            function createTrashParticle() {
+    if (document.body.classList.contains('gachiakuta')) {
         const particle = document.createElement('div');
         particle.className = 'gachi-trash-particle';
         particle.style.left = `${Math.random() * 100}vw`;
@@ -4100,6 +4100,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
