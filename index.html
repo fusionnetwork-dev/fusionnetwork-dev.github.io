@@ -2715,10 +2715,10 @@ animation: counterSpin 1.2s ease-out;
     <button id="settingsButton" class="settings-button"><i class="fas fa-cog"></i></button>
 
     <script>
-        // Detect mobile device
+ 
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-        // Initialize elements
+      
         const welcomeScreen = document.getElementById('welcomeScreen');
         const body = document.body;
         const video = document.getElementById('backgroundVideo');
@@ -3365,7 +3365,7 @@ function spawnAnimaBurst(x, y) {
             particle.className = 'enhanced-particle';
             particle.style.left = `${x + (Math.random() - 0.5) * 100}px`;
             particle.style.top = `${y + (Math.random() - 0.5) * 100}px`;
-            particle.style.background = 'radial-gradient(circle, red, orange)'; // Anima colors
+            particle.style.background = 'radial-gradient(circle, red, orange)';
             particle.style.animationDuration = '1.5s';
             document.body.appendChild(particle);
             setTimeout(() => particle.remove(), 1500);
@@ -3491,7 +3491,7 @@ function setupAudioVisualization() {
 }
 
 function updateVisualizerTheme() {
-    // Visualizer updates automatically
+ 
 }
 
 const miniGameContainer = document.getElementById('miniGameContainer');
@@ -3954,10 +3954,6 @@ fogToggle.addEventListener('change', () => {
     localStorage.setItem('fogEnabled', fogToggle.checked);
 });
 
-
-
-
-
 const savedFog = localStorage.getItem('fogEnabled');
 if (savedFog !== null) {
   fogToggle.checked = JSON.parse(savedFog);
@@ -3965,16 +3961,16 @@ if (savedFog !== null) {
   foggyBackground.style.display = display;
   fogLayer.style.display = display;
 } else {
-  // Default: fog disabled
+
   fogToggle.checked = true;
-  foggyBackground.style.display = 'none';
-  fogLayer.style.display = 'none';
+  foggyBackground.style.display = 'block';
+  fogLayer.style.display = 'block';
 }
 lowGfxToggle.addEventListener('change', () => {
     body.classList.toggle('low-gfx', lowGfxToggle.checked);
     localStorage.setItem('lowGfx', lowGfxToggle.checked);
     if (lowGfxToggle.checked) {
-        // Additional optimizations if needed
+   
     } else {
         setupAudioVisualization();
     }
@@ -4015,14 +4011,14 @@ const sortable = new Sortable(sortableSongs, {
 
 displayNotes();
 
-        // Add Gachiakuta trash particles
+   
             function createTrashParticle() {
     if (document.body.classList.contains('gachiakuta')) {
         const particle = document.createElement('div');
         particle.className = 'gachi-trash-particle';
         particle.style.left = `${Math.random() * 100}vw`;
         particle.style.top = `${Math.random() * 100}vh`;
-        particle.style.animationDuration = `${3 + Math.random() * 4}s`; // Random speed
+        particle.style.animationDuration = `${3 + Math.random() * 4}s`; 
         document.body.appendChild(particle);
         setTimeout(() => particle.remove(), 7000);
     }
@@ -4030,7 +4026,7 @@ displayNotes();
 
         setInterval(createTrashParticle, 1000);
 
-        // Add enhanced particle on click
+ 
         document.addEventListener('click', (e) => {
             for (let i = 0; i < 5; i++) {
                 const particle = document.createElement('div');
@@ -4042,20 +4038,20 @@ displayNotes();
             }
         });
         function initGachiakutaEffects() {
-    // Enhanced Trash Particles (spawn more during music playback)
+    
     function spawnTrash() {
-        if (body.classList.contains('gachiakuta') && isPlaying) { // Only in Gachiakuta theme during music
-            for (let i = 0; i < 3; i++) { // Spawn 3 per interval
+        if (body.classList.contains('gachiakuta') && isPlaying) { 
+            for (let i = 0; i < 3; i++) { 
                 setTimeout(() => createTrashParticle(), i * 500);
             }
         }
     }
-    setInterval(spawnTrash, 2000); // Every 2 seconds
+    setInterval(spawnTrash, 2000);
 
-    // Function to create trash particle (enhanced version)
+  
 
 
-        // Make some badges Gachiakuta-powered
+      
         if (document.body.classList.contains('gachiakuta')) {
     document.querySelectorAll('.badge').forEach((badge, index) => {
         if (index % 2 === 0) {
@@ -4065,7 +4061,7 @@ displayNotes();
 }
 
 document.addEventListener('mousemove', (e) => {
-        if (body.classList.contains('gachiakuta') && Math.random() < 0.1) { // 10% chance
+        if (body.classList.contains('gachiakuta') && Math.random() < 0.1) {
             spawnAnimaBurst(e.clientX, e.clientY);
         }
     });
@@ -4073,6 +4069,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
