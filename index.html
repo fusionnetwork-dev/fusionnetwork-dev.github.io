@@ -3238,32 +3238,38 @@ applyCustom.addEventListener('click', () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const text = "@hatedmargi";
+    const text = "@districtmargi";
     let i = 0;
     let typing = true;
-    let cursorVisible = true;
+    let cursorVisible = false;
 
-    function typeWriter() {
-        if (typing) {
-            if (i <= text.length) {
-                document.title = text.substring(0, i) + (cursorVisible ? "│" : "");
-                i++;
-                setTimeout(typeWriter, Math.random() * 150 + 50);
-            } else {
-                typing = false;
-                setTimeout(typeWriter, 1000);
-            }
+    const typeSpeed = 100;   // typing speed (ms)
+const deleteSpeed = 80;  // deleting speed (ms)
+const pauseEnd = 1000;   // pause after full text
+const pauseStart = 500;  // pause before typing again
+
+function typeWriter() {
+    if (typing) {
+        if (i <= text.length) {
+            document.title = text.substring(0, i) + (cursorVisible ? "│" : "");
+            i++;
+            setTimeout(typeWriter, typeSpeed);
         } else {
-            if (i >= 0) {
-                document.title = text.substring(0, i) + (cursorVisible ? "│" : "");
-                i--;
-                setTimeout(typeWriter, Math.random() * 100 + 50);
-            } else {
-                typing = true;
-                setTimeout(typeWriter, 500);
-            }
+            typing = false;
+            setTimeout(typeWriter, pauseEnd);
+        }
+    } else {
+        if (i >= 0) {
+            document.title = text.substring(0, i) + (cursorVisible ? "│" : "");
+            i--;
+            setTimeout(typeWriter, deleteSpeed);
+        } else {
+            typing = true;
+            setTimeout(typeWriter, pauseStart);
         }
     }
+}
+
 
     setInterval(() => cursorVisible = !cursorVisible, 400);
     setTimeout(initGachiakutaEffects, 1000);
@@ -4069,6 +4075,7 @@ document.addEventListener('mousemove', (e) => {
     </script>
 </body>
 </html>
+
 
 
 
