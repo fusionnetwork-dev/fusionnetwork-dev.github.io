@@ -6,16 +6,14 @@
     <title>@districtmargi</title>
     <link rel="icon" type="image/png" href="assets/icon.png">
     
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://districtmargi.com/">
+    <meta property="og:url" content="https://swaqq.xyz/">
     <meta property="og:title" content="@districtmargi">
     <meta property="og:description" content="i got swag">
     <meta property="og:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/3c6bb309bf6e6ab6cca8b18cea5a156e.webp?size=1024">
 
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://districtmargi.com/">
+    <meta property="twitter:url" content="https://swaqq.xyz/">
     <meta property="twitter:title" content="@districtmargi">
     <meta property="twitter:description" content="i got swag">
     <meta property="twitter:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/3c6bb309bf6e6ab6cca8b18cea5a156e.webp?size=1024">
@@ -63,9 +61,54 @@
             width: auto;
             height: auto;
             transform: translate(-50%, -50%);
+            z-index: -2;
+            opacity: 0.6;
+            filter: brightness(0.8) contrast(1.1);
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
-            opacity: 0.4;
-            filter: brightness(0.7);
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            animation: scanline 8s linear infinite;
+        }
+
+        .scanlines::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0) 50%,
+                rgba(0, 0, 0, 0.05) 51%,
+                rgba(0, 0, 0, 0.05) 100%
+            );
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
         }
 
         .welcome-screen {
@@ -501,12 +544,14 @@
 </head>
 <body>
     <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-text">the revamp</div>
+        <div class="welcome-text">revamp</div>
     </div>
 
-    <video autoplay loop muted playsinline>
+    <video id="bgVideo" autoplay loop playsinline>
         <source src="assets/relevant.mp4" type="video/mp4">
     </video>
+
+    <div class="scanlines"></div>
 
     <div class="container">
         <div class="card" id="card">
@@ -560,22 +605,22 @@
         const bioElement = document.getElementById('bio');
         const viewCountElement = document.getElementById('viewCount');
         const welcomeScreen = document.getElementById('welcomeScreen');
+        const bgVideo = document.getElementById('bgVideo');
 
-      
+        bgVideo.volume = 0.3;
+
         function hideWelcome() {
             welcomeScreen.classList.add('fade-out');
+            bgVideo.muted = false;
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
             }, 800);
         }
 
-       
         setTimeout(hideWelcome, 3000);
 
-      
         welcomeScreen.addEventListener('click', hideWelcome);
 
-      
         async function generateHWID() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -602,7 +647,6 @@
             return 'hwid_' + Math.abs(hash).toString(36);
         }
 
-     
         async function initViewCounter() {
             try {
                 const hwid = await generateHWID();
@@ -617,7 +661,6 @@
                     totalViews = 0;
                 }
                 
-              
                 let hwidData = { count: 0, lastReset: Date.now() };
                 try {
                     const result = await window.storage.get(HWID_KEY, false);
@@ -628,24 +671,20 @@
                     hwidData = { count: 0, lastReset: Date.now() };
                 }
                 
-             
                 const twelveHours = 12 * 60 * 60 * 1000;
                 if (Date.now() - hwidData.lastReset > twelveHours) {
                     hwidData.count = 0;
                     hwidData.lastReset = Date.now();
                 }
                 
-              
                 if (hwidData.count < 3) {
                     totalViews++;
                     hwidData.count++;
                     
-                  
                     await window.storage.set(VIEWS_KEY, totalViews.toString(), true);
                     await window.storage.set(HWID_KEY, JSON.stringify(hwidData), false);
                 }
                 
-              
                 animateCounter(totalViews);
                 
             } catch (error) {
@@ -672,10 +711,8 @@
             update();
         }
 
-   
         initViewCounter();
 
-       
         const bioText = "i got swag";
         let bioIndex = 0;
         let isDeleting = false;
@@ -702,7 +739,6 @@
 
         setTimeout(typeBio, 800);
 
-      
         let targetX = 0, targetY = 0;
         let currentX = 0, currentY = 0;
         let isHovering = false;
@@ -742,29 +778,26 @@
         }
         animate();
 
-     
         avatar.addEventListener('click', () => {
             avatar.style.transform = 'scale(1.15) rotate(360deg)';
             setTimeout(() => avatar.style.transform = '', 600);
         });
 
-  
         document.getElementById('settingsBtn').addEventListener('click', () => {
             alert('Settings under revamp');
         });
 
-       
         let title = "@districtmargi";
         let i = 0;
         let forward = true;
         
         setInterval(() => {
             if (forward) {
-                document.title = title.substring(0, i) + "|";
+                document.title = title.substring(0, i);
                 i++;
                 if (i > title.length) forward = false;
             } else {
-                document.title = title.substring(0, i) + "|";
+                document.title = title.substring(0, i);
                 i--;
                 if (i < 0) forward = true;
             }
