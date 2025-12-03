@@ -568,79 +568,75 @@
         .volume-slider-container {
             position: absolute;
             top: 70px;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 16px;
             padding: 16px 12px;
             opacity: 0;
-            transform: translateY(-10px);
             pointer-events: none;
-            transition: all 0.3s ease;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .volume-control:hover .volume-slider-container {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateX(-50%) translateY(0);
             pointer-events: all;
         }
 
         .volume-slider {
-            writing-mode: bt-lr;
-            -webkit-appearance: slider-vertical;
-            width: 32px;
-            height: 120px;
-            background: transparent;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 120px;
+            height: 8px;
+            background: linear-gradient(90deg, #500000, #8B0000, #B22222, #DC143C);
+            border-radius: 4px;
             outline: none;
             cursor: pointer;
-        }
-
-        .volume-slider::-webkit-slider-runnable-track {
-            width: 6px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+            transform: rotate(-90deg);
+            transform-origin: center;
         }
 
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
-            background: linear-gradient(135deg, #8B0000, #FF0000);
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #DC143C, #FF0000, #FF4444);
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(220, 20, 60, 0.4), 0 0 0 2px rgba(255, 0, 0, 0.2);
             transition: all 0.2s ease;
         }
 
         .volume-slider::-webkit-slider-thumb:hover {
             transform: scale(1.2);
-            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.5);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.6), 0 0 0 3px rgba(255, 0, 0, 0.3);
         }
 
         .volume-slider::-moz-range-track {
-            width: 6px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+            width: 120px;
+            height: 8px;
+            background: linear-gradient(90deg, #500000, #8B0000, #B22222, #DC143C);
+            border-radius: 4px;
         }
 
         .volume-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            background: linear-gradient(135deg, #8B0000, #FF0000);
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #DC143C, #FF0000, #FF4444);
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(220, 20, 60, 0.4), 0 0 0 2px rgba(255, 0, 0, 0.2);
             transition: all 0.2s ease;
         }
 
         .volume-slider::-moz-range-thumb:hover {
             transform: scale(1.2);
-            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.5);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.6), 0 0 0 3px rgba(255, 0, 0, 0.3);
         }
 
         .settings-btn:hover {
@@ -678,7 +674,7 @@
 </head>
 <body>
     <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-text">welcome to the revamp</div>
+        <div class="welcome-text">welcome</div>
     </div>
 
     <video id="bgVideo" autoplay loop playsinline>
@@ -692,7 +688,7 @@
             <i class="fas fa-volume-up" id="volumeIcon"></i>
         </div>
         <div class="volume-slider-container">
-            <input type="range" min="0" max="100" value="30" class="volume-slider" id="volumeSlider" orient="vertical">
+            <input type="range" min="0" max="100" value="30" class="volume-slider" id="volumeSlider">
         </div>
     </div>
 
@@ -724,7 +720,7 @@
                 <a href="https://discord.com/users/1084576683262230548" target="_blank" class="social-icon">
                     <img src="assets/gunspin.gif" alt="Discord">
                 </a>
-                <a href="https://www.youtube.com/@districtmargi" target="_blank" class="social-icon">
+                <a href="https://www.youtube.com/@faintche" target="_blank" class="social-icon">
                     <img src="assets/skimaskspin.gif" alt="YouTube">
                 </a>
             </div>
@@ -987,4 +983,3 @@
     </script>
 </body>
 </html>
-
