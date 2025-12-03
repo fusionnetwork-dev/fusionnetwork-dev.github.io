@@ -149,7 +149,7 @@
 
         .card {
             background: rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(30px);
+            backdrop-filter: blur(15px);
             border: 3px solid transparent;
             border-radius: 24px;
             padding: 32px 40px;
@@ -160,9 +160,12 @@
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
             opacity: 0;
-            animation: fadeIn 0.6s ease forwards;
             position: relative;
             background-clip: padding-box;
+        }
+        
+        .card.loaded {
+            animation: fadeIn 0.6s ease forwards;
         }
 
         .card::before {
@@ -464,7 +467,7 @@
             align-items: center;
             gap: 10px;
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             padding: 12px 18px;
             border-radius: 50px;
@@ -472,6 +475,11 @@
             color: white;
             font-size: 16px;
             font-weight: 600;
+            opacity: 0;
+        }
+        
+        .view-counter.loaded {
+            animation: fadeIn 0.6s ease forwards 0.2s;
         }
 
         .view-counter i {
@@ -498,7 +506,7 @@
             height: 56px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             display: flex;
             align-items: center;
@@ -507,6 +515,132 @@
             cursor: pointer;
             transition: all 0.3s ease;
             z-index: 100;
+            opacity: 0;
+        }
+        
+        .settings-btn.loaded {
+            animation: fadeIn 0.6s ease forwards 0.3s;
+        }
+
+        .volume-control {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 100;
+            opacity: 0;
+        }
+
+        .volume-control.loaded {
+            animation: fadeIn 0.6s ease forwards 0.3s;
+        }
+
+        .volume-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .volume-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .volume-btn.muted {
+            background: rgba(139, 0, 0, 0.3);
+            border-color: rgba(255, 0, 0, 0.4);
+        }
+
+        .volume-btn.muted:hover {
+            background: rgba(139, 0, 0, 0.4);
+        }
+
+        .volume-slider-container {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 16px 12px;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .volume-control:hover .volume-slider-container {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .volume-slider {
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+            width: 32px;
+            height: 120px;
+            background: transparent;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-runnable-track {
+            width: 6px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #8B0000, #FF0000);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.5);
+        }
+
+        .volume-slider::-moz-range-track {
+            width: 6px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #8B0000, #FF0000);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .volume-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.5);
         }
 
         .settings-btn:hover {
@@ -544,7 +678,7 @@
 </head>
 <body>
     <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-text">revamp</div>
+        <div class="welcome-text">welcome to the revamp</div>
     </div>
 
     <video id="bgVideo" autoplay loop playsinline>
@@ -552,6 +686,15 @@
     </video>
 
     <div class="scanlines"></div>
+
+    <div class="volume-control" id="volumeControl">
+        <div class="volume-btn" id="volumeBtn">
+            <i class="fas fa-volume-up" id="volumeIcon"></i>
+        </div>
+        <div class="volume-slider-container">
+            <input type="range" min="0" max="100" value="30" class="volume-slider" id="volumeSlider" orient="vertical">
+        </div>
+    </div>
 
     <div class="container">
         <div class="card" id="card">
@@ -606,14 +749,53 @@
         const viewCountElement = document.getElementById('viewCount');
         const welcomeScreen = document.getElementById('welcomeScreen');
         const bgVideo = document.getElementById('bgVideo');
+        const volumeBtn = document.getElementById('volumeBtn');
+        const volumeIcon = document.getElementById('volumeIcon');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeControl = document.getElementById('volumeControl');
 
         bgVideo.volume = 0.3;
+
+        volumeSlider.addEventListener('input', (e) => {
+            const volume = e.target.value / 100;
+            bgVideo.volume = volume;
+            
+            if (volume === 0) {
+                volumeBtn.classList.add('muted');
+                volumeIcon.className = 'fas fa-volume-mute';
+            } else {
+                volumeBtn.classList.remove('muted');
+                if (volume < 0.5) {
+                    volumeIcon.className = 'fas fa-volume-down';
+                } else {
+                    volumeIcon.className = 'fas fa-volume-up';
+                }
+            }
+        });
+
+        volumeBtn.addEventListener('click', () => {
+            if (bgVideo.muted || bgVideo.volume === 0) {
+                bgVideo.muted = false;
+                bgVideo.volume = volumeSlider.value / 100 || 0.3;
+                volumeSlider.value = bgVideo.volume * 100;
+                volumeBtn.classList.remove('muted');
+                volumeIcon.className = bgVideo.volume < 0.5 ? 'fas fa-volume-down' : 'fas fa-volume-up';
+            } else {
+                bgVideo.muted = true;
+                volumeBtn.classList.add('muted');
+                volumeIcon.className = 'fas fa-volume-mute';
+            }
+        });
 
         function hideWelcome() {
             welcomeScreen.classList.add('fade-out');
             bgVideo.muted = false;
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
+                card.classList.add('loaded');
+                viewCountElement.parentElement.classList.add('loaded');
+                document.getElementById('settingsBtn').classList.add('loaded');
+                volumeControl.classList.add('loaded');
             }, 800);
         }
 
@@ -760,13 +942,13 @@
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             
-            targetX = (e.clientX - centerX) / 20;
-            targetY = (e.clientY - centerY) / 20;
+            targetX = (e.clientX - centerX) / 10;
+            targetY = (e.clientY - centerY) / 10;
         });
 
         function animate() {
-            currentX += (targetX - currentX) * 0.12;
-            currentY += (targetY - currentY) * 0.12;
+            currentX += (targetX - currentX) * 0.2;
+            currentY += (targetY - currentY) * 0.2;
             
             card.style.transform = `
                 perspective(1000px) 
