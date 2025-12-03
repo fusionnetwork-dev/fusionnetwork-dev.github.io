@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@districtmargi</title>
     <link rel="icon" type="image/png" href="assets/icon.png">
-    
+   
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://swaqq.xyz/">
     <meta property="og:title" content="@districtmargi">
     <meta property="og:description" content="i got swag">
     <meta property="og:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/3c6bb309bf6e6ab6cca8b18cea5a156e.webp?size=1024">
-
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://swaqq.xyz/">
     <meta property="twitter:title" content="@districtmargi">
     <meta property="twitter:description" content="i got swag">
     <meta property="twitter:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/3c6bb309bf6e6ab6cca8b18cea5a156e.webp?size=1024">
-    
+   
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -25,14 +24,12 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         @font-face {
             font-family: '1942';
             src: url('assets/1942.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
-
         body {
             font-family: '1942', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
@@ -46,12 +43,10 @@
             overflow: hidden;
             position: relative;
         }
-
         @keyframes gradient {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
         }
-
         video {
             position: fixed;
             top: 50%;
@@ -65,7 +60,6 @@
             opacity: 0.6;
             filter: brightness(0.8) contrast(1.1);
         }
-
         .scanlines {
             position: fixed;
             top: 0;
@@ -83,7 +77,6 @@
             );
             animation: scanline 8s linear infinite;
         }
-
         .scanlines::before {
             content: '';
             position: absolute;
@@ -99,18 +92,15 @@
             );
             animation: flicker 0.15s infinite;
         }
-
         @keyframes scanline {
             0% { transform: translateY(0); }
             100% { transform: translateY(10px); }
         }
-
         @keyframes flicker {
             0% { opacity: 0.8; }
             50% { opacity: 1; }
             100% { opacity: 0.8; }
         }
-
         .welcome-screen {
             position: fixed;
             inset: 0;
@@ -123,12 +113,10 @@
             cursor: pointer;
             transition: opacity 0.8s ease;
         }
-
         .welcome-screen.fade-out {
             opacity: 0;
             pointer-events: none;
         }
-
         .welcome-text {
             font-size: 72px;
             font-weight: 700;
@@ -138,15 +126,12 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: scrollGradient 3s linear infinite;
-            text-transform: uppercase;
             letter-spacing: 4px;
         }
-
         .container {
             perspective: 1000px;
             z-index: 1;
         }
-
         .card {
             background: rgba(0, 0, 0, 0.15);
             backdrop-filter: blur(15px);
@@ -163,11 +148,10 @@
             position: relative;
             background-clip: padding-box;
         }
-        
+       
         .card.loaded {
             animation: fadeIn 0.6s ease forwards;
         }
-
         .card::before {
             content: '';
             position: absolute;
@@ -184,18 +168,15 @@
             pointer-events: none;
             z-index: -1;
         }
-
         @keyframes borderScroll {
             0% { background-position: 0% 50%; }
             100% { background-position: 300% 50%; }
         }
-
         @keyframes fadeIn {
             to {
                 opacity: 1;
             }
         }
-
         .profile-header {
             display: flex;
             align-items: center;
@@ -204,11 +185,9 @@
             padding-bottom: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
         .avatar-wrapper {
             position: relative;
         }
-
         .avatar {
             width: 90px;
             height: 90px;
@@ -221,7 +200,6 @@
             position: relative;
             animation: shine 8s ease-in-out infinite;
         }
-
         @keyframes shine {
             0%, 100% {
                 box-shadow: 0 0 0 rgba(255, 255, 255, 0);
@@ -230,11 +208,9 @@
                 box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.6);
             }
         }
-
         .avatar:hover {
             transform: scale(1.08) rotate(5deg);
         }
-
         .avatar::after {
             content: '';
             position: absolute;
@@ -244,20 +220,16 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-
         .avatar:hover::after {
             opacity: 1;
             animation: spin 2s linear infinite;
         }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
         .user-info {
             flex: 1;
         }
-
         .uid {
             font-size: 11px;
             color: rgba(255, 255, 255, 0.5);
@@ -271,7 +243,6 @@
             -webkit-text-fill-color: transparent;
             font-family: 'Courier New', monospace;
         }
-
         .username {
             font-size: 28px;
             font-weight: 700;
@@ -286,9 +257,8 @@
             position: relative;
             display: inline-block;
         }
-
         .username::before {
-            content: '✦';
+            content: 'diamond';
             position: absolute;
             left: -20px;
             top: 50%;
@@ -297,9 +267,8 @@
             font-size: 12px;
             animation: sparkle 2s ease-in-out infinite;
         }
-
         .username::after {
-            content: '✦';
+            content: 'diamond';
             position: absolute;
             right: -20px;
             top: 50%;
@@ -308,7 +277,6 @@
             font-size: 12px;
             animation: sparkle 2s ease-in-out infinite 1s;
         }
-
         @keyframes scrollGradient {
             0% {
                 background-position: 0% 50%;
@@ -317,7 +285,6 @@
                 background-position: 200% 50%;
             }
         }
-
         @keyframes sparkle {
             0%, 100% {
                 opacity: 0.3;
@@ -328,12 +295,10 @@
                 transform: translateY(-50%) scale(1.2);
             }
         }
-
         .handle {
             font-size: 14px;
             color: rgba(255, 255, 255, 0.5);
         }
-
         .bio {
             color: rgba(255, 255, 255, 0.8);
             font-size: 15px;
@@ -341,24 +306,20 @@
             margin-bottom: 18px;
             min-height: 24px;
         }
-
         .bio::after {
             content: '|';
             animation: blink 1s step-end infinite;
         }
-
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
-
         .badges {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 18px;
         }
-
         .badge {
             background: rgba(255, 255, 255, 0.08);
             padding: 8px 14px;
@@ -376,20 +337,17 @@
             user-select: none;
             -webkit-user-select: none;
         }
-
         .badge span {
             background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .badge:hover {
             background: rgba(255, 255, 255, 0.12);
             transform: translateY(-2px);
             border-color: rgba(255, 255, 255, 0.2);
         }
-
         .badge i {
             font-size: 11px;
             background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8);
@@ -397,14 +355,12 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .social {
             display: flex;
             gap: 12px;
             margin-bottom: 20px;
             justify-content: center;
         }
-
         .social-icon {
             width: 52px;
             height: 52px;
@@ -419,7 +375,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .social-icon::before {
             content: '';
             position: absolute;
@@ -428,25 +383,21 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-
         .social-icon:hover::before {
             opacity: 1;
         }
-
         .social-icon:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-4px);
             border-color: rgba(255, 255, 255, 0.25);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
-
         .social-icon img {
             width: 28px;
             height: 28px;
             position: relative;
             z-index: 1;
         }
-
         .version {
             position: absolute;
             bottom: 20px;
@@ -458,7 +409,6 @@
             letter-spacing: 1px;
             user-select: none;
         }
-
         .view-counter {
             position: fixed;
             bottom: 24px;
@@ -477,16 +427,14 @@
             font-weight: 600;
             opacity: 0;
         }
-        
+       
         .view-counter.loaded {
             animation: fadeIn 0.6s ease forwards 0.2s;
         }
-
         .view-counter i {
             font-size: 18px;
             animation: pulse 2s ease-in-out infinite;
         }
-
         @keyframes pulse {
             0%, 100% {
                 opacity: 0.7;
@@ -497,7 +445,6 @@
                 transform: scale(1.1);
             }
         }
-
         .settings-btn {
             position: fixed;
             bottom: 24px;
@@ -517,11 +464,10 @@
             z-index: 100;
             opacity: 0;
         }
-        
+       
         .settings-btn.loaded {
             animation: fadeIn 0.6s ease forwards 0.3s;
         }
-
         .volume-control {
             position: fixed;
             top: 24px;
@@ -529,11 +475,9 @@
             z-index: 100;
             opacity: 0;
         }
-
         .volume-control.loaded {
             animation: fadeIn 0.6s ease forwards 0.3s;
         }
-
         .volume-btn {
             width: 56px;
             height: 56px;
@@ -549,56 +493,60 @@
             transition: all 0.3s ease;
             position: relative;
         }
-
         .volume-btn:hover {
             transform: scale(1.1);
             background: rgba(255, 255, 255, 0.15);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
-
         .volume-btn.muted {
             background: rgba(139, 0, 0, 0.3);
             border-color: rgba(255, 0, 0, 0.4);
         }
-
         .volume-btn.muted:hover {
             background: rgba(139, 0, 0, 0.4);
         }
-
         .volume-slider-container {
             position: absolute;
             top: 70px;
             left: 50%;
-            transform: translateX(-50%) translateY(-10px);
+            transform: translateX(-50%) translateY(10px);
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 16px;
-            padding: 16px 12px;
+            padding: 28px 20px;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease, transform 0.4s ease;
+            display: flex;
+            align-items: center;
         }
-
-        .volume-control:hover .volume-slider-container {
+        .volume-control:hover .volume-slider-container,
+        .volume-control.active .volume-slider-container {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
             pointer-events: all;
         }
-
+        .volume-slider-wrapper {
+            position: relative;
+            width: 32px;
+            height: 140px;
+        }
         .volume-slider {
             -webkit-appearance: none;
             appearance: none;
-            width: 120px;
+            width: 140px;
             height: 8px;
             background: linear-gradient(90deg, #500000, #8B0000, #B22222, #DC143C);
             border-radius: 4px;
             outline: none;
             cursor: pointer;
-            transform: rotate(-90deg);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-90deg);
             transform-origin: center;
         }
-
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -610,19 +558,16 @@
             box-shadow: 0 2px 8px rgba(220, 20, 60, 0.4), 0 0 0 2px rgba(255, 0, 0, 0.2);
             transition: all 0.2s ease;
         }
-
         .volume-slider::-webkit-slider-thumb:hover {
             transform: scale(1.2);
             box-shadow: 0 4px 12px rgba(220, 20, 60, 0.6), 0 0 0 3px rgba(255, 0, 0, 0.3);
         }
-
         .volume-slider::-moz-range-track {
-            width: 120px;
+            width: 140px;
             height: 8px;
             background: linear-gradient(90deg, #500000, #8B0000, #B22222, #DC143C);
             border-radius: 4px;
         }
-
         .volume-slider::-moz-range-thumb {
             width: 20px;
             height: 20px;
@@ -631,41 +576,63 @@
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(220, 20, 60, 0.4), 0 0 0 2px rgba(255, 0, 0, 0.2);
-            transition: all 0.2s ease;
         }
-
-        .volume-slider::-moz-range-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.6), 0 0 0 3px rgba(255, 0, 0, 0.3);
+        .volume-ticks {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            width: 30px;
+            height: 100%;
+            pointer-events: none;
+            margin-left: 12px;
         }
-
+        .tick {
+            position: absolute;
+            left: 0;
+            width: 10px;
+            height: 1px;
+            background: rgba(255,255,255,0.45);
+        }
+        .tick-label {
+            position: absolute;
+            left: 14px;
+            font-size: 9px;
+            color: rgba(255,255,255,0.7);
+            font-family: 'Courier New', monospace;
+            white-space: nowrap;
+        }
+        .tick-0   { top: 100%; margin-top: -0.5px; }
+        .tick-25  { top: 75%; margin-top: -0.5px; }
+        .tick-50  { top: 50%; margin-top: -0.5px; }
+        .tick-75  { top: 25%; margin-top: -0.5px; }
+        .tick-100 { top: 0%; margin-top: -0.5px; }
+        .tick-label-0   { top: 100%; margin-top: 2px; }
+        .tick-label-25  { top: 75%; margin-top: -6px; }
+        .tick-label-50  { top: 50%; margin-top: -6px; }
+        .tick-label-75  { top: 25%; margin-top: -6px; }
+        .tick-label-100 { top: 0%; margin-top: -12px; }
         .settings-btn:hover {
             transform: scale(1.1) rotate(90deg);
             background: rgba(255, 255, 255, 0.15);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
-
         @media (max-width: 600px) {
             .card {
                 padding: 32px 24px;
             }
-            
             .profile-header {
                 flex-direction: column;
                 text-align: center;
             }
-
             .avatar {
                 width: 100px;
                 height: 100px;
             }
-
             .view-counter {
                 bottom: 100px;
                 left: 50%;
                 transform: translateX(-50%);
             }
-
             .welcome-text {
                 font-size: 48px;
             }
@@ -676,22 +643,32 @@
     <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-text">welcome</div>
     </div>
-
-    <video id="bgVideo" autoplay loop playsinline>
+    <video id="bgVideo" loop playsinline muted>
         <source src="assets/relevant.mp4" type="video/mp4">
     </video>
-
     <div class="scanlines"></div>
-
     <div class="volume-control" id="volumeControl">
         <div class="volume-btn" id="volumeBtn">
             <i class="fas fa-volume-up" id="volumeIcon"></i>
         </div>
         <div class="volume-slider-container">
-            <input type="range" min="0" max="100" value="30" class="volume-slider" id="volumeSlider">
+            <div class="volume-slider-wrapper">
+                <input type="range" min="0" max="100" value="30" class="volume-slider" id="volumeSlider">
+                <div class="volume-ticks">
+                    <div class="tick tick-0"></div>
+                    <div class="tick tick-25"></div>
+                    <div class="tick tick-50"></div>
+                    <div class="tick tick-75"></div>
+                    <div class="tick tick-100"></div>
+                    <div class="tick-label tick-label-0">0</div>
+                    <div class="tick-label tick-label-25">25</div>
+                    <div class="tick-label tick-label-50">50</div>
+                    <div class="tick-label tick-label-75">75</div>
+                    <div class="tick-label tick-label-100">100</div>
+                </div>
+            </div>
         </div>
     </div>
-
     <div class="container">
         <div class="card" id="card">
             <div class="profile-header">
@@ -704,15 +681,12 @@
                     <p class="handle">@districtmargi</p>
                 </div>
             </div>
-
             <p class="bio" id="bio"></p>
-
             <div class="badges">
                 <span class="badge"><i class="fas fa-crown"></i><span>Owner</span></span>
                 <span class="badge"><i class="fas fa-code"></i><span>Developer</span></span>
                 <span class="badge"><i class="fas fa-shield-alt"></i><span>Staff</span></span>
             </div>
-
             <div class="social">
                 <a href="https://www.roblox.com/users/8156657037/profile" target="_blank" class="social-icon">
                     <img src="assets/diamondspin.gif" alt="Roblox">
@@ -724,20 +698,16 @@
                     <img src="assets/skimaskspin.gif" alt="YouTube">
                 </a>
             </div>
-
             <div class="version">v4.0 @ margi</div>
         </div>
     </div>
-
     <div class="view-counter">
         <i class="fas fa-eye"></i>
         <span id="viewCount">0</span>
     </div>
-
     <div class="settings-btn" id="settingsBtn">
         <i class="fas fa-cog"></i>
     </div>
-
     <script>
         const card = document.getElementById('card');
         const avatar = document.getElementById('avatar');
@@ -750,12 +720,11 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeControl = document.getElementById('volumeControl');
 
-        bgVideo.volume = 0.3;
-
         volumeSlider.addEventListener('input', (e) => {
             const volume = e.target.value / 100;
             bgVideo.volume = volume;
-            
+            volumeControl.classList.add('active');
+           
             if (volume === 0) {
                 volumeBtn.classList.add('muted');
                 volumeIcon.className = 'fas fa-volume-mute';
@@ -781,22 +750,28 @@
                 volumeBtn.classList.add('muted');
                 volumeIcon.className = 'fas fa-volume-mute';
             }
+            volumeControl.classList.add('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!volumeControl.contains(e.target)) {
+                volumeControl.classList.remove('active');
+            }
         });
 
         function hideWelcome() {
             welcomeScreen.classList.add('fade-out');
-            bgVideo.muted = false;
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
+                bgVideo.muted = false;
+                bgVideo.play();
                 card.classList.add('loaded');
                 viewCountElement.parentElement.classList.add('loaded');
                 document.getElementById('settingsBtn').classList.add('loaded');
                 volumeControl.classList.add('loaded');
             }, 800);
         }
-
         setTimeout(hideWelcome, 3000);
-
         welcomeScreen.addEventListener('click', hideWelcome);
 
         async function generateHWID() {
@@ -806,7 +781,7 @@
             ctx.font = '14px Arial';
             ctx.fillText('fingerprint', 2, 2);
             const canvasData = canvas.toDataURL();
-            
+           
             const fingerprint = {
                 userAgent: navigator.userAgent,
                 language: navigator.language,
@@ -814,7 +789,7 @@
                 timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 canvas: canvasData
             };
-            
+           
             const str = JSON.stringify(fingerprint);
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -830,7 +805,7 @@
                 const hwid = await generateHWID();
                 const VIEWS_KEY = 'profile_views';
                 const HWID_KEY = hwid;
-            
+           
                 let totalViews = 0;
                 try {
                     const result = await window.storage.get(VIEWS_KEY, true);
@@ -838,7 +813,7 @@
                 } catch (error) {
                     totalViews = 0;
                 }
-                
+               
                 let hwidData = { count: 0, lastReset: Date.now() };
                 try {
                     const result = await window.storage.get(HWID_KEY, false);
@@ -848,23 +823,23 @@
                 } catch (error) {
                     hwidData = { count: 0, lastReset: Date.now() };
                 }
-                
+               
                 const twelveHours = 12 * 60 * 60 * 1000;
                 if (Date.now() - hwidData.lastReset > twelveHours) {
                     hwidData.count = 0;
                     hwidData.lastReset = Date.now();
                 }
-                
+               
                 if (hwidData.count < 3) {
                     totalViews++;
                     hwidData.count++;
-                    
+                   
                     await window.storage.set(VIEWS_KEY, totalViews.toString(), true);
                     await window.storage.set(HWID_KEY, JSON.stringify(hwidData), false);
                 }
-                
+               
                 animateCounter(totalViews);
-                
+               
             } catch (error) {
                 console.error('View counter error:', error);
                 viewCountElement.textContent = '74';
@@ -875,7 +850,7 @@
             let current = 0;
             const duration = 1500;
             const increment = target / (duration / 16);
-            
+           
             function update() {
                 current += increment;
                 if (current < target) {
@@ -885,16 +860,14 @@
                     viewCountElement.textContent = target.toLocaleString();
                 }
             }
-            
+           
             update();
         }
-
         initViewCounter();
 
         const bioText = "i got swag";
         let bioIndex = 0;
         let isDeleting = false;
-
         function typeBio() {
             if (!isDeleting && bioIndex < bioText.length) {
                 bioElement.textContent = bioText.substring(0, bioIndex + 1);
@@ -914,30 +887,27 @@
                 setTimeout(typeBio, 500);
             }
         }
-
         setTimeout(typeBio, 800);
 
         let targetX = 0, targetY = 0;
         let currentX = 0, currentY = 0;
         let isHovering = false;
-        
+       
         card.addEventListener('mouseenter', () => {
             isHovering = true;
         });
-
         card.addEventListener('mouseleave', () => {
             isHovering = false;
             targetX = 0;
             targetY = 0;
         });
-
         card.addEventListener('mousemove', (e) => {
             if (!isHovering) return;
-            
+           
             const rect = card.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-            
+           
             targetX = (e.clientX - centerX) / 10;
             targetY = (e.clientY - centerY) / 10;
         });
@@ -945,13 +915,13 @@
         function animate() {
             currentX += (targetX - currentX) * 0.2;
             currentY += (targetY - currentY) * 0.2;
-            
+           
             card.style.transform = `
-                perspective(1000px) 
-                rotateY(${currentX}deg) 
+                perspective(1000px)
+                rotateY(${currentX}deg)
                 rotateX(${-currentY}deg)
             `;
-            
+           
             requestAnimationFrame(animate);
         }
         animate();
@@ -968,7 +938,7 @@
         let title = "@districtmargi";
         let i = 0;
         let forward = true;
-        
+       
         setInterval(() => {
             if (forward) {
                 document.title = title.substring(0, i);
