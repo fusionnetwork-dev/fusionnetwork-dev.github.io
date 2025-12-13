@@ -57,33 +57,10 @@
             height: auto;
             transform: translate(-50%, -50%);
             z-index: -2;
-            opacity: 0.4;
-            filter: brightness(1.1) contrast(1.2);
+            opacity: 0.7;
+            filter: brightness(1.2) contrast(1.3);
             pointer-events: none;
         }
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
-            animation: scanline 8s linear infinite;
-        }
-        .scanlines::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.05) 100%);
-            animation: flicker 0.15s infinite;
-        }
-        @keyframes scanline { 0% { transform: translateY(0); } 100% { transform: translateY(10px); } }
-        @keyframes flicker { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
         .welcome-screen {
             position: fixed;
             inset: 0;
@@ -110,14 +87,14 @@
         }
         .container { perspective: 1000px; z-index: 1; }
         .card {
-            background: rgba(0,0,0,0.15);
-            backdrop-filter: blur(15px);
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(20px);
             border: 3px solid transparent;
             border-radius: 24px;
             padding: 32px 40px 60px;
             max-width: 520px;
             width: 100%;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
             opacity: 0;
@@ -183,7 +160,7 @@
         .user-info { flex: 1; }
         .uid {
             font-size: 11px;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.7);
             font-weight: 600;
             margin-bottom: 6px;
             letter-spacing: 2px;
@@ -204,12 +181,12 @@
             -webkit-text-fill-color: transparent;
             animation: scrollGradient 3s linear infinite;
             margin-bottom: 4px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
         @keyframes scrollGradient { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        .handle { font-size: 14px; color: rgba(255,255,255,0.5); }
+        .handle { font-size: 14px; color: rgba(255,255,255,0.7); }
         .bio {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.9);
             font-size: 15px;
             line-height: 1.6;
             margin-bottom: 18px;
@@ -219,14 +196,14 @@
         @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
         .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
         .badge {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.1);
             padding: 8px 14px;
             border-radius: 14px;
             font-size: 12px;
             display: flex;
             align-items: center;
             gap: 6px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
             transition: all 0.2s ease;
             font-weight: 600;
             letter-spacing: 1px;
@@ -239,7 +216,7 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); border-color: rgba(255,255,255,0.2); }
+        .badge:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
         .badge i {
             font-size: 11px;
             background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
@@ -254,18 +231,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 14px;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
         .social-icon:hover {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.2);
             transform: translateY(-4px);
-            border-color: rgba(255,255,255,0.25);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
         .social-icon img { width: 28px; height: 28px; z-index: 1; }
         .version {
@@ -273,7 +249,7 @@
             bottom: 20px;
             left: 20px;
             font-size: 12px;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255,255,255,0.5);
             font-family: 'Courier New', monospace;
             font-weight: 600;
             letter-spacing: 1px;
@@ -287,7 +263,7 @@
             gap: 10px;
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
             padding: 12px 18px;
             border-radius: 50px;
             z-index: 100;
@@ -308,7 +284,7 @@
             border-radius: 50%;
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -357,8 +333,9 @@
     <video id="bgVideo" loop muted playsinline autoplay>
         <source src="assets/stopme.mp4" type="video/mp4">
     </video>
-    <div class="scanlines"></div>
+
     <div class="snow-container" id="snowContainer"></div>
+
     <div class="container">
         <div class="card" id="card">
             <div class="profile-header">
@@ -430,7 +407,7 @@
             welcomeScreen.classList.add('fade-out');
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
-                bgVideo.play();
+                bgVideo.play().catch(() => {});
                 card.classList.add('loaded');
                 viewCountElement.parentElement.classList.add('loaded');
                 document.getElementById('settingsBtn').classList.add('loaded');
@@ -447,7 +424,7 @@
                 bioElement.textContent = bioText.substring(0, bioIndex + 1);
                 bioIndex++;
                 setTimeout(typeBio, 100);
-            } else if (!isDeleting && bioIndex === bioText.length) {
+            } else if (!isDeleting && bioText.length === bioIndex) {
                 setTimeout(() => { isDeleting = true; typeBio(); }, 2000);
             } else if (isDeleting && bioIndex > 0) {
                 bioElement.textContent = bioText.substring(0, bioIndex - 1);
