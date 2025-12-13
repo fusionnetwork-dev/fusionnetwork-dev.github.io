@@ -10,12 +10,12 @@
     <meta property="og:url" content="https://swaqq.xyz/">
     <meta property="og:title" content="@districtmargi">
     <meta property="og:description" content="i got swag">
-    <meta property="og:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/a_.webp?size=1024">
+    <meta property="og:image" content="assets/profile.png">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://swaqq.xyz/">
     <meta property="twitter:title" content="@districtmargi">
     <meta property="twitter:description" content="i got swag">
-    <meta property="twitter:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/a_.webp?size=1024">
+    <meta property="twitter:image" content="assets/profile.png">
   
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -47,7 +47,7 @@
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
         }
-        iframe#bgVideo {
+        video#bgVideo {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -193,7 +193,7 @@
             width: 90px;
             height: 90px;
             border-radius: 50%;
-            background: center/cover no-repeat;
+            background: url('assets/profile.png') center/cover no-repeat;
             border: 3px solid rgba(255, 255, 255, 0.2);
             flex-shrink: 0;
             transition: transform 0.3s ease;
@@ -231,7 +231,7 @@
         .santa-hat {
             position: absolute;
             top: -30px;
-            left: -20px;
+            left: -35px;
             width: 100px;
             height: 100px;
             background: url('assets/santa_hat.png') center/contain no-repeat;
@@ -533,7 +533,7 @@
             }
             .santa-hat {
                 top: -35px;
-                left: -25px;
+                left: -45px;
                 width: 120px;
                 height: 120px;
             }
@@ -544,7 +544,9 @@
     <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-text">welcome</div>
     </div>
-    <iframe id="bgVideo" src="https://www.youtube.com/embed/CMEaHVCVW9o?autoplay=1&mute=1&loop=1&playlist=CMEaHVCVW9o&controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&enablejsapi=1" frameborder="0" allow="autoplay"></iframe>
+    <video id="bgVideo" loop muted playsinline autoplay>
+        <source src="assets/stopme.mp4" type="video/mp4">
+    </video>
     <div class="scanlines"></div>
 
     <div class="snow-container" id="snowContainer"></div>
@@ -591,17 +593,11 @@
     </div>
     <script>
         const card = document.getElementById('card');
-        const avatar = document.getElementById('avatar');
         const bioElement = document.getElementById('bio');
         const viewCountElement = document.getElementById('viewCount');
         const welcomeScreen = document.getElementById('welcomeScreen');
 
-        // Dynamic Discord avatar
-        const userId = '1084576683262230548';
-        const avatarUrl = `https://cdn.discordapp.com/avatars/${userId}/a_.webp?size=256`;
-        avatar.style.backgroundImage = `url('${avatarUrl}')`;
-
-        // Real view counter (CountAPI)
+        // Real view counter
         fetch('https://api.countapi.xyz/hit/swaqq.xyz/visits')
             .then(res => res.json())
             .then(data => {
@@ -626,7 +622,7 @@
             snowContainer.appendChild(flake);
         }
 
-        // Fade snowflakes near bottom
+        // Fade near bottom
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.boundingClientRect.top > window.innerHeight - 100) {
@@ -709,9 +705,9 @@
         }
         animate();
 
-        avatar.addEventListener('click', () => {
-            avatar.style.transform = 'scale(1.15) rotate(360deg)';
-            setTimeout(() => avatar.style.transform = '', 600);
+        document.getElementById('avatar').addEventListener('click', () => {
+            document.getElementById('avatar').style.transform = 'scale(1.15) rotate(360deg)';
+            setTimeout(() => document.getElementById('avatar').style.transform = '', 600);
         });
 
         document.getElementById('settingsBtn').addEventListener('click', () => {
