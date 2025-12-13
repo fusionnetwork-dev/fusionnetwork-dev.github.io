@@ -148,8 +148,8 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .santa-hat {
             position: absolute;
-            top: -30px;
-            left: -35px;
+            top: -40px;
+            left: -45px;
             width: 100px;
             height: 100px;
             background: url('assets/santa_hat.png') center/contain no-repeat;
@@ -303,26 +303,25 @@
             height: 100%;
             pointer-events: none;
             z-index: 2;
-            overflow: hidden;
         }
         .snowflake {
             position: absolute;
-            top: -10px;
             background: white;
             border-radius: 50%;
             opacity: 0.8;
-            filter: blur(1.5px);
+            filter: blur(3px);
             animation: fall linear infinite;
-            transition: opacity 0.5s ease;
         }
-        @keyframes fall { 0% { transform: translateY(-10px); } 100% { transform: translateY(100vh); } }
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
         @media (max-width: 600px) {
             .card { padding: 32px 24px; }
             .profile-header { flex-direction: column; text-align: center; }
             .avatar { width: 100px; height: 100px; }
             .view-counter { bottom: 100px; left: 50%; transform: translateX(-50%); }
             .welcome-text { font-size: 48px; }
-            .santa-hat { top: -35px; left: -45px; width: 120px; height: 120px; }
+            .santa-hat { top: -50px; left: -55px; width: 120px; height: 120px; }
         }
     </style>
 </head>
@@ -330,7 +329,7 @@
     <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-text">welcome</div>
     </div>
-    <video id="bgVideo" loop muted playsinline autoplay>
+    <video id="bgVideo" loop playsinline autoplay>
         <source src="assets/stopme.mp4" type="video/mp4">
     </video>
 
@@ -365,7 +364,7 @@
     </div>
     <div class="view-counter">
         <i class="fas fa-eye"></i>
-        <span id="viewCount">Loading...</span>
+        <span id="viewCount">0</span>
     </div>
     <div class="settings-btn" id="settingsBtn">
         <i class="fas fa-cog"></i>
@@ -377,31 +376,70 @@
         const welcomeScreen = document.getElementById('welcomeScreen');
         const bgVideo = document.getElementById('bgVideo');
 
-        fetch('https://api.countapi.xyz/hit/swaqq.xyz/visits')
-            .then(res => res.json())
-            .then(data => viewCountElement.textContent = data.value.toLocaleString())
-            .catch(() => viewCountElement.textContent = '?');
-
-        const snowContainer = document.getElementById('snowContainer');
-        for (let i = 0; i < 80; i++) {
-            const flake = document.createElement('div');
-            flake.classList.add('snowflake');
-            const size = Math.random() * 6 + 4;
-            flake.style.width = `${size}px`;
-            flake.style.height = `${size}px`;
-            flake.style.left = `${Math.random() * 100}vw`;
-            flake.style.animationDuration = `${Math.random() * 10 + 10}s`;
-            flake.style.animationDelay = `${Math.random() * 10}s`;
-            flake.style.opacity = Math.random() * 0.4 + 0.5;
-            snowContainer.appendChild(flake);
+        // HWID-based view counter (max 3 per day per device)
+        async function generateHWID() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.font = '14px Arial';
+            ctx.fillText('fingerprint', 2, 2);
+            const data = canvas.toDataURL();
+            const fingerprint = {
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                screen: `${screen.width}x${screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                canvas: data
+            };
+            let hash = 0;
+            const str = JSON.stringify(fingerprint);
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return 'hwid_' + Math.abs(hash).toString(36);
         }
 
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.boundingClientRect.top > window.innerHeight - 100) entry.target.style.opacity = '0';
-            });
-        }, { rootMargin: '0px 0px -100px 0px' });
-        document.querySelectorAll('.snowflake').forEach(flake => observer.observe(flake));
+        async function initViewCounter() {
+            const hwid = await generateHWID();
+            const TOTAL_KEY = 'total_views';
+            const HWID_KEY = hwid;
+
+            let total = localStorage.getItem(TOTAL_KEY) ? parseInt(localStorage.getItem(TOTAL_KEY)) : 0;
+
+            let hwidData = localStorage.getItem(HWID_KEY) ? JSON.parse(localStorage.getItem(HWID_KEY)) : {count: 0, date: new Date().toDateString()};
+
+            if (hwidData.date !== new Date().toDateString()) {
+                hwidData = {count: 0, date: new Date().toDateString()};
+            }
+
+            if (hwidData.count < 3) {
+                total++;
+                hwidData.count++;
+                localStorage.setItem(TOTAL_KEY, total);
+                localStorage.setItem(HWID_KEY, JSON.stringify(hwidData));
+            }
+
+            viewCountElement.textContent = total.toLocaleString();
+        }
+        initViewCounter();
+
+        // Infinite snow (200 small fast fuzzy flakes)
+        const snowContainer = document.getElementById('snowContainer');
+        function createSnow() {
+            for (let i = 0; i < 200; i++) {
+                const flake = document.createElement('div');
+                flake.classList.add('snowflake');
+                const size = Math.random() * 3 + 2; // 2-5px
+                flake.style.width = `${size}px`;
+                flake.style.height = `${size}px`;
+                flake.style.left = `${Math.random() * 100}vw`;
+                flake.style.animationDuration = `${Math.random() * 3 + 3}s`; // 3-6s fast
+                flake.style.animationDelay = `${Math.random() * 5}s`;
+                flake.style.opacity = Math.random() * 0.6 + 0.4;
+                snowContainer.appendChild(flake);
+            }
+        }
+        createSnow();
 
         function hideWelcome() {
             welcomeScreen.classList.add('fade-out');
