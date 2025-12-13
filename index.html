@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>@districtmargi</title>
     <link rel="icon" type="image/png" href="assets/icon.png">
    
     <meta property="og:type" content="website">
@@ -77,24 +77,30 @@
             );
             animation: scanline 8s linear infinite;
         }
+        .scanlines::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0) 50%,
+                rgba(0, 0, 0, 0.05) 51%,
+                rgba(0, 0, 0, 0.05) 100%
+            );
+            animation: flicker 0.15s infinite;
+        }
         @keyframes scanline {
             0% { transform: translateY(0); }
             100% { transform: translateY(10px); }
         }
-        
-        /* Optimized Snow Effect - Simple fuzzy dots */
-        .snowflake {
-            position: fixed;
-            top: -10px;
-            width: 4px;
-            height: 4px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
-            border-radius: 50%;
-            z-index: 9998;
-            pointer-events: none;
-            will-change: transform;
+        @keyframes flicker {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
         }
-        
         .welcome-screen {
             position: fixed;
             inset: 0;
@@ -121,124 +127,7 @@
             -webkit-text-fill-color: transparent;
             animation: scrollGradient 3s linear infinite;
             letter-spacing: 4px;
-            font-family: 'Courier New', monospace;
         }
-        .welcome-text::after {
-            content: '|';
-            animation: blink 1s step-end infinite;
-            -webkit-text-fill-color: #8B0000;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        
-        /* Update Log Modal */
-        .update-log-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(20px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
-        .update-log-modal.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-        .update-log-content {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(15px);
-            border: 3px solid transparent;
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            background-clip: padding-box;
-        }
-        .update-log-content::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 24px;
-            padding: 3px;
-            background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8, #8B0000);
-            background-size: 300% 100%;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            animation: borderScroll 4s linear infinite;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .update-log-header {
-            font-size: 32px;
-            font-weight: 700;
-            background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8, #8B0000);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: scrollGradient 3s linear infinite;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .update-log-section {
-            margin-bottom: 24px;
-        }
-        .update-log-section h3 {
-            color: #FF0000;
-            font-size: 20px;
-            margin-bottom: 12px;
-            font-family: 'Courier New', monospace;
-        }
-        .update-log-section ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        .update-log-section li {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            line-height: 1.8;
-            margin-bottom: 8px;
-            padding-left: 20px;
-            position: relative;
-        }
-        .update-log-section li::before {
-            content: '▸';
-            position: absolute;
-            left: 0;
-            color: #8B0000;
-        }
-        .update-log-close {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 12px 32px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 24px auto 0;
-            display: block;
-            transition: all 0.3s ease;
-            font-family: 'Courier New', monospace;
-        }
-        .update-log-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-        
         .container {
             perspective: 1000px;
             z-index: 1;
@@ -299,60 +188,25 @@
         .avatar-wrapper {
             position: relative;
         }
-        
-        /* Santa Hat - Positioned on top of avatar */
-        .santa-hat {
-            position: absolute;
-            top: -15px;
-            left: -10px;
-            width: 50px;
-            height: 50px;
-            transform: rotate(-30deg);
-            z-index: 10;
-            pointer-events: none;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-        }
-        .hat-body {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            border-bottom: 38px solid #DC143C;
-            top: 8px;
-            left: 0;
-        }
-        .hat-trim {
-            position: absolute;
-            width: 50px;
-            height: 7px;
-            background: white;
-            border-radius: 4px;
-            bottom: 4px;
-            left: 0;
-        }
-        .hat-ball {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: white;
-            border-radius: 50%;
-            top: 0;
-            left: 19px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
         .avatar {
             width: 90px;
             height: 90px;
             border-radius: 50%;
-            background-size: cover;
-            background-position: center;
+            background: url('https://cdn.discordapp.com/avatars/1084576683262230548/3c6bb309bf6e6ab6cca8b18cea5a156e.webp?size=1024') center/cover;
             border: 3px solid rgba(255, 255, 255, 0.2);
             flex-shrink: 0;
             transition: transform 0.3s ease;
             cursor: pointer;
             position: relative;
+            animation: shine 8s ease-in-out infinite;
+        }
+        @keyframes shine {
+            0%, 100% {
+                box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.6);
+            }
         }
         .avatar:hover {
             transform: scale(1.08) rotate(5deg);
@@ -404,20 +258,22 @@
             display: inline-block;
         }
         .username::before {
-            content: '💎';
+            content: 'diamond';
             position: absolute;
             left: -20px;
             top: 50%;
             transform: translateY(-50%);
+            color: #000;
             font-size: 12px;
             animation: sparkle 2s ease-in-out infinite;
         }
         .username::after {
-            content: '💎';
+            content: 'diamond';
             position: absolute;
             right: -20px;
             top: 50%;
             transform: translateY(-50%);
+            color: #000;
             font-size: 12px;
             animation: sparkle 2s ease-in-out infinite 1s;
         }
@@ -453,6 +309,10 @@
         .bio::after {
             content: '|';
             animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
         .badges {
             display: flex;
@@ -566,7 +426,6 @@
             font-size: 16px;
             font-weight: 600;
             opacity: 0;
-            font-family: 'Courier New', monospace;
         }
        
         .view-counter.loaded {
@@ -782,35 +641,8 @@
 </head>
 <body>
     <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-text" id="welcomeText"></div>
+        <div class="welcome-text">welcome</div>
     </div>
-    
-    <div class="update-log-modal" id="updateLogModal">
-        <div class="update-log-content">
-            <h2 class="update-log-header">🎄 Update Log v4.1 🎄</h2>
-            <div class="update-log-section">
-                <h3>New Features</h3>
-                <ul>
-                    <li>Optimized snow effect with simple fuzzy dots for better performance</li>
-                    <li>Santa hat now properly positioned on top of profile picture</li>
-                    <li>Improved Discord avatar fetching with CORS proxy</li>
-                    <li>Major performance optimizations - reduced lag significantly</li>
-                    <li>Smoother animations and transitions</li>
-                </ul>
-            </div>
-            <div class="update-log-section">
-                <h3>Improvements</h3>
-                <ul>
-                    <li>Reduced animation overhead for better frame rates</li>
-                    <li>Optimized snow particle rendering</li>
-                    <li>Fixed Discord profile picture auto-update</li>
-                    <li>Better mobile performance</li>
-                </ul>
-            </div>
-            <button class="update-log-close" onclick="closeUpdateLog()">Got it!</button>
-        </div>
-    </div>
-    
     <video id="bgVideo" loop playsinline muted>
         <source src="assets/relevant.mp4" type="video/mp4">
     </video>
@@ -841,11 +673,6 @@
         <div class="card" id="card">
             <div class="profile-header">
                 <div class="avatar-wrapper">
-                    <div class="santa-hat">
-                        <div class="hat-body"></div>
-                        <div class="hat-trim"></div>
-                        <div class="hat-ball"></div>
-                    </div>
                     <div class="avatar" id="avatar"></div>
                 </div>
                 <div class="user-info">
@@ -871,7 +698,7 @@
                     <img src="assets/skimaskspin.gif" alt="YouTube">
                 </a>
             </div>
-            <div class="version">v4.1 @ margi</div>
+            <div class="version">v4.0 @ margi</div>
         </div>
     </div>
     <div class="view-counter">
@@ -882,146 +709,16 @@
         <i class="fas fa-cog"></i>
     </div>
     <script>
-        const DISCORD_USER_ID = '1084576683262230548';
         const card = document.getElementById('card');
         const avatar = document.getElementById('avatar');
         const bioElement = document.getElementById('bio');
         const viewCountElement = document.getElementById('viewCount');
         const welcomeScreen = document.getElementById('welcomeScreen');
-        const welcomeText = document.getElementById('welcomeText');
         const bgVideo = document.getElementById('bgVideo');
         const volumeBtn = document.getElementById('volumeBtn');
         const volumeIcon = document.getElementById('volumeIcon');
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeControl = document.getElementById('volumeControl');
-        const updateLogModal = document.getElementById('updateLogModal');
-
-        // Optimized Discord avatar fetching with CORS proxy
-        async function fetchDiscordAvatar() {
-            try {
-                // Try using CORS proxy for Discord Lookup API
-                const proxyUrl = 'https://corsproxy.io/?';
-                const apiUrl = `https://discordlookup.mesalytic.moe/v1/user/${DISCORD_USER_ID}`;
-                
-                const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.avatar && data.avatar.link) {
-                        avatar.style.backgroundImage = `url('${data.avatar.link}')`;
-                        console.log('✅ Discord avatar loaded via proxy');
-                        return;
-                    }
-                }
-            } catch (error) {
-                console.log('Proxy method failed, trying fallback');
-            }
-
-            // Fallback: Use meta tag
-            try {
-                const metaImage = document.querySelector('meta[property="og:image"]');
-                if (metaImage && metaImage.content) {
-                    avatar.style.backgroundImage = `url('${metaImage.content}')`;
-                    console.log('✅ Using avatar from meta tag');
-                }
-            } catch (error) {
-                console.error('Avatar loading failed:', error);
-            }
-        }
-        
-        fetchDiscordAvatar();
-        // Refresh every 10 minutes
-        setInterval(fetchDiscordAvatar, 10 * 60 * 1000);
-
-        // Optimized snow effect - limit number of snowflakes
-        let snowflakeCount = 0;
-        const maxSnowflakes = 30; // Reduced from unlimited
-        
-        function createSnowflake() {
-            if (snowflakeCount >= maxSnowflakes) return;
-            
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            snowflake.style.left = Math.random() * 100 + 'vw';
-            
-            const size = Math.random() * 3 + 2; // 2-5px
-            snowflake.style.width = size + 'px';
-            snowflake.style.height = size + 'px';
-            
-            const duration = Math.random() * 3 + 4; // 4-7s
-            const delay = Math.random() * 2;
-            
-            snowflake.style.animation = `fall ${duration}s linear ${delay}s forwards`;
-            
-            document.body.appendChild(snowflake);
-            snowflakeCount++;
-            
-            setTimeout(() => {
-                snowflake.remove();
-                snowflakeCount--;
-            }, (duration + delay) * 1000);
-        }
-        
-        // Create snowflakes less frequently
-        setInterval(createSnowflake, 300); // Every 300ms instead of 200ms
-
-        // Welcome screen typewriter
-        const welcomeTextStr = 'welcome';
-        let welcomeIndex = 0;
-        function typeWelcome() {
-            if (welcomeIndex < welcomeTextStr.length) {
-                welcomeText.textContent = welcomeTextStr.substring(0, welcomeIndex + 1);
-                welcomeIndex++;
-                setTimeout(typeWelcome, 150);
-            }
-        }
-        typeWelcome();
-
-        // Page title typewriter
-        const titleText = "@districtmargi";
-        let titleIndex = 0;
-        let titleForward = true;
-        
-        function typeTitle() {
-            if (titleForward) {
-                document.title = titleText.substring(0, titleIndex + 1);
-                titleIndex++;
-                if (titleIndex > titleText.length) {
-                    titleForward = false;
-                    setTimeout(typeTitle, 2000);
-                    return;
-                }
-            } else {
-                document.title = titleText.substring(0, titleIndex);
-                titleIndex--;
-                if (titleIndex < 0) {
-                    titleForward = true;
-                    titleIndex = 0;
-                    setTimeout(typeTitle, 500);
-                    return;
-                }
-            }
-            setTimeout(typeTitle, titleForward ? 100 : 50);
-        }
-        typeTitle();
-
-        // Update log management
-        const UPDATE_VERSION = 'v5.1';
-        function checkUpdateLog() {
-            const lastVersion = localStorage.getItem('lastSeenVersion');
-            if (lastVersion !== UPDATE_VERSION) {
-                setTimeout(() => {
-                    updateLogModal.classList.add('show');
-                }, 1000);
-            }
-        }
-        
-        function closeUpdateLog() {
-            updateLogModal.classList.remove('show');
-            localStorage.setItem('lastSeenVersion', UPDATE_VERSION);
-        }
-        
-        window.closeUpdateLog = closeUpdateLog;
 
         volumeSlider.addEventListener('input', (e) => {
             const volume = e.target.value / 100;
@@ -1072,10 +769,9 @@
                 viewCountElement.parentElement.classList.add('loaded');
                 document.getElementById('settingsBtn').classList.add('loaded');
                 volumeControl.classList.add('loaded');
-                checkUpdateLog();
             }, 800);
         }
-        setTimeout(hideWelcome, 4000);
+        setTimeout(hideWelcome, 3000);
         welcomeScreen.addEventListener('click', hideWelcome);
 
         async function generateHWID() {
@@ -1146,7 +842,7 @@
                
             } catch (error) {
                 console.error('View counter error:', error);
-                viewCountElement.textContent = '0';
+                viewCountElement.textContent = '-67';
             }
         }
 
@@ -1193,22 +889,18 @@
         }
         setTimeout(typeBio, 800);
 
-        // Optimized card tilt with requestAnimationFrame throttling
         let targetX = 0, targetY = 0;
         let currentX = 0, currentY = 0;
         let isHovering = false;
-        let rafId = null;
        
         card.addEventListener('mouseenter', () => {
             isHovering = true;
         });
-        
         card.addEventListener('mouseleave', () => {
             isHovering = false;
             targetX = 0;
             targetY = 0;
         });
-        
         card.addEventListener('mousemove', (e) => {
             if (!isHovering) return;
            
@@ -1230,7 +922,7 @@
                 rotateX(${-currentY}deg)
             `;
            
-            rafId = requestAnimationFrame(animate);
+            requestAnimationFrame(animate);
         }
         animate();
 
@@ -1242,6 +934,23 @@
         document.getElementById('settingsBtn').addEventListener('click', () => {
             alert('Settings under revamp');
         });
+
+        let title = "@districtmargi";
+        let i = 0;
+        let forward = true;
+       
+        setInterval(() => {
+            if (forward) {
+                document.title = title.substring(0, i);
+                i++;
+                if (i > title.length) forward = false;
+            } else {
+                document.title = title.substring(0, i);
+                i--;
+                if (i < 0) forward = true;
+            }
+        }, 150);
     </script>
 </body>
 </html>
+
