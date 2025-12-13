@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@districtmargi</title>
     <link rel="icon" type="image/png" href="assets/icon.png">
-   
+  
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://swaqq.xyz/">
     <meta property="og:title" content="@districtmargi">
     <meta property="og:description" content="i got swag">
-    <meta property="og:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/3c6bb309bf6e6ab6cca8b18cea5a156e.webp?size=1024">
+    <meta property="og:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/a_.webp?size=1024">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://swaqq.xyz/">
     <meta property="twitter:title" content="@districtmargi">
     <meta property="twitter:description" content="i got swag">
-    <meta property="twitter:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/3c6bb309bf6e6ab6cca8b18cea5a156e.webp?size=1024">
-   
+    <meta property="twitter:image" content="https://cdn.discordapp.com/avatars/1084576683262230548/a_.webp?size=1024">
+  
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -36,7 +36,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8);
+            background: linear-gradient(135deg, #333333, #c0c0c0, #888888, #ffffff, #666666);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
             padding: 20px;
@@ -47,7 +47,7 @@
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
         }
-        video {
+        iframe#bgVideo {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -57,8 +57,9 @@
             height: auto;
             transform: translate(-50%, -50%);
             z-index: -2;
-            opacity: 0.6;
-            filter: brightness(0.8) contrast(1.1);
+            opacity: 0.4;
+            filter: brightness(1.1) contrast(1.2);
+            pointer-events: none;
         }
         .scanlines {
             position: fixed;
@@ -120,7 +121,7 @@
         .welcome-text {
             font-size: 72px;
             font-weight: 700;
-            background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8, #8B0000);
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff, #666666);
             background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
@@ -148,7 +149,7 @@
             position: relative;
             background-clip: padding-box;
         }
-       
+      
         .card.loaded {
             animation: fadeIn 0.6s ease forwards;
         }
@@ -158,7 +159,7 @@
             inset: 0;
             border-radius: 24px;
             padding: 3px;
-            background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8, #8B0000, #C0C0C0, #FF0000);
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff, #666666, #c0c0c0, #888888);
             background-size: 300% 100%;
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -192,7 +193,7 @@
             width: 90px;
             height: 90px;
             border-radius: 50%;
-            background: url('https://cdn.discordapp.com/avatars/1084576683262230548/3c6bb309bf6e6ab6cca8b18cea5a156e.webp?size=1024') center/cover;
+            background: center/cover no-repeat;
             border: 3px solid rgba(255, 255, 255, 0.2);
             flex-shrink: 0;
             transition: transform 0.3s ease;
@@ -227,6 +228,17 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        .santa-hat {
+            position: absolute;
+            top: -30px;
+            left: -20px;
+            width: 100px;
+            height: 100px;
+            background: url('assets/santa_hat.png') center/contain no-repeat;
+            pointer-events: none;
+            transform: rotate(-20deg);
+            z-index: 4;
+        }
         .user-info {
             flex: 1;
         }
@@ -237,7 +249,7 @@
             margin-bottom: 6px;
             letter-spacing: 2px;
             text-transform: uppercase;
-            background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8);
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -246,7 +258,7 @@
         .username {
             font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8, #8B0000);
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff, #666666);
             background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
@@ -338,7 +350,7 @@
             -webkit-user-select: none;
         }
         .badge span {
-            background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8);
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -350,7 +362,7 @@
         }
         .badge i {
             font-size: 11px;
-            background: linear-gradient(90deg, #8B0000, #C0C0C0, #FF0000, #E8E8E8);
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -427,7 +439,7 @@
             font-weight: 600;
             opacity: 0;
         }
-       
+      
         .view-counter.loaded {
             animation: fadeIn 0.6s ease forwards 0.2s;
         }
@@ -464,158 +476,41 @@
             z-index: 100;
             opacity: 0;
         }
-       
+      
         .settings-btn.loaded {
             animation: fadeIn 0.6s ease forwards 0.3s;
         }
-        .volume-control {
+
+        /* Snow effect */
+        .snow-container {
             position: fixed;
-            top: 24px;
-            left: 24px;
-            z-index: 100;
-            opacity: 0;
-        }
-        .volume-control.loaded {
-            animation: fadeIn 0.6s ease forwards 0.3s;
-        }
-        .volume-btn {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        .volume-btn:hover {
-            transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-        .volume-btn.muted {
-            background: rgba(139, 0, 0, 0.3);
-            border-color: rgba(255, 0, 0, 0.4);
-        }
-        .volume-btn.muted:hover {
-            background: rgba(139, 0, 0, 0.4);
-        }
-        .volume-slider-container {
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%) translateY(10px);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            padding: 28px 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            display: flex;
-            align-items: center;
-        }
-        .volume-control:hover .volume-slider-container,
-        .volume-control.active .volume-slider-container {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-            pointer-events: all;
-        }
-        .volume-slider-wrapper {
-            position: relative;
-            width: 32px;
-            height: 140px;
-        }
-        .volume-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 140px;
-            height: 8px;
-            background: linear-gradient(90deg, #500000, #8B0000, #B22222, #DC143C);
-            border-radius: 4px;
-            outline: none;
-            cursor: pointer;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-90deg);
-            transform-origin: center;
-        }
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(135deg, #DC143C, #FF0000, #FF4444);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(220, 20, 60, 0.4), 0 0 0 2px rgba(255, 0, 0, 0.2);
-            transition: all 0.2s ease;
-        }
-        .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.6), 0 0 0 3px rgba(255, 0, 0, 0.3);
-        }
-        .volume-slider::-moz-range-track {
-            width: 140px;
-            height: 8px;
-            background: linear-gradient(90deg, #500000, #8B0000, #B22222, #DC143C);
-            border-radius: 4px;
-        }
-        .volume-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(135deg, #DC143C, #FF0000, #FF4444);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(220, 20, 60, 0.4), 0 0 0 2px rgba(255, 0, 0, 0.2);
-        }
-        .volume-ticks {
-            position: absolute;
             top: 0;
-            left: 100%;
-            width: 30px;
+            left: 0;
+            width: 100%;
             height: 100%;
             pointer-events: none;
-            margin-left: 12px;
+            z-index: 2;
+            overflow: hidden;
         }
-        .tick {
+        .snowflake {
             position: absolute;
-            left: 0;
-            width: 10px;
-            height: 1px;
-            background: rgba(255,255,255,0.45);
+            top: -10px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            filter: blur(1.5px);
+            animation: fall linear infinite;
+            transition: opacity 0.5s ease;
         }
-        .tick-label {
-            position: absolute;
-            left: 14px;
-            font-size: 9px;
-            color: rgba(255,255,255,0.7);
-            font-family: 'Courier New', monospace;
-            white-space: nowrap;
+        @keyframes fall {
+            0% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
         }
-        .tick-0   { top: 100%; margin-top: -0.5px; }
-        .tick-25  { top: 75%; margin-top: -0.5px; }
-        .tick-50  { top: 50%; margin-top: -0.5px; }
-        .tick-75  { top: 25%; margin-top: -0.5px; }
-        .tick-100 { top: 0%; margin-top: -0.5px; }
-        .tick-label-0   { top: 100%; margin-top: 2px; }
-        .tick-label-25  { top: 75%; margin-top: -6px; }
-        .tick-label-50  { top: 50%; margin-top: -6px; }
-        .tick-label-75  { top: 25%; margin-top: -6px; }
-        .tick-label-100 { top: 0%; margin-top: -12px; }
-        .settings-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
+
         @media (max-width: 600px) {
             .card {
                 padding: 32px 24px;
@@ -636,6 +531,12 @@
             .welcome-text {
                 font-size: 48px;
             }
+            .santa-hat {
+                top: -35px;
+                left: -25px;
+                width: 120px;
+                height: 120px;
+            }
         }
     </style>
 </head>
@@ -643,37 +544,17 @@
     <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-text">welcome</div>
     </div>
-    <video id="bgVideo" loop playsinline muted>
-        <source src="assets/relevant.mp4" type="video/mp4">
-    </video>
+    <iframe id="bgVideo" src="https://www.youtube.com/embed/CMEaHVCVW9o?autoplay=1&mute=1&loop=1&playlist=CMEaHVCVW9o&controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&enablejsapi=1" frameborder="0" allow="autoplay"></iframe>
     <div class="scanlines"></div>
-    <div class="volume-control" id="volumeControl">
-        <div class="volume-btn" id="volumeBtn">
-            <i class="fas fa-volume-up" id="volumeIcon"></i>
-        </div>
-        <div class="volume-slider-container">
-            <div class="volume-slider-wrapper">
-                <input type="range" min="0" max="100" value="30" class="volume-slider" id="volumeSlider">
-                <div class="volume-ticks">
-                    <div class="tick tick-0"></div>
-                    <div class="tick tick-25"></div>
-                    <div class="tick tick-50"></div>
-                    <div class="tick tick-75"></div>
-                    <div class="tick tick-100"></div>
-                    <div class="tick-label tick-label-0">0</div>
-                    <div class="tick-label tick-label-25">25</div>
-                    <div class="tick-label tick-label-50">50</div>
-                    <div class="tick-label tick-label-75">75</div>
-                    <div class="tick-label tick-label-100">100</div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+    <div class="snow-container" id="snowContainer"></div>
+
     <div class="container">
         <div class="card" id="card">
             <div class="profile-header">
                 <div class="avatar-wrapper">
                     <div class="avatar" id="avatar"></div>
+                    <div class="santa-hat"></div>
                 </div>
                 <div class="user-info">
                     <div class="uid">UID 0</div>
@@ -703,7 +584,7 @@
     </div>
     <div class="view-counter">
         <i class="fas fa-eye"></i>
-        <span id="viewCount">0</span>
+        <span id="viewCount">Loading...</span>
     </div>
     <div class="settings-btn" id="settingsBtn">
         <i class="fas fa-cog"></i>
@@ -714,156 +595,59 @@
         const bioElement = document.getElementById('bio');
         const viewCountElement = document.getElementById('viewCount');
         const welcomeScreen = document.getElementById('welcomeScreen');
-        const bgVideo = document.getElementById('bgVideo');
-        const volumeBtn = document.getElementById('volumeBtn');
-        const volumeIcon = document.getElementById('volumeIcon');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumeControl = document.getElementById('volumeControl');
 
-        volumeSlider.addEventListener('input', (e) => {
-            const volume = e.target.value / 100;
-            bgVideo.volume = volume;
-            volumeControl.classList.add('active');
-           
-            if (volume === 0) {
-                volumeBtn.classList.add('muted');
-                volumeIcon.className = 'fas fa-volume-mute';
-            } else {
-                volumeBtn.classList.remove('muted');
-                if (volume < 0.5) {
-                    volumeIcon.className = 'fas fa-volume-down';
-                } else {
-                    volumeIcon.className = 'fas fa-volume-up';
+        // Dynamic Discord avatar
+        const userId = '1084576683262230548';
+        const avatarUrl = `https://cdn.discordapp.com/avatars/${userId}/a_.webp?size=256`;
+        avatar.style.backgroundImage = `url('${avatarUrl}')`;
+
+        // Real view counter (CountAPI)
+        fetch('https://api.countapi.xyz/hit/swaqq.xyz/visits')
+            .then(res => res.json())
+            .then(data => {
+                viewCountElement.textContent = data.value.toLocaleString();
+            })
+            .catch(() => {
+                viewCountElement.textContent = '?';
+            });
+
+        // Snow effect
+        const snowContainer = document.getElementById('snowContainer');
+        for (let i = 0; i < 80; i++) {
+            const flake = document.createElement('div');
+            flake.classList.add('snowflake');
+            const size = Math.random() * 6 + 4;
+            flake.style.width = `${size}px`;
+            flake.style.height = `${size}px`;
+            flake.style.left = `${Math.random() * 100}vw`;
+            flake.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            flake.style.animationDelay = `${Math.random() * 10}s`;
+            flake.style.opacity = Math.random() * 0.4 + 0.5;
+            snowContainer.appendChild(flake);
+        }
+
+        // Fade snowflakes near bottom
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.boundingClientRect.top > window.innerHeight - 100) {
+                    entry.target.style.opacity = '0';
                 }
-            }
-        });
+            });
+        }, { rootMargin: '0px 0px -100px 0px' });
 
-        volumeBtn.addEventListener('click', () => {
-            if (bgVideo.muted || bgVideo.volume === 0) {
-                bgVideo.muted = false;
-                bgVideo.volume = volumeSlider.value / 100 || 0.3;
-                volumeSlider.value = bgVideo.volume * 100;
-                volumeBtn.classList.remove('muted');
-                volumeIcon.className = bgVideo.volume < 0.5 ? 'fas fa-volume-down' : 'fas fa-volume-up';
-            } else {
-                bgVideo.muted = true;
-                volumeBtn.classList.add('muted');
-                volumeIcon.className = 'fas fa-volume-mute';
-            }
-            volumeControl.classList.add('active');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!volumeControl.contains(e.target)) {
-                volumeControl.classList.remove('active');
-            }
-        });
+        document.querySelectorAll('.snowflake').forEach(flake => observer.observe(flake));
 
         function hideWelcome() {
             welcomeScreen.classList.add('fade-out');
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
-                bgVideo.muted = false;
-                bgVideo.play();
                 card.classList.add('loaded');
                 viewCountElement.parentElement.classList.add('loaded');
                 document.getElementById('settingsBtn').classList.add('loaded');
-                volumeControl.classList.add('loaded');
             }, 800);
         }
         setTimeout(hideWelcome, 3000);
         welcomeScreen.addEventListener('click', hideWelcome);
-
-        async function generateHWID() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'top';
-            ctx.font = '14px Arial';
-            ctx.fillText('fingerprint', 2, 2);
-            const canvasData = canvas.toDataURL();
-           
-            const fingerprint = {
-                userAgent: navigator.userAgent,
-                language: navigator.language,
-                screen: `${screen.width}x${screen.height}`,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                canvas: canvasData
-            };
-           
-            const str = JSON.stringify(fingerprint);
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                const char = str.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return 'hwid_' + Math.abs(hash).toString(36);
-        }
-
-        async function initViewCounter() {
-            try {
-                const hwid = await generateHWID();
-                const VIEWS_KEY = 'profile_views';
-                const HWID_KEY = hwid;
-           
-                let totalViews = 0;
-                try {
-                    const result = await window.storage.get(VIEWS_KEY, true);
-                    totalViews = result ? parseInt(result.value) : 0;
-                } catch (error) {
-                    totalViews = 0;
-                }
-               
-                let hwidData = { count: 0, lastReset: Date.now() };
-                try {
-                    const result = await window.storage.get(HWID_KEY, false);
-                    if (result) {
-                        hwidData = JSON.parse(result.value);
-                    }
-                } catch (error) {
-                    hwidData = { count: 0, lastReset: Date.now() };
-                }
-               
-                const twelveHours = 12 * 60 * 60 * 1000;
-                if (Date.now() - hwidData.lastReset > twelveHours) {
-                    hwidData.count = 0;
-                    hwidData.lastReset = Date.now();
-                }
-               
-                if (hwidData.count < 3) {
-                    totalViews++;
-                    hwidData.count++;
-                   
-                    await window.storage.set(VIEWS_KEY, totalViews.toString(), true);
-                    await window.storage.set(HWID_KEY, JSON.stringify(hwidData), false);
-                }
-               
-                animateCounter(totalViews);
-               
-            } catch (error) {
-                console.error('View counter error:', error);
-                viewCountElement.textContent = '-67';
-            }
-        }
-
-        function animateCounter(target) {
-            let current = 0;
-            const duration = 1500;
-            const increment = target / (duration / 16);
-           
-            function update() {
-                current += increment;
-                if (current < target) {
-                    viewCountElement.textContent = Math.floor(current).toLocaleString();
-                    requestAnimationFrame(update);
-                } else {
-                    viewCountElement.textContent = target.toLocaleString();
-                }
-            }
-           
-            update();
-        }
-        initViewCounter();
 
         const bioText = "i got swag";
         let bioIndex = 0;
@@ -892,7 +676,7 @@
         let targetX = 0, targetY = 0;
         let currentX = 0, currentY = 0;
         let isHovering = false;
-       
+      
         card.addEventListener('mouseenter', () => {
             isHovering = true;
         });
@@ -903,25 +687,24 @@
         });
         card.addEventListener('mousemove', (e) => {
             if (!isHovering) return;
-           
+          
             const rect = card.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-           
+          
             targetX = (e.clientX - centerX) / 10;
             targetY = (e.clientY - centerY) / 10;
         });
-
         function animate() {
             currentX += (targetX - currentX) * 0.2;
             currentY += (targetY - currentY) * 0.2;
-           
+          
             card.style.transform = `
                 perspective(1000px)
                 rotateY(${currentX}deg)
                 rotateX(${-currentY}deg)
             `;
-           
+          
             requestAnimationFrame(animate);
         }
         animate();
@@ -938,7 +721,7 @@
         let title = "@districtmargi";
         let i = 0;
         let forward = true;
-       
+      
         setInterval(() => {
             if (forward) {
                 document.title = title.substring(0, i);
@@ -953,4 +736,3 @@
     </script>
 </body>
 </html>
-
