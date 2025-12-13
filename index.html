@@ -69,13 +69,7 @@
             height: 100%;
             z-index: -1;
             pointer-events: none;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
             animation: scanline 8s linear infinite;
         }
         .scanlines::before {
@@ -85,27 +79,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 0) 50%,
-                rgba(0, 0, 0, 0.05) 51%,
-                rgba(0, 0, 0, 0.05) 100%
-            );
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.05) 100%);
             animation: flicker 0.15s infinite;
         }
-        @keyframes scanline {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(10px); }
-        }
-        @keyframes flicker {
-            0% { opacity: 0.8; }
-            50% { opacity: 1; }
-            100% { opacity: 0.8; }
-        }
+        @keyframes scanline { 0% { transform: translateY(0); } 100% { transform: translateY(10px); } }
+        @keyframes flicker { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
         .welcome-screen {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0,0,0,0.95);
             backdrop-filter: blur(20px);
             display: flex;
             align-items: center;
@@ -114,10 +96,7 @@
             cursor: pointer;
             transition: opacity 0.8s ease;
         }
-        .welcome-screen.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
+        .welcome-screen.fade-out { opacity: 0; pointer-events: none; }
         .welcome-text {
             font-size: 72px;
             font-weight: 700;
@@ -129,30 +108,23 @@
             animation: scrollGradient 3s linear infinite;
             letter-spacing: 4px;
         }
-        .container {
-            perspective: 1000px;
-            z-index: 1;
-        }
+        .container { perspective: 1000px; z-index: 1; }
         .card {
-            background: rgba(0, 0, 0, 0.15);
+            background: rgba(0,0,0,0.15);
             backdrop-filter: blur(15px);
             border: 3px solid transparent;
             border-radius: 24px;
-            padding: 32px 40px;
-            padding-bottom: 60px;
+            padding: 32px 40px 60px;
             max-width: 520px;
             width: 100%;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
             opacity: 0;
             position: relative;
             background-clip: padding-box;
         }
-      
-        .card.loaded {
-            animation: fadeIn 0.6s ease forwards;
-        }
+        .card.loaded { animation: fadeIn 0.6s ease forwards; }
         .card::before {
             content: '';
             position: absolute;
@@ -163,71 +135,40 @@
             background-size: 300% 100%;
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask-composite: exclude;
             animation: borderScroll 4s linear infinite;
             pointer-events: none;
             z-index: -1;
         }
-        @keyframes borderScroll {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 300% 50%; }
-        }
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .avatar-wrapper {
-            position: relative;
-        }
+        @keyframes borderScroll { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        .profile-header { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .avatar-wrapper { position: relative; }
         .avatar {
             width: 90px;
             height: 90px;
             border-radius: 50%;
             background: url('assets/profile.png') center/cover no-repeat;
-            border: 3px solid rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255,255,255,0.2);
             flex-shrink: 0;
             transition: transform 0.3s ease;
             cursor: pointer;
             position: relative;
             animation: shine 8s ease-in-out infinite;
         }
-        @keyframes shine {
-            0%, 100% {
-                box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.6);
-            }
-        }
-        .avatar:hover {
-            transform: scale(1.08) rotate(5deg);
-        }
+        @keyframes shine { 0%,100% { box-shadow: 0 0 0 rgba(255,255,255,0); } 50% { box-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 60px rgba(255,255,255,0.6); } }
+        .avatar:hover { transform: scale(1.08) rotate(5deg); }
         .avatar::after {
             content: '';
             position: absolute;
             inset: -4px;
             border-radius: 50%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
             opacity: 0;
             transition: opacity 0.3s;
         }
-        .avatar:hover::after {
-            opacity: 1;
-            animation: spin 2s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .avatar:hover::after { opacity: 1; animation: spin 2s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .santa-hat {
             position: absolute;
             top: -30px;
@@ -239,12 +180,10 @@
             transform: rotate(-20deg);
             z-index: 4;
         }
-        .user-info {
-            flex: 1;
-        }
+        .user-info { flex: 1; }
         .uid {
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255,255,255,0.5);
             font-weight: 600;
             margin-bottom: 6px;
             letter-spacing: 2px;
@@ -265,89 +204,34 @@
             -webkit-text-fill-color: transparent;
             animation: scrollGradient 3s linear infinite;
             margin-bottom: 4px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            position: relative;
-            display: inline-block;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
-        .username::before {
-            content: 'diamond';
-            position: absolute;
-            left: -20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #000;
-            font-size: 12px;
-            animation: sparkle 2s ease-in-out infinite;
-        }
-        .username::after {
-            content: 'diamond';
-            position: absolute;
-            right: -20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #000;
-            font-size: 12px;
-            animation: sparkle 2s ease-in-out infinite 1s;
-        }
-        @keyframes scrollGradient {
-            0% {
-                background-position: 0% 50%;
-            }
-            100% {
-                background-position: 200% 50%;
-            }
-        }
-        @keyframes sparkle {
-            0%, 100% {
-                opacity: 0.3;
-                transform: translateY(-50%) scale(0.8);
-            }
-            50% {
-                opacity: 1;
-                transform: translateY(-50%) scale(1.2);
-            }
-        }
-        .handle {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.5);
-        }
+        @keyframes scrollGradient { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        .handle { font-size: 14px; color: rgba(255,255,255,0.5); }
         .bio {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255,255,255,0.8);
             font-size: 15px;
             line-height: 1.6;
             margin-bottom: 18px;
             min-height: 24px;
         }
-        .bio::after {
-            content: '|';
-            animation: blink 1s step-end infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        .badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 18px;
-        }
+        .bio::after { content: '|'; animation: blink 1s step-end infinite; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+        .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
         .badge {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255,255,255,0.08);
             padding: 8px 14px;
             border-radius: 14px;
             font-size: 12px;
             display: flex;
             align-items: center;
             gap: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
             transition: all 0.2s ease;
             font-weight: 600;
             letter-spacing: 1px;
             text-transform: uppercase;
             font-family: 'Courier New', monospace;
-            user-select: none;
-            -webkit-user-select: none;
         }
         .badge span {
             background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
@@ -355,11 +239,7 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .badge:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); border-color: rgba(255,255,255,0.2); }
         .badge i {
             font-size: 11px;
             background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
@@ -367,59 +247,36 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .social {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            justify-content: center;
-        }
+        .social { display: flex; gap: 12px; margin-bottom: 20px; justify-content: center; }
         .social-icon {
             width: 52px;
             height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
             border-radius: 14px;
-            text-decoration: none;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
-        .social-icon::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .social-icon:hover::before {
-            opacity: 1;
-        }
         .social-icon:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255,255,255,0.15);
             transform: translateY(-4px);
-            border-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255,255,255,0.25);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
-        .social-icon img {
-            width: 28px;
-            height: 28px;
-            position: relative;
-            z-index: 1;
-        }
+        .social-icon img { width: 28px; height: 28px; z-index: 1; }
         .version {
             position: absolute;
             bottom: 20px;
             left: 20px;
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255,255,255,0.4);
             font-family: 'Courier New', monospace;
             font-weight: 600;
             letter-spacing: 1px;
-            user-select: none;
         }
         .view-counter {
             position: fixed;
@@ -428,9 +285,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255,255,255,0.15);
             padding: 12px 18px;
             border-radius: 50px;
             z-index: 100;
@@ -439,24 +296,9 @@
             font-weight: 600;
             opacity: 0;
         }
-      
-        .view-counter.loaded {
-            animation: fadeIn 0.6s ease forwards 0.2s;
-        }
-        .view-counter i {
-            font-size: 18px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.7;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.1);
-            }
-        }
+        .view-counter.loaded { animation: fadeIn 0.6s ease forwards 0.2s; }
+        .view-counter i { font-size: 18px; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
         .settings-btn {
             position: fixed;
             bottom: 24px;
@@ -464,9 +306,9 @@
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255,255,255,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -476,12 +318,7 @@
             z-index: 100;
             opacity: 0;
         }
-      
-        .settings-btn.loaded {
-            animation: fadeIn 0.6s ease forwards 0.3s;
-        }
-
-        /* Snow effect */
+        .settings-btn.loaded { animation: fadeIn 0.6s ease forwards 0.3s; }
         .snow-container {
             position: fixed;
             top: 0;
@@ -502,41 +339,14 @@
             animation: fall linear infinite;
             transition: opacity 0.5s ease;
         }
-        @keyframes fall {
-            0% {
-                transform: translateY(-10px);
-            }
-            100% {
-                transform: translateY(100vh);
-            }
-        }
-
+        @keyframes fall { 0% { transform: translateY(-10px); } 100% { transform: translateY(100vh); } }
         @media (max-width: 600px) {
-            .card {
-                padding: 32px 24px;
-            }
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .avatar {
-                width: 100px;
-                height: 100px;
-            }
-            .view-counter {
-                bottom: 100px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            .welcome-text {
-                font-size: 48px;
-            }
-            .santa-hat {
-                top: -35px;
-                left: -45px;
-                width: 120px;
-                height: 120px;
-            }
+            .card { padding: 32px 24px; }
+            .profile-header { flex-direction: column; text-align: center; }
+            .avatar { width: 100px; height: 100px; }
+            .view-counter { bottom: 100px; left: 50%; transform: translateX(-50%); }
+            .welcome-text { font-size: 48px; }
+            .santa-hat { top: -35px; left: -45px; width: 120px; height: 120px; }
         }
     </style>
 </head>
@@ -548,9 +358,7 @@
         <source src="assets/stopme.mp4" type="video/mp4">
     </video>
     <div class="scanlines"></div>
-
     <div class="snow-container" id="snowContainer"></div>
-
     <div class="container">
         <div class="card" id="card">
             <div class="profile-header">
@@ -571,15 +379,9 @@
                 <span class="badge"><i class="fas fa-shield-alt"></i><span>Staff</span></span>
             </div>
             <div class="social">
-                <a href="https://www.roblox.com/users/8156657037/profile" target="_blank" class="social-icon">
-                    <img src="assets/diamondspin.gif" alt="Roblox">
-                </a>
-                <a href="https://discord.com/users/1084576683262230548" target="_blank" class="social-icon">
-                    <img src="assets/gunspin.gif" alt="Discord">
-                </a>
-                <a href="https://www.youtube.com/@faintche" target="_blank" class="social-icon">
-                    <img src="assets/skimaskspin.gif" alt="YouTube">
-                </a>
+                <a href="https://www.roblox.com/users/8156657037/profile" target="_blank" class="social-icon"><img src="assets/diamondspin.gif" alt="Roblox"></a>
+                <a href="https://discord.com/users/1084576683262230548" target="_blank" class="social-icon"><img src="assets/gunspin.gif" alt="Discord"></a>
+                <a href="https://www.youtube.com/@faintche" target="_blank" class="social-icon"><img src="assets/skimaskspin.gif" alt="YouTube"></a>
             </div>
             <div class="version">v4.0 @ margi</div>
         </div>
@@ -596,18 +398,13 @@
         const bioElement = document.getElementById('bio');
         const viewCountElement = document.getElementById('viewCount');
         const welcomeScreen = document.getElementById('welcomeScreen');
+        const bgVideo = document.getElementById('bgVideo');
 
-        // Real view counter
         fetch('https://api.countapi.xyz/hit/swaqq.xyz/visits')
             .then(res => res.json())
-            .then(data => {
-                viewCountElement.textContent = data.value.toLocaleString();
-            })
-            .catch(() => {
-                viewCountElement.textContent = '?';
-            });
+            .then(data => viewCountElement.textContent = data.value.toLocaleString())
+            .catch(() => viewCountElement.textContent = '?');
 
-        // Snow effect
         const snowContainer = document.getElementById('snowContainer');
         for (let i = 0; i < 80; i++) {
             const flake = document.createElement('div');
@@ -622,21 +419,18 @@
             snowContainer.appendChild(flake);
         }
 
-        // Fade near bottom
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
-                if (entry.boundingClientRect.top > window.innerHeight - 100) {
-                    entry.target.style.opacity = '0';
-                }
+                if (entry.boundingClientRect.top > window.innerHeight - 100) entry.target.style.opacity = '0';
             });
         }, { rootMargin: '0px 0px -100px 0px' });
-
         document.querySelectorAll('.snowflake').forEach(flake => observer.observe(flake));
 
         function hideWelcome() {
             welcomeScreen.classList.add('fade-out');
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
+                bgVideo.play();
                 card.classList.add('loaded');
                 viewCountElement.parentElement.classList.add('loaded');
                 document.getElementById('settingsBtn').classList.add('loaded');
@@ -654,10 +448,7 @@
                 bioIndex++;
                 setTimeout(typeBio, 100);
             } else if (!isDeleting && bioIndex === bioText.length) {
-                setTimeout(() => {
-                    isDeleting = true;
-                    typeBio();
-                }, 2000);
+                setTimeout(() => { isDeleting = true; typeBio(); }, 2000);
             } else if (isDeleting && bioIndex > 0) {
                 bioElement.textContent = bioText.substring(0, bioIndex - 1);
                 bioIndex--;
@@ -669,38 +460,19 @@
         }
         setTimeout(typeBio, 800);
 
-        let targetX = 0, targetY = 0;
-        let currentX = 0, currentY = 0;
-        let isHovering = false;
-      
-        card.addEventListener('mouseenter', () => {
-            isHovering = true;
-        });
-        card.addEventListener('mouseleave', () => {
-            isHovering = false;
-            targetX = 0;
-            targetY = 0;
-        });
-        card.addEventListener('mousemove', (e) => {
+        let targetX = 0, targetY = 0, currentX = 0, currentY = 0, isHovering = false;
+        card.addEventListener('mouseenter', () => isHovering = true);
+        card.addEventListener('mouseleave', () => { isHovering = false; targetX = targetY = 0; });
+        card.addEventListener('mousemove', e => {
             if (!isHovering) return;
-          
             const rect = card.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-          
-            targetX = (e.clientX - centerX) / 10;
-            targetY = (e.clientY - centerY) / 10;
+            targetX = (e.clientX - rect.left - rect.width / 2) / 10;
+            targetY = (e.clientY - rect.top - rect.height / 2) / 10;
         });
         function animate() {
             currentX += (targetX - currentX) * 0.2;
             currentY += (targetY - currentY) * 0.2;
-          
-            card.style.transform = `
-                perspective(1000px)
-                rotateY(${currentX}deg)
-                rotateX(${-currentY}deg)
-            `;
-          
+            card.style.transform = `perspective(1000px) rotateY(${currentX}deg) rotateX(${-currentY}deg)`;
             requestAnimationFrame(animate);
         }
         animate();
@@ -710,24 +482,13 @@
             setTimeout(() => document.getElementById('avatar').style.transform = '', 600);
         });
 
-        document.getElementById('settingsBtn').addEventListener('click', () => {
-            alert('Settings under revamp');
-        });
+        document.getElementById('settingsBtn').addEventListener('click', () => alert('Settings under revamp'));
 
-        let title = "@districtmargi";
-        let i = 0;
-        let forward = true;
-      
+        let title = "@districtmargi", i = 0, forward = true;
         setInterval(() => {
-            if (forward) {
-                document.title = title.substring(0, i);
-                i++;
-                if (i > title.length) forward = false;
-            } else {
-                document.title = title.substring(0, i);
-                i--;
-                if (i < 0) forward = true;
-            }
+            document.title = title.substring(0, forward ? ++i : --i);
+            if (i > title.length) forward = false;
+            if (i < 1) forward = true;
         }, 150);
     </script>
 </body>
