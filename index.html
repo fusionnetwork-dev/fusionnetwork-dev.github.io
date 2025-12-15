@@ -131,10 +131,19 @@
         .uid {
             font-family: 'Courier New', monospace;
             font-size: 14px;
-            color: #fff;
             font-weight: 600;
             margin-bottom: 6px;
             letter-spacing: 2px;
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #uidText {
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .username {
             font-size: 28px;
@@ -149,7 +158,13 @@
         }
         @keyframes scrollGradient { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         .handle { font-size: 14px; color: rgba(255,255,255,0.7); }
-        .bio { color: rgba(255,255,255,0.9); font-size: 15px; line-height: 1.6; margin-bottom: 18px; }
+        .bio { 
+            font-family: 'Courier New', monospace;
+            color: rgba(255,255,255,0.9); 
+            font-size: 15px; 
+            line-height: 1.6; 
+            margin-bottom: 18px; 
+        }
         .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
         .badge {
             background: rgba(255,255,255,0.1);
@@ -164,6 +179,12 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             font-family: 'Courier New', monospace;
+        }
+        .badge span, .badge i {
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .social { display: flex; gap: 12px; margin-bottom: 20px; justify-content: center; }
         .social-icon { width: 52px; height: 52px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; transition: all 0.3s ease; }
@@ -241,7 +262,7 @@
                     <div class="santa-hat"></div>
                 </div>
                 <div class="user-info">
-                    <div class="uid" id="uid">UID: <span id="uidText">LOADING</span></div>
+                    <div class="uid">UID: <span id="uidText">0000</span></div>
                     <h1 class="username">margi</h1>
                     <p class="handle">@districtmargi</p>
                 </div>
@@ -344,15 +365,15 @@
         }
         setTimeout(typeBio, 1000);
 
-        // Scrambling UID
+        // Fast scrambling UID - 4 characters
         const uidText = document.getElementById('uidText');
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         function scramble() {
             let str = '';
-            for (let j = 0; j < 12; j++) str += chars[Math.floor(Math.random() * chars.length)];
+            for (let j = 0; j < 4; j++) str += chars[Math.floor(Math.random() * chars.length)];
             uidText.textContent = str;
         }
-        setInterval(scramble, 100);
+        setInterval(scramble, 50);
         scramble();
 
         // Snow with mouse wind, less snow, whiter/fuzzier, ground fade
