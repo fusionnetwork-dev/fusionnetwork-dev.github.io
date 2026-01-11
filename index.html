@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@iramasu</title>
+    <title>@freemiu</title>
     <link rel="icon" type="image/png" href="assets/icon.png">
  
     <meta property="og:type" content="website">
@@ -114,24 +114,97 @@
         .avatar {
             width: 90px; height: 90px;
             border-radius: 50%;
-            background: url('assets/profile.png') center/cover no-repeat;
+            background: url('https://cdn.discordapp.com/avatars/1084576683262230548/e0c3255084d35702ff58886bf1e922f7.webp?size=1024') center/cover no-repeat;
             border: 3px solid rgba(255,255,255,0.2);
             flex-shrink: 0;
             transition: transform 0.3s ease;
             cursor: pointer;
-            animation: shine 8s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
         }
-        @keyframes shine { 0%,100% { box-shadow: 0 0 0 rgba(255,255,255,0); } 50% { box-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 60px rgba(255,255,255,0.6); } }
         .avatar:hover { transform: scale(1.08) rotate(5deg); }
-        .santa-hat {
+        
+        .lightning-ring {
             position: absolute;
-            top: -35px; left: -45px;
-            width: 100px; height: 100px;
-            background: url('assets/santa_hat.png') center/contain no-repeat;
+            top: 50%;
+            left: 50%;
+            width: 130px;
+            height: 130px;
+            transform: translate(-50%, -50%);
             pointer-events: none;
-            transform: rotate(-20deg);
-            z-index: 4;
+            z-index: 1;
         }
+        
+        .lightning-bolt {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 1px solid transparent;
+            border-right: 1px solid transparent;
+            opacity: 0;
+        }
+        
+        .lightning-bolt::before,
+        .lightning-bolt::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, 
+                rgba(255, 0, 0, 0) 0%,
+                rgba(255, 0, 0, 1) 20%,
+                rgba(200, 0, 0, 1) 50%,
+                rgba(150, 0, 0, 0.8) 80%,
+                rgba(100, 0, 0, 0) 100%
+            );
+            box-shadow: 
+                0 0 8px rgba(255, 0, 0, 1),
+                0 0 15px rgba(255, 0, 0, 0.8),
+                0 0 25px rgba(200, 0, 0, 0.6),
+                inset 0 0 5px rgba(255, 255, 255, 0.5);
+            filter: blur(0.5px);
+        }
+        
+        .lightning-bolt::before {
+            height: var(--bolt-height);
+            left: -1px;
+            transform: skewX(var(--skew-angle));
+        }
+        
+        .lightning-bolt::after {
+            height: calc(var(--bolt-height) * 0.6);
+            left: 3px;
+            top: calc(var(--bolt-height) * 0.3);
+            transform: skewX(calc(var(--skew-angle) * -0.7));
+            opacity: 0.7;
+        }
+        
+        @keyframes blackFlash {
+            0%, 100% { 
+                opacity: 0;
+            }
+            2% { 
+                opacity: 1;
+                filter: brightness(1.5);
+            }
+            4% { 
+                opacity: 0;
+            }
+            6% { 
+                opacity: 0.9;
+                filter: brightness(1.3);
+            }
+            8% { 
+                opacity: 0;
+            }
+            10% { 
+                opacity: 0.7;
+            }
+            12%, 100% { 
+                opacity: 0;
+            }
+        }
+        
+        
         .user-info { flex: 1; }
         .uid {
             font-family: 'Courier New', monospace;
@@ -238,29 +311,12 @@
         .view-counter i { font-size: 18px; animation: pulse 2s ease-in-out infinite; }
         @keyframes pulse { 0%,100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
         
-        .snow-container {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 2;
-        }
-        .snowflake {
-            position: absolute;
-            color: #fff;
-            font-size: 12px;
-            opacity: 0.9;
-            filter: blur(4px);
-            pointer-events: none;
-            user-select: none;
-        }
         @media (max-width: 600px) {
             .card { padding: 32px 24px; }
             .profile-header { flex-direction: column; text-align: center; }
             .avatar { width: 100px; height: 100px; }
             .view-counter { bottom: 80px; left: 50%; transform: translateX(-50%); }
             .welcome-text { font-size: 48px; }
-            .santa-hat { top: -45px; left: -55px; width: 120px; height: 120px; }
         }
     </style>
 </head>
@@ -269,20 +325,19 @@
         <div class="welcome-text" id="typewriter"></div>
     </div>
     <video id="bgVideo" loop playsinline autoplay>
-        <source src="assets/imfr.mp4" type="video/mp4">
+        <source src="assets/mowmc.mp4" type="video/mp4">
     </video>
-    <div class="snow-container" id="snowContainer"></div>
     <div class="container">
         <div class="card" id="card">
             <div class="profile-header">
                 <div class="avatar-wrapper">
+                    <div class="lightning-ring" id="lightningRing"></div>
                     <div class="avatar" id="avatar"></div>
-                    <div class="santa-hat"></div>
                 </div>
                 <div class="user-info">
                     <div class="uid">UID <span id="uidText">0000</span></div>
-                    <h1 class="username">ra</h1>
-                    <p class="handle">@iramasu</p>
+                    <h1 class="username">miu</h1>
+                    <p class="handle">@freemiu</p>
                 </div>
             </div>
             <p class="bio" id="bio"></p>
@@ -296,7 +351,7 @@
                 <a href="https://discord.com/users/1084576683262230548" target="_blank" class="social-icon"><img src="assets/gunspin.gif" alt="Discord"></a>
                 <a href="https://www.youtube.com/@faintche" target="_blank" class="social-icon"><img src="assets/skimaskspin.gif" alt="YouTube"></a>
             </div>
-            <div class="version">v4.1 @ iramasu</div>
+            <div class="version">v4.2 @ freemiu</div>
         </div>
     </div>
     <div class="view-counter">
@@ -304,6 +359,63 @@
         <span id="viewCount">0</span>
     </div>
     <script>
+        // Black Flash style red lightning effect
+        const lightningRing = document.getElementById('lightningRing');
+        const numBolts = 6;
+        
+        function createBlackFlashBolt(index) {
+            const bolt = document.createElement('div');
+            bolt.className = 'lightning-bolt';
+            
+            // Position closer and tighter around the avatar
+            const angle = (Math.random() * 360) * (Math.PI / 180);
+            const distance = 50 + Math.random() * 15; // Much closer to avatar
+            const x = 65 + Math.cos(angle) * distance;
+            const y = 65 + Math.sin(angle) * distance;
+            
+            // Smaller, more compact bolts
+            const height = 25 + Math.random() * 20;
+            const skew = -15 + Math.random() * 30;
+            
+            bolt.style.left = x + 'px';
+            bolt.style.top = y + 'px';
+            bolt.style.setProperty('--bolt-height', height + 'px');
+            bolt.style.setProperty('--skew-angle', skew + 'deg');
+            bolt.style.animation = `blackFlash ${1.5 + Math.random() * 1.5}s infinite`;
+            bolt.style.animationDelay = `${Math.random() * 2}s`;
+            
+            lightningRing.appendChild(bolt);
+        }
+        
+        // Create initial lightning bolts
+        for (let i = 0; i < numBolts; i++) {
+            createBlackFlashBolt(i);
+        }
+        
+        // Add occasional intense flash bursts
+        setInterval(() => {
+            const burstBolt = document.createElement('div');
+            burstBolt.className = 'lightning-bolt';
+            
+            const angle = (Math.random() * 360) * (Math.PI / 180);
+            const distance = 50 + Math.random() * 15;
+            const x = 65 + Math.cos(angle) * distance;
+            const y = 65 + Math.sin(angle) * distance;
+            const height = 25 + Math.random() * 20;
+            const skew = -15 + Math.random() * 30;
+            
+            burstBolt.style.left = x + 'px';
+            burstBolt.style.top = y + 'px';
+            burstBolt.style.setProperty('--bolt-height', height + 'px');
+            burstBolt.style.setProperty('--skew-angle', skew + 'deg');
+            burstBolt.style.animation = 'blackFlash 0.4s forwards';
+            
+            lightningRing.appendChild(burstBolt);
+            
+            setTimeout(() => burstBolt.remove(), 400);
+        }, 2000);
+        
+        
         // View counter
         async function generateHWID() {
             const canvas = document.createElement('canvas');
@@ -384,9 +496,9 @@
         }
         setTimeout(typeBio, 1000);
 
-        // Fast scrambling UID - 4 characters
+        // Fast scrambling UID - 4 characters with hieroglyphics and symbols
         const uidText = document.getElementById('uidText');
-        const chars = '0123456789';
+        const chars = '0123456789ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛟ⚡☠✦✧⚔︎⚠︎◊◈△▽';
         function scramble() {
             let str = '';
             for (let j = 0; j < 4; j++) str += chars[Math.floor(Math.random() * chars.length)];
@@ -394,41 +506,6 @@
         }
         setInterval(scramble, 50);
         scramble();
-
-        // Snow with mouse wind
-        const snowContainer = document.getElementById('snowContainer');
-        const flakes = [];
-        let mouseX = 0;
-        document.addEventListener('mousemove', e => { mouseX = e.clientX; });
-        
-        for (let i = 0; i < 80; i++) {
-            const flake = document.createElement('div');
-            flake.classList.add('snowflake');
-            flake.textContent = '❄';
-            flake.style.fontSize = `${Math.random() * 10 + 8}px`;
-            flake.style.left = `${Math.random() * 100}vw`;
-            flake.style.animationDuration = `${Math.random() * 8 + 8}s`;
-            flake.style.animationDelay = `${Math.random() * 10}s`;
-            snowContainer.appendChild(flake);
-            flakes.push({
-                el: flake,
-                x: parseFloat(flake.style.left),
-                baseSpeed: parseFloat(flake.style.animationDuration),
-                offset: Math.random() * 100
-            });
-        }
-
-        function animateSnow() {
-            const wind = (mouseX / window.innerWidth - 0.5) * 20;
-            flakes.forEach(f => {
-                const progress = ((performance.now() / 1000 + f.offset) % f.baseSpeed) / f.baseSpeed;
-                const y = progress * 120;
-                f.el.style.transform = `translateX(${wind * progress}px) translateY(${y}vh)`;
-                f.el.style.opacity = y > 90 ? 1 - (y - 90) / 10 : 0.9;
-            });
-            requestAnimationFrame(animateSnow);
-        }
-        animateSnow();
 
         // Card tilt
         let targetX = 0, targetY = 0, currentX = 0, currentY = 0, isHovering = false;
@@ -457,7 +534,3 @@
     </script>
 </body>
 </html>
-
-
-
-
