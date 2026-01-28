@@ -46,35 +46,81 @@
             object-fit: cover;
             z-index: -2;
             opacity: 0.85;
-            filter: brightness(1.4) contrast(1.4) saturate(1.3);
+            filter: brightness(1.6) contrast(1.6) saturate(1.5) sharpen(1.2);
             pointer-events: none;
         }
         .welcome-screen {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(20px);
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.97) 0%, rgba(0,0,0,1) 100%);
+            backdrop-filter: blur(25px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
             cursor: pointer;
-            transition: opacity 0.8s ease;
+            transition: opacity 1s ease;
         }
         .welcome-screen.fade-out { opacity: 0; pointer-events: none; }
         .welcome-text {
             font-family: 'Courier New', monospace;
-            font-size: 72px;
-            letter-spacing: 4px;
-            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff, #666666);
-            background-size: 200% 200%;
+            font-size: 96px;
+            font-weight: 900;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            position: relative;
+            background: linear-gradient(135deg, 
+                #ffffff 0%, 
+                #e0e0e0 15%,
+                #c0c0c0 30%,
+                #a0a0a0 45%,
+                #808080 50%,
+                #a0a0a0 55%,
+                #c0c0c0 70%,
+                #e0e0e0 85%,
+                #ffffff 100%
+            );
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: scrollGradient 3s linear infinite;
+            animation: welcomeShimmer 2.5s ease-in-out infinite;
+            text-shadow: 
+                0 0 30px rgba(255,255,255,0.5),
+                0 0 60px rgba(255,255,255,0.3),
+                0 0 90px rgba(255,255,255,0.2);
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.6));
         }
-        @keyframes scrollGradient { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        .container { perspective: 1000px; z-index: 1; }
+        @keyframes welcomeShimmer { 
+            0%, 100% { 
+                background-position: 0% 50%;
+                filter: drop-shadow(0 0 20px rgba(255,255,255,0.6)) brightness(1);
+            } 
+            50% { 
+                background-position: 100% 50%;
+                filter: drop-shadow(0 0 40px rgba(255,255,255,0.9)) brightness(1.3);
+            } 
+        }
+        .welcome-subtitle {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            letter-spacing: 4px;
+            color: rgba(255,255,255,0.6);
+            font-family: 'Courier New', monospace;
+            animation: subtitlePulse 2s ease-in-out infinite;
+        }
+        @keyframes subtitlePulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .container { 
+            perspective: 1000px; 
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
         .card {
             background: rgba(0,0,0,0.3);
             backdrop-filter: blur(20px);
@@ -109,101 +155,238 @@
         @keyframes borderScroll { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
         @keyframes fadeIn { to { opacity: 1; } }
         
+        @keyframes beatBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.02); }
+        }
+        
         .profile-header { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .avatar-wrapper { position: relative; }
         .avatar {
-            width: 90px; height: 90px;
+            width: 90px; 
+            height: 90px;
             border-radius: 50%;
-            background: url('https://cdn.discordapp.com/avatars/1084576683262230548/8aaa87fb465eebf94ee97739b3c108c2.webp?size=1024') center/cover no-repeat;
+            background: url('https://cdn.discordapp.com/avatars/1087346956973649951/f413ea5ac4c0b568221d5d4879f9cbe1.webp?size=1024') center/cover no-repeat;
+            background-size: 110%; /* Zoom in slightly to ensure full coverage */
+            background-position: center center;
             border: 3px solid rgba(255,255,255,0.2);
             flex-shrink: 0;
             transition: transform 0.3s ease;
             cursor: pointer;
             position: relative;
             z-index: 2;
+            overflow: hidden; /* Ensure nothing spills outside */
         }
         .avatar:hover { transform: scale(1.08) rotate(5deg); }
         
-        .lightning-ring {
+        .avatar {
+            box-shadow: 
+                -4px -4px 15px rgba(255, 255, 255, 0.6),
+                4px 4px 15px rgba(0, 0, 0, 0.8),
+                -6px -6px 25px rgba(255, 255, 255, 0.4),
+                6px 6px 25px rgba(0, 0, 0, 0.6);
+            animation: yinYangGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes yinYangGlow {
+            0%, 100% {
+                box-shadow: 
+                    -4px -4px 15px rgba(255, 255, 255, 0.6),
+                    4px 4px 15px rgba(0, 0, 0, 0.8),
+                    -6px -6px 25px rgba(255, 255, 255, 0.4),
+                    6px 6px 25px rgba(0, 0, 0, 0.6);
+            }
+            50% {
+                box-shadow: 
+                    4px 4px 15px rgba(255, 255, 255, 0.6),
+                    -4px -4px 15px rgba(0, 0, 0, 0.8),
+                    6px 6px 25px rgba(255, 255, 255, 0.4),
+                    -6px -6px 25px rgba(0, 0, 0, 0.6);
+            }
+        }
+        
+        .rain-container {
             position: absolute;
-            top: 50%;
+            top: -90px;
             left: 50%;
-            width: 130px;
-            height: 130px;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
+            width: 160px;
+            height: 220px;
             pointer-events: none;
-            z-index: 1;
+            z-index: 3;
+            animation: cloudFloat 3s ease-in-out infinite;
         }
         
-        .lightning-bolt {
+        @keyframes cloudFloat {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-8px);
+            }
+        }
+        
+        .cloud {
             position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 1px solid transparent;
-            border-right: 1px solid transparent;
-            opacity: 0;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 45px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.7) 0%,
+                rgba(200, 200, 200, 0.6) 25%,
+                rgba(100, 100, 100, 0.5) 50%,
+                rgba(50, 50, 50, 0.5) 75%,
+                rgba(0, 0, 0, 0.6) 100%
+            );
+            background-size: 200% 200%;
+            border-radius: 70px 70px 60px 60px;
+            filter: blur(8px) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+            opacity: 0.85;
+            animation: yinYangCloudFlow 4s ease-in-out infinite;
         }
         
-        .lightning-bolt::before,
-        .lightning-bolt::after {
+        @keyframes yinYangCloudFlow {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        .cloud::before {
             content: '';
             position: absolute;
+            top: -22px;
+            left: 18px;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.75) 0%,
+                rgba(150, 150, 150, 0.6) 50%,
+                rgba(50, 50, 50, 0.65) 100%
+            );
+            background-size: 200% 200%;
+            border-radius: 50%;
+            filter: blur(6px);
+            animation: yinYangCloudFlow 4s ease-in-out infinite;
+        }
+        
+        .cloud::after {
+            content: '';
+            position: absolute;
+            top: -16px;
+            right: 22px;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.7) 0%,
+                rgba(180, 180, 180, 0.55) 50%,
+                rgba(80, 80, 80, 0.6) 100%
+            );
+            background-size: 200% 200%;
+            border-radius: 50%;
+            filter: blur(5px);
+            animation: yinYangCloudFlow 4s ease-in-out infinite;
+        }
+        
+        .cloud-detail {
+            position: absolute;
+            bottom: -5px;
+            left: 25%;
+            width: 50%;
+            height: 20px;
+            background: linear-gradient(135deg,
+                rgba(200, 200, 200, 0.4) 0%,
+                rgba(120, 120, 120, 0.35) 50%,
+                rgba(60, 60, 60, 0.4) 100%
+            );
+            background-size: 200% 200%;
+            border-radius: 50%;
+            filter: blur(6px);
+            animation: yinYangCloudFlow 4s ease-in-out infinite;
+        }
+        
+        .raindrop {
+            position: absolute;
             width: 2px;
+            height: 10px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            opacity: 0;
+            filter: blur(0.15px);
             background: linear-gradient(to bottom, 
-                rgba(255, 0, 0, 0) 0%,
-                rgba(255, 0, 0, 1) 20%,
-                rgba(200, 0, 0, 1) 50%,
-                rgba(150, 0, 0, 0.8) 80%,
-                rgba(100, 0, 0, 0) 100%
+                var(--rain-color-1) 0%,
+                var(--rain-color-2) 30%,
+                var(--rain-color-3) 60%,
+                var(--rain-color-4) 100%
             );
             box-shadow: 
-                0 0 8px rgba(255, 0, 0, 1),
-                0 0 15px rgba(255, 0, 0, 0.8),
-                0 0 25px rgba(200, 0, 0, 0.6),
-                inset 0 0 5px rgba(255, 255, 255, 0.5);
-            filter: blur(0.5px);
+                inset 0.5px 0.5px 0.5px var(--rain-highlight),
+                inset -0.5px -0.5px 0.5px var(--rain-shadow),
+                0 0 1px rgba(150, 150, 150, 0.15);
         }
         
-        .lightning-bolt::before {
-            height: var(--bolt-height);
-            left: -1px;
-            transform: skewX(var(--skew-angle));
+        .raindrop::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 35%;
+            width: 40%;
+            height: 30%;
+            background: var(--rain-highlight);
+            border-radius: 50%;
+            filter: blur(0.3px);
         }
         
-        .lightning-bolt::after {
-            height: calc(var(--bolt-height) * 0.6);
-            left: 3px;
-            top: calc(var(--bolt-height) * 0.3);
-            transform: skewX(calc(var(--skew-angle) * -0.7));
-            opacity: 0.7;
-        }
-        
-        @keyframes blackFlash {
-            0%, 100% { 
+        @keyframes rainfall {
+            0% {
                 opacity: 0;
+                transform: translateY(0);
+                --rain-color-1: rgba(255, 255, 255, 0.15);
+                --rain-color-2: rgba(200, 200, 200, 0.12);
+                --rain-color-3: rgba(100, 100, 100, 0.09);
+                --rain-color-4: rgba(0, 0, 0, 0.05);
+                --rain-highlight: rgba(255, 255, 255, 0.3);
+                --rain-shadow: rgba(0, 0, 0, 0.15);
             }
-            2% { 
+            2% {
                 opacity: 1;
-                filter: brightness(1.5);
             }
-            4% { 
+            50% {
+                --rain-color-1: rgba(0, 0, 0, 0.15);
+                --rain-color-2: rgba(50, 50, 50, 0.12);
+                --rain-color-3: rgba(150, 150, 150, 0.09);
+                --rain-color-4: rgba(255, 255, 255, 0.05);
+                --rain-highlight: rgba(0, 0, 0, 0.2);
+                --rain-shadow: rgba(255, 255, 255, 0.15);
+            }
+            98% {
+                opacity: 0.7;
+                --rain-color-1: rgba(255, 255, 255, 0.15);
+                --rain-color-2: rgba(200, 200, 200, 0.12);
+                --rain-color-3: rgba(100, 100, 100, 0.09);
+                --rain-color-4: rgba(0, 0, 0, 0.05);
+                --rain-highlight: rgba(255, 255, 255, 0.3);
+                --rain-shadow: rgba(0, 0, 0, 0.15);
+            }
+            100% {
                 opacity: 0;
+                transform: translateY(var(--fall-distance));
             }
-            6% { 
-                opacity: 0.9;
+        }
+        
+        @keyframes staticRing {
+            0%, 100% { 
+                opacity: 0.4;
+                filter: brightness(1);
+            }
+            50% { 
+                opacity: 0.7;
                 filter: brightness(1.3);
             }
-            8% { 
-                opacity: 0;
-            }
-            10% { 
-                opacity: 0.7;
-            }
-            12%, 100% { 
-                opacity: 0;
-            }
         }
-        
         
         .user-info { flex: 1; }
         .uid {
@@ -233,7 +416,93 @@
             animation: scrollGradient 3s linear infinite;
             margin-bottom: 4px;
         }
+        @keyframes scrollGradient { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         .handle { font-size: 14px; color: rgba(255,255,255,0.7); }
+        .discord-status {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .status-indicator.online {
+            background: #43b581;
+            box-shadow: 0 0 8px #43b581;
+        }
+        .status-indicator.idle {
+            background: #faa61a;
+            box-shadow: 0 0 8px #faa61a;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .status-indicator.idle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: #faa61a;
+            border-radius: 0 50% 50% 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .status-indicator.idle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 8px;
+            height: 8px;
+            background: #2c2f33;
+            border-radius: 0 50% 50% 50%;
+            transform: rotate(-45deg);
+        }
+        .status-indicator.dnd {
+            background: #f04747;
+            box-shadow: 0 0 8px #f04747;
+        }
+        .status-indicator.dnd::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 7px;
+            height: 2px;
+            background: #2c2f33;
+            border-radius: 1px;
+        }
+        .status-indicator.offline {
+            background: #747f8d;
+            border: 2px solid #747f8d;
+            box-sizing: border-box;
+        }
+        .status-indicator.offline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: #2c2f33;
+            border-radius: 50%;
+        }
         .bio { 
             font-family: 'Courier New', monospace;
             color: rgba(255,255,255,0.9); 
@@ -316,28 +585,39 @@
             .profile-header { flex-direction: column; text-align: center; }
             .avatar { width: 100px; height: 100px; }
             .view-counter { bottom: 80px; left: 50%; transform: translateX(-50%); }
-            .welcome-text { font-size: 48px; }
+            .welcome-text { font-size: 56px; letter-spacing: 8px; }
         }
     </style>
 </head>
 <body>
     <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-text" id="typewriter"></div>
+        <div style="position: relative;">
+            <div class="welcome-text" id="typewriter"></div>
+            <div class="welcome-subtitle">CLICK TO ENTER</div>
+        </div>
     </div>
-    <video id="bgVideo" loop playsinline autoplay>
-        <source src="assets/mowmc.mp4" type="video/mp4">
+    <video id="bgVideo" loop playsinline muted>
+        <source src="assets/wis.mp4" type="video/mp4">
     </video>
     <div class="container">
         <div class="card" id="card">
             <div class="profile-header">
                 <div class="avatar-wrapper">
-                    <div class="lightning-ring" id="lightningRing"></div>
+                    <div class="rain-container" id="rainContainer">
+                        <div class="cloud">
+                            <div class="cloud-detail"></div>
+                        </div>
+                    </div>
                     <div class="avatar" id="avatar"></div>
                 </div>
                 <div class="user-info">
                     <div class="uid">UID <span id="uidText">0000</span></div>
                     <h1 class="username">miu</h1>
                     <p class="handle">@freemiu</p>
+                    <div class="discord-status" id="discordStatus">
+                        <div class="status-indicator" id="statusIndicator"></div>
+                        <span id="statusText">Loading...</span>
+                    </div>
                 </div>
             </div>
             <p class="bio" id="bio"></p>
@@ -348,10 +628,10 @@
             </div>
             <div class="social">
                 <a href="https://www.roblox.com/users/8156657037/profile" target="_blank" class="social-icon"><img src="assets/diamondspin.gif" alt="Roblox"></a>
-                <a href="https://discord.com/users/1084576683262230548" target="_blank" class="social-icon"><img src="assets/gunspin.gif" alt="Discord"></a>
+                <a href="https://discord.com/users/1087346956973649951" target="_blank" class="social-icon"><img src="assets/gunspin.gif" alt="Discord"></a>
                 <a href="https://www.youtube.com/@dsamiumiu" target="_blank" class="social-icon"><img src="assets/skimaskspin.gif" alt="YouTube"></a>
             </div>
-            <div class="version">v4.2 @ freemiu</div>
+            <div class="version">v4.4 @ freemiu</div>
         </div>
     </div>
     <div class="view-counter">
@@ -359,62 +639,224 @@
         <span id="viewCount">0</span>
     </div>
     <script>
-        // Black Flash style red lightning effect
-        const lightningRing = document.getElementById('lightningRing');
-        const numBolts = 6;
-        
-        function createBlackFlashBolt(index) {
-            const bolt = document.createElement('div');
-            bolt.className = 'lightning-bolt';
+        // Ultra-realistic clear raindrops falling straight down
+        function createRain() {
+            const rainContainer = document.getElementById('rainContainer');
+            const avatarRadius = 48;
             
-            // Position closer and tighter around the avatar
-            const angle = (Math.random() * 360) * (Math.PI / 180);
-            const distance = 50 + Math.random() * 15; // Much closer to avatar
-            const x = 65 + Math.cos(angle) * distance;
-            const y = 65 + Math.sin(angle) * distance;
-            
-            // Smaller, more compact bolts
-            const height = 25 + Math.random() * 20;
-            const skew = -15 + Math.random() * 30;
-            
-            bolt.style.left = x + 'px';
-            bolt.style.top = y + 'px';
-            bolt.style.setProperty('--bolt-height', height + 'px');
-            bolt.style.setProperty('--skew-angle', skew + 'deg');
-            bolt.style.animation = `blackFlash ${1.5 + Math.random() * 1.5}s infinite`;
-            bolt.style.animationDelay = `${Math.random() * 2}s`;
-            
-            lightningRing.appendChild(bolt);
+            setInterval(() => {
+                const drop = document.createElement('div');
+                drop.className = 'raindrop';
+                
+                // Random horizontal position from cloud
+                const startX = 25 + Math.random() * 50;
+                drop.style.left = startX + '%';
+                drop.style.top = '45px';
+                
+                const dropXPixel = (startX / 100) * 160 - 80;
+                const profileCenterY = 135;
+                
+                // Straight down fall - no sideways drift
+                let fallDistance = 160;
+                let hitProfile = false;
+                
+                // Check collision with profile (straight vertical line)
+                let currentY = 45;
+                
+                while (currentY < 200 && !hitProfile) {
+                    currentY += 2;
+                    
+                    const distanceFromCenter = Math.sqrt(
+                        Math.pow(dropXPixel, 2) + 
+                        Math.pow(currentY - profileCenterY, 2)
+                    );
+                    
+                    if (distanceFromCenter <= avatarRadius + 1) {
+                        fallDistance = currentY - 45;
+                        hitProfile = true;
+                        
+                        // Subtle splash
+                        setTimeout(() => {
+                            const splash = document.createElement('div');
+                            splash.style.position = 'absolute';
+                            splash.style.left = drop.style.left;
+                            splash.style.top = (45 + fallDistance) + 'px';
+                            splash.style.width = '2px';
+                            splash.style.height = '2px';
+                            splash.style.background = 'radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent)';
+                            splash.style.borderRadius = '50%';
+                            splash.style.animation = 'splash 0.15s ease-out forwards';
+                            rainContainer.appendChild(splash);
+                            setTimeout(() => splash.remove(), 150);
+                        }, (fallDistance / 160) * 0.35 * 1000);
+                        
+                        break;
+                    }
+                }
+                
+                // Set fall distance
+                drop.style.setProperty('--fall-distance', fallDistance + 'px');
+                
+                // Fast realistic fall speed
+                const duration = 0.35 + Math.random() * 0.15;
+                drop.style.animation = `rainfall ${duration}s linear forwards`;
+                
+                rainContainer.appendChild(drop);
+                
+                setTimeout(() => drop.remove(), duration * 1000);
+            }, 40); // Frequent drops for realistic rain density
         }
         
-        // Create initial lightning bolts
-        for (let i = 0; i < numBolts; i++) {
-            createBlackFlashBolt(i);
+        // Add splash animation with yin-yang color shift
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes splash {
+                0% {
+                    transform: scale(1);
+                    opacity: 0.8;
+                    background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent);
+                }
+                50% {
+                    background: radial-gradient(circle, rgba(100, 100, 100, 0.5), transparent);
+                }
+                100% {
+                    transform: scale(2);
+                    opacity: 0;
+                    background: radial-gradient(circle, rgba(0, 0, 0, 0.3), transparent);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Start rain effect
+        setTimeout(createRain, 1000);
+        
+        // Fetch Discord status using Lanyard API
+        async function fetchDiscordStatus() {
+            try {
+                const response = await fetch('https://api.lanyard.rest/v1/users/1087346956973649951');
+                
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                
+                const data = await response.json();
+                
+                const statusText = document.getElementById('statusText');
+                const statusIndicator = document.getElementById('statusIndicator');
+                
+                if (data.success && data.data) {
+                    const user = data.data;
+                    const status = user.discord_status;
+                    const customStatus = user.activities?.find(a => a.type === 4);
+                    
+                    // Update status indicator with proper classes
+                    statusIndicator.className = 'status-indicator';
+                    if (status === 'online') {
+                        statusIndicator.classList.add('online');
+                    } else if (status === 'idle') {
+                        statusIndicator.classList.add('idle');
+                    } else if (status === 'dnd') {
+                        statusIndicator.classList.add('dnd');
+                    } else {
+                        statusIndicator.classList.add('offline');
+                    }
+                    
+                    // Update status text with proper format
+                    if (status === 'offline' || !customStatus || !customStatus.state) {
+                        statusText.textContent = 'No status / Offline';
+                    } else {
+                        statusText.textContent = `Status: ${customStatus.state}`;
+                    }
+                } else {
+                    statusText.textContent = 'No status / Offline';
+                    statusIndicator.className = 'status-indicator offline';
+                }
+            } catch (error) {
+                console.error('Failed to fetch Discord status:', error);
+                document.getElementById('statusText').textContent = 'No status / Offline';
+                document.getElementById('statusIndicator').className = 'status-indicator offline';
+            }
         }
         
-        // Add occasional intense flash bursts
-        setInterval(() => {
-            const burstBolt = document.createElement('div');
-            burstBolt.className = 'lightning-bolt';
-            
-            const angle = (Math.random() * 360) * (Math.PI / 180);
-            const distance = 50 + Math.random() * 15;
-            const x = 65 + Math.cos(angle) * distance;
-            const y = 65 + Math.sin(angle) * distance;
-            const height = 25 + Math.random() * 20;
-            const skew = -15 + Math.random() * 30;
-            
-            burstBolt.style.left = x + 'px';
-            burstBolt.style.top = y + 'px';
-            burstBolt.style.setProperty('--bolt-height', height + 'px');
-            burstBolt.style.setProperty('--skew-angle', skew + 'deg');
-            burstBolt.style.animation = 'blackFlash 0.4s forwards';
-            
-            lightningRing.appendChild(burstBolt);
-            
-            setTimeout(() => burstBolt.remove(), 400);
-        }, 2000);
+        // Fetch status on load and refresh every 30 seconds
+        fetchDiscordStatus();
+        setInterval(fetchDiscordStatus, 30000);
         
+        // Audio context setup with limiter and quality boost
+        let audioContext;
+        let gainNode;
+        let limiter;
+        let videoSource;
+        
+        function setupAudio() {
+            const bgVideo = document.getElementById('bgVideo');
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            videoSource = audioContext.createMediaElementSource(bgVideo);
+            
+            // Create gain node for volume control
+            gainNode = audioContext.createGain();
+            gainNode.gain.value = 0.8; // Slightly reduce overall volume
+            
+            // Create dynamics compressor (limiter)
+            limiter = audioContext.createDynamicsCompressor();
+            limiter.threshold.value = -10; // dB
+            limiter.knee.value = 0;
+            limiter.ratio.value = 20; // Hard limiting
+            limiter.attack.value = 0.003; // 3ms
+            limiter.release.value = 0.25; // 250ms
+            
+            // Connect: video -> gain -> limiter -> output
+            videoSource.connect(gainNode);
+            gainNode.connect(limiter);
+            limiter.connect(audioContext.destination);
+        }
+        
+        // Beat detection and card bounce
+        let analyser;
+        let dataArray;
+        let lastBeatTime = 0;
+        const beatThreshold = 0.85;
+        const beatCooldown = 300; // ms
+        
+        function setupBeatDetection() {
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+            
+            // Connect analyser
+            limiter.connect(analyser);
+            
+            detectBeat();
+        }
+        
+        function detectBeat() {
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Focus on bass frequencies (0-60Hz range)
+            const bassSum = dataArray.slice(0, 8).reduce((a, b) => a + b, 0);
+            const bassAvg = bassSum / 8 / 255; // Normalize to 0-1
+            
+            const now = Date.now();
+            if (bassAvg > beatThreshold && now - lastBeatTime > beatCooldown) {
+                lastBeatTime = now;
+                triggerBeatBounce();
+            }
+            
+            requestAnimationFrame(detectBeat);
+        }
+        
+        function triggerBeatBounce() {
+            const container = document.querySelector('.container');
+            container.style.animation = 'none';
+            setTimeout(() => {
+                container.style.animation = 'beatBounce 0.4s ease-out';
+            }, 10);
+            setTimeout(() => {
+                container.style.animation = '';
+            }, 400);
+        }
         
         // View counter
         async function generateHWID() {
@@ -445,31 +887,39 @@
         }
         initViewCounter();
 
-        // Typewriter welcome
-        const welcomeText = "welcome";
+        // Enhanced typewriter welcome
+        const welcomeText = "WELCOME";
         const typewriter = document.getElementById('typewriter');
         let i = 0;
         function typeWelcome() {
             if (i < welcomeText.length) {
                 typewriter.textContent += welcomeText.charAt(i);
                 i++;
-                setTimeout(typeWelcome, 150);
+                setTimeout(typeWelcome, 120);
             }
         }
-        setTimeout(typeWelcome, 500);
+        setTimeout(typeWelcome, 300);
 
         // Hide welcome + play video with audio
         const welcomeScreen = document.getElementById('welcomeScreen');
         const card = document.getElementById('card');
         const bgVideo = document.getElementById('bgVideo');
+        
         function hideWelcome() {
             welcomeScreen.classList.add('fade-out');
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
-                bgVideo.play();
+                
+                // Setup audio and start playback
+                setupAudio();
+                bgVideo.muted = false;
+                bgVideo.play().then(() => {
+                    setupBeatDetection();
+                });
+                
                 card.classList.add('loaded');
                 document.querySelector('.view-counter').classList.add('loaded');
-            }, 800);
+            }, 1000);
         }
        
         welcomeScreen.addEventListener('click', hideWelcome);
@@ -534,6 +984,3 @@
     </script>
 </body>
 </html>
-
-
-
