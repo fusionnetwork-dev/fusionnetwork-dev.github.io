@@ -733,7 +733,6 @@
                     playlist: YOUTUBE_VIDEO_ID,
                     mute: 0,
                     vq: 'hd2160', // Request 4K first, will fallback to highest available
-                    rel: 0,
                     iv_load_policy: 3,
                     cc_load_policy: 0,
                     showinfo: 0
@@ -746,7 +745,7 @@
         }
         
         function onPlayerReady(event) {
-            console.log('YouTube Player ready - No end screens will show');
+            console.log('YouTube Player ready - Preventing end screens with aggressive looping');
             event.target.setVolume(80);
             
             // Get all available qualities and set to the highest one
@@ -768,11 +767,41 @@
                     }
                 }, 2000);
             }
+            
+            // Aggressively monitor playback and restart before end screen appears
+            setInterval(() => {
+                try {
+                    const duration = player.getDuration();
+                    const currentTime = player.getCurrentTime();
+                    
+                    // If we're within 1.5 seconds of the end, immediately restart
+                    if (duration && currentTime && (duration - currentTime) < 1.5) {
+                        player.seekTo(0);
+                        player.playVideo();
+                    }
+                } catch (e) {
+                    // Ignore errors
+                }
+            }, 100); // Check every 100ms
         }
         
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.ENDED) {
+                // Immediately restart - backup for the interval monitor
+                event.target.seekTo(0);
                 event.target.playVideo();
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                // If paused near the end, restart and play
+                try {
+                    const duration = player.getDuration();
+                    const currentTime = player.getCurrentTime();
+                    if (duration && currentTime && (duration - currentTime) < 2) {
+                        event.target.seekTo(0);
+                        event.target.playVideo();
+                    }
+                } catch (e) {
+                    // Ignore errors
+                }
             }
         }
         
