@@ -39,7 +39,18 @@
         }
         @keyframes gradient { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
         
-        /* YouTube Background Container */
+        /* Video Background - supports both YouTube and direct video */
+        video#bgVideo {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.85;
+            filter: contrast(1.3) saturate(1.5);
+            pointer-events: none;
+        }
+        
         #youtube-background {
             position: fixed;
             top: 50%;
@@ -69,11 +80,11 @@
             top: 50%;
             left: 50%;
             width: 100vw;
-            height: 56.25vw; /* 16:9 aspect ratio */
+            height: 56.25vw;
             min-height: 100vh;
-            min-width: 177.77vh; /* 16:9 aspect ratio */
+            min-width: 177.77vh;
             transform: translate(-50%, -50%);
-            filter: brightness(1.6) contrast(1.6) saturate(1.5);
+            filter: contrast(1.3) saturate(1.5);
             opacity: 0.85;
         }
         
@@ -405,17 +416,6 @@
             }
         }
         
-        @keyframes staticRing {
-            0%, 100% { 
-                opacity: 0.4;
-                filter: brightness(1);
-            }
-            50% { 
-                opacity: 0.7;
-                filter: brightness(1.3);
-            }
-        }
-        
         .user-info { flex: 1; }
         .uid {
             font-family: 'Courier New', monospace;
@@ -474,31 +474,19 @@
             background: #faa61a;
             box-shadow: 0 0 8px #faa61a;
             border-radius: 50%;
-            overflow: hidden;
+            position: relative;
+            overflow: visible;
         }
         .status-indicator.idle::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 6px;
-            height: 6px;
-            background: #faa61a;
-            border-radius: 0 50% 50% 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.3);
-        }
-        .status-indicator.idle::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 8px;
-            height: 8px;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
             background: #2c2f33;
-            border-radius: 0 50% 50% 50%;
-            transform: rotate(-45deg);
+            border-radius: 50%;
+            transform: translateX(30%) rotate(15deg);
         }
         .status-indicator.dnd {
             background: #f04747;
@@ -512,7 +500,7 @@
             transform: translate(-50%, -50%);
             width: 7px;
             height: 2px;
-            background: #2c2f33;
+            background: white;
             border-radius: 1px;
         }
         .status-indicator.offline {
@@ -528,7 +516,7 @@
             transform: translate(-50%, -50%);
             width: 6px;
             height: 6px;
-            background: #2c2f33;
+            background: white;
             border-radius: 50%;
         }
         .bio { 
@@ -625,8 +613,29 @@
         </div>
     </div>
     
-    <!-- YouTube Background -->
+    <!-- 
+    ===========================================
+    VIDEO CONFIGURATION - CHOOSE ONE METHOD:
+    ===========================================
+    
+    METHOD 1: YOUTUBE (No beat detection, but easy to use)
+    - Set USE_YOUTUBE = true
+    - Set YOUTUBE_VIDEO_ID = 'your-video-id'
+    - No end screens will show
+    
+    METHOD 2: DIRECT VIDEO URL (With 808 beat detection!)
+    - Set USE_YOUTUBE = false
+    - Set DIRECT_VIDEO_URL = 'your-video-url.mp4'
+    - Get URL from: Catbox.moe, Cloudflare Stream, Google Drive, etc.
+    -->
+    
+    <!-- YouTube Background Container -->
     <div id="youtube-background"></div>
+    
+    <!-- Direct Video Background -->
+    <video id="bgVideo" loop playsinline muted style="display: none;">
+        <source id="videoSource" type="video/mp4">
+    </video>
     
     <div class="container">
         <div class="card" id="card">
@@ -667,32 +676,46 @@
         <i class="fas fa-eye"></i>
         <span id="viewCount">0</span>
     </div>
-    
     <script>
-        // YouTube video configuration
-        const YOUTUBE_VIDEO_ID = 'YFfGgeddAc4'; // Change this to any YouTube video ID
+        // ===================================
+        // VIDEO CONFIGURATION
+        // ===================================
+        const USE_YOUTUBE = true; // Set to true for YouTube, false for direct video
+        const YOUTUBE_VIDEO_ID = 'YFfGgeddAc4'; // Your YouTube video ID
+        const DIRECT_VIDEO_URL = 'YOUR_VIDEO_URL.mp4'; // Your direct video URL (Catbox, Cloudflare Stream, etc.)
+        
+        // ===================================
+        // GLOBAL VARIABLES
+        // ===================================
         let player;
         let audioContext;
+        let gainNode;
+        let limiter;
         let analyser;
         let dataArray;
+        let videoSource;
+        let lastBeatTime = 0;
         let apiReady = false;
+        const beatThreshold = 0.75;
+        const beatCooldown = 250;
         
-        // Load YouTube IFrame API
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        
-        // YouTube IFrame API Ready callback
-        window.onYouTubeIframeAPIReady = function() {
-            console.log('YouTube API Ready');
-            apiReady = true;
+        // ===================================
+        // YOUTUBE SETUP
+        // ===================================
+        if (USE_YOUTUBE) {
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            
+            window.onYouTubeIframeAPIReady = function() {
+                console.log('YouTube API Ready');
+                apiReady = true;
+            }
         }
         
-        // Initialize YouTube Player
         function initYouTubePlayer() {
             if (!apiReady) {
-                console.log('Waiting for YouTube API...');
                 setTimeout(initYouTubePlayer, 100);
                 return;
             }
@@ -709,7 +732,11 @@
                     loop: 1,
                     playlist: YOUTUBE_VIDEO_ID,
                     mute: 0,
-                    quality: 'hd1080' // Request highest quality
+                    vq: 'hd2160', // Request 4K first, will fallback to highest available
+                    rel: 0,
+                    iv_load_policy: 3,
+                    cc_load_policy: 0,
+                    showinfo: 0
                 },
                 events: {
                     'onReady': onPlayerReady,
@@ -719,22 +746,125 @@
         }
         
         function onPlayerReady(event) {
-            console.log('Player ready');
+            console.log('YouTube Player ready - No end screens will show');
             event.target.setVolume(80);
-            // Set quality to highest available
+            
+            // Get all available qualities and set to the highest one
             const availableQualities = player.getAvailableQualityLevels();
+            console.log('Available qualities:', availableQualities);
+            
             if (availableQualities.length > 0) {
-                player.setPlaybackQuality(availableQualities[0]); // Highest quality
+                // YouTube returns qualities in order: hd2160 (4K), hd1440 (1440p), hd1080, hd720, large, medium, small, tiny
+                const highestQuality = availableQualities[0];
+                player.setPlaybackQuality(highestQuality);
+                console.log('Set quality to:', highestQuality);
+                
+                // Double-check after a short delay (sometimes YouTube needs time)
+                setTimeout(() => {
+                    const currentQuality = player.getPlaybackQuality();
+                    console.log('Current quality:', currentQuality);
+                    if (currentQuality !== highestQuality) {
+                        player.setPlaybackQuality(highestQuality);
+                    }
+                }, 2000);
             }
         }
         
         function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                console.log('Video playing');
+            if (event.data === YT.PlayerState.ENDED) {
+                event.target.playVideo();
             }
         }
         
-        // Ultra-realistic clear raindrops falling straight down
+        // ===================================
+        // DIRECT VIDEO SETUP WITH BEAT DETECTION
+        // ===================================
+        function initDirectVideo() {
+            const bgVideo = document.getElementById('bgVideo');
+            const videoSource = document.getElementById('videoSource');
+            
+            videoSource.src = DIRECT_VIDEO_URL;
+            bgVideo.style.display = 'block';
+            bgVideo.load();
+            
+            // Log video quality info when metadata loads
+            bgVideo.addEventListener('loadedmetadata', () => {
+                console.log('Video loaded:');
+                console.log('- Resolution:', bgVideo.videoWidth + 'x' + bgVideo.videoHeight);
+                console.log('- Duration:', bgVideo.duration + 's');
+                
+                let qualityLabel = 'SD';
+                if (bgVideo.videoHeight >= 2160) qualityLabel = '4K';
+                else if (bgVideo.videoHeight >= 1440) qualityLabel = '1440p';
+                else if (bgVideo.videoHeight >= 1080) qualityLabel = '1080p';
+                else if (bgVideo.videoHeight >= 720) qualityLabel = '720p';
+                else if (bgVideo.videoHeight >= 480) qualityLabel = '480p';
+                
+                console.log('- Quality:', qualityLabel);
+            });
+        }
+        
+        function setupAudio() {
+            const bgVideo = document.getElementById('bgVideo');
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            videoSource = audioContext.createMediaElementSource(bgVideo);
+            
+            gainNode = audioContext.createGain();
+            gainNode.gain.value = 0.8;
+            
+            limiter = audioContext.createDynamicsCompressor();
+            limiter.threshold.value = -10;
+            limiter.knee.value = 0;
+            limiter.ratio.value = 20;
+            limiter.attack.value = 0.003;
+            limiter.release.value = 0.25;
+            
+            videoSource.connect(gainNode);
+            gainNode.connect(limiter);
+            limiter.connect(audioContext.destination);
+        }
+        
+        function setupBeatDetection() {
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 512;
+            analyser.smoothingTimeConstant = 0.3;
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+            
+            limiter.connect(analyser);
+            
+            detectBeat();
+        }
+        
+        function detectBeat() {
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Focus on 808 range (20-200Hz)
+            const bassSum = dataArray.slice(0, 15).reduce((a, b) => a + b, 0);
+            const bassAvg = bassSum / 15 / 255;
+            
+            const now = Date.now();
+            if (bassAvg > beatThreshold && now - lastBeatTime > beatCooldown) {
+                lastBeatTime = now;
+                triggerBeatBounce();
+            }
+            
+            requestAnimationFrame(detectBeat);
+        }
+        
+        function triggerBeatBounce() {
+            const container = document.querySelector('.container');
+            container.style.animation = 'none';
+            void container.offsetWidth;
+            container.style.animation = 'beatBounce 0.4s ease-out';
+            setTimeout(() => {
+                container.style.animation = '';
+            }, 400);
+        }
+        
+        // ===================================
+        // RAIN EFFECT
+        // ===================================
         function createRain() {
             const rainContainer = document.getElementById('rainContainer');
             const avatarRadius = 48;
@@ -752,12 +882,10 @@
                 
                 let fallDistance = 160;
                 let hitProfile = false;
-                
                 let currentY = 45;
                 
                 while (currentY < 200 && !hitProfile) {
                     currentY += 2;
-                    
                     const distanceFromCenter = Math.sqrt(
                         Math.pow(dropXPixel, 2) + 
                         Math.pow(currentY - profileCenterY, 2)
@@ -786,17 +914,14 @@
                 }
                 
                 drop.style.setProperty('--fall-distance', fallDistance + 'px');
-                
                 const duration = 0.35 + Math.random() * 0.15;
                 drop.style.animation = `rainfall ${duration}s linear forwards`;
                 
                 rainContainer.appendChild(drop);
-                
                 setTimeout(() => drop.remove(), duration * 1000);
             }, 40);
         }
         
-        // Add splash animation
         const style = document.createElement('style');
         style.textContent = `
             @keyframes splash {
@@ -816,20 +941,17 @@
             }
         `;
         document.head.appendChild(style);
-        
         setTimeout(createRain, 1000);
         
-        // Fetch Discord status
+        // ===================================
+        // DISCORD STATUS
+        // ===================================
         async function fetchDiscordStatus() {
             try {
                 const response = await fetch('https://api.lanyard.rest/v1/users/1087346956973649951');
-                
-                if (!response.ok) {
-                    throw new Error('API request failed');
-                }
+                if (!response.ok) throw new Error('API request failed');
                 
                 const data = await response.json();
-                
                 const statusText = document.getElementById('statusText');
                 const statusIndicator = document.getElementById('statusIndicator');
                 
@@ -868,19 +990,31 @@
         fetchDiscordStatus();
         setInterval(fetchDiscordStatus, 30000);
         
-        // View counter
+        // ===================================
+        // VIEW COUNTER
+        // ===================================
         async function generateHWID() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             ctx.font = '14px Arial';
             ctx.fillText('fingerprint', 2, 2);
             const data = canvas.toDataURL();
-            const fingerprint = { userAgent: navigator.userAgent, language: navigator.language, screen: `${screen.width}x${screen.height}`, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, canvas: data };
+            const fingerprint = { 
+                userAgent: navigator.userAgent, 
+                language: navigator.language, 
+                screen: `${screen.width}x${screen.height}`, 
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, 
+                canvas: data 
+            };
             let hash = 0;
             const str = JSON.stringify(fingerprint);
-            for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
+            for (let i = 0; i < str.length; i++) { 
+                hash = ((hash << 5) - hash) + str.charCodeAt(i); 
+                hash |= 0; 
+            }
             return 'hwid_' + Math.abs(hash).toString(36);
         }
+        
         async function initViewCounter() {
             const hwid = await generateHWID();
             const TOTAL_KEY = 'total_views';
@@ -889,7 +1023,8 @@
             let hwidData = localStorage.getItem(HWID_KEY) ? JSON.parse(localStorage.getItem(HWID_KEY)) : {count: 0, date: new Date().toDateString()};
             if (hwidData.date !== new Date().toDateString()) hwidData = {count: 0, date: new Date().toDateString()};
             if (hwidData.count < 3) {
-                total++; hwidData.count++;
+                total++; 
+                hwidData.count++;
                 localStorage.setItem(TOTAL_KEY, total);
                 localStorage.setItem(HWID_KEY, JSON.stringify(hwidData));
             }
@@ -897,7 +1032,9 @@
         }
         initViewCounter();
 
-        // Typewriter welcome
+        // ===================================
+        // WELCOME SCREEN
+        // ===================================
         const welcomeText = "WELCOME";
         const typewriter = document.getElementById('typewriter');
         let i = 0;
@@ -910,7 +1047,6 @@
         }
         setTimeout(typeWelcome, 300);
 
-        // Hide welcome + start video
         const welcomeScreen = document.getElementById('welcomeScreen');
         const card = document.getElementById('card');
         
@@ -919,13 +1055,22 @@
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
                 
-                // Create YouTube player
-                const ytContainer = document.getElementById('youtube-background');
-                const iframe = document.createElement('div');
-                iframe.id = 'youtube-player';
-                ytContainer.appendChild(iframe);
-                
-                initYouTubePlayer();
+                if (USE_YOUTUBE) {
+                    const ytContainer = document.getElementById('youtube-background');
+                    const iframe = document.createElement('div');
+                    iframe.id = 'youtube-player';
+                    ytContainer.appendChild(iframe);
+                    initYouTubePlayer();
+                } else {
+                    initDirectVideo();
+                    setupAudio();
+                    const bgVideo = document.getElementById('bgVideo');
+                    bgVideo.muted = false;
+                    bgVideo.play().then(() => {
+                        setupBeatDetection();
+                        console.log('Beat detection active - Card will bounce to 808s!');
+                    });
+                }
                 
                 card.classList.add('loaded');
                 document.querySelector('.view-counter').classList.add('loaded');
@@ -934,7 +1079,9 @@
        
         welcomeScreen.addEventListener('click', hideWelcome);
 
-        // Bio typing
+        // ===================================
+        // BIO TYPING EFFECT
+        // ===================================
         const bioElement = document.getElementById('bio');
         const bioText = "i got swag";
         let bioIndex = 0, isDeleting = false;
@@ -956,7 +1103,9 @@
         }
         setTimeout(typeBio, 1000);
 
-        // UID scramble
+        // ===================================
+        // UID SCRAMBLE
+        // ===================================
         const uidText = document.getElementById('uidText');
         const chars = '0123456789ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛟ⚡☠✦✧⚔︎⚠︎◊◈△▽';
         function scramble() {
@@ -967,7 +1116,9 @@
         setInterval(scramble, 50);
         scramble();
 
-        // Card tilt
+        // ===================================
+        // CARD TILT EFFECT
+        // ===================================
         let targetX = 0, targetY = 0, currentX = 0, currentY = 0, isHovering = false;
         card.addEventListener('mouseenter', () => isHovering = true);
         card.addEventListener('mouseleave', () => { isHovering = false; targetX = targetY = 0; });
@@ -985,7 +1136,9 @@
         }
         animateCard();
 
-        // Avatar click
+        // ===================================
+        // AVATAR CLICK
+        // ===================================
         document.getElementById('avatar').addEventListener('click', () => {
             const av = document.getElementById('avatar');
             av.style.transform = 'scale(1.15) rotate(360deg)';
