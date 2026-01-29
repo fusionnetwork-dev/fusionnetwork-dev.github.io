@@ -745,7 +745,7 @@
         }
         
         function onPlayerReady(event) {
-            console.log('YouTube Player ready - Preventing end screens with aggressive looping');
+            console.log('YouTube Player ready - Auto-reset hack enabled');
             event.target.setVolume(80);
             
             // Get all available qualities and set to the highest one
@@ -753,12 +753,10 @@
             console.log('Available qualities:', availableQualities);
             
             if (availableQualities.length > 0) {
-                // YouTube returns qualities in order: hd2160 (4K), hd1440 (1440p), hd1080, hd720, large, medium, small, tiny
                 const highestQuality = availableQualities[0];
                 player.setPlaybackQuality(highestQuality);
                 console.log('Set quality to:', highestQuality);
                 
-                // Double-check after a short delay (sometimes YouTube needs time)
                 setTimeout(() => {
                     const currentQuality = player.getPlaybackQuality();
                     console.log('Current quality:', currentQuality);
@@ -768,36 +766,49 @@
                 }, 2000);
             }
             
-            // Aggressively monitor playback and restart before end screen appears
+            // Monitor playback and reset BEFORE video ends to prevent end screen
             setInterval(() => {
                 try {
                     const duration = player.getDuration();
                     const currentTime = player.getCurrentTime();
                     
-                    // If we're within 1.5 seconds of the end, immediately restart
-                    if (duration && currentTime && (duration - currentTime) < 1.5) {
+                    // Reset to start 0.5 seconds before end to prevent end screen from ever loading
+                    if (duration && currentTime && (duration - currentTime) < 0.5) {
                         player.seekTo(0);
-                        player.playVideo();
+                        // Immediately play again for seamless loop
+                        setTimeout(() => {
+                            player.playVideo();
+                        }, 50);
                     }
                 } catch (e) {
                     // Ignore errors
                 }
-            }, 100); // Check every 100ms
+            }, 100);
         }
         
         function onPlayerStateChange(event) {
+            // AUTO-RESET HACK: Reset to thumbnail instead of showing end screen
             if (event.data === YT.PlayerState.ENDED) {
-                // Immediately restart - backup for the interval monitor
+                // Seek to start and pause to show thumbnail (prevents end screen grid)
                 event.target.seekTo(0);
-                event.target.playVideo();
+                event.target.pauseVideo();
+                
+                // Auto-play again after a tiny delay for continuous loop
+                setTimeout(() => {
+                    event.target.playVideo();
+                }, 100);
             } else if (event.data === YT.PlayerState.PAUSED) {
-                // If paused near the end, restart and play
+                // If somehow paused near the end, reset and continue
                 try {
                     const duration = player.getDuration();
                     const currentTime = player.getCurrentTime();
-                    if (duration && currentTime && (duration - currentTime) < 2) {
+                    
+                    // Only auto-resume if paused near the end (not manual pause)
+                    if (duration && currentTime && (duration - currentTime) < 1) {
                         event.target.seekTo(0);
-                        event.target.playVideo();
+                        setTimeout(() => {
+                            event.target.playVideo();
+                        }, 100);
                     }
                 } catch (e) {
                     // Ignore errors
