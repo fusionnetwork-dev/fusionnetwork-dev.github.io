@@ -39,7 +39,6 @@
         }
         @keyframes gradient { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
         
-        /* Video Background - supports both YouTube and direct video */
         video#bgVideo {
             position: fixed;
             top: 0; left: 0;
@@ -124,10 +123,6 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: welcomeShimmer 2.5s ease-in-out infinite;
-            text-shadow: 
-                0 0 30px rgba(255,255,255,0.5),
-                0 0 60px rgba(255,255,255,0.3),
-                0 0 90px rgba(255,255,255,0.2);
             filter: drop-shadow(0 0 20px rgba(255,255,255,0.6));
         }
         @keyframes welcomeShimmer { 
@@ -150,6 +145,7 @@
             color: rgba(255,255,255,0.6);
             font-family: 'Courier New', monospace;
             animation: subtitlePulse 2s ease-in-out infinite;
+            white-space: nowrap;
         }
         @keyframes subtitlePulse {
             0%, 100% { opacity: 0.6; }
@@ -200,7 +196,7 @@
         }
         
         .profile-header { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .avatar-wrapper { position: relative; }
+        .avatar-wrapper { position: relative; flex-shrink: 0; }
         .avatar {
             width: 90px; 
             height: 90px;
@@ -215,10 +211,6 @@
             position: relative;
             z-index: 2;
             overflow: hidden;
-        }
-        .avatar:hover { transform: scale(1.08) rotate(5deg); }
-        
-        .avatar {
             box-shadow: 
                 -4px -4px 15px rgba(255, 255, 255, 0.6),
                 4px 4px 15px rgba(0, 0, 0, 0.8),
@@ -226,6 +218,7 @@
                 6px 6px 25px rgba(0, 0, 0, 0.6);
             animation: yinYangGlow 3s ease-in-out infinite;
         }
+        .avatar:hover { transform: scale(1.08) rotate(5deg); }
         
         @keyframes yinYangGlow {
             0%, 100% {
@@ -243,180 +236,8 @@
                     -6px -6px 25px rgba(0, 0, 0, 0.6);
             }
         }
-        
-        .rain-container {
-            position: absolute;
-            top: -90px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 160px;
-            height: 220px;
-            pointer-events: none;
-            z-index: 3;
-            animation: cloudFloat 3s ease-in-out infinite;
-        }
-        
-        @keyframes cloudFloat {
-            0%, 100% {
-                transform: translateX(-50%) translateY(0);
-            }
-            50% {
-                transform: translateX(-50%) translateY(-8px);
-            }
-        }
-        
-        .cloud {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 45px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.7) 0%,
-                rgba(200, 200, 200, 0.6) 25%,
-                rgba(100, 100, 100, 0.5) 50%,
-                rgba(50, 50, 50, 0.5) 75%,
-                rgba(0, 0, 0, 0.6) 100%
-            );
-            background-size: 200% 200%;
-            border-radius: 70px 70px 60px 60px;
-            filter: blur(8px) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
-            opacity: 0.85;
-            animation: yinYangCloudFlow 4s ease-in-out infinite;
-        }
-        
-        @keyframes yinYangCloudFlow {
-            0%, 100% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-        
-        .cloud::before {
-            content: '';
-            position: absolute;
-            top: -22px;
-            left: 18px;
-            width: 42px;
-            height: 42px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.75) 0%,
-                rgba(150, 150, 150, 0.6) 50%,
-                rgba(50, 50, 50, 0.65) 100%
-            );
-            background-size: 200% 200%;
-            border-radius: 50%;
-            filter: blur(6px);
-            animation: yinYangCloudFlow 4s ease-in-out infinite;
-        }
-        
-        .cloud::after {
-            content: '';
-            position: absolute;
-            top: -16px;
-            right: 22px;
-            width: 34px;
-            height: 34px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.7) 0%,
-                rgba(180, 180, 180, 0.55) 50%,
-                rgba(80, 80, 80, 0.6) 100%
-            );
-            background-size: 200% 200%;
-            border-radius: 50%;
-            filter: blur(5px);
-            animation: yinYangCloudFlow 4s ease-in-out infinite;
-        }
-        
-        .cloud-detail {
-            position: absolute;
-            bottom: -5px;
-            left: 25%;
-            width: 50%;
-            height: 20px;
-            background: linear-gradient(135deg,
-                rgba(200, 200, 200, 0.4) 0%,
-                rgba(120, 120, 120, 0.35) 50%,
-                rgba(60, 60, 60, 0.4) 100%
-            );
-            background-size: 200% 200%;
-            border-radius: 50%;
-            filter: blur(6px);
-            animation: yinYangCloudFlow 4s ease-in-out infinite;
-        }
-        
-        .raindrop {
-            position: absolute;
-            width: 2px;
-            height: 10px;
-            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-            opacity: 0;
-            filter: blur(0.15px);
-            background: linear-gradient(to bottom, 
-                var(--rain-color-1) 0%,
-                var(--rain-color-2) 30%,
-                var(--rain-color-3) 60%,
-                var(--rain-color-4) 100%
-            );
-            box-shadow: 
-                inset 0.5px 0.5px 0.5px var(--rain-highlight),
-                inset -0.5px -0.5px 0.5px var(--rain-shadow),
-                0 0 1px rgba(150, 150, 150, 0.15);
-        }
-        
-        .raindrop::before {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 35%;
-            width: 40%;
-            height: 30%;
-            background: var(--rain-highlight);
-            border-radius: 50%;
-            filter: blur(0.3px);
-        }
-        
-        @keyframes rainfall {
-            0% {
-                opacity: 0;
-                transform: translateY(0);
-                --rain-color-1: rgba(255, 255, 255, 0.15);
-                --rain-color-2: rgba(200, 200, 200, 0.12);
-                --rain-color-3: rgba(100, 100, 100, 0.09);
-                --rain-color-4: rgba(0, 0, 0, 0.05);
-                --rain-highlight: rgba(255, 255, 255, 0.3);
-                --rain-shadow: rgba(0, 0, 0, 0.15);
-            }
-            2% {
-                opacity: 1;
-            }
-            50% {
-                --rain-color-1: rgba(0, 0, 0, 0.15);
-                --rain-color-2: rgba(50, 50, 50, 0.12);
-                --rain-color-3: rgba(150, 150, 150, 0.09);
-                --rain-color-4: rgba(255, 255, 255, 0.05);
-                --rain-highlight: rgba(0, 0, 0, 0.2);
-                --rain-shadow: rgba(255, 255, 255, 0.15);
-            }
-            98% {
-                opacity: 0.7;
-                --rain-color-1: rgba(255, 255, 255, 0.15);
-                --rain-color-2: rgba(200, 200, 200, 0.12);
-                --rain-color-3: rgba(100, 100, 100, 0.09);
-                --rain-color-4: rgba(0, 0, 0, 0.05);
-                --rain-highlight: rgba(255, 255, 255, 0.3);
-                --rain-shadow: rgba(0, 0, 0, 0.15);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(var(--fall-distance));
-            }
-        }
-        
-        .user-info { flex: 1; }
+
+        .user-info { flex: 1; min-width: 0; }
         .uid {
             font-family: 'Courier New', monospace;
             font-size: 14px;
@@ -433,6 +254,14 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
+        .username-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+
         .username {
             font-size: 28px;
             font-weight: 700;
@@ -466,10 +295,7 @@
             position: relative;
             flex-shrink: 0;
         }
-        .status-indicator.online {
-            background: #43b581;
-            box-shadow: 0 0 8px #43b581;
-        }
+        .status-indicator.online { background: #43b581; box-shadow: 0 0 8px #43b581; }
         .status-indicator.idle {
             background: #faa61a;
             box-shadow: 0 0 8px #faa61a;
@@ -480,45 +306,94 @@
         .status-indicator.idle::before {
             content: '';
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; right: 0;
+            width: 100%; height: 100%;
             background: #2c2f33;
             border-radius: 50%;
             transform: translateX(30%) rotate(15deg);
         }
-        .status-indicator.dnd {
-            background: #f04747;
-            box-shadow: 0 0 8px #f04747;
-        }
+        .status-indicator.dnd { background: #f04747; box-shadow: 0 0 8px #f04747; }
         .status-indicator.dnd::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 7px;
-            height: 2px;
-            background: white;
-            border-radius: 1px;
+            width: 7px; height: 2px;
+            background: white; border-radius: 1px;
         }
-        .status-indicator.offline {
-            background: #747f8d;
-            border: 2px solid #747f8d;
-            box-sizing: border-box;
-        }
+        .status-indicator.offline { background: #747f8d; border: 2px solid #747f8d; box-sizing: border-box; }
         .status-indicator.offline::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 6px;
-            height: 6px;
-            background: white;
-            border-radius: 50%;
+            width: 6px; height: 6px;
+            background: white; border-radius: 50%;
         }
+
+    
+        .badges-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 20px;
+            padding: 4px 8px;
+            flex-shrink: 0;
+        }
+
+        .badge-icon {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            cursor: default;
+        }
+
+        .badge-icon i {
+            font-size: 11px;
+            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff, #666666);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: scrollGradient 3s linear infinite;
+        }
+
+        .badge-tooltip {
+            position: absolute;
+            bottom: calc(100% + 7px);
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            background: rgba(0,0,0,0.82);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 3px 9px;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.18s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 20;
+        }
+        .badge-tooltip span {
+            background: linear-gradient(90deg, #c0c0c0, #ffffff, #888888);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .badge-icon:hover .badge-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
         .bio { 
             font-family: 'Courier New', monospace;
             color: rgba(255,255,255,0.9); 
@@ -526,28 +401,7 @@
             line-height: 1.6; 
             margin-bottom: 18px; 
         }
-        .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-        .badge {
-            background: rgba(255,255,255,0.1);
-            padding: 8px 14px;
-            border-radius: 14px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            border: 1px solid rgba(255,255,255,0.2);
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-family: 'Courier New', monospace;
-        }
-        .badge span, .badge i {
-            background: linear-gradient(90deg, #333333, #c0c0c0, #888888, #ffffff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+
         .social { display: flex; gap: 12px; margin-bottom: 20px; justify-content: center; }
         .social-icon { 
             width: 52px; 
@@ -559,17 +413,35 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
         }
         .social-icon:hover { background: rgba(255,255,255,0.2); transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
         .social-icon img { width: 28px; height: 28px; }
-        .version {
+
+        .card-footer {
             position: absolute;
-            bottom: 20px; left: 20px;
+            bottom: 20px; left: 20px; right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .version {
             font-family: 'Courier New', monospace;
-            font-size: 12px;
+            font-size: 11px;
             color: rgba(255,255,255,0.5);
             letter-spacing: 1px;
+            white-space: nowrap;
         }
+        .last-updated {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 1px;
+            white-space: nowrap;
+            text-align: right;
+        }
+
         .view-counter {
             position: fixed;
             bottom: 24px; left: 24px;
@@ -588,20 +460,95 @@
             font-weight: 600;
             opacity: 0;
         }
-        .view-counter span {
-            font-family: 'Courier New', monospace;
-            font-weight: 600;
-        }
+        .view-counter span { font-family: 'Courier New', monospace; font-weight: 600; }
         .view-counter.loaded { animation: fadeIn 0.6s ease forwards 0.2s; }
         .view-counter i { font-size: 18px; animation: pulse 2s ease-in-out infinite; }
         @keyframes pulse { 0%,100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
-        
-        @media (max-width: 600px) {
-            .card { padding: 32px 24px; }
-            .profile-header { flex-direction: column; text-align: center; }
-            .avatar { width: 100px; height: 100px; }
-            .view-counter { bottom: 80px; left: 50%; transform: translateX(-50%); }
-            .welcome-text { font-size: 56px; letter-spacing: 8px; }
+
+      
+        .nav-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 99998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .nav-modal::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: -1;
+        }
+        .nav-modal.active { opacity: 1; pointer-events: all; }
+        .nav-modal-box {
+            background: rgba(8,8,8,0.9);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 22px;
+            padding: 28px 32px;
+            max-width: 360px; width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative; z-index: 1;
+        }
+        .nav-modal.active .nav-modal-box { transform: translateY(0) scale(1); }
+        .nav-modal-title {
+            font-family: 'Courier New', monospace;
+            font-size: 18px; font-weight: 700; letter-spacing: 2px;
+            background: linear-gradient(90deg, #c0c0c0, #ffffff, #888888);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-modal-sub {
+            font-family: 'Courier New', monospace;
+            font-size: 12px; color: rgba(255,255,255,0.45); letter-spacing: 1px;
+        }
+        .nav-modal-link {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 30px; padding: 7px 18px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px; color: rgba(255,255,255,0.8);
+            max-width: 100%; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+            text-align: center; width: 100%;
+        }
+        .nav-modal-buttons {
+            display: flex; gap: 10px;
+            margin-top: 2px; width: 100%; justify-content: center;
+        }
+        .nav-btn {
+            font-family: 'Courier New', monospace;
+            font-size: 13px; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; border: none;
+            border-radius: 30px; padding: 9px 28px;
+            cursor: pointer;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+            flex: 1; max-width: 140px;
+        }
+        .nav-btn:hover { transform: translateY(-2px); opacity: 0.88; }
+        .nav-btn:active { transform: translateY(0); }
+        .nav-btn-no {
+            background: rgba(75,75,75,0.55);
+            border: 1px solid rgba(255,255,255,0.13);
+            color: rgba(255,255,255,0.65);
+        }
+        .nav-btn-yes {
+            background: linear-gradient(90deg, #444444, #aaaaaa, #666666, #ffffff, #888888);
+            background-size: 200% 200%;
+            animation: scrollGradient 3s linear infinite;
+            color: #000; font-weight: 800;
         }
     </style>
 </head>
@@ -613,26 +560,7 @@
         </div>
     </div>
     
-    <!-- 
-    ===========================================
-    VIDEO CONFIGURATION - CHOOSE ONE METHOD:
-    ===========================================
-    
-    METHOD 1: YOUTUBE (No beat detection, but easy to use)
-    - Set USE_YOUTUBE = true
-    - Set YOUTUBE_VIDEO_ID = 'your-video-id'
-    - No end screens will show
-    
-    METHOD 2: DIRECT VIDEO URL (With 808 beat detection!)
-    - Set USE_YOUTUBE = false
-    - Set DIRECT_VIDEO_URL = 'your-video-url.mp4'
-    - Get URL from: Catbox.moe, Cloudflare Stream, Google Drive, etc.
-    -->
-    
-    <!-- YouTube Background Container -->
     <div id="youtube-background"></div>
-    
-    <!-- Direct Video Background -->
     <video id="bgVideo" loop playsinline muted style="display: none;">
         <source id="videoSource" type="video/mp4">
     </video>
@@ -641,16 +569,27 @@
         <div class="card" id="card">
             <div class="profile-header">
                 <div class="avatar-wrapper">
-                    <div class="rain-container" id="rainContainer">
-                        <div class="cloud">
-                            <div class="cloud-detail"></div>
-                        </div>
-                    </div>
                     <div class="avatar" id="avatar"></div>
                 </div>
                 <div class="user-info">
                     <div class="uid">UID <span id="uidText">0000</span></div>
-                    <h1 class="username">miu</h1>
+                    <div class="username-row">
+                        <h1 class="username">miu</h1>
+                        <div class="badges-pill">
+                            <div class="badge-icon">
+                                <i class="fas fa-crown"></i>
+                                <div class="badge-tooltip"><span>Owner</span></div>
+                            </div>
+                            <div class="badge-icon">
+                                <i class="fas fa-code"></i>
+                                <div class="badge-tooltip"><span>Developer</span></div>
+                            </div>
+                            <div class="badge-icon">
+                                <i class="fas fa-shield-alt"></i>
+                                <div class="badge-tooltip"><span>Staff</span></div>
+                            </div>
+                        </div>
+                    </div>
                     <p class="handle">@binflexn</p>
                     <div class="discord-status" id="discordStatus">
                         <div class="status-indicator" id="statusIndicator"></div>
@@ -658,35 +597,45 @@
                     </div>
                 </div>
             </div>
+
             <p class="bio" id="bio"></p>
-            <div class="badges">
-                <span class="badge"><i class="fas fa-crown"></i><span>Owner</span></span>
-                <span class="badge"><i class="fas fa-code"></i><span>Developer</span></span>
-                <span class="badge"><i class="fas fa-shield-alt"></i><span>Staff</span></span>
-            </div>
+
             <div class="social">
-                <a href="https://www.roblox.com/users/8156657037/profile" target="_blank" class="social-icon"><img src="assets/diamondspin.gif" alt="Roblox"></a>
-                <a href="https://discord.com/users/1087346956973649951" target="_blank" class="social-icon"><img src="assets/gunspin.gif" alt="Discord"></a>
-                <a href="https://www.youtube.com/@dsamiumiu" target="_blank" class="social-icon"><img src="assets/skimaskspin.gif" alt="YouTube"></a>
+                <a data-href="https://www.roblox.com/users/8156657037/profile" class="social-icon nav-link"><img src="assets/diamondspin.gif" alt="Roblox"></a>
+                <a data-href="https://discord.com/users/1087346956973649951" class="social-icon nav-link"><img src="assets/gunspin.gif" alt="Discord"></a>
+                <a data-href="https://www.youtube.com/@dsamiumiu" class="social-icon nav-link"><img src="assets/skimaskspin.gif" alt="YouTube"></a>
+                <a data-href="https://guns.lol/relevaant" class="social-icon nav-link"><img src="assets/mothspin.gif" alt="Guns.lol"></a>
             </div>
-            <div class="version">v4.6 @ binflexn</div>
+
+            <div class="card-footer">
+                <div class="version">v4.7 @ binflexn</div>
+                <div class="last-updated" id="lastUpdated">Last Updated : --:--:-- --</div>
+            </div>
         </div>
     </div>
-    <div class="view-counter">
+
+    <div class="view-counter" id="viewCounter">
         <i class="fas fa-eye"></i>
         <span id="viewCount">0</span>
     </div>
+
+    <div id="navModal" class="nav-modal">
+        <div class="nav-modal-box">
+            <div class="nav-modal-title">Are you sure?</div>
+            <div class="nav-modal-sub">You are visiting</div>
+            <div class="nav-modal-link" id="navModalLink"></div>
+            <div class="nav-modal-buttons">
+                <button class="nav-btn nav-btn-no" id="navNo">No</button>
+                <button class="nav-btn nav-btn-yes" id="navYes">Yes</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // ===================================
-        // VIDEO CONFIGURATION
-        // ===================================
-        const USE_YOUTUBE = true; // Set to true for YouTube, false for direct video
-        const YOUTUBE_VIDEO_ID = '0x1JWGP-B8k'; // Your YouTube video ID
-        const DIRECT_VIDEO_URL = 'YOUR_VIDEO_URL.mp4'; // Your direct video URL (Catbox, Cloudflare Stream, etc.)
-        
-        // ===================================
-        // GLOBAL VARIABLES
-        // ===================================
+
+        const USE_YOUTUBE = true;
+        const YOUTUBE_VIDEO_ID = 'Nt3kNGI0Rmc';
+        const DIRECT_VIDEO_URL = 'YOUR_VIDEO_URL.mp4';
         let player;
         let audioContext;
         let gainNode;
@@ -698,197 +647,113 @@
         let apiReady = false;
         const beatThreshold = 0.75;
         const beatCooldown = 250;
-        
-        // ===================================
-        // YOUTUBE SETUP
-        // ===================================
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            const timeStr = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+            document.getElementById('lastUpdated').textContent = `Last Updated : ${timeStr}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
         if (USE_YOUTUBE) {
             var tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            
-            window.onYouTubeIframeAPIReady = function() {
-                console.log('YouTube API Ready');
-                apiReady = true;
-            }
+            window.onYouTubeIframeAPIReady = function() { apiReady = true; }
         }
         
         function initYouTubePlayer() {
-            if (!apiReady) {
-                setTimeout(initYouTubePlayer, 100);
-                return;
-            }
-            
+            if (!apiReady) { setTimeout(initYouTubePlayer, 100); return; }
             player = new YT.Player('youtube-player', {
                 videoId: YOUTUBE_VIDEO_ID,
                 playerVars: {
-                    autoplay: 1,
-                    controls: 0,
-                    disablekb: 1,
-                    fs: 0,
-                    modestbranding: 1,
-                    playsinline: 1,
-                    loop: 1,
-                    playlist: YOUTUBE_VIDEO_ID,
-                    mute: 0,
-                    vq: 'hd2160', // Request 4K first, will fallback to highest available
-                    iv_load_policy: 3,
-                    cc_load_policy: 0,
-                    showinfo: 0
+                    autoplay: 1, controls: 0, disablekb: 1, fs: 0,
+                    modestbranding: 1, playsinline: 1, loop: 1,
+                    playlist: YOUTUBE_VIDEO_ID, mute: 0, vq: 'hd2160',
+                    iv_load_policy: 3, cc_load_policy: 0, showinfo: 0
                 },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
+                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
             });
         }
         
         function onPlayerReady(event) {
-            console.log('YouTube Player ready - Auto-reset hack enabled');
             event.target.setVolume(80);
-            
-            // Get all available qualities and set to the highest one
             const availableQualities = player.getAvailableQualityLevels();
-            console.log('Available qualities:', availableQualities);
-            
             if (availableQualities.length > 0) {
                 const highestQuality = availableQualities[0];
                 player.setPlaybackQuality(highestQuality);
-                console.log('Set quality to:', highestQuality);
-                
                 setTimeout(() => {
-                    const currentQuality = player.getPlaybackQuality();
-                    console.log('Current quality:', currentQuality);
-                    if (currentQuality !== highestQuality) {
-                        player.setPlaybackQuality(highestQuality);
-                    }
+                    if (player.getPlaybackQuality() !== highestQuality) player.setPlaybackQuality(highestQuality);
                 }, 2000);
             }
-            
-            // Monitor playback and reset BEFORE video ends to prevent end screen
             setInterval(() => {
                 try {
                     const duration = player.getDuration();
                     const currentTime = player.getCurrentTime();
-                    
-                    // Reset to start 0.5 seconds before end to prevent end screen from ever loading
                     if (duration && currentTime && (duration - currentTime) < 0.5) {
                         player.seekTo(0);
-                        // Immediately play again for seamless loop
-                        setTimeout(() => {
-                            player.playVideo();
-                        }, 50);
+                        setTimeout(() => player.playVideo(), 50);
                     }
-                } catch (e) {
-                    // Ignore errors
-                }
+                } catch (e) {}
             }, 100);
         }
         
         function onPlayerStateChange(event) {
-            // AUTO-RESET HACK: Reset to thumbnail instead of showing end screen
             if (event.data === YT.PlayerState.ENDED) {
-                // Seek to start and pause to show thumbnail (prevents end screen grid)
-                event.target.seekTo(0);
-                event.target.pauseVideo();
-                
-                // Auto-play again after a tiny delay for continuous loop
-                setTimeout(() => {
-                    event.target.playVideo();
-                }, 100);
+                event.target.seekTo(0); event.target.pauseVideo();
+                setTimeout(() => event.target.playVideo(), 100);
             } else if (event.data === YT.PlayerState.PAUSED) {
-                // If somehow paused near the end, reset and continue
                 try {
                     const duration = player.getDuration();
                     const currentTime = player.getCurrentTime();
-                    
-                    // Only auto-resume if paused near the end (not manual pause)
                     if (duration && currentTime && (duration - currentTime) < 1) {
                         event.target.seekTo(0);
-                        setTimeout(() => {
-                            event.target.playVideo();
-                        }, 100);
+                        setTimeout(() => event.target.playVideo(), 100);
                     }
-                } catch (e) {
-                    // Ignore errors
-                }
+                } catch (e) {}
             }
         }
-        
-        // ===================================
-        // DIRECT VIDEO SETUP WITH BEAT DETECTION
-        // ===================================
         function initDirectVideo() {
             const bgVideo = document.getElementById('bgVideo');
-            const videoSource = document.getElementById('videoSource');
-            
-            videoSource.src = DIRECT_VIDEO_URL;
+            document.getElementById('videoSource').src = DIRECT_VIDEO_URL;
             bgVideo.style.display = 'block';
             bgVideo.load();
-            
-            // Log video quality info when metadata loads
-            bgVideo.addEventListener('loadedmetadata', () => {
-                console.log('Video loaded:');
-                console.log('- Resolution:', bgVideo.videoWidth + 'x' + bgVideo.videoHeight);
-                console.log('- Duration:', bgVideo.duration + 's');
-                
-                let qualityLabel = 'SD';
-                if (bgVideo.videoHeight >= 2160) qualityLabel = '4K';
-                else if (bgVideo.videoHeight >= 1440) qualityLabel = '1440p';
-                else if (bgVideo.videoHeight >= 1080) qualityLabel = '1080p';
-                else if (bgVideo.videoHeight >= 720) qualityLabel = '720p';
-                else if (bgVideo.videoHeight >= 480) qualityLabel = '480p';
-                
-                console.log('- Quality:', qualityLabel);
-            });
         }
         
         function setupAudio() {
             const bgVideo = document.getElementById('bgVideo');
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             videoSource = audioContext.createMediaElementSource(bgVideo);
-            
-            gainNode = audioContext.createGain();
-            gainNode.gain.value = 0.8;
-            
+            gainNode = audioContext.createGain(); gainNode.gain.value = 0.8;
             limiter = audioContext.createDynamicsCompressor();
-            limiter.threshold.value = -10;
-            limiter.knee.value = 0;
-            limiter.ratio.value = 20;
-            limiter.attack.value = 0.003;
-            limiter.release.value = 0.25;
-            
-            videoSource.connect(gainNode);
-            gainNode.connect(limiter);
-            limiter.connect(audioContext.destination);
+            limiter.threshold.value = -10; limiter.knee.value = 0; limiter.ratio.value = 20;
+            limiter.attack.value = 0.003; limiter.release.value = 0.25;
+            videoSource.connect(gainNode); gainNode.connect(limiter); limiter.connect(audioContext.destination);
         }
         
         function setupBeatDetection() {
             analyser = audioContext.createAnalyser();
-            analyser.fftSize = 512;
-            analyser.smoothingTimeConstant = 0.3;
+            analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.3;
             const bufferLength = analyser.frequencyBinCount;
             dataArray = new Uint8Array(bufferLength);
-            
             limiter.connect(analyser);
-            
             detectBeat();
         }
         
         function detectBeat() {
             analyser.getByteFrequencyData(dataArray);
-            
-            // Focus on 808 range (20-200Hz)
             const bassSum = dataArray.slice(0, 15).reduce((a, b) => a + b, 0);
             const bassAvg = bassSum / 15 / 255;
-            
             const now = Date.now();
             if (bassAvg > beatThreshold && now - lastBeatTime > beatCooldown) {
                 lastBeatTime = now;
                 triggerBeatBounce();
             }
-            
             requestAnimationFrame(detectBeat);
         }
         
@@ -897,120 +762,24 @@
             container.style.animation = 'none';
             void container.offsetWidth;
             container.style.animation = 'beatBounce 0.4s ease-out';
-            setTimeout(() => {
-                container.style.animation = '';
-            }, 400);
+            setTimeout(() => { container.style.animation = ''; }, 400);
         }
-        
-        // ===================================
-        // RAIN EFFECT
-        // ===================================
-        function createRain() {
-            const rainContainer = document.getElementById('rainContainer');
-            const avatarRadius = 48;
-            
-            setInterval(() => {
-                const drop = document.createElement('div');
-                drop.className = 'raindrop';
-                
-                const startX = 25 + Math.random() * 50;
-                drop.style.left = startX + '%';
-                drop.style.top = '45px';
-                
-                const dropXPixel = (startX / 100) * 160 - 80;
-                const profileCenterY = 135;
-                
-                let fallDistance = 160;
-                let hitProfile = false;
-                let currentY = 45;
-                
-                while (currentY < 200 && !hitProfile) {
-                    currentY += 2;
-                    const distanceFromCenter = Math.sqrt(
-                        Math.pow(dropXPixel, 2) + 
-                        Math.pow(currentY - profileCenterY, 2)
-                    );
-                    
-                    if (distanceFromCenter <= avatarRadius + 1) {
-                        fallDistance = currentY - 45;
-                        hitProfile = true;
-                        
-                        setTimeout(() => {
-                            const splash = document.createElement('div');
-                            splash.style.position = 'absolute';
-                            splash.style.left = drop.style.left;
-                            splash.style.top = (45 + fallDistance) + 'px';
-                            splash.style.width = '2px';
-                            splash.style.height = '2px';
-                            splash.style.background = 'radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent)';
-                            splash.style.borderRadius = '50%';
-                            splash.style.animation = 'splash 0.15s ease-out forwards';
-                            rainContainer.appendChild(splash);
-                            setTimeout(() => splash.remove(), 150);
-                        }, (fallDistance / 160) * 0.35 * 1000);
-                        
-                        break;
-                    }
-                }
-                
-                drop.style.setProperty('--fall-distance', fallDistance + 'px');
-                const duration = 0.35 + Math.random() * 0.15;
-                drop.style.animation = `rainfall ${duration}s linear forwards`;
-                
-                rainContainer.appendChild(drop);
-                setTimeout(() => drop.remove(), duration * 1000);
-            }, 40);
-        }
-        
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes splash {
-                0% {
-                    transform: scale(1);
-                    opacity: 0.8;
-                    background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent);
-                }
-                50% {
-                    background: radial-gradient(circle, rgba(100, 100, 100, 0.5), transparent);
-                }
-                100% {
-                    transform: scale(2);
-                    opacity: 0;
-                    background: radial-gradient(circle, rgba(0, 0, 0, 0.3), transparent);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        setTimeout(createRain, 1000);
-        
-        // ===================================
-        // DISCORD STATUS
-        // ===================================
         async function fetchDiscordStatus() {
             try {
                 const response = await fetch('https://api.lanyard.rest/v1/users/1087346956973649951');
                 if (!response.ok) throw new Error('API request failed');
-                
                 const data = await response.json();
                 const statusText = document.getElementById('statusText');
                 const statusIndicator = document.getElementById('statusIndicator');
-                
                 if (data.success && data.data) {
                     const user = data.data;
                     const status = user.discord_status;
                     const customStatus = user.activities?.find(a => a.type === 4);
-                    
                     statusIndicator.className = 'status-indicator';
-                    if (status === 'online') {
-                        statusIndicator.classList.add('online');
-                    } else if (status === 'idle') {
-                        statusIndicator.classList.add('idle');
-                    } else if (status === 'dnd') {
-                        statusIndicator.classList.add('dnd');
-                    } else {
-                        statusIndicator.classList.add('offline');
-                    }
-                    
+                    if (status === 'online') statusIndicator.classList.add('online');
+                    else if (status === 'idle') statusIndicator.classList.add('idle');
+                    else if (status === 'dnd') statusIndicator.classList.add('dnd');
+                    else statusIndicator.classList.add('offline');
                     if (status === 'offline' || !customStatus || !customStatus.state) {
                         statusText.textContent = 'No status / Offline';
                     } else {
@@ -1021,18 +790,12 @@
                     statusIndicator.className = 'status-indicator offline';
                 }
             } catch (error) {
-                console.error('Failed to fetch Discord status:', error);
                 document.getElementById('statusText').textContent = 'No status / Offline';
                 document.getElementById('statusIndicator').className = 'status-indicator offline';
             }
         }
-        
         fetchDiscordStatus();
         setInterval(fetchDiscordStatus, 30000);
-        
-        // ===================================
-        // VIEW COUNTER
-        // ===================================
         async function generateHWID() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -1057,25 +820,18 @@
         
         async function initViewCounter() {
             const hwid = await generateHWID();
-            const TOTAL_KEY = 'total_views';
-            const HWID_KEY = hwid;
-            let total = localStorage.getItem(TOTAL_KEY) ? parseInt(localStorage.getItem(TOTAL_KEY)) : 0;
-            let hwidData = localStorage.getItem(HWID_KEY) ? JSON.parse(localStorage.getItem(HWID_KEY)) : {count: 0, date: new Date().toDateString()};
+            let total = localStorage.getItem('total_views') ? parseInt(localStorage.getItem('total_views')) : 0;
+            let hwidData = localStorage.getItem(hwid) ? JSON.parse(localStorage.getItem(hwid)) : {count: 0, date: new Date().toDateString()};
             if (hwidData.date !== new Date().toDateString()) hwidData = {count: 0, date: new Date().toDateString()};
             if (hwidData.count < 3) {
-                total++; 
-                hwidData.count++;
-                localStorage.setItem(TOTAL_KEY, total);
-                localStorage.setItem(HWID_KEY, JSON.stringify(hwidData));
+                total++; hwidData.count++;
+                localStorage.setItem('total_views', total);
+                localStorage.setItem(hwid, JSON.stringify(hwidData));
             }
             document.getElementById('viewCount').textContent = total.toLocaleString();
         }
         initViewCounter();
-
-        // ===================================
-        // WELCOME SCREEN
-        // ===================================
-        const welcomeText = "wtwwwwwwww";
+        const welcomeText = "miu's abode";
         const typewriter = document.getElementById('typewriter');
         let i = 0;
         function typeWelcome() {
@@ -1094,7 +850,6 @@
             welcomeScreen.classList.add('fade-out');
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
-                
                 if (USE_YOUTUBE) {
                     const ytContainer = document.getElementById('youtube-background');
                     const iframe = document.createElement('div');
@@ -1106,22 +861,14 @@
                     setupAudio();
                     const bgVideo = document.getElementById('bgVideo');
                     bgVideo.muted = false;
-                    bgVideo.play().then(() => {
-                        setupBeatDetection();
-                        console.log('Beat detection active - Card will bounce to 808s!');
-                    });
+                    bgVideo.play().then(() => setupBeatDetection());
                 }
-                
                 card.classList.add('loaded');
-                document.querySelector('.view-counter').classList.add('loaded');
+                document.getElementById('viewCounter').classList.add('loaded');
             }, 1000);
         }
-       
         welcomeScreen.addEventListener('click', hideWelcome);
 
-        // ===================================
-        // BIO TYPING EFFECT
-        // ===================================
         const bioElement = document.getElementById('bio');
         const bioText = "nttmstfu 😪";
         let bioIndex = 0, isDeleting = false;
@@ -1142,10 +889,6 @@
             }
         }
         setTimeout(typeBio, 1000);
-
-        // ===================================
-        // UID SCRAMBLE
-        // ===================================
         const uidText = document.getElementById('uidText');
         const chars = '0123456789ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛟ⚡☠✦✧⚔︎⚠︎◊◈△▽';
         function scramble() {
@@ -1155,10 +898,6 @@
         }
         setInterval(scramble, 50);
         scramble();
-
-        // ===================================
-        // CARD TILT EFFECT
-        // ===================================
         let targetX = 0, targetY = 0, currentX = 0, currentY = 0, isHovering = false;
         card.addEventListener('mouseenter', () => isHovering = true);
         card.addEventListener('mouseleave', () => { isHovering = false; targetX = targetY = 0; });
@@ -1175,38 +914,38 @@
             requestAnimationFrame(animateCard);
         }
         animateCard();
-
-        // ===================================
-        // AVATAR CLICK
-        // ===================================
         document.getElementById('avatar').addEventListener('click', () => {
             const av = document.getElementById('avatar');
             av.style.transform = 'scale(1.15) rotate(360deg)';
             setTimeout(() => av.style.transform = '', 600);
         });
+        const navModal = document.getElementById('navModal');
+        const navModalLink = document.getElementById('navModalLink');
+        let pendingUrl = '';
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                pendingUrl = link.getAttribute('data-href');
+                navModalLink.textContent = pendingUrl;
+                navModal.classList.add('active');
+            });
+        });
+
+        document.getElementById('navYes').addEventListener('click', () => {
+            navModal.classList.remove('active');
+            if (pendingUrl) window.open(pendingUrl, '_blank');
+            pendingUrl = '';
+        });
+
+        document.getElementById('navNo').addEventListener('click', () => {
+            navModal.classList.remove('active');
+            pendingUrl = '';
+        });
+
+        navModal.addEventListener('click', e => {
+            if (e.target === navModal) { navModal.classList.remove('active'); pendingUrl = ''; }
+        });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
