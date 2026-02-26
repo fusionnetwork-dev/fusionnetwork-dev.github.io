@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dashboard — swaqq.xyz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg:#070707; --sidebar:#0c0c0c; --surface:#111; --surface2:#171717;
+      --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.11);
+      --text:#f0f0f0; --sub:rgba(255,255,255,0.38); --muted:rgba(255,255,255,0.18);
+      --green:#43b581; --red:#f04747;
+    }
+    html,body { min-height:100vh; background:var(--bg); font-family:'Syne',sans-serif; color:var(--text); overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background-image:linear-gradient(rgba(255,255,255,0.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.012) 1px,transparent 1px); background-size:44px 44px; }
+
+    /* auth gate */
+    #authGate { position:fixed; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index:99999; }
+    .gate-inner { text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px; }
+    .gate-logo { font-family:'Geist Mono',monospace; font-size:15px; font-weight:700; letter-spacing:0.1em; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
+    @keyframes shimmer{0%,100%{background-position:0%}50%{background-position:100%}}
+    .gate-sub { font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:0.1em; }
+    .spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,0.2); border-top-color:rgba(255,255,255,0.7); border-radius:50%; animation:spin 0.6s linear infinite; }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* layout */
+    .layout { display:flex; min-height:100vh; position:relative; z-index:1; }
+
+    /* sidebar */
+    .sidebar { width:240px; flex-shrink:0; background:var(--sidebar); border-right:1px solid var(--border); padding:20px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .sidebar-logo { padding:0 20px 20px; border-bottom:1px solid var(--border); margin-bottom:12px; font-family:'Geist Mono',monospace; font-size:15px; font-weight:700; letter-spacing:0.05em; text-decoration:none; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; display:block; }
+    .sidebar-user { padding:12px 20px 16px; border-bottom:1px solid var(--border); margin-bottom:12px; }
+    .sidebar-avatar { width:44px; height:44px; border-radius:50%; margin-bottom:10px; background:#1a1a1a center/cover no-repeat; border:2px solid rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; color:rgba(255,255,255,0.4); }
+    .sidebar-name { font-size:15px; font-weight:700; }
+    .sidebar-handle { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
+    .sidebar-url { display:inline-flex; align-items:center; gap:5px; margin-top:8px; font-family:'Geist Mono',monospace; font-size:10px; color:var(--sub); background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:3px 8px; text-decoration:none; transition:all 0.2s; }
+    .sidebar-url:hover { color:var(--text); background:rgba(255,255,255,0.08); }
+    .nav-section-label { font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); padding:0 20px 6px; margin-top:4px; }
+    .nav-item { display:flex; align-items:center; gap:10px; padding:9px 20px; font-family:'Geist Mono',monospace; font-size:12px; letter-spacing:0.05em; color:var(--sub); cursor:pointer; transition:all 0.15s; border:none; background:none; width:100%; text-align:left; text-decoration:none; }
+    .nav-item:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+    .nav-item.active { color:var(--text); background:rgba(255,255,255,0.06); border-left:2px solid rgba(255,255,255,0.4); }
+    .nav-item i { width:16px; text-align:center; font-size:13px; }
+    .sidebar-bottom { margin-top:auto; padding:16px 20px; border-top:1px solid var(--border); }
+    .btn-logout { display:flex; align-items:center; gap:8px; width:100%; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.05em; color:rgba(255,100,100,0.5); background:none; border:none; cursor:pointer; padding:8px 0; transition:color 0.2s; }
+    .btn-logout:hover { color:rgba(255,100,100,0.8); }
+
+    /* main */
+    .main { flex:1; padding:32px 40px 120px; max-width:860px; }
+    .page-header { margin-bottom:36px; }
+    .page-title { font-size:26px; font-weight:800; letter-spacing:-0.02em; margin-bottom:4px; }
+    .page-sub { font-family:'Geist Mono',monospace; font-size:12px; color:var(--sub); }
+
+    /* stat cards */
+    .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px; }
+    .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+    .stat-card-val { font-size:28px; font-weight:800; letter-spacing:-0.03em; margin-bottom:4px; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
+    .stat-card-label { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; }
+
+    /* sections */
+    .dash-section { margin-bottom:28px; }
+    .dash-section-title { font-size:15px; font-weight:700; margin-bottom:4px; }
+    .dash-section-sub { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:16px; }
+    .card-edit { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; }
+
+    /* fields */
+    .field { margin-bottom:18px; }
+    .field:last-child { margin-bottom:0; }
+    .field-label { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--sub); margin-bottom:7px; display:flex; align-items:center; gap:6px; }
+    .tag { background:rgba(255,255,255,0.07); border:1px solid var(--border); border-radius:4px; padding:1px 5px; font-size:8px; }
+    .field-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:9px; padding:11px 14px; color:var(--text); font-family:'Geist Mono',monospace; font-size:13px; outline:none; transition:border-color 0.2s,box-shadow 0.2s; }
+    .field-input:focus { border-color:rgba(255,255,255,0.25); box-shadow:0 0 0 3px rgba(255,255,255,0.04); }
+    .field-input::placeholder { color:var(--muted); }
+    textarea.field-input { resize:vertical; min-height:80px; line-height:1.6; }
+    .field-hint { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); margin-top:5px; }
+    .field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .prefix-wrap { display:flex; background:var(--surface2); border:1px solid var(--border2); border-radius:9px; overflow:hidden; transition:border-color 0.2s,box-shadow 0.2s; }
+    .prefix-wrap:focus-within { border-color:rgba(255,255,255,0.25); box-shadow:0 0 0 3px rgba(255,255,255,0.04); }
+    .prefix-text { font-family:'Geist Mono',monospace; font-size:13px; color:var(--muted); padding:11px 12px; background:rgba(255,255,255,0.04); border-right:1px solid var(--border2); white-space:nowrap; }
+    .prefix-input { flex:1; background:transparent; border:none; outline:none; font-family:'Geist Mono',monospace; font-size:13px; color:var(--text); padding:11px 14px; }
+    .prefix-input::placeholder { color:var(--muted); }
+
+    /* toggle */
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); }
+    .toggle-row:last-child { border-bottom:none; }
+    .toggle-title { font-size:14px; font-weight:600; margin-bottom:2px; }
+    .toggle-sub { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
+    .toggle { width:40px; height:22px; background:rgba(255,255,255,0.1); border-radius:100px; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0; }
+    .toggle.on { background:rgba(255,255,255,0.35); }
+    .toggle::after { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; background:#fff; border-radius:50%; transition:transform 0.2s; }
+    .toggle.on::after { transform:translateX(18px); }
+
+    /* badges */
+    .badge-list { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; min-height:36px; }
+    .badge-item { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.06); border:1px solid var(--border2); border-radius:100px; padding:5px 12px; font-family:'Geist Mono',monospace; font-size:11px; color:var(--sub); }
+    .badge-item .rm { cursor:pointer; color:rgba(255,80,80,0.5); font-size:9px; margin-left:2px; transition:color 0.15s; }
+    .badge-item .rm:hover { color:rgba(255,80,80,0.9); }
+    .add-row { display:flex; gap:8px; }
+    .add-input { flex:1; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:9px 12px; color:var(--text); font-family:'Geist Mono',monospace; font-size:12px; outline:none; transition:border-color 0.2s; }
+    .add-input:focus { border-color:rgba(255,255,255,0.2); }
+    .add-input::placeholder { color:var(--muted); }
+
+    /* socials */
+    .social-row-edit { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+    .social-icon-box { width:36px; height:36px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:14px; flex-shrink:0; }
+
+    /* btn */
+    .btn { font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; border-radius:7px; padding:7px 14px; transition:all 0.2s; text-decoration:none; border:none; display:inline-flex; align-items:center; gap:6px; }
+    .btn-ghost { background:transparent; color:var(--sub); border:1px solid var(--border); }
+    .btn-ghost:hover { border-color:var(--border2); color:var(--text); background:rgba(255,255,255,0.04); }
+
+    /* alert */
+    .alert { font-family:'Geist Mono',monospace; font-size:12px; border-radius:8px; padding:10px 14px; margin-bottom:12px; display:none; }
+    .alert.error { background:rgba(240,71,71,0.12); border:1px solid rgba(240,71,71,0.3); color:rgba(255,120,120,0.9); display:block; }
+    .alert.success { background:rgba(67,181,129,0.12); border:1px solid rgba(67,181,129,0.3); color:rgba(67,181,129,0.9); display:block; }
+
+    /* save bar */
+    .save-bar { position:fixed; bottom:0; left:240px; right:0; z-index:50; background:rgba(7,7,7,0.94); backdrop-filter:blur(16px); border-top:1px solid var(--border); padding:14px 40px; display:flex; align-items:center; justify-content:space-between; }
+    .save-status { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
+    .save-status.saved { color:rgba(67,181,129,0.8); }
+    .btn-save { background:linear-gradient(110deg,#333,#777,#bbb,#777,#333); background-size:200%; animation:shimmer 3s ease infinite; border:none; color:#fff; cursor:pointer; font-family:'Geist Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; border-radius:9px; padding:11px 28px; transition:filter 0.2s,transform 0.15s; }
+    .btn-save:hover { filter:brightness(1.3); transform:translateY(-1px); }
+    .btn-save:disabled { opacity:0.5; cursor:not-allowed; transform:none; filter:none; }
+
+    /* tabs */
+    .tabs { display:flex; gap:2px; margin-bottom:24px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:4px; width:fit-content; }
+    .tab { font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; padding:7px 16px; border-radius:7px; cursor:pointer; color:var(--sub); transition:all 0.15s; border:none; background:none; }
+    .tab.active { background:rgba(255,255,255,0.1); color:var(--text); }
+
+    @media(max-width:768px){ .sidebar{display:none;} .main{padding:20px 16px 100px;} .field-row{grid-template-columns:1fr;} .stats-row{grid-template-columns:1fr 1fr;} .save-bar{left:0;padding:14px 20px;} }
+  </style>
+</head>
+<body>
+
+<!-- AUTH GATE (shown while checking session) -->
+<div id="authGate">
+  <div class="gate-inner">
+    <div class="gate-logo">swaqq.xyz</div>
+    <div class="spinner"></div>
+    <div class="gate-sub">checking session...</div>
+  </div>
+</div>
+
+<div class="layout" id="dashLayout" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a class="sidebar-logo" href="index.html">swaqq.xyz</a>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sideAvatar"></div>
+      <div class="sidebar-name" id="sideName">...</div>
+      <div class="sidebar-handle" id="sideHandle">@...</div>
+      <a class="sidebar-url" id="sideUrl" href="#" target="_blank"><i class="fas fa-external-link-alt" style="font-size:8px"></i> <span id="sideUrlText">swaqq.xyz/@...</span></a>
+    </div>
+    <div class="nav-section-label">profile</div>
+    <button class="nav-item active" onclick="showTab('profile')"><i class="fas fa-user"></i> profile</button>
+    <button class="nav-item" onclick="showTab('socials')"><i class="fas fa-link"></i> social links</button>
+    <button class="nav-item" onclick="showTab('badges')"><i class="fas fa-star"></i> badges</button>
+    <button class="nav-item" onclick="showTab('music')"><i class="fas fa-music"></i> background music</button>
+    <button class="nav-item" onclick="showTab('settings')"><i class="fas fa-cog"></i> settings</button>
+    <div class="nav-section-label" style="margin-top:8px">view</div>
+    <a class="nav-item" id="viewProfileLink" href="#" target="_blank"><i class="fas fa-eye"></i> view profile</a>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> log out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- PROFILE TAB -->
+    <div id="tab-profile">
+      <div class="page-header"><h1 class="page-title">profile</h1><p class="page-sub">your public card at swaqq.xyz/@<span id="hdrHandle">you</span></p></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-card-val" id="statViews">--</div><div class="stat-card-label">total views</div></div>
+        <div class="stat-card"><div class="stat-card-val" id="statSocials">0</div><div class="stat-card-label">social links</div></div>
+        <div class="stat-card"><div class="stat-card-val" id="statBadges">0</div><div class="stat-card-label">badges</div></div>
+      </div>
+
+      <div class="alert" id="profileAlert"></div>
+
+      <div class="dash-section">
+        <div class="dash-section-title">basic info</div>
+        <div class="dash-section-sub">name, bio, discord</div>
+        <div class="card-edit">
+          <div class="field-row">
+            <div class="field">
+              <div class="field-label">display name</div>
+              <input class="field-input" type="text" id="fDisplayName" placeholder="your name" maxlength="32">
+            </div>
+            <div class="field">
+              <div class="field-label">handle <span class="tag">url</span></div>
+              <div class="prefix-wrap">
+                <span class="prefix-text">swaqq.xyz/@</span>
+                <input class="prefix-input" type="text" id="fHandle" placeholder="yourname" maxlength="20" spellcheck="false">
+              </div>
+              <div class="field-hint">2–20 chars, letters/numbers/underscores only.</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">bio</div>
+            <textarea class="field-input" id="fBio" placeholder="write something..." maxlength="120"></textarea>
+            <div class="field-hint">shows with a typewriter effect on your card.</div>
+          </div>
+          <div class="field">
+            <div class="field-label">discord user id <span class="tag">live status</span></div>
+            <input class="field-input" type="text" id="fDiscordId" placeholder="right-click your profile → copy user id">
+            <div class="field-hint">enables live online/idle/dnd status on your card via lanyard.</div>
+          </div>
+          <div class="field">
+            <div class="field-label">avatar image url <span class="tag">optional</span></div>
+            <input class="field-input" type="url" id="fAvatarUrl" placeholder="https://...">
+            <div class="field-hint">paste a direct image link. discord cdn links work great.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="dash-section-title">settings</div>
+        <div class="dash-section-sub">toggle features on/off</div>
+        <div class="card-edit">
+          <div class="toggle-row"><div><div class="toggle-title">splash screen</div><div class="toggle-sub">typewriter intro before visitors see your card</div></div><div class="toggle on" id="tSplash" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div><div class="toggle-title">3d card tilt</div><div class="toggle-sub">card follows mouse with 3d perspective tilt</div></div><div class="toggle on" id="tTilt" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div><div class="toggle-title">uid scramble</div><div class="toggle-sub">animated runic characters next to your name</div></div><div class="toggle on" id="tUid" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row"><div><div class="toggle-title">view counter</div><div class="toggle-sub">show total profile visits on your page</div></div><div class="toggle on" id="tViews" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOCIALS TAB -->
+    <div id="tab-socials" style="display:none">
+      <div class="page-header"><h1 class="page-title">social links</h1><p class="page-sub">shown as buttons on your card — up to 6</p></div>
+      <div class="alert" id="socialsAlert"></div>
+      <div class="dash-section">
+        <div class="card-edit" id="socialsEditor">
+          <!-- filled by JS -->
+        </div>
+      </div>
+      <button class="btn btn-ghost" onclick="addSocialRow()"><i class="fas fa-plus"></i> add link</button>
+    </div>
+
+    <!-- BADGES TAB -->
+    <div id="tab-badges" style="display:none">
+      <div class="page-header"><h1 class="page-title">badges</h1><p class="page-sub">shown next to your name — up to 5</p></div>
+      <div class="dash-section">
+        <div class="card-edit">
+          <div class="badge-list" id="badgeList"></div>
+          <div class="field-hint" style="margin-bottom:12px">hover on profile shows tooltip. icons auto-assigned by label.</div>
+          <div class="add-row">
+            <input class="add-input" type="text" id="newBadge" placeholder="badge label e.g. Owner, Staff, VIP..." maxlength="20">
+            <button class="btn btn-ghost" onclick="addBadge()"><i class="fas fa-plus"></i> add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MUSIC TAB -->
+    <div id="tab-music" style="display:none">
+      <div class="page-header"><h1 class="page-title">background music</h1><p class="page-sub">youtube video plays behind your card</p></div>
+      <div class="dash-section">
+        <div class="card-edit">
+          <div class="field">
+            <div class="field-label">youtube video id <span class="tag">bg audio + video</span></div>
+            <div class="prefix-wrap">
+              <span class="prefix-text">youtube.com/watch?v=</span>
+              <input class="prefix-input" type="text" id="fYoutubeId" placeholder="dQw4w9WgXcQ">
+            </div>
+            <div class="field-hint">just the video id — the part after ?v= in the youtube url.</div>
+          </div>
+          <div class="toggle-row"><div><div class="toggle-title">show video background</div><div class="toggle-sub">display the video visually behind the card</div></div><div class="toggle on" id="tShowVideo" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div id="tab-settings" style="display:none">
+      <div class="page-header"><h1 class="page-title">account settings</h1><p class="page-sub">email, password, danger zone</p></div>
+      <div class="alert" id="settingsAlert"></div>
+      <div class="dash-section">
+        <div class="dash-section-title">change password</div>
+        <div class="card-edit">
+          <div class="field-row">
+            <div class="field">
+              <div class="field-label">new password</div>
+              <input class="field-input" type="password" id="fNewPassword" placeholder="min 6 characters">
+            </div>
+            <div class="field">
+              <div class="field-label">confirm password</div>
+              <input class="field-input" type="password" id="fConfirmPassword" placeholder="repeat new password">
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <button class="btn btn-ghost" onclick="changePassword()">update password →</button>
+          </div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <div class="dash-section-title" style="color:rgba(255,80,80,0.7)">danger zone</div>
+        <div class="card-edit" style="border-color:rgba(255,80,80,0.15)">
+          <div class="toggle-row"><div><div class="toggle-title">delete account</div><div class="toggle-sub">permanently remove your account and profile.</div></div><button class="btn btn-ghost" style="color:rgba(255,80,80,0.6);border-color:rgba(255,80,80,0.2)" onclick="deleteAccount()">delete</button></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar" id="saveBar" style="display:none">
+  <span class="save-status" id="saveStatus">unsaved changes</span>
+  <button class="btn-save" id="saveBtn" onclick="saveProfile()">save changes →</button>
+</div>
+
+<script>
+  // ── SUPABASE ──
+  const SUPABASE_URL  = 'https://YOUR_PROJECT_ID.supabase.co';
+  const SUPABASE_ANON = 'YOUR_ANON_KEY_HERE';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  let currentUser = null;
+  let currentProfile = null;
+
+  // ── AUTH CHECK ──
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (!session) {
+      window.location.href = 'index.html';
+      return;
+    }
+    currentUser = session.user;
+    await loadProfile();
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('dashLayout').style.display = 'flex';
+    document.getElementById('saveBar').style.display = 'flex';
+  });
+
+  // ── LOAD PROFILE ──
+  async function loadProfile() {
+    const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+    if (error || !data) { alert('Could not load profile.'); return; }
+    currentProfile = data;
+    populateForm(data);
+  }
+
+  function populateForm(p) {
+    document.getElementById('fDisplayName').value = p.display_name || '';
+    document.getElementById('fHandle').value = p.handle || '';
+    document.getElementById('fBio').value = p.bio || '';
+    document.getElementById('fDiscordId').value = p.discord_id || '';
+    document.getElementById('fAvatarUrl').value = p.avatar_url || '';
+    document.getElementById('fYoutubeId').value = p.youtube_video_id || '';
+
+    // toggles
+    setToggle('tSplash', p.show_splash !== false);
+    setToggle('tTilt', p.show_tilt !== false);
+    setToggle('tUid', p.show_uid_scramble !== false);
+    setToggle('tViews', p.show_views !== false);
+    setToggle('tShowVideo', p.show_video_bg !== false);
+
+    // sidebar
+    document.getElementById('sideName').textContent = p.display_name || p.handle;
+    document.getElementById('sideHandle').textContent = '@' + p.handle;
+    document.getElementById('sideUrlText').textContent = `swaqq.xyz/@${p.handle}`;
+    document.getElementById('sideUrl').href = `./@${p.handle}`;
+    document.getElementById('viewProfileLink').href = `./@${p.handle}`;
+    document.getElementById('hdrHandle').textContent = p.handle;
+    if (p.avatar_url) document.getElementById('sideAvatar').style.backgroundImage = `url(${p.avatar_url})`;
+    else document.getElementById('sideAvatar').textContent = (p.display_name||p.handle)[0].toUpperCase();
+
+    // stats
+    document.getElementById('statViews').textContent = (p.view_count || 0).toLocaleString();
+
+    // badges
+    const badges = parseJSON(p.badges, []);
+    renderBadges(badges);
+    document.getElementById('statBadges').textContent = badges.length;
+
+    // socials
+    const socials = parseJSON(p.socials, []);
+    renderSocials(socials);
+    document.getElementById('statSocials').textContent = socials.length;
+  }
+
+  function parseJSON(val, fallback) {
+    if (!val) return fallback;
+    if (typeof val === 'object') return val;
+    try { return JSON.parse(val); } catch { return fallback; }
+  }
+
+  // ── TOGGLES ──
+  function setToggle(id, on) {
+    const el = document.getElementById(id);
+    if (on) el.classList.add('on'); else el.classList.remove('on');
+  }
+  function getToggle(id) { return document.getElementById(id).classList.contains('on'); }
+
+  // ── TABS ──
+  const TABS = ['profile','socials','badges','music','settings'];
+  function showTab(name) {
+    TABS.forEach(t => {
+      document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
+      document.querySelectorAll('.nav-item').forEach(el => {
+        if (el.getAttribute('onclick') === `showTab('${t}')`) el.classList.toggle('active', t===name);
+      });
+    });
+    window.scrollTo(0,0);
+  }
+
+  // ── BADGES UI ──
+  let badgesData = [];
+  function renderBadges(arr) {
+    badgesData = [...arr];
+    const list = document.getElementById('badgeList');
+    list.innerHTML = '';
+    if (arr.length === 0) { list.innerHTML = '<span style="font-family:Geist Mono,monospace;font-size:11px;color:rgba(255,255,255,0.2)">no badges yet</span>'; return; }
+    arr.forEach((b, i) => {
+      const div = document.createElement('div');
+      div.className = 'badge-item';
+      div.innerHTML = `<i style="font-size:10px;opacity:0.7" class="fas fa-star"></i> ${b} <span class="rm" onclick="removeBadge(${i})">✕</span>`;
+      list.appendChild(div);
+    });
+  }
+  function addBadge() {
+    const inp = document.getElementById('newBadge');
+    const val = inp.value.trim();
+    if (!val || badgesData.length >= 5) return;
+    badgesData.push(val); inp.value = '';
+    renderBadges(badgesData);
+  }
+  function removeBadge(i) { badgesData.splice(i, 1); renderBadges(badgesData); }
+  document.getElementById('newBadge')?.addEventListener('keydown', e => { if(e.key==='Enter') addBadge(); });
+
+  // ── SOCIALS UI ──
+  const SOCIAL_ICONS = { discord:'fab fa-discord', youtube:'fab fa-youtube', twitter:'fab fa-twitter', instagram:'fab fa-instagram', tiktok:'fab fa-tiktok', roblox:'fas fa-gamepad', twitch:'fab fa-twitch', github:'fab fa-github', spotify:'fab fa-spotify', 'guns.lol':'fas fa-crosshairs', default:'fas fa-link' };
+  function getSocialIcon(label) { return SOCIAL_ICONS[(label||'').toLowerCase()] || SOCIAL_ICONS.default; }
+
+  function renderSocials(arr) {
+    const editor = document.getElementById('socialsEditor');
+    editor.innerHTML = '';
+    arr.forEach((s, i) => addSocialRow(s.label, s.url, i));
+    if (arr.length === 0) addSocialRow('', '', 0);
+  }
+  function addSocialRow(label='', url='', idx=null) {
+    const editor = document.getElementById('socialsEditor');
+    const row = document.createElement('div');
+    row.className = 'social-row-edit';
+    const icon = getSocialIcon(label);
+    row.innerHTML = `
+      <div class="social-icon-box"><i class="${icon}" id="sIcon_${Date.now()}"></i></div>
+      <input class="field-input social-label" type="text" placeholder="label (e.g. discord)" value="${label}" style="width:130px;flex-shrink:0" oninput="updateSocialIcon(this)">
+      <input class="field-input social-url" type="url" placeholder="https://..." value="${url}" style="flex:1">
+      <button class="btn btn-ghost" style="padding:7px 10px;color:rgba(255,80,80,0.5)" onclick="this.closest('.social-row-edit').remove()"><i class="fas fa-times"></i></button>
+    `;
+    editor.appendChild(row);
+  }
+  function updateSocialIcon(inp) {
+    const box = inp.closest('.social-row-edit').querySelector('.social-icon-box i');
+    if (box) box.className = getSocialIcon(inp.value);
+  }
+  function getSocialsData() {
+    return Array.from(document.querySelectorAll('.social-row-edit')).map(row => ({
+      label: row.querySelector('.social-label').value.trim(),
+      url: row.querySelector('.social-url').value.trim()
+    })).filter(s => s.label && s.url);
+  }
+
+  // ── SAVE ──
+  async function saveProfile() {
+    const btn = document.getElementById('saveBtn');
+    const statusEl = document.getElementById('saveStatus');
+    btn.disabled = true; btn.innerHTML = '<span class="spinner" style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite"></span>';
+
+    const newHandle = document.getElementById('fHandle').value.trim().toLowerCase();
+    if (!/^[a-z0-9_]{2,20}$/.test(newHandle)) {
+      showAlert('profileAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
+      btn.disabled=false; btn.textContent='save changes →'; return;
+    }
+
+    // check handle not taken by someone else
+    if (newHandle !== currentProfile.handle) {
+      const { data: taken } = await sb.from('profiles').select('id').eq('handle', newHandle).single();
+      if (taken && taken.id !== currentUser.id) {
+        showAlert('profileAlert', `@${newHandle} is already taken.`, 'error');
+        btn.disabled=false; btn.textContent='save changes →'; return;
+      }
+    }
+
+    const updates = {
+      display_name: document.getElementById('fDisplayName').value.trim() || newHandle,
+      handle: newHandle,
+      bio: document.getElementById('fBio').value.trim(),
+      discord_id: document.getElementById('fDiscordId').value.trim(),
+      avatar_url: document.getElementById('fAvatarUrl').value.trim(),
+      youtube_video_id: document.getElementById('fYoutubeId').value.trim(),
+      show_splash: getToggle('tSplash'),
+      show_tilt: getToggle('tTilt'),
+      show_uid_scramble: getToggle('tUid'),
+      show_views: getToggle('tViews'),
+      show_video_bg: getToggle('tShowVideo'),
+      badges: JSON.stringify(badgesData),
+      socials: JSON.stringify(getSocialsData()),
+      updated_at: new Date().toISOString()
+    };
+
+    const { error } = await sb.from('profiles').update(updates).eq('id', currentUser.id);
+    btn.disabled = false; btn.textContent = 'save changes →';
+
+    if (error) {
+      showAlert('profileAlert', 'save failed: ' + error.message, 'error');
+    } else {
+      currentProfile = { ...currentProfile, ...updates };
+      populateForm(currentProfile);
+      statusEl.textContent = 'all changes saved ✓'; statusEl.classList.add('saved');
+      setTimeout(() => { statusEl.textContent = 'unsaved changes'; statusEl.classList.remove('saved'); }, 3000);
+    }
+  }
+
+  // ── CHANGE PASSWORD ──
+  async function changePassword() {
+    const p1 = document.getElementById('fNewPassword').value;
+    const p2 = document.getElementById('fConfirmPassword').value;
+    if (!p1) return showAlert('settingsAlert','enter a new password.','error');
+    if (p1 !== p2) return showAlert('settingsAlert','passwords do not match.','error');
+    if (p1.length < 6) return showAlert('settingsAlert','password must be at least 6 characters.','error');
+    const { error } = await sb.auth.updateUser({ password: p1 });
+    if (error) return showAlert('settingsAlert', error.message,'error');
+    showAlert('settingsAlert','password updated!','success');
+    document.getElementById('fNewPassword').value=''; document.getElementById('fConfirmPassword').value='';
+  }
+
+  // ── DELETE ACCOUNT ──
+  async function deleteAccount() {
+    if (!confirm('permanently delete your account and profile? this cannot be undone.')) return;
+    await sb.from('profiles').delete().eq('id', currentUser.id);
+    await sb.auth.signOut();
+    window.location.href = 'index.html';
+  }
+
+  // ── LOGOUT ──
+  async function doLogout() { await sb.auth.signOut(); window.location.href = 'index.html'; }
+
+  // ── ALERT ──
+  function showAlert(id, msg, type) {
+    const el = document.getElementById(id); if (!el) return;
+    el.textContent = msg; el.className = 'alert ' + type;
+    setTimeout(() => { el.className = 'alert'; el.textContent=''; }, 5000);
+  }
+</script>
+</body>
+</html>
