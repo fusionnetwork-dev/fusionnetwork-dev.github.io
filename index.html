@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>swaqq.xyz — make your profile.</title>
+  <meta property="og:title" content="swaqq.xyz">
+  <meta property="og:description" content="your profile. your way.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #080808; --surface: #0f0f0f; --surface2: #161616;
+      --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.12);
+      --text: #f0f0f0; --sub: rgba(255,255,255,0.42); --muted: rgba(255,255,255,0.18);
+      --silver: linear-gradient(110deg, #555 0%, #bbb 35%, #fff 50%, #bbb 65%, #555 100%);
+      --green: #43b581; --red: #f04747;
+    }
+    html, body { min-height: 100vh; background: var(--bg); font-family: 'Syne', sans-serif; color: var(--text); overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+    body::after {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,255,255,0.04) 0%, transparent 70%);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 60px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,8,8,0.88); backdrop-filter: blur(20px);
+    }
+    .nav-logo {
+      font-family: 'Geist Mono', monospace; font-size: 16px; font-weight: 700;
+      letter-spacing: 0.05em; background: var(--silver); background-size: 200%;
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 3s ease infinite; text-decoration: none;
+    }
+    @keyframes shimmer { 0%,100%{background-position:0%} 50%{background-position:100%} }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+
+    /* logged-in nav state */
+    .nav-user {
+      display: none; align-items: center; gap: 10px;
+      font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--sub);
+    }
+    .nav-user.visible { display: flex; }
+    .nav-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #222 center/cover no-repeat;
+      border: 1px solid var(--border2);
+    }
+
+    .btn {
+      font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+      border-radius: 8px; padding: 8px 18px; transition: all 0.2s ease;
+      text-decoration: none; border: none; display: inline-flex; align-items: center; gap: 7px;
+    }
+    .btn-ghost { background: transparent; color: var(--sub); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--border2); color: var(--text); background: rgba(255,255,255,0.04); }
+    .btn-silver {
+      background: linear-gradient(110deg, #2a2a2a, #555, #888, #555, #2a2a2a);
+      background-size: 200%; color: #fff; border: 1px solid rgba(255,255,255,0.15);
+      animation: shimmer 3s ease infinite;
+    }
+    .btn-silver:hover { filter: brightness(1.2); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(255,255,255,0.08); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 100px 24px 80px; text-align: center; gap: 28px;
+    }
+    .hero-eyebrow {
+      font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 100px; padding: 5px 16px;
+    }
+    .hero-title { font-size: clamp(48px, 9vw, 100px); font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; }
+    .hero-title .line1 { display: block; color: var(--text); }
+    .hero-title .line2 {
+      display: block;
+      background: linear-gradient(110deg, #444 0%, #aaa 35%, #fff 50%, #aaa 65%, #444 100%);
+      background-size: 300%; -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; animation: shimmer 4s ease infinite;
+    }
+    .hero-sub { font-family: 'Geist Mono', monospace; font-size: 14px; color: var(--sub); max-width: 440px; line-height: 1.7; }
+
+    /* handle input */
+    .hero-input-wrap {
+      display: flex; align-items: stretch; background: var(--surface);
+      border: 1px solid var(--border2); border-radius: 12px; overflow: hidden;
+      max-width: 440px; width: 100%; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .hero-input-wrap:focus-within { border-color: rgba(255,255,255,0.25); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); }
+    .hero-input-prefix {
+      font-family: 'Geist Mono', monospace; font-size: 14px; color: var(--sub);
+      padding: 0 14px; display: flex; align-items: center;
+      border-right: 1px solid var(--border); background: var(--surface2); white-space: nowrap;
+    }
+    .hero-input {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-family: 'Geist Mono', monospace; font-size: 14px; color: var(--text);
+      padding: 14px 16px; min-width: 0;
+    }
+    .hero-input::placeholder { color: var(--muted); }
+    .hero-input-btn {
+      background: linear-gradient(110deg, #333, #777, #aaa, #777, #333);
+      background-size: 200%; animation: shimmer 3s ease infinite;
+      border: none; color: #fff; font-family: 'Geist Mono', monospace;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0 22px; cursor: pointer; transition: filter 0.2s; white-space: nowrap;
+    }
+    .hero-input-btn:hover { filter: brightness(1.3); }
+    .hero-login { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--muted); }
+    .hero-login a { color: var(--sub); text-decoration: none; border-bottom: 1px solid var(--border2); cursor: pointer; }
+    .hero-login a:hover { color: var(--text); }
+
+    /* stats */
+    .stats-bar {
+      position: relative; z-index: 1; display: flex; align-items: center;
+      justify-content: center; gap: 48px; padding: 24px 40px;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.015);
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 26px; font-weight: 800; letter-spacing: -0.03em;
+      background: var(--silver); background-size: 200%;
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 3s ease infinite;
+    }
+    .stat-label { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 2px; }
+    .stat-divider { width: 1px; height: 36px; background: var(--border); }
+
+    /* features */
+    .section { position: relative; z-index: 1; padding: 100px 40px; max-width: 1100px; margin: 0 auto; }
+    .section-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+    .section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .section-title span { background: var(--silver); background-size: 200%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 3s ease infinite; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 60px; background: var(--border); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+    .feature-card { background: var(--surface); padding: 32px 28px; transition: background 0.2s; }
+    .feature-card:hover { background: var(--surface2); }
+    .feature-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 16px; color: var(--sub); }
+    .feature-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feature-desc { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--sub); line-height: 1.7; }
+
+    /* steps */
+    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; margin-top: 60px; }
+    .step-num { font-size: 60px; font-weight: 800; background: var(--silver); background-size: 200%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 3s ease infinite; opacity: 0.3; line-height: 1; margin-bottom: 16px; }
+    .step-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .step-desc { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--sub); line-height: 1.7; }
+
+    /* cta */
+    .cta-section { position: relative; z-index: 1; padding: 120px 40px; text-align: center; border-top: 1px solid var(--border); }
+    .cta-title { font-size: clamp(36px, 6vw, 72px); font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin-bottom: 24px; }
+    .cta-title span { background: var(--silver); background-size: 200%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 3s ease infinite; }
+    .cta-sub { font-family: 'Geist Mono', monospace; font-size: 13px; color: var(--sub); margin-bottom: 40px; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    footer { position: relative; z-index: 1; padding: 32px 40px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); }
+    footer a { color: var(--sub); text-decoration: none; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(22px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 20px; padding: 36px 40px; width: 100%; max-width: 420px;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .modal-overlay.active .modal { transform: none; }
+    .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .modal-sub { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--sub); margin-bottom: 28px; }
+    .modal-field { margin-bottom: 16px; }
+    .modal-label { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sub); margin-bottom: 7px; display: block; }
+    .modal-input {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 10px; padding: 12px 14px; color: var(--text);
+      font-family: 'Geist Mono', monospace; font-size: 13px; outline: none; transition: border-color 0.2s;
+    }
+    .modal-input:focus { border-color: rgba(255,255,255,0.25); }
+    .modal-input::placeholder { color: var(--muted); }
+    .prefix-modal-wrap { display: flex; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+    .prefix-modal-wrap:focus-within { border-color: rgba(255,255,255,0.25); }
+    .prefix-modal-text { font-family: 'Geist Mono', monospace; font-size: 13px; color: var(--muted); padding: 12px 12px; background: rgba(255,255,255,0.03); border-right: 1px solid var(--border2); white-space: nowrap; }
+    .prefix-modal-input { flex: 1; background: transparent; border: none; outline: none; font-family: 'Geist Mono', monospace; font-size: 13px; color: var(--text); padding: 12px 14px; }
+    .prefix-modal-input::placeholder { color: var(--muted); }
+    .modal-row { display: flex; gap: 10px; margin-top: 8px; }
+    .modal-submit {
+      flex: 1; padding: 13px; border: none; border-radius: 10px; cursor: pointer;
+      background: linear-gradient(110deg, #333, #777, #bbb, #777, #333); background-size: 200%;
+      animation: shimmer 3s ease infinite; font-family: 'Geist Mono', monospace; font-size: 13px;
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; transition: filter 0.2s;
+    }
+    .modal-submit:hover { filter: brightness(1.3); }
+    .modal-submit:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
+    .modal-cancel { padding: 13px 20px; border: 1px solid var(--border2); border-radius: 10px; background: transparent; color: var(--sub); font-family: 'Geist Mono', monospace; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+    .modal-cancel:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .modal-switch { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); text-align: center; margin-top: 20px; }
+    .modal-switch a { color: var(--sub); text-decoration: none; border-bottom: 1px solid var(--border2); cursor: pointer; }
+    .modal-switch a:hover { color: var(--text); }
+
+    /* alert */
+    .alert {
+      font-family: 'Geist Mono', monospace; font-size: 12px; border-radius: 8px;
+      padding: 10px 14px; margin-bottom: 16px; display: none; letter-spacing: 0.03em;
+    }
+    .alert.error { background: rgba(240,71,71,0.12); border: 1px solid rgba(240,71,71,0.3); color: rgba(255,120,120,0.9); display: block; }
+    .alert.success { background: rgba(67,181,129,0.12); border: 1px solid rgba(67,181,129,0.3); color: rgba(67,181,129,0.9); display: block; }
+
+    /* spinner */
+    .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .stats-bar { gap: 20px; flex-wrap: wrap; padding: 20px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 32px; }
+      .section { padding: 60px 20px; }
+      footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 20px; }
+      .modal { padding: 28px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">swaqq.xyz</a>
+  <div class="nav-links" id="navGuest">
+    <button class="btn btn-ghost" onclick="openModal('login')">log in</button>
+    <button class="btn btn-silver" onclick="openModal('signup')"><i class="fas fa-arrow-right" style="font-size:10px"></i> get started</button>
+  </div>
+  <div class="nav-user" id="navLoggedIn">
+    <div class="nav-avatar" id="navAvatar"></div>
+    <span id="navHandle">@you</span>
+    <a class="btn btn-ghost" href="dashboard.html">dashboard</a>
+    <button class="btn btn-ghost" onclick="logout()">log out</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-eyebrow">✦ your space on the internet</span>
+  <h1 class="hero-title">
+    <span class="line1">your profile.</span>
+    <span class="line2">your rules.</span>
+  </h1>
+  <p class="hero-sub">create a stunning profile page at swaqq.xyz/@you — customize your card, flex your socials, and make it uniquely yours.</p>
+  <div class="hero-input-wrap">
+    <span class="hero-input-prefix">swaqq.xyz/@</span>
+    <input class="hero-input" type="text" placeholder="yourname" id="heroHandle" spellcheck="false" autocomplete="off">
+    <button class="hero-input-btn" onclick="claimHandle()">claim →</button>
+  </div>
+  <p class="hero-login">already have an account? <a onclick="openModal('login')">log in</a></p>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num" id="statProfiles">...</div><div class="stat-label">profiles created</div></div>
+  <div class="stat-divider"></div>
+  <div class="stat"><div class="stat-num">free</div><div class="stat-label">always</div></div>
+  <div class="stat-divider"></div>
+  <div class="stat"><div class="stat-num">∞</div><div class="stat-label">customizations</div></div>
+</div>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="section-label">// features</div>
+  <h2 class="section-title">everything you <span>need.</span></h2>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon"><i class="fas fa-bolt"></i></div><div class="feature-title">live discord status</div><div class="feature-desc">connected via lanyard api. your online, idle, dnd, and custom status updates in real time.</div></div>
+    <div class="feature-card"><div class="feature-icon"><i class="fas fa-palette"></i></div><div class="feature-title">full customization</div><div class="feature-desc">bg music, colors, bio, socials, badges — all from your dashboard. changes go live instantly.</div></div>
+    <div class="feature-card"><div class="feature-icon"><i class="fas fa-at"></i></div><div class="feature-title">your own url</div><div class="feature-desc">claim swaqq.xyz/@you. short, clean, shareable. looks clean in a discord bio.</div></div>
+    <div class="feature-card"><div class="feature-icon"><i class="fas fa-music"></i></div><div class="feature-title">background music</div><div class="feature-desc">add a youtube video as your bg. visitors hear your vibe the moment they click in.</div></div>
+    <div class="feature-card"><div class="feature-icon"><i class="fas fa-eye"></i></div><div class="feature-title">view counter</div><div class="feature-desc">track how many people have visited your profile. fingerprint-based dedup counts real views.</div></div>
+    <div class="feature-card"><div class="feature-icon"><i class="fas fa-star"></i></div><div class="feature-title">badges</div><div class="feature-desc">earn or assign badges. hover tooltips, animated gradient icons, up to 5 badges per profile.</div></div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="section" style="padding-top:0">
+  <div class="section-label">// how it works</div>
+  <h2 class="section-title">up in <span>3 steps.</span></h2>
+  <div class="steps">
+    <div class="step"><div class="step-num">01</div><div class="step-title">claim your handle</div><div class="step-desc">pick your @username. it becomes swaqq.xyz/@you. first come first served.</div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-title">set up your card</div><div class="step-desc">connect discord, add your socials, write your bio, set a background track.</div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-title">share your link</div><div class="step-desc">drop swaqq.xyz/@you everywhere. your profile is live instantly.</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="cta-title">ready to <span>build yours?</span></h2>
+  <p class="cta-sub">free forever. no cap.</p>
+  <div class="cta-btns">
+    <button class="btn btn-silver" style="font-size:14px;padding:14px 32px;" onclick="openModal('signup')"><i class="fas fa-arrow-right" style="font-size:11px"></i> create your profile</button>
+  </div>
+</section>
+
+<footer>
+  <span>swaqq.xyz © 2025</span>
+  <span>made by <a href="./@miu">@binflexn</a></span>
+</footer>
+
+<!-- SIGN UP MODAL -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <div class="modal-title">create account</div>
+    <div class="modal-sub">join swaqq.xyz — free forever.</div>
+    <div class="alert" id="signupAlert"></div>
+    <div class="modal-field">
+      <label class="modal-label">handle <span style="opacity:0.5;font-size:9px">— your url</span></label>
+      <div class="prefix-modal-wrap">
+        <span class="prefix-modal-text">swaqq.xyz/@</span>
+        <input class="prefix-modal-input" type="text" id="signupHandle" placeholder="yourname" spellcheck="false">
+      </div>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">email</label>
+      <input class="modal-input" type="email" id="signupEmail" placeholder="you@example.com">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">password</label>
+      <input class="modal-input" type="password" id="signupPassword" placeholder="min 6 characters">
+    </div>
+    <div class="modal-row">
+      <button class="modal-submit" id="signupBtn" onclick="signUp()">create account →</button>
+      <button class="modal-cancel" onclick="closeModals()">cancel</button>
+    </div>
+    <div class="modal-switch">already have an account? <a onclick="openModal('login')">log in</a></div>
+  </div>
+</div>
+
+<!-- LOG IN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <div class="modal-title">welcome back</div>
+    <div class="modal-sub">log in to your swaqq.xyz account.</div>
+    <div class="alert" id="loginAlert"></div>
+    <div class="modal-field">
+      <label class="modal-label">email</label>
+      <input class="modal-input" type="email" id="loginEmail" placeholder="you@example.com">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">password</label>
+      <input class="modal-input" type="password" id="loginPassword" placeholder="••••••••">
+    </div>
+    <div class="modal-row">
+      <button class="modal-submit" id="loginBtn" onclick="logIn()">log in →</button>
+      <button class="modal-cancel" onclick="closeModals()">cancel</button>
+    </div>
+    <div class="modal-switch">don't have an account? <a onclick="openModal('signup')">sign up</a></div>
+  </div>
+</div>
+
+<script>
+  // ── SUPABASE ──
+  const SUPABASE_URL  = 'https://YOUR_PROJECT_ID.supabase.co';
+  const SUPABASE_ANON = 'YOUR_ANON_KEY_HERE';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // ── AUTH STATE ──
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (session?.user) {
+      const { data: profile } = await sb.from('profiles').select('handle, avatar_url').eq('id', session.user.id).single();
+      if (profile) showLoggedIn(profile.handle, profile.avatar_url);
+    } else {
+      showGuest();
+    }
+  });
+
+  function showLoggedIn(handle, avatarUrl) {
+    document.getElementById('navGuest').style.display = 'none';
+    const nav = document.getElementById('navLoggedIn');
+    nav.classList.add('visible');
+    document.getElementById('navHandle').textContent = '@' + handle;
+    if (avatarUrl) document.getElementById('navAvatar').style.backgroundImage = `url(${avatarUrl})`;
+  }
+  function showGuest() {
+    document.getElementById('navGuest').style.display = 'flex';
+    document.getElementById('navLoggedIn').classList.remove('visible');
+  }
+
+  // ── STATS ──
+  async function loadStats() {
+    const { count } = await sb.from('profiles').select('*', { count: 'exact', head: true });
+    document.getElementById('statProfiles').textContent = count ? count.toLocaleString() : '0';
+  }
+  loadStats();
+
+  // ── MODALS ──
+  function openModal(type) {
+    closeModals();
+    const id = type === 'signup' ? 'signupModal' : 'loginModal';
+    document.getElementById(id).classList.add('active');
+    const heroVal = document.getElementById('heroHandle').value.trim();
+    if (heroVal && type === 'signup') document.getElementById('signupHandle').value = heroVal;
+  }
+  function closeModals() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+    clearAlerts();
+  }
+  function clearAlerts() {
+    document.querySelectorAll('.alert').forEach(a => { a.className = 'alert'; a.textContent = ''; });
+  }
+  function showAlert(id, msg, type) {
+    const el = document.getElementById(id);
+    el.textContent = msg; el.className = 'alert ' + type;
+  }
+  function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    btn.disabled = loading;
+    btn.innerHTML = loading ? '<span class="spinner"></span>' : (btnId === 'signupBtn' ? 'create account →' : 'log in →');
+  }
+
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) closeModals(); });
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
+
+  // ── SIGN UP ──
+  async function signUp() {
+    const handle   = document.getElementById('signupHandle').value.trim().toLowerCase();
+    const email    = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+
+    // validate handle
+    if (!handle) return showAlert('signupAlert', 'please enter a handle.', 'error');
+    if (!/^[a-z0-9_]{2,20}$/.test(handle)) return showAlert('signupAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
+    if (!email) return showAlert('signupAlert', 'please enter your email.', 'error');
+    if (password.length < 6) return showAlert('signupAlert', 'password must be at least 6 characters.', 'error');
+
+    setLoading('signupBtn', true);
+
+    // check handle is not taken
+    const { data: existing } = await sb.from('profiles').select('id').eq('handle', handle).single();
+    if (existing) {
+      setLoading('signupBtn', false);
+      return showAlert('signupAlert', `@${handle} is already taken. try another.`, 'error');
+    }
+
+    // create auth user
+    const { data: authData, error: authErr } = await sb.auth.signUp({ email, password });
+    if (authErr) {
+      setLoading('signupBtn', false);
+      return showAlert('signupAlert', authErr.message, 'error');
+    }
+
+    // insert profile row
+    const userId = authData.user.id;
+    const { error: profileErr } = await sb.from('profiles').insert({
+      id: userId,
+      handle,
+      display_name: handle,
+      bio: '',
+      discord_id: '',
+      youtube_video_id: '',
+      badges: JSON.stringify([]),
+      socials: JSON.stringify([]),
+      show_views: true,
+      show_splash: true,
+      show_tilt: true,
+      created_at: new Date().toISOString()
+    });
+
+    setLoading('signupBtn', false);
+    if (profileErr) return showAlert('signupAlert', 'account created but profile setup failed. contact support.', 'error');
+
+    showAlert('signupAlert', '✓ account created! redirecting to dashboard...', 'success');
+    setTimeout(() => window.location.href = 'dashboard.html', 1200);
+  }
+
+  // ── LOG IN ──
+  async function logIn() {
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    if (!email || !password) return showAlert('loginAlert', 'please fill in all fields.', 'error');
+
+    setLoading('loginBtn', true);
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    setLoading('loginBtn', false);
+
+    if (error) return showAlert('loginAlert', error.message, 'error');
+    showAlert('loginAlert', '✓ logged in! redirecting...', 'success');
+    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+  }
+
+  // ── LOG OUT ──
+  async function logout() {
+    await sb.auth.signOut();
+    window.location.reload();
+  }
+
+  // ── CLAIM HANDLE ──
+  function claimHandle() {
+    const val = document.getElementById('heroHandle').value.trim();
+    if (!val) { document.getElementById('heroHandle').focus(); return; }
+    openModal('signup');
+  }
+  document.getElementById('heroHandle').addEventListener('keydown', e => { if (e.key === 'Enter') claimHandle(); });
+</script>
+</body>
+</html>
