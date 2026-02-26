@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>swaqq.xyz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg: #080808; --card: rgba(10,10,10,0.85);
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
+      --text: #f0f0f0; --sub: rgba(255,255,255,0.4); --muted: rgba(255,255,255,0.18);
+    }
+    html, body { min-height:100vh; background:var(--bg); font-family:'Syne',sans-serif; color:var(--text); overflow-x:hidden; }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image: linear-gradient(rgba(255,255,255,0.014) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.014) 1px, transparent 1px);
+      background-size:44px 44px;
+    }
+    body::after {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:radial-gradient(ellipse 70% 55% at 50% -5%, rgba(255,255,255,0.03) 0%, transparent 70%);
+    }
+
+    /* ── LOADING STATE ── */
+    #loading {
+      position:fixed; inset:0; background:#000;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      z-index:99999; gap:16px; transition:opacity 0.6s ease;
+    }
+    #loading.out { opacity:0; pointer-events:none; }
+    .load-logo { font-family:'Geist Mono',monospace; font-size:14px; font-weight:700; letter-spacing:0.15em; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 2s ease infinite; }
+    @keyframes shimmer{0%,100%{background-position:0%}50%{background-position:100%}}
+    .load-handle { font-family:'Geist Mono',monospace; font-size:12px; color:rgba(255,255,255,0.25); letter-spacing:0.2em; }
+    .load-bar { width:160px; height:2px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
+    .load-fill { height:100%; background:linear-gradient(90deg,#444,#aaa,#fff,#aaa,#444); background-size:200%; animation:loadSlide 1.2s ease-in-out infinite; border-radius:2px; }
+    @keyframes loadSlide{0%{background-position:0%;width:0%}50%{background-position:100%;width:70%}100%{background-position:200%;width:100%}}
+
+    /* ── NOT FOUND STATE ── */
+    #notFound {
+      display:none; position:fixed; inset:0; align-items:center; justify-content:center;
+      flex-direction:column; gap:16px; text-align:center; padding:20px; z-index:1;
+    }
+    #notFound.visible { display:flex; }
+    .nf-code { font-family:'Geist Mono',monospace; font-size:80px; font-weight:700; opacity:0.08; line-height:1; }
+    .nf-title { font-size:22px; font-weight:800; }
+    .nf-sub { font-family:'Geist Mono',monospace; font-size:12px; color:var(--sub); }
+    .nf-btn { display:inline-flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:10px 22px; border:1px solid var(--border2); border-radius:8px; color:var(--sub); text-decoration:none; transition:all 0.2s; margin-top:8px; }
+    .nf-btn:hover { color:var(--text); background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.25); }
+
+    /* ── YT BG ── */
+    #ytBg {
+      position:fixed; top:50%; left:50%; width:100vw; height:100vh;
+      transform:translate(-50%,-50%); z-index:-1; pointer-events:none; overflow:hidden;
+      opacity:0; transition:opacity 1.5s ease;
+    }
+    #ytBg.visible { opacity:1; }
+    #ytBg::after { content:''; position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:1; pointer-events:none; }
+    #ytBg iframe { position:absolute; top:50%; left:50%; width:100vw; height:56.25vw; min-height:100vh; min-width:177.77vh; transform:translate(-50%,-50%); filter:saturate(0.6) brightness(0.7); }
+
+    /* ── SPLASH ── */
+    #splash {
+      position:fixed; inset:0; background:#000;
+      display:none; flex-direction:column; align-items:center; justify-content:center;
+      z-index:99998; cursor:pointer; gap:14px; transition:opacity 0.9s ease;
+    }
+    #splash.active { display:flex; }
+    #splash.out { opacity:0; pointer-events:none; }
+    .splash-site { font-family:'Geist Mono',monospace; font-size:12px; letter-spacing:0.25em; color:rgba(255,255,255,0.2); text-transform:uppercase; text-decoration:none; }
+    .splash-name { font-family:'Syne',sans-serif; font-size:clamp(54px,10vw,100px); font-weight:800; letter-spacing:-0.03em; line-height:1; background:linear-gradient(135deg,#444 0%,#aaa 30%,#fff 50%,#aaa 70%,#444 100%); background-size:300%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:splashShimmer 2.8s ease-in-out infinite; }
+    @keyframes splashShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    .splash-hint { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.3em; color:rgba(255,255,255,0.18); text-transform:uppercase; animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse{0%,100%{opacity:0.18}50%{opacity:0.5}}
+
+    /* ── TOP BAR ── */
+    .top-bar {
+      display:none; position:fixed; top:0; left:0; right:0; z-index:100;
+      align-items:center; justify-content:space-between; padding:0 28px; height:52px;
+      border-bottom:1px solid var(--border); background:rgba(8,8,8,0.8); backdrop-filter:blur(16px);
+    }
+    .top-bar.visible { display:flex; }
+    .top-bar-logo { font-family:'Geist Mono',monospace; font-size:13px; font-weight:700; letter-spacing:0.05em; text-decoration:none; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
+    .top-bar-handle { font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:0.1em; }
+
+    /* ── PROFILE CARD ── */
+    .page { display:none; position:relative; z-index:1; min-height:100vh; align-items:center; justify-content:center; padding:80px 20px 60px; }
+    .page.visible { display:flex; }
+    .card-wrap { perspective:1200px; }
+    .card {
+      width:420px; max-width:calc(100vw - 40px); background:var(--card);
+      backdrop-filter:blur(12px); border-radius:20px; padding:28px 28px 54px;
+      position:relative; opacity:0; transition:transform 0.1s ease-out;
+    }
+    .card.loaded { animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .card::before {
+      content:''; position:absolute; inset:0; border-radius:20px; padding:1px;
+      background:linear-gradient(90deg,#222,#777,#fff,#777,#222,#777,#fff); background-size:300%;
+      -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor; mask-composite:exclude;
+      animation:borderScroll 4s linear infinite; pointer-events:none;
+    }
+    @keyframes borderScroll{0%{background-position:0%}100%{background-position:300%}}
+
+    .card-header { display:flex; align-items:center; gap:18px; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--border); }
+    .avatar { width:80px; height:80px; border-radius:50%; flex-shrink:0; cursor:pointer; background:center/cover no-repeat; border:2px solid rgba(255,255,255,0.15); transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1); animation:yinYang 3.5s ease-in-out infinite; }
+    .avatar:hover { transform:scale(1.1) rotate(6deg) !important; }
+    @keyframes yinYang{0%,100%{box-shadow:-4px -4px 14px rgba(255,255,255,0.5),4px 4px 14px rgba(0,0,0,0.9)}50%{box-shadow:4px 4px 14px rgba(255,255,255,0.5),-4px -4px 14px rgba(0,0,0,0.9)}}
+
+    .user-info { flex:1; min-width:0; }
+    .uid-row { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.2em; color:rgba(255,255,255,0.22); margin-bottom:4px; text-transform:uppercase; }
+    .uid-val { display:inline-block; background:linear-gradient(90deg,#444,#aaa,#fff,#aaa,#444); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 2s linear infinite; }
+    .name-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .username { font-size:26px; font-weight:800; letter-spacing:-0.02em; background:linear-gradient(110deg,#666 0%,#ccc 35%,#fff 50%,#ccc 65%,#666 100%); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
+    .badges { display:inline-flex; align-items:center; gap:2px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:100px; padding:3px 8px; }
+    .badge { position:relative; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; cursor:default; }
+    .badge i { font-size:10px; background:linear-gradient(110deg,#666,#ccc,#fff,#ccc,#666); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
+    .badge-tip { position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%) translateY(6px); background:rgba(8,8,8,0.92); backdrop-filter:blur(8px); border:1px solid var(--border2); border-radius:7px; padding:3px 8px; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity 0.15s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1); z-index:10; color:rgba(255,255,255,0.7); }
+    .badge:hover .badge-tip { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    .handle { font-family:'Geist Mono',monospace; font-size:12px; color:var(--sub); margin-top:2px; }
+    .status { display:inline-flex; align-items:center; gap:7px; margin-top:8px; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:8px; padding:5px 11px; }
+    .status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .status-dot.online  { background:#43b581; box-shadow:0 0 6px #43b581; }
+    .status-dot.idle    { background:#faa61a; box-shadow:0 0 6px #faa61a; }
+    .status-dot.dnd     { background:#f04747; box-shadow:0 0 6px #f04747; }
+    .status-dot.offline { background:#4f545c; }
+
+    .bio { font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.75); line-height:1.65; margin-bottom:18px; min-height:22px; }
+    .bio-cursor { display:inline-block; width:2px; height:13px; background:rgba(255,255,255,0.5); animation:blink 1s step-end infinite; vertical-align:middle; margin-left:1px; }
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+    .socials { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+    .social-btn { height:44px; border-radius:11px; padding:0 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); display:flex; align-items:center; gap:8px; cursor:pointer; transition:all 0.22s; text-decoration:none; color:var(--sub); font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.05em; white-space:nowrap; }
+    .social-btn:hover { background:rgba(255,255,255,0.09); border-color:var(--border2); color:var(--text); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.4); }
+    .social-btn i { font-size:13px; }
+
+    .card-footer { position:absolute; bottom:16px; left:28px; right:28px; display:flex; align-items:center; justify-content:space-between; }
+    .footer-text { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:0.1em; }
+
+    .views { position:fixed; bottom:22px; left:22px; z-index:100; display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.6); }
+    .views.visible { display:flex; }
+    .views i { font-size:12px; color:rgba(255,255,255,0.35); }
+
+    .watermark { position:fixed; bottom:22px; right:22px; z-index:100; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.15); letter-spacing:0.1em; text-decoration:none; transition:color 0.2s; }
+    .watermark:hover { color:rgba(255,255,255,0.4); }
+
+    /* nav confirm */
+    .nav-overlay { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.65); backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+    .nav-overlay.active { opacity:1; pointer-events:all; }
+    .nav-box { background:rgba(10,10,10,0.92); border:1px solid var(--border2); border-radius:18px; padding:28px 32px; width:100%; max-width:340px; display:flex; flex-direction:column; align-items:center; gap:12px; transform:translateY(16px) scale(0.97); transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+    .nav-overlay.active .nav-box { transform:none; }
+    .nav-title { font-size:16px; font-weight:700; }
+    .nav-sub { font-family:'Geist Mono',monospace; font-size:11px; color:var(--sub); }
+    .nav-url { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.5); background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:100px; padding:6px 16px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:100%; text-align:center; }
+    .nav-btns { display:flex; gap:8px; width:100%; }
+    .nav-no { flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--sub); font-family:'Geist Mono',monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+    .nav-no:hover { background:rgba(255,255,255,0.04); color:var(--text); }
+    .nav-yes { flex:1; padding:10px; border-radius:10px; border:none; cursor:pointer; background:linear-gradient(110deg,#333,#777,#bbb,#777,#333); background-size:200%; animation:shimmer 3s ease infinite; color:#fff; font-family:'Geist Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; transition:filter 0.2s; }
+    .nav-yes:hover { filter:brightness(1.3); }
+
+    @media(max-width:480px){ .card{padding:22px 20px 50px} .socials{flex-wrap:wrap} }
+  </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="load-logo">swaqq.xyz</div>
+  <div class="load-handle" id="loadHandle"></div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<!-- NOT FOUND -->
+<div id="notFound">
+  <div class="nf-code">404</div>
+  <div class="nf-title">profile not found</div>
+  <div class="nf-sub" id="nfSub">this handle doesn't exist yet.</div>
+  <a class="nf-btn" href="index.html"><i class="fas fa-arrow-left" style="font-size:10px"></i> back to swaqq.xyz</a>
+  <a class="nf-btn" href="index.html" onclick="localStorage.setItem('claimHandle', window._handle || '')"><i class="fas fa-plus" style="font-size:10px"></i> claim this handle</a>
+</div>
+
+<!-- SPLASH -->
+<div id="splash">
+  <a class="splash-site" href="index.html">swaqq.xyz</a>
+  <div class="splash-name" id="splashName"></div>
+  <div class="splash-hint">click anywhere to enter</div>
+</div>
+
+<!-- YT BG -->
+<div id="ytBg"></div>
+
+<!-- TOP BAR -->
+<div class="top-bar" id="topBar">
+  <a class="top-bar-logo" href="index.html">swaqq.xyz</a>
+  <span class="top-bar-handle" id="topBarHandle"></span>
+</div>
+
+<!-- PROFILE PAGE -->
+<div class="page" id="profilePage">
+  <div class="card-wrap">
+    <div class="card" id="card">
+      <div class="card-header">
+        <div class="avatar" id="cardAvatar"></div>
+        <div class="user-info">
+          <div class="uid-row">uid <span class="uid-val" id="uidVal">0000</span></div>
+          <div class="name-row">
+            <span class="username" id="cardName">...</span>
+            <div class="badges" id="cardBadges"></div>
+          </div>
+          <div class="handle" id="cardHandle">@...</div>
+          <div class="status" id="discordStatus">
+            <div class="status-dot offline" id="statusDot"></div>
+            <span id="statusText">loading...</span>
+          </div>
+        </div>
+      </div>
+      <div class="bio" id="cardBio"><span class="bio-cursor"></span></div>
+      <div class="socials" id="cardSocials"></div>
+      <div class="card-footer">
+        <span class="footer-text" id="footerVersion">swaqq.xyz</span>
+        <span class="footer-text" id="footerClock">--:-- --</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VIEWS -->
+<div class="views" id="views"><i class="fas fa-eye"></i><span id="viewCount">0</span></div>
+
+<!-- WATERMARK -->
+<a class="watermark" href="index.html">swaqq.xyz</a>
+
+<!-- NAV CONFIRM -->
+<div class="nav-overlay" id="navOverlay">
+  <div class="nav-box">
+    <div class="nav-title">leave this page?</div>
+    <div class="nav-sub">you are visiting</div>
+    <div class="nav-url" id="navUrl"></div>
+    <div class="nav-btns">
+      <button class="nav-no" id="navNo">cancel</button>
+      <button class="nav-yes" id="navYes">go →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── SUPABASE ──
+  const SUPABASE_URL  = 'https://YOUR_PROJECT_ID.supabase.co';
+  const SUPABASE_ANON = 'YOUR_ANON_KEY_HERE';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // ── ICON MAP for social links ──
+  const ICON_MAP = {
+    discord:  'fab fa-discord',
+    youtube:  'fab fa-youtube',
+    twitter:  'fab fa-twitter',
+    x:        'fab fa-x-twitter',
+    instagram:'fab fa-instagram',
+    tiktok:   'fab fa-tiktok',
+    roblox:   'fas fa-gamepad',
+    twitch:   'fab fa-twitch',
+    github:   'fab fa-github',
+    spotify:  'fab fa-spotify',
+    'guns.lol':'fas fa-crosshairs',
+    default:  'fas fa-link'
+  };
+  function getIcon(label) {
+    const l = (label || '').toLowerCase();
+    return ICON_MAP[l] || ICON_MAP.default;
+  }
+
+  // ── BADGE ICON MAP ──
+  const BADGE_ICONS = {
+    owner: 'fas fa-crown', developer: 'fas fa-code', dev: 'fas fa-code',
+    staff: 'fas fa-shield-alt', mod: 'fas fa-shield-alt',
+    vip: 'fas fa-star', admin: 'fas fa-bolt', default: 'fas fa-certificate'
+  };
+  function getBadgeIcon(label) {
+    return BADGE_ICONS[(label||'').toLowerCase()] || BADGE_ICONS.default;
+  }
+
+  // ── PARSE HANDLE FROM URL ──
+  // Handles:  swaqq.xyz/@miu  →  "miu"
+  //           swaqq.xyz/miu   →  "miu"
+  function getHandleFromPath() {
+    const path = window.location.pathname; // e.g. "/@miu" or "/miu"
+    const clean = path.replace(/^\//, '').replace(/^@/, '').split('/')[0];
+    return clean.toLowerCase();
+  }
+
+  const handle = getHandleFromPath();
+  window._handle = handle;
+
+  // If somehow the path is empty or just "/" — redirect home
+  if (!handle) { window.location.href = 'index.html'; }
+
+  document.getElementById('loadHandle').textContent = '@' + handle;
+
+  // ── MAIN: LOAD PROFILE ──
+  async function loadProfile() {
+    const { data: profile, error } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('handle', handle)
+      .single();
+
+    if (error || !profile) {
+      // not found
+      document.getElementById('loading').classList.add('out');
+      setTimeout(() => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('nfSub', ).textContent = `@${handle} hasn't been claimed yet.`;
+        document.getElementById('notFound').classList.add('visible');
+      }, 600);
+      return;
+    }
+
+    // ── FOUND: populate card ──
+    document.getElementById('topBarHandle').textContent = '@' + profile.handle;
+
+    // avatar
+    const avatarEl = document.getElementById('cardAvatar');
+    if (profile.avatar_url) {
+      avatarEl.style.backgroundImage = `url(${profile.avatar_url})`;
+    } else {
+      // fallback: first letter initial
+      avatarEl.style.background = '#1a1a1a';
+      avatarEl.style.display = 'flex';
+      avatarEl.style.alignItems = 'center';
+      avatarEl.style.justifyContent = 'center';
+      avatarEl.style.color = 'rgba(255,255,255,0.4)';
+      avatarEl.style.fontSize = '28px';
+      avatarEl.style.fontWeight = '800';
+      avatarEl.textContent = (profile.display_name || profile.handle)[0].toUpperCase();
+    }
+
+    document.getElementById('cardName').textContent = profile.display_name || profile.handle;
+    document.getElementById('cardHandle').textContent = '@' + profile.handle;
+    document.getElementById('footerVersion').textContent = `swaqq.xyz/@${profile.handle}`;
+
+    // badges
+    const badgesEl = document.getElementById('cardBadges');
+    const badges = typeof profile.badges === 'string' ? JSON.parse(profile.badges || '[]') : (profile.badges || []);
+    if (badges.length === 0) badgesEl.style.display = 'none';
+    badges.forEach(b => {
+      const div = document.createElement('div');
+      div.className = 'badge';
+      div.innerHTML = `<i class="${getBadgeIcon(b)}"></i><div class="badge-tip">${b}</div>`;
+      badgesEl.appendChild(div);
+    });
+
+    // socials
+    const socialsEl = document.getElementById('cardSocials');
+    const socials = typeof profile.socials === 'string' ? JSON.parse(profile.socials || '[]') : (profile.socials || []);
+    socials.forEach(s => {
+      const a = document.createElement('a');
+      a.className = 'social-btn nav-link';
+      a.dataset.href = s.url;
+      a.innerHTML = `<i class="${getIcon(s.label)}"></i> ${s.label}`;
+      socialsEl.appendChild(a);
+    });
+
+    // discord status
+    if (profile.discord_id) fetchDiscordStatus(profile.discord_id);
+
+    // bio typewriter
+    if (profile.show_splash !== false) {
+      // show splash first, then profile
+      renderSplash(profile);
+    } else {
+      revealProfile(profile);
+    }
+
+    // view counter
+    if (profile.show_views !== false) {
+      countView(profile.id, profile.handle);
+    }
+  }
+
+  // ── SPLASH ──
+  function renderSplash(profile) {
+    const splashEl = document.getElementById('splash');
+    const splashName = document.getElementById('splashName');
+    splashEl.classList.add('active');
+
+    // hide loading
+    document.getElementById('loading').classList.add('out');
+    setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
+
+    // typewriter
+    const name = profile.display_name || profile.handle;
+    let i = 0;
+    function type() {
+      if (i <= name.length) { splashName.textContent = name.slice(0, i++); setTimeout(type, 110); }
+    }
+    setTimeout(type, 200);
+
+    splashEl.addEventListener('click', () => {
+      splashEl.classList.add('out');
+      setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile); }, 900);
+    }, { once: true });
+  }
+
+  // ── REVEAL PROFILE ──
+  function revealProfile(profile) {
+    document.getElementById('loading').classList.add('out');
+    setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
+
+    document.getElementById('topBar').classList.add('visible');
+    document.getElementById('profilePage').classList.add('visible');
+    document.getElementById('card').classList.add('loaded');
+
+    if (profile.show_views !== false) document.getElementById('views').classList.add('visible');
+
+    // youtube bg
+    if (profile.youtube_video_id) initYT(profile.youtube_video_id);
+
+    // bio typewriter
+    typeBio(profile.bio || '');
+
+    // uid scramble
+    if (profile.show_uid_scramble !== false) startUidScramble();
+
+    // 3d tilt
+    if (profile.show_tilt !== false) initTilt();
+
+    // nav links
+    initNavLinks();
+  }
+
+  // ── YOUTUBE ──
+  let ytApiReady = false;
+  var tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+  window.onYouTubeIframeAPIReady = () => { ytApiReady = true; };
+
+  function initYT(videoId) {
+    if (!ytApiReady) { setTimeout(() => initYT(videoId), 100); return; }
+    const wrap = document.getElementById('ytBg');
+    const div = document.createElement('div'); div.id = 'yt-player'; wrap.appendChild(div);
+    new YT.Player('yt-player', {
+      videoId,
+      playerVars: { autoplay:1,controls:0,disablekb:1,fs:0,modestbranding:1,playsinline:1,loop:1,playlist:videoId,mute:1,iv_load_policy:3 },
+      events: {
+        onReady: () => { wrap.classList.add('visible'); },
+        onStateChange: e => { if (e.data === YT.PlayerState.ENDED) { e.target.seekTo(0); e.target.playVideo(); } }
+      }
+    });
+  }
+
+  // ── CLOCK ──
+  function updateClock() {
+    const now = new Date(); let h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
+    const ap = h >= 12 ? 'PM' : 'AM'; h = h%12||12;
+    document.getElementById('footerClock').textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
+  }
+  updateClock(); setInterval(updateClock, 1000);
+
+  // ── DISCORD STATUS ──
+  async function fetchDiscordStatus(discordId) {
+    try {
+      const r = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
+      const d = await r.json();
+      if (d.success && d.data) {
+        const { discord_status: st, activities } = d.data;
+        document.getElementById('statusDot').className = 'status-dot ' + (st || 'offline');
+        const custom = activities?.find(a => a.type === 4);
+        document.getElementById('statusText').textContent = (st !== 'offline' && custom?.state) ? custom.state : 'offline';
+      }
+    } catch(_) {}
+  }
+
+  // ── UID SCRAMBLE ──
+  const chars = '0123456789ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛟ⚡☠✦✧⚔◊◈△▽';
+  function startUidScramble() {
+    function scramble() { let s=''; for(let i=0;i<4;i++) s+=chars[Math.floor(Math.random()*chars.length)]; document.getElementById('uidVal').textContent=s; }
+    setInterval(scramble, 55); scramble();
+  }
+
+  // ── TYPING BIO ──
+  function typeBio(text) {
+    const bioEl = document.getElementById('cardBio');
+    if (!text) { bioEl.innerHTML = ''; return; }
+    let idx = 0, deleting = false;
+    function tick() {
+      const cursor = '<span class="bio-cursor"></span>';
+      bioEl.innerHTML = text.slice(0, idx) + cursor;
+      if (!deleting) {
+        if (idx < text.length) { idx++; setTimeout(tick, 90); }
+        else { deleting = true; setTimeout(tick, 2200); }
+      } else {
+        if (idx > 0) { idx--; setTimeout(tick, 45); }
+        else { deleting = false; setTimeout(tick, 500); }
+      }
+    }
+    setTimeout(tick, 400);
+  }
+
+  // ── 3D TILT ──
+  function initTilt() {
+    const card = document.getElementById('card');
+    let tx=0,ty=0,cx=0,cy=0,hovering=false;
+    card.addEventListener('mouseenter', ()=>hovering=true);
+    card.addEventListener('mouseleave', ()=>{ hovering=false; tx=ty=0; });
+    card.addEventListener('mousemove', e => {
+      if(!hovering) return;
+      const r=card.getBoundingClientRect();
+      tx=(e.clientX-r.left-r.width/2)/12; ty=(e.clientY-r.top-r.height/2)/12;
+    });
+    function anim() { cx+=(tx-cx)*0.18; cy+=(ty-cy)*0.18; card.style.transform=`perspective(1200px) rotateY(${cx}deg) rotateX(${-cy}deg)`; requestAnimationFrame(anim); }
+    anim();
+    document.getElementById('cardAvatar').addEventListener('click', () => {
+      const av=document.getElementById('cardAvatar');
+      av.style.transition='transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+      av.style.transform='scale(1.15) rotate(360deg)';
+      setTimeout(()=>{ av.style.transform=''; },620);
+    });
+  }
+
+  // ── NAV CONFIRM ──
+  function initNavLinks() {
+    const overlay=document.getElementById('navOverlay'); let pending='';
+    document.querySelectorAll('.nav-link').forEach(el=>{
+      el.addEventListener('click',e=>{
+        e.preventDefault(); pending=el.dataset.href;
+        document.getElementById('navUrl').textContent=pending;
+        overlay.classList.add('active');
+      });
+    });
+    document.getElementById('navYes').addEventListener('click',()=>{ overlay.classList.remove('active'); if(pending) window.open(pending,'_blank'); pending=''; });
+    document.getElementById('navNo').addEventListener('click',()=>{ overlay.classList.remove('active'); pending=''; });
+    overlay.addEventListener('click',e=>{ if(e.target===overlay){ overlay.classList.remove('active'); pending=''; } });
+  }
+
+  // ── VIEW COUNTER (fingerprint-based, stored in Supabase) ──
+  async function countView(profileId, profileHandle) {
+    // local fingerprint to avoid duplicate counts
+    const canvas=document.createElement('canvas'); const ctx=canvas.getContext('2d'); ctx.fillText('fp',0,0);
+    const fp={ua:navigator.userAgent,lang:navigator.language,res:`${screen.width}x${screen.height}`,tz:Intl.DateTimeFormat().resolvedOptions().timeZone,cv:canvas.toDataURL()};
+    let hash=0; const str=JSON.stringify(fp);
+    for(let i=0;i<str.length;i++){hash=((hash<<5)-hash)+str.charCodeAt(i);hash|=0;}
+    const key=`sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
+    const today=new Date().toDateString();
+    const stored=JSON.parse(localStorage.getItem(key)||'{"c":0,"d":""}');
+    if(stored.d!==today) stored.c=0;
+    if(stored.c<2){
+      stored.c++; stored.d=today; localStorage.setItem(key,JSON.stringify(stored));
+      // increment in supabase
+      await sb.rpc('increment_views', { profile_id: profileId }).catch(()=>{});
+    }
+    // fetch current count
+    const {data} = await sb.from('profiles').select('view_count').eq('id',profileId).single();
+    document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
+  }
+
+  // ── INIT ──
+  loadProfile();
+</script>
+</body>
+</html>
