@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -47,8 +46,6 @@
     }
     @keyframes shimmer { 0%,100%{background-position:0%} 50%{background-position:100%} }
     .nav-links { display: flex; align-items: center; gap: 8px; }
-
-    /* logged-in nav state */
     .nav-user {
       display: none; align-items: center; gap: 10px;
       font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--sub);
@@ -95,8 +92,6 @@
       -webkit-text-fill-color: transparent; animation: shimmer 4s ease infinite;
     }
     .hero-sub { font-family: 'Geist Mono', monospace; font-size: 14px; color: var(--sub); max-width: 440px; line-height: 1.7; }
-
-    /* handle input */
     .hero-input-wrap {
       display: flex; align-items: stretch; background: var(--surface);
       border: 1px solid var(--border2); border-radius: 12px; overflow: hidden;
@@ -378,14 +373,72 @@
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
+  // ── PROFILE CREATION HELPER ──
+  // Called from onAuthStateChange so the auth.users row is guaranteed to exist
+  async function createProfileIfNeeded(userId, handle) {
+    // Check if profile already exists (safety guard against double-insert)
+    const { data: existing } = await sb
+      .from('profiles')
+      .select('id')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (existing) return { alreadyExisted: true };
+
+    const { error } = await sb.from('profiles').insert({
+      id:               userId,
+      handle:           handle,
+      display_name:     handle,
+      bio:              '',
+      discord_id:       '',
+      youtube_video_id: '',
+      badges:           JSON.stringify([]),
+      socials:          JSON.stringify([]),
+      show_views:       true,
+      show_splash:      true,
+      show_tilt:        true,
+      show_uid_scramble:true,
+      show_video_bg:    true,
+      mute_video:       false,
+      view_count:       0,
+      created_at:       new Date().toISOString()
+    });
+
+    return { error };
+  }
+
   // ── AUTH STATE ──
   sb.auth.onAuthStateChange(async (event, session) => {
-    if (session?.user) {
-      const { data: profile } = await sb.from('profiles').select('handle, avatar_url').eq('id', session.user.id).single();
-      if (profile) showLoggedIn(profile.handle, profile.avatar_url);
-    } else {
-      showGuest();
+    if (!session?.user) { showGuest(); return; }
+
+    const pendingHandle = sessionStorage.getItem('swaqq_pending_handle');
+
+    if (event === 'SIGNED_IN' && pendingHandle) {
+      // New signup — create the profile row now that auth is settled
+      sessionStorage.removeItem('swaqq_pending_handle');
+      const { error, alreadyExisted } = await createProfileIfNeeded(session.user.id, pendingHandle);
+
+      if (error && !alreadyExisted) {
+        // Rare edge case: auth succeeded but profile insert failed
+        // Show error on whichever modal is open, don't redirect
+        showAlert('signupAlert', 'profile setup failed: ' + error.message + ' — please contact support.', 'error');
+        setLoading('signupBtn', false);
+        return;
+      }
+
+      // Success — redirect to dashboard
+      window.location.href = 'dashboard.html';
+      return;
     }
+
+    // Already logged-in user (page refresh / returning session)
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('handle, avatar_url')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    if (profile) showLoggedIn(profile.handle, profile.avatar_url);
   });
 
   function showLoggedIn(handle, avatarUrl) {
@@ -429,7 +482,9 @@
   function setLoading(btnId, loading) {
     const btn = document.getElementById(btnId);
     btn.disabled = loading;
-    btn.innerHTML = loading ? '<span class="spinner"></span>' : (btnId === 'signupBtn' ? 'create account →' : 'log in →');
+    btn.innerHTML = loading
+      ? '<span class="spinner"></span>'
+      : (btnId === 'signupBtn' ? 'create account →' : 'log in →');
   }
 
   document.querySelectorAll('.modal-overlay').forEach(m => {
@@ -443,65 +498,72 @@
     const email    = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
 
-    // validate handle
-    if (!handle) return showAlert('signupAlert', 'please enter a handle.', 'error');
-    if (!/^[a-z0-9_]{2,20}$/.test(handle)) return showAlert('signupAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
-    if (!email) return showAlert('signupAlert', 'please enter your email.', 'error');
-    if (password.length < 6) return showAlert('signupAlert', 'password must be at least 6 characters.', 'error');
+    // ── Validate inputs ──
+    if (!handle)
+      return showAlert('signupAlert', 'please enter a handle.', 'error');
+    if (!/^[a-z0-9_]{2,20}$/.test(handle))
+      return showAlert('signupAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
+    if (!email)
+      return showAlert('signupAlert', 'please enter your email.', 'error');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return showAlert('signupAlert', 'please enter a valid email address.', 'error');
+    if (password.length < 6)
+      return showAlert('signupAlert', 'password must be at least 6 characters.', 'error');
 
     setLoading('signupBtn', true);
 
-    // check handle is not taken
-    const { data: existing } = await sb.from('profiles').select('id').eq('handle', handle).single();
-    if (existing) {
+    // ── Check handle availability ──
+    const { data: taken } = await sb
+      .from('profiles')
+      .select('id')
+      .eq('handle', handle)
+      .maybeSingle();
+
+    if (taken) {
       setLoading('signupBtn', false);
       return showAlert('signupAlert', `@${handle} is already taken. try another.`, 'error');
     }
 
-    // create auth user
-    const { data: authData, error: authErr } = await sb.auth.signUp({ email, password });
+    // ── Store pending handle BEFORE signUp call ──
+    // onAuthStateChange will pick this up and create the profile row
+    sessionStorage.setItem('swaqq_pending_handle', handle);
+
+    // ── Create auth user ──
+    const { error: authErr } = await sb.auth.signUp({ email, password });
+
     if (authErr) {
+      sessionStorage.removeItem('swaqq_pending_handle');
       setLoading('signupBtn', false);
       return showAlert('signupAlert', authErr.message, 'error');
     }
 
-    // insert profile row
-    const userId = authData.user.id;
-    const { error: profileErr } = await sb.from('profiles').insert({
-      id: userId,
-      handle,
-      display_name: handle,
-      bio: '',
-      discord_id: '',
-      youtube_video_id: '',
-      badges: JSON.stringify([]),
-      socials: JSON.stringify([]),
-      show_views: true,
-      show_splash: true,
-      show_tilt: true,
-      created_at: new Date().toISOString()
-    });
-
-    setLoading('signupBtn', false);
-    if (profileErr) return showAlert('signupAlert', 'account created but profile setup failed. contact support.', 'error');
-
-    showAlert('signupAlert', '✓ account created! redirecting to dashboard...', 'success');
-    setTimeout(() => window.location.href = 'dashboard.html', 1200);
+    // ── Show success state; onAuthStateChange handles the redirect ──
+    showAlert('signupAlert', '✓ account created! setting up your profile...', 'success');
+    // Keep button disabled so user can't double-submit while we wait for onAuthStateChange
   }
 
   // ── LOG IN ──
   async function logIn() {
     const email    = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    if (!email || !password) return showAlert('loginAlert', 'please fill in all fields.', 'error');
+
+    if (!email || !password)
+      return showAlert('loginAlert', 'please fill in all fields.', 'error');
 
     setLoading('loginBtn', true);
     const { error } = await sb.auth.signInWithPassword({ email, password });
-    setLoading('loginBtn', false);
 
-    if (error) return showAlert('loginAlert', error.message, 'error');
+    if (error) {
+      setLoading('loginBtn', false);
+      // Give a friendlier message for the most common case
+      const msg = error.message.toLowerCase().includes('invalid')
+        ? 'invalid email or password.'
+        : error.message;
+      return showAlert('loginAlert', msg, 'error');
+    }
+
     showAlert('loginAlert', '✓ logged in! redirecting...', 'success');
-    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    setTimeout(() => window.location.href = 'dashboard.html', 900);
   }
 
   // ── LOG OUT ──
@@ -510,13 +572,15 @@
     window.location.reload();
   }
 
-  // ── CLAIM HANDLE ──
+  // ── CLAIM HANDLE (hero input) ──
   function claimHandle() {
     const val = document.getElementById('heroHandle').value.trim();
     if (!val) { document.getElementById('heroHandle').focus(); return; }
     openModal('signup');
   }
-  document.getElementById('heroHandle').addEventListener('keydown', e => { if (e.key === 'Enter') claimHandle(); });
+  document.getElementById('heroHandle').addEventListener('keydown', e => {
+    if (e.key === 'Enter') claimHandle();
+  });
 </script>
 </body>
 </html>
