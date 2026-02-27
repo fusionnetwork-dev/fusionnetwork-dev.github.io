@@ -31,6 +31,22 @@
     .spinner-sm { display:inline-block; width:10px; height:10px; border:1.5px solid rgba(255,255,255,0.2); border-top-color:rgba(255,255,255,0.7); border-radius:50%; animation:spin 0.6s linear infinite; }
     @keyframes spin{to{transform:rotate(360deg)}}
 
+    /* ── AUTO-HIDING TOP BAR ── */
+    #topBar {
+      position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 200;
+      background: rgba(7,7,7,0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px 0 260px;
+      transform: translateY(-100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    #topBar.visible { transform: translateY(0); }
+    .top-bar-trigger { position: fixed; top: 0; left: 240px; right: 0; height: 12px; z-index: 201; }
+    .top-bar-logo { font-family:'Geist Mono',monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; text-decoration:none; }
+    .top-bar-handle { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
+    .top-bar-actions { display:flex; align-items:center; gap:8px; }
+
     /* ── LAYOUT ── */
     .layout { display:flex; min-height:100vh; position:relative; z-index:1; }
 
@@ -38,7 +54,7 @@
     .sidebar { width:240px; flex-shrink:0; background:var(--sidebar); border-right:1px solid var(--border); padding:20px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
     .sidebar-logo { padding:0 20px 20px; border-bottom:1px solid var(--border); margin-bottom:12px; font-family:'Geist Mono',monospace; font-size:15px; font-weight:700; letter-spacing:0.05em; text-decoration:none; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; display:block; }
     .sidebar-user { padding:12px 20px 16px; border-bottom:1px solid var(--border); margin-bottom:12px; }
-    .sidebar-avatar { width:44px; height:44px; border-radius:50%; margin-bottom:10px; background:#1a1a1a center/cover no-repeat; background-size:cover; border:2px solid rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; color:rgba(255,255,255,0.4); overflow:hidden; }
+    .sidebar-avatar { width:44px; height:44px; border-radius:50%; margin-bottom:10px; background:#1a1a1a center/cover no-repeat; border:2px solid rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; color:rgba(255,255,255,0.4); overflow:hidden; flex-shrink:0; }
     .sidebar-name { font-size:15px; font-weight:700; }
     .sidebar-handle { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
     .sidebar-url { display:inline-flex; align-items:center; gap:5px; margin-top:8px; font-family:'Geist Mono',monospace; font-size:10px; color:var(--sub); background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:3px 8px; text-decoration:none; transition:all 0.2s; }
@@ -76,18 +92,18 @@
     /* ── FIELDS ── */
     .field { margin-bottom:18px; }
     .field:last-child { margin-bottom:0; }
-    .field-label { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--sub); margin-bottom:7px; display:flex; align-items:center; gap:6px; }
+    .field-label { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--sub); margin-bottom:7px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
     .tag { background:rgba(255,255,255,0.07); border:1px solid var(--border); border-radius:4px; padding:1px 5px; font-size:8px; }
     .field-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:9px; padding:11px 14px; color:var(--text); font-family:'Geist Mono',monospace; font-size:13px; outline:none; transition:border-color 0.2s,box-shadow 0.2s; }
     .field-input:focus { border-color:rgba(255,255,255,0.25); box-shadow:0 0 0 3px rgba(255,255,255,0.04); }
     .field-input::placeholder { color:var(--muted); }
     textarea.field-input { resize:vertical; min-height:80px; line-height:1.6; }
-    .field-hint { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); margin-top:5px; }
+    .field-hint { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); margin-top:5px; line-height:1.5; }
     .field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
     .prefix-wrap { display:flex; background:var(--surface2); border:1px solid var(--border2); border-radius:9px; overflow:hidden; transition:border-color 0.2s,box-shadow 0.2s; }
     .prefix-wrap:focus-within { border-color:rgba(255,255,255,0.25); box-shadow:0 0 0 3px rgba(255,255,255,0.04); }
     .prefix-text { font-family:'Geist Mono',monospace; font-size:13px; color:var(--muted); padding:11px 12px; background:rgba(255,255,255,0.04); border-right:1px solid var(--border2); white-space:nowrap; }
-    .prefix-input { flex:1; background:transparent; border:none; outline:none; font-family:'Geist Mono',monospace; font-size:13px; color:var(--text); padding:11px 14px; }
+    .prefix-input { flex:1; background:transparent; border:none; outline:none; font-family:'Geist Mono',monospace; font-size:13px; color:var(--text); padding:11px 14px; min-width:0; }
     .prefix-input::placeholder { color:var(--muted); }
 
     /* ── PFP ── */
@@ -96,11 +112,13 @@
       width:80px; height:80px; border-radius:50%;
       background:#1a1a1a center/cover no-repeat;
       background-size:cover !important;
-      object-fit:cover;
       border:2px solid rgba(255,255,255,0.14); flex-shrink:0;
       display:flex; align-items:center; justify-content:center;
       font-size:28px; font-weight:800; color:rgba(255,255,255,0.3); overflow:hidden;
+      /* Fix PFP fitting */
+      object-fit:cover; position:relative;
     }
+    .pfp-preview img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; border-radius:50%; }
     .pfp-upload-zone { flex:1; border:1.5px dashed rgba(255,255,255,0.1); border-radius:12px; padding:18px 20px; cursor:pointer; transition:border-color 0.2s,background 0.2s; text-align:center; }
     .pfp-upload-zone:hover { border-color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.02); }
     .pfp-upload-zone.drag { border-color:rgba(255,255,255,0.4); background:rgba(255,255,255,0.04); }
@@ -118,7 +136,7 @@
     .video-thumb-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; }
     .video-thumb-placeholder i { font-size:32px; color:rgba(255,255,255,0.12); }
     .video-thumb-placeholder span { font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.18); letter-spacing:0.1em; }
-    .video-thumb-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%); display:flex; align-items:flex-end; padding:10px 12px; }
+    .video-thumb-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%); display:flex; align-items:flex-end; padding:10px 12px; pointer-events:none; }
     .video-thumb-label { font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.4); background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:3px 8px; }
 
     /* ── TOGGLE ── */
@@ -126,7 +144,7 @@
     .toggle-row:last-child { border-bottom:none; }
     .toggle-title { font-size:14px; font-weight:600; margin-bottom:2px; }
     .toggle-sub { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
-    .toggle { width:40px; height:22px; background:rgba(255,255,255,0.1); border-radius:100px; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0; }
+    .toggle { width:40px; height:22px; background:rgba(255,255,255,0.1); border-radius:100px; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0; border:none; padding:0; }
     .toggle.on { background:rgba(255,255,255,0.35); }
     .toggle::after { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; background:#fff; border-radius:50%; transition:transform 0.2s; }
     .toggle.on::after { transform:translateX(18px); }
@@ -139,6 +157,9 @@
     .font-card.selected { border-color:rgba(255,255,255,0.35); background:rgba(255,255,255,0.07); }
     .font-card-name { font-size:18px; font-weight:700; margin-bottom:4px; }
     .font-card-label { font-family:'Geist Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; }
+    .font-card.custom-font-card { border-style:dashed; border-color:rgba(255,255,255,0.12); }
+    .font-card.custom-font-card:hover { border-color:rgba(255,255,255,0.3); }
+    .font-card.custom-font-card.selected { border-style:solid; }
 
     /* ── COLOR PICKER ── */
     .color-section { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
@@ -149,15 +170,41 @@
     input[type="color"] { width:36px; height:36px; border:none; border-radius:8px; cursor:pointer; background:none; padding:0; }
 
     /* ── BG TYPE TABS ── */
-    .tab-pills { display:flex; gap:6px; margin-bottom:16px; }
+    .tab-pills { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
     .tab-pill { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; padding:6px 14px; border-radius:100px; border:1px solid var(--border); background:transparent; color:var(--sub); cursor:pointer; transition:all 0.2s; }
     .tab-pill.active { background:rgba(255,255,255,0.1); border-color:var(--border2); color:var(--text); }
     .bg-panel { display:none; }
     .bg-panel.active { display:block; }
 
+    /* ── 3D CARD PREVIEW ── */
+    .card-preview-wrap {
+      perspective: 1000px;
+      border-radius:16px; margin-bottom:16px;
+    }
+    .card-preview-mini {
+      border-radius:16px; padding:16px; position:relative; overflow:hidden;
+      min-height:80px; display:flex; align-items:center; gap:14px;
+      transition:box-shadow 0.3s, border-color 0.3s, background 0.3s;
+      border:1px solid rgba(255,255,255,0.08);
+      transform-style: preserve-3d;
+      will-change: transform;
+      cursor: default;
+      user-select:none;
+    }
+    .card-preview-avatar {
+      width:48px; height:48px; border-radius:50%;
+      background:#1a1a1a center/cover no-repeat;
+      background-size:cover !important;
+      flex-shrink:0; border:2px solid rgba(255,255,255,0.2);
+      overflow:hidden; object-fit:cover;
+    }
+    .card-preview-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; display:block; }
+    .card-preview-name { font-size:16px; font-weight:800; }
+    .card-preview-bio { font-family:'Geist Mono',monospace; font-size:10px; opacity:0.6; margin-top:2px; }
+
     /* ── BADGE SYSTEM ── */
     .badge-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; }
-    .badge-card { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:12px; position:relative; transition:all 0.2s; }
+    .badge-card { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:12px; position:relative; transition:all 0.2s; min-width:0; overflow:hidden; }
     .badge-card.unlocked { cursor:pointer; border-color:var(--border2); }
     .badge-card.unlocked:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.2); }
     .badge-card.selected { border-color:rgba(255,255,255,0.4); background:rgba(255,255,255,0.07); }
@@ -167,15 +214,15 @@
     .badge-card.early-badge.selected { border-color:var(--gold); background:rgba(245,166,35,0.1); }
     .badge-icon { width:36px; height:36px; border-radius:9px; background:rgba(255,255,255,0.06); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
     .early-badge .badge-icon { background:rgba(245,166,35,0.1); border-color:rgba(245,166,35,0.25); color:var(--gold); }
-    .badge-info { flex:1; min-width:0; }
-    .badge-name { font-size:13px; font-weight:700; margin-bottom:2px; }
-    .badge-desc { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); line-height:1.4; }
-    .badge-state { margin-left:auto; flex-shrink:0; }
+    .badge-info { flex:1; min-width:0; overflow:hidden; }
+    .badge-name { font-size:13px; font-weight:700; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .badge-desc { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .badge-state { margin-left:auto; flex-shrink:0; padding-left:8px; }
     .badge-pip { width:16px; height:16px; border-radius:50%; border:1.5px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:8px; transition:all 0.15s; }
     .badge-card.selected .badge-pip { background:rgba(255,255,255,0.9); border-color:transparent; color:#000; }
     .badge-card.early-badge.selected .badge-pip { background:var(--gold); border-color:var(--gold); color:#000; }
-    .badge-locked-tag { font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,80,80,0.6); background:rgba(255,80,80,0.08); border:1px solid rgba(255,80,80,0.15); border-radius:4px; padding:2px 6px; }
-    .badge-early-tag { font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.25); border-radius:4px; padding:2px 6px; }
+    .badge-locked-tag { font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,80,80,0.6); background:rgba(255,80,80,0.08); border:1px solid rgba(255,80,80,0.15); border-radius:4px; padding:2px 6px; white-space:nowrap; }
+    .badge-early-tag { font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.25); border-radius:4px; padding:2px 6px; white-space:nowrap; }
     .active-badges-preview { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; min-height:30px; }
     .active-pill { display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.07); border:1px solid var(--border2); border-radius:100px; padding:4px 12px; font-family:'Geist Mono',monospace; font-size:11px; color:var(--sub); }
     .active-pill.early { background:rgba(245,166,35,0.1); border-color:rgba(245,166,35,0.3); color:var(--gold); }
@@ -191,13 +238,23 @@
     .social-drag { color:var(--muted); cursor:grab; font-size:12px; }
     .icon-picker-overlay { position:fixed; inset:0; z-index:999; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; }
     .icon-picker-overlay.open { display:flex; }
-    .icon-picker-box { background:var(--surface); border:1px solid var(--border2); border-radius:16px; padding:20px; width:420px; max-width:95vw; }
+    .icon-picker-box { background:var(--surface); border:1px solid var(--border2); border-radius:16px; padding:20px; width:480px; max-width:95vw; }
     .icon-picker-title { font-size:14px; font-weight:700; margin-bottom:14px; }
-    .icon-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; max-height:300px; overflow-y:auto; }
-    .icon-opt { width:100%; aspect-ratio:1; background:var(--surface2); border:1px solid var(--border); border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--sub); cursor:pointer; transition:all 0.15s; }
+    .icon-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:7px; max-height:300px; overflow-y:auto; }
+    .icon-opt { width:100%; aspect-ratio:1; background:var(--surface2); border:1px solid var(--border); border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--sub); cursor:pointer; transition:all 0.15s; position:relative; overflow:hidden; }
     .icon-opt:hover { background:rgba(255,255,255,0.07); color:var(--text); border-color:var(--border2); }
     .icon-opt.selected { background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.3); color:#fff; }
+    .icon-opt img { width:20px; height:20px; object-fit:contain; filter:brightness(0.6); border-radius:3px; }
+    .icon-opt.selected img { filter:brightness(1); }
+    .icon-opt:hover img { filter:brightness(0.9); }
     .icon-search { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:9px 12px; color:var(--text); font-family:'Geist Mono',monospace; font-size:12px; outline:none; margin-bottom:12px; }
+    /* custom icon upload section in picker */
+    .icon-upload-area { margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
+    .icon-upload-label { font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; display:block; }
+    .icon-drop-zone { border:1.5px dashed rgba(255,255,255,0.1); border-radius:10px; padding:12px 16px; cursor:pointer; transition:all 0.2s; text-align:center; font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
+    .icon-drop-zone:hover { border-color:rgba(255,255,255,0.25); color:var(--sub); }
+    #customIconInput { display:none; }
+    .custom-icons-row { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
 
     /* ── BTNS ── */
     .btn { font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; border-radius:7px; padding:7px 14px; transition:all 0.2s; text-decoration:none; border:none; display:inline-flex; align-items:center; gap:6px; }
@@ -276,21 +333,23 @@
     .modal-cancel { padding:11px 18px; border:1px solid var(--border2); border-radius:9px; background:transparent; color:var(--sub); font-family:'Geist Mono',monospace; font-size:12px; cursor:pointer; transition:all 0.2s; }
     .modal-cancel:hover { background:rgba(255,255,255,0.04); color:var(--text); }
 
-    /* ── PROFILE PREVIEW ── */
-    .profile-preview-bar { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px 16px; margin-bottom:20px; font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
-    .profile-preview-bar i { font-size:10px; }
+    /* ── ADMIN SQL BOX ── */
+    .sql-box { background:#050505; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px 16px; font-family:'Geist Mono',monospace; font-size:12px; color:rgba(255,255,255,0.5); line-height:1.8; margin-bottom:12px; white-space:pre-wrap; word-break:break-all; }
+    .sql-box .kw { color:#a78bfa; }
+    .sql-box .str { color:#34d399; }
+    .copy-sql-btn { font-family:'Geist Mono',monospace; font-size:10px; padding:5px 12px; border-radius:6px; background:rgba(255,255,255,0.06); border:1px solid var(--border); color:var(--sub); cursor:pointer; transition:all 0.2s; }
+    .copy-sql-btn:hover { background:rgba(255,255,255,0.1); color:var(--text); }
 
-    /* ── CARD COLOR PREVIEW ── */
-    .card-preview-mini { border-radius:12px; padding:16px; margin-bottom:16px; position:relative; overflow:hidden; min-height:80px; display:flex; align-items:center; gap:14px; transition:all 0.3s; border:1px solid rgba(255,255,255,0.08); }
-    .card-preview-avatar { width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,0.1) center/cover no-repeat; background-size:cover !important; flex-shrink:0; border:2px solid rgba(255,255,255,0.2); }
-    .card-preview-name { font-size:16px; font-weight:800; }
-    .card-preview-bio { font-family:'Geist Mono',monospace; font-size:10px; opacity:0.6; margin-top:2px; }
+    /* ── LANYARD LINK ── */
+    .lanyard-link { color:#fff; font-weight:600; text-decoration:underline; text-underline-offset:2px; }
+    .lanyard-link:hover { opacity:0.8; }
 
     @media(max-width:768px){
       .sidebar{display:none;} .main{padding:20px 16px 100px;} .field-row{grid-template-columns:1fr;}
       .stats-row{grid-template-columns:1fr 1fr;} .save-bar{left:0;padding:14px 20px;}
       .admin-stats-row{grid-template-columns:1fr 1fr;} .pfp-area{flex-direction:column;align-items:flex-start;}
-      .font-grid{grid-template-columns:repeat(2,1fr);}
+      .font-grid{grid-template-columns:repeat(2,1fr);} .top-bar-trigger{left:0;}
+      #topBar{padding-left:20px;}
     }
   </style>
 </head>
@@ -304,6 +363,18 @@
   </div>
 </div>
 
+<!-- Auto-hiding top bar -->
+<div id="topBar">
+  <a class="top-bar-logo" href="/">swaqq.xyz</a>
+  <span class="top-bar-handle" id="topBarHandle">@...</span>
+  <div class="top-bar-actions">
+    <a class="btn btn-ghost" id="topBarViewLink" href="#" target="_blank" style="font-size:10px"><i class="fas fa-eye"></i> view profile</a>
+    <button class="btn btn-ghost" onclick="doLogout()" style="font-size:10px"><i class="fas fa-sign-out-alt"></i> log out</button>
+  </div>
+</div>
+<!-- Trigger zone: hovering near top of page reveals bar -->
+<div class="top-bar-trigger" id="topBarTrigger"></div>
+
 <div class="layout" id="dashLayout" style="display:none">
 
   <!-- ══ SIDEBAR ══ -->
@@ -313,6 +384,7 @@
       <div class="sidebar-avatar" id="sideAvatar"></div>
       <div class="sidebar-name" id="sideName">...</div>
       <div class="sidebar-handle" id="sideHandle">@...</div>
+      <div style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.14);margin-top:3px;letter-spacing:0.08em" id="sideUid"></div>
       <a class="sidebar-url" id="sideUrl" href="#" target="_blank">
         <i class="fas fa-external-link-alt" style="font-size:8px"></i>
         <span id="sideUrlText">swaqq.xyz/@...</span>
@@ -377,7 +449,9 @@
           <div class="field">
             <div class="field-label">discord user id <span class="tag">live status</span></div>
             <input class="field-input" type="text" id="fDiscordId" placeholder="right-click your pfp → copy user id">
-            <div class="field-hint">powers the live online / idle / dnd status via lanyard api</div>
+            <div class="field-hint">
+              powers live status via <a href="https://discord.gg/lanyard" target="_blank" class="lanyard-link">lanyard</a> — you must be in their discord server for this to work
+            </div>
           </div>
         </div>
       </div>
@@ -390,7 +464,7 @@
           <div class="toggle-row" id="tUidRow">
             <div>
               <div class="toggle-title">uid scramble <span id="tUidAdminTag" style="font-family:'Geist Mono',monospace;font-size:9px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--gold);border-radius:4px;padding:1px 6px;margin-left:6px">admin only</span></div>
-              <div class="toggle-sub" id="tUidSub">animated runic characters next to your name</div>
+              <div class="toggle-sub">animated runic characters next to your name</div>
             </div>
             <div class="toggle locked" id="tUid"></div>
           </div>
@@ -403,7 +477,7 @@
     <div id="tab-appearance" style="display:none">
       <div class="page-header">
         <h1 class="page-title">pfp & background</h1>
-        <p class="page-sub">profile picture and video background</p>
+        <p class="page-sub">profile picture and page background</p>
       </div>
       <div class="alert" id="appearanceAlert"></div>
       <div class="dash-section">
@@ -431,13 +505,13 @@
       </div>
       <div class="dash-section">
         <div class="dash-section-title">background</div>
-        <div class="dash-section-sub">what plays behind your card</div>
+        <div class="dash-section-sub">what shows behind your card on your profile page</div>
         <div class="card-edit">
           <div class="tab-pills">
-            <button class="tab-pill active" data-bgtab="video" onclick="switchBgTab('video',this)">video</button>
-            <button class="tab-pill" data-bgtab="image" onclick="switchBgTab('image',this)">image url</button>
-            <button class="tab-pill" data-bgtab="color" onclick="switchBgTab('color',this)">solid color</button>
-            <button class="tab-pill" data-bgtab="gradient" onclick="switchBgTab('gradient',this)">gradient</button>
+            <button class="tab-pill active" data-bgtab="video" onclick="switchBgTab('video',this)"><i class="fab fa-youtube" style="font-size:9px"></i> video</button>
+            <button class="tab-pill" data-bgtab="image" onclick="switchBgTab('image',this)"><i class="fas fa-image" style="font-size:9px"></i> image url</button>
+            <button class="tab-pill" data-bgtab="color" onclick="switchBgTab('color',this)"><i class="fas fa-circle" style="font-size:9px"></i> solid color</button>
+            <button class="tab-pill" data-bgtab="gradient" onclick="switchBgTab('gradient',this)"><i class="fas fa-swatchbook" style="font-size:9px"></i> gradient</button>
           </div>
 
           <!-- VIDEO BG -->
@@ -454,7 +528,7 @@
                 <span class="prefix-text">youtube.com/watch?v=</span>
                 <input class="prefix-input" type="text" id="fYoutubeId" placeholder="dQw4w9WgXcQ" oninput="debounceVideoPreview(this.value)">
               </div>
-              <div class="field-hint">paste just the video id — e.g. <span style="color:rgba(255,255,255,0.45)">Nt3kNGI0Rmc</span></div>
+              <div class="field-hint">paste just the video id — e.g. <span style="color:rgba(255,255,255,0.45)">Nt3kNGI0Rmc</span> — the background on your profile plays this audio/video</div>
             </div>
             <div class="toggle-row" style="padding-top:4px">
               <div><div class="toggle-title">show video visually</div><div class="toggle-sub">render the video behind the card, not just audio</div></div>
@@ -484,14 +558,14 @@
             <div class="field">
               <div class="field-label">card background color</div>
               <div class="color-section">
-                <div class="color-chip selected" style="background:#070707" onclick="pickPreset(this,'#070707')" title="#070707"></div>
-                <div class="color-chip" style="background:#0a0a1a" onclick="pickPreset(this,'#0a0a1a')" title="#0a0a1a"></div>
-                <div class="color-chip" style="background:#0d1117" onclick="pickPreset(this,'#0d1117')" title="#0d1117"></div>
-                <div class="color-chip" style="background:#1a0a0a" onclick="pickPreset(this,'#1a0a0a')" title="#1a0a0a"></div>
-                <div class="color-chip" style="background:#0a1a0a" onclick="pickPreset(this,'#0a1a0a')" title="#0a1a0a"></div>
-                <div class="color-chip" style="background:#1a1a0a" onclick="pickPreset(this,'#1a1a0a')" title="#1a1a0a"></div>
-                <div class="color-chip" style="background:#1a0a1a" onclick="pickPreset(this,'#1a0a1a')" title="#1a0a1a"></div>
-                <div class="color-chip" style="background:#0a1a1a" onclick="pickPreset(this,'#0a1a1a')" title="#0a1a1a"></div>
+                <div class="color-chip selected" style="background:#070707" onclick="pickPreset(this,'#070707')"></div>
+                <div class="color-chip" style="background:#0a0a1a" onclick="pickPreset(this,'#0a0a1a')"></div>
+                <div class="color-chip" style="background:#0d1117" onclick="pickPreset(this,'#0d1117')"></div>
+                <div class="color-chip" style="background:#1a0a0a" onclick="pickPreset(this,'#1a0a0a')"></div>
+                <div class="color-chip" style="background:#0a1a0a" onclick="pickPreset(this,'#0a1a0a')"></div>
+                <div class="color-chip" style="background:#1a1a0a" onclick="pickPreset(this,'#1a1a0a')"></div>
+                <div class="color-chip" style="background:#1a0a1a" onclick="pickPreset(this,'#1a0a1a')"></div>
+                <div class="color-chip" style="background:#0a1a1a" onclick="pickPreset(this,'#0a1a1a')"></div>
                 <div class="color-input-wrap">
                   <input type="color" id="fBgColor" value="#070707" oninput="updateBgPreview()">
                   <input class="field-input" type="text" id="fBgColorHex" placeholder="#070707" style="width:100px" oninput="syncColorFromHex(this.value)">
@@ -506,14 +580,14 @@
               <div class="field">
                 <div class="field-label">color 1</div>
                 <div style="display:flex;gap:8px;align-items:center">
-                  <input type="color" id="fGrad1" value="#0a0a1a" oninput="updateBgPreview()">
+                  <input type="color" id="fGrad1" value="#0a0a1a" oninput="syncGradHex('fGrad1','fGrad1Hex');updateBgPreview()">
                   <input class="field-input" type="text" id="fGrad1Hex" placeholder="#0a0a1a" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){document.getElementById('fGrad1').value=this.value;updateBgPreview()}">
                 </div>
               </div>
               <div class="field">
                 <div class="field-label">color 2</div>
                 <div style="display:flex;gap:8px;align-items:center">
-                  <input type="color" id="fGrad2" value="#1a0a0a" oninput="updateBgPreview()">
+                  <input type="color" id="fGrad2" value="#1a0a0a" oninput="syncGradHex('fGrad2','fGrad2Hex');updateBgPreview()">
                   <input class="field-input" type="text" id="fGrad2Hex" placeholder="#1a0a0a" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){document.getElementById('fGrad2').value=this.value;updateBgPreview()}">
                 </div>
               </div>
@@ -547,14 +621,16 @@
       </div>
       <div class="alert" id="customizeAlert"></div>
 
-      <!-- LIVE PREVIEW -->
+      <!-- LIVE CARD PREVIEW WITH 3D TILT -->
       <div class="dash-section">
-        <div class="dash-section-title">live preview</div>
-        <div class="card-preview-mini" id="cardPreviewMini">
-          <div class="card-preview-avatar" id="previewAvatar"></div>
-          <div>
-            <div class="card-preview-name" id="previewName">your name</div>
-            <div class="card-preview-bio" id="previewBio">your bio here...</div>
+        <div class="dash-section-title">live preview <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">hover to tilt</span></div>
+        <div class="card-preview-wrap" id="cardPreviewWrap">
+          <div class="card-preview-mini" id="cardPreviewMini">
+            <div class="card-preview-avatar" id="previewAvatar"></div>
+            <div style="flex:1;min-width:0">
+              <div class="card-preview-name" id="previewName">your name</div>
+              <div class="card-preview-bio" id="previewBio">your bio here...</div>
+            </div>
           </div>
         </div>
       </div>
@@ -562,19 +638,32 @@
       <!-- FONT PICKER -->
       <div class="dash-section">
         <div class="dash-section-title">profile font</div>
-        <div class="dash-section-sub">font used for your name, bio, and labels on your card</div>
+        <div class="dash-section-sub">font used on your card — changes apply live above</div>
         <div class="card-edit">
           <div class="font-grid" id="fontGrid"></div>
+          <!-- Custom font upload -->
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <div class="field-label" style="margin-bottom:8px">custom font <span class="tag">.ttf / .otf</span></div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <label style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);background:var(--surface2);border:1px dashed var(--border2);border-radius:8px;padding:9px 14px;transition:all 0.2s" id="fontUploadLabel" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.11)';this.style.color='var(--sub)'">
+                <i class="fas fa-upload" style="font-size:10px"></i>
+                upload custom font
+                <input type="file" id="customFontInput" accept=".ttf,.otf" style="display:none" onchange="handleCustomFont(this)">
+              </label>
+              <span id="customFontName" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)"></span>
+            </div>
+            <div class="field-hint" style="margin-top:6px">upload a .ttf or .otf file — it'll appear as an option in the grid above</div>
+          </div>
         </div>
       </div>
 
       <!-- CARD ACCENT COLOR -->
       <div class="dash-section">
         <div class="dash-section-title">accent color</div>
-        <div class="dash-section-sub">used for borders, glow, and highlights on your card</div>
+        <div class="dash-section-sub">used for borders, glow, and your name on your card</div>
         <div class="card-edit">
           <div class="color-section">
-            <div class="color-chip" style="background:#ffffff" onclick="pickAccent(this,'#ffffff')"></div>
+            <div class="color-chip selected" style="background:#ffffff" onclick="pickAccent(this,'#ffffff')"></div>
             <div class="color-chip" style="background:#a78bfa" onclick="pickAccent(this,'#a78bfa')"></div>
             <div class="color-chip" style="background:#38bdf8" onclick="pickAccent(this,'#38bdf8')"></div>
             <div class="color-chip" style="background:#34d399" onclick="pickAccent(this,'#34d399')"></div>
@@ -593,10 +682,10 @@
       <!-- CARD STYLE -->
       <div class="dash-section">
         <div class="dash-section-title">card style</div>
-        <div class="dash-section-sub">overall card look and feel</div>
+        <div class="dash-section-sub">overall card look — preview updates live above</div>
         <div class="card-edit">
           <div class="field">
-            <div class="field-label">card blur amount <span id="blurVal" style="color:var(--text)">12px</span></div>
+            <div class="field-label">card blur <span id="blurVal" style="color:var(--text)">12px</span></div>
             <input type="range" id="fCardBlur" min="0" max="40" value="12" oninput="document.getElementById('blurVal').textContent=this.value+'px';updateCardPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
           </div>
           <div class="field" style="margin-top:16px">
@@ -604,7 +693,7 @@
             <input type="range" id="fCardOpacity" min="20" max="100" value="85" oninput="document.getElementById('cardOpacityVal').textContent=this.value+'%';updateCardPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
           </div>
           <div class="toggle-row" style="margin-top:8px">
-            <div><div class="toggle-title">card border glow</div><div class="toggle-sub">subtle glow using your accent color around the card</div></div>
+            <div><div class="toggle-title">card border glow</div><div class="toggle-sub">subtle glow using accent color around the card</div></div>
             <div class="toggle on" id="tCardGlow" onclick="this.classList.toggle('on');updateCardPreview()"></div>
           </div>
           <div class="toggle-row">
@@ -681,6 +770,30 @@
         <h1 class="page-title">admin panel <span class="admin-pill"><i class="fas fa-shield-alt" style="font-size:8px;margin-right:3px"></i>admin</span></h1>
         <p class="page-sub">manage users, grant badges, view platform stats</p>
       </div>
+
+      <!-- SQL helper to grant yourself admin -->
+      <div class="dash-section">
+        <div class="dash-section-title">🔧 grant yourself admin (supabase sql)</div>
+        <div class="dash-section-sub">run this in your supabase sql editor — <a href="https://supabase.com/dashboard" target="_blank" style="color:var(--sub);text-underline-offset:2px">supabase.com/dashboard</a> → sql editor</div>
+        <div class="card-edit" style="padding:18px">
+          <div class="sql-box" id="sqlGrantAdmin"><!-- filled by JS --></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="copy-sql-btn" onclick="copySql('sqlGrantAdmin')"><i class="fas fa-copy" style="font-size:9px"></i> copy sql</button>
+            <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);align-self:center">run this, then refresh the page</span>
+          </div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+            <div class="field-label" style="margin-bottom:8px">also run this to add missing columns if needed</div>
+            <div class="sql-box"><span class="kw">ALTER TABLE</span> profiles
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> custom_settings jsonb,
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> is_owner boolean <span class="kw">DEFAULT</span> false,
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> is_developer boolean <span class="kw">DEFAULT</span> false,
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> unlocked_badges jsonb <span class="kw">DEFAULT</span> <span class="str">'[]'</span>;
+            </div>
+            <button class="copy-sql-btn" onclick="copyInnerText(this.previousElementSibling)"><i class="fas fa-copy" style="font-size:9px"></i> copy</button>
+          </div>
+        </div>
+      </div>
+
       <div class="admin-stats-row">
         <div class="admin-stat"><div class="admin-stat-val" id="aTotalUsers">--</div><div class="admin-stat-label">total users</div></div>
         <div class="admin-stat"><div class="admin-stat-val" id="aTotalViews">--</div><div class="admin-stat-label">total views</div></div>
@@ -689,7 +802,7 @@
       </div>
       <div class="dash-section">
         <div class="dash-section-title">user management</div>
-        <div class="dash-section-sub">grant / revoke badges, manage admins</div>
+        <div class="dash-section-sub">grant / revoke badges, manage admins, set owner / developer roles</div>
         <input class="admin-search" type="text" id="adminSearch" placeholder="search by handle..." oninput="filterUsers()">
         <div class="card-edit" style="padding:0;overflow:hidden">
           <table class="admin-table">
@@ -717,6 +830,10 @@
     <div class="modal-title">manage badges</div>
     <div class="modal-sub" id="badgeModalSub">for @user</div>
     <div class="modal-badge-list" id="badgeModalList"></div>
+    <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+      <div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">special roles</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="badgeModalRoles"></div>
+    </div>
     <div class="modal-btns">
       <button class="modal-save" onclick="saveBadgeGrant()">save →</button>
       <button class="modal-cancel" onclick="closeBadgeModal()">cancel</button>
@@ -728,8 +845,19 @@
 <div class="icon-picker-overlay" id="iconPickerOverlay" onclick="if(event.target===this)closeIconPicker()">
   <div class="icon-picker-box">
     <div class="icon-picker-title">choose icon</div>
-    <input class="icon-search" type="text" placeholder="search icons..." oninput="filterIcons(this.value)">
+    <input class="icon-search" type="text" placeholder="search icons..." oninput="filterIcons(this.value)" id="iconSearchInput">
     <div class="icon-grid" id="iconGrid"></div>
+    <!-- Custom icon upload -->
+    <div class="icon-upload-area">
+      <span class="icon-upload-label">custom icon <span class="tag">image file</span></span>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div class="icon-drop-zone" onclick="document.getElementById('customIconInput').click()">
+          <i class="fas fa-upload" style="font-size:10px;margin-right:5px"></i> upload png / svg / jpg
+        </div>
+        <input type="file" id="customIconInput" accept="image/png,image/svg+xml,image/jpeg,image/webp" onchange="handleCustomIcon(this)">
+      </div>
+      <div class="custom-icons-row" id="customIconsRow"></div>
+    </div>
     <div style="margin-top:12px;display:flex;gap:8px">
       <button class="modal-save" onclick="confirmIconPick()">apply →</button>
       <button class="modal-cancel" onclick="closeIconPicker()">cancel</button>
@@ -743,16 +871,25 @@
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  // ─── STATE ────────────────────────────────────────────────────────────────────
+  // ─── STATE ───────────────────────────────────────────────────────────────────
   let currentUser    = null;
   let currentProfile = null;
   let isAdmin        = false;
+  let isOwner        = false;
+  let isDeveloper    = false;
   let allUsers       = [];
   let activeBadges   = [];
   let unlockedBadges = [];
-  let currentBgTab   = 'video';  // tracks which BG panel is visible
+  let currentBgTab   = 'video';
 
-  // All customization lives in one JSON blob — no schema changes needed
+  // Custom font state
+  let customFontName   = null;
+  let customFontFamily = null;
+  let customFontDataUrl = null;
+
+  // Custom icons state (array of {id, dataUrl, label})
+  let customIcons = [];
+
   let CS = {};
   const CS_DEF = {
     bg_type:'video', bg_image_url:'', bg_opacity:70,
@@ -760,11 +897,14 @@
     show_video_bg:true, mute_video:false,
     card_font:'Syne', accent_color:'#ffffff',
     card_blur:12, card_opacity:85, card_glow:true, card_rounded:true,
-    show_uid_scramble:false   // ← always starts false
+    show_uid_scramble:false,
+    custom_font_name:null, custom_font_family:null, custom_font_data:null,
+    custom_icons:[]
   };
   function cs(k){ return (CS[k] !== undefined && CS[k] !== null) ? CS[k] : CS_DEF[k]; }
 
-  // ─── DEFS ─────────────────────────────────────────────────────────────────────
+  // ─── BADGE DEFS ─────────────────────────────────────────────────────────────
+  // owner gets ALL badges; developer gets developer badge auto
   const BADGE_DEFS = [
     { id:'early',     label:'Early',     icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',  locked:false, early:true  },
     { id:'owner',     label:'Owner',     icon:'fas fa-crown',       desc:'platform owner',                        locked:true  },
@@ -782,7 +922,7 @@
     { name:'Raleway',        label:'Raleway',     sample:'Aa' },
     { name:'Bebas Neue',     label:'Bebas',       sample:'AA' },
     { name:'Inter',          label:'Inter',       sample:'Aa' },
-    { name:'JetBrains Mono', label:'JetBrains',  sample:'Aa' },
+    { name:'JetBrains Mono', label:'JetBrains',   sample:'Aa' },
     { name:'DM Mono',        label:'DM Mono',     sample:'Aa' },
     { name:'serif',          label:'Serif',       sample:'Aa' },
   ];
@@ -824,6 +964,49 @@
     { icon:'fas fa-paint-brush', label:'art'      },
   ];
 
+  // ─── AUTO-HIDING TOP BAR ────────────────────────────────────────────────────
+  (function() {
+    const bar     = document.getElementById('topBar');
+    const trigger = document.getElementById('topBarTrigger');
+    let hideTimer;
+
+    function showBar() {
+      bar.classList.add('visible');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => bar.classList.remove('visible'), 2200);
+    }
+
+    trigger.addEventListener('mouseenter', showBar);
+    bar.addEventListener('mouseenter', () => { clearTimeout(hideTimer); bar.classList.add('visible'); });
+    bar.addEventListener('mouseleave', () => {
+      hideTimer = setTimeout(() => bar.classList.remove('visible'), 600);
+    });
+  })();
+
+  // ─── 3D CARD TILT ───────────────────────────────────────────────────────────
+  (function() {
+    const wrap = document.getElementById('cardPreviewWrap');
+    const card = document.getElementById('cardPreviewMini');
+    if (!wrap || !card) return;
+
+    wrap.addEventListener('mousemove', e => {
+      const rect   = wrap.getBoundingClientRect();
+      const cx     = rect.left + rect.width  / 2;
+      const cy     = rect.top  + rect.height / 2;
+      const dx     = (e.clientX - cx) / (rect.width  / 2); // -1 to 1
+      const dy     = (e.clientY - cy) / (rect.height / 2); // -1 to 1
+      const rotX   = -dy * 10;  // up-down tilt in degrees
+      const rotY   =  dx * 14;  // left-right tilt
+      card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02,1.02,1.02)`;
+      card.style.transition = 'box-shadow 0.15s';
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      card.style.transform   = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+      card.style.transition  = 'transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s';
+    });
+  })();
+
   // ─── AUTH ────────────────────────────────────────────────────────────────────
   async function initAuth() {
     const { data:{ session } } = await sb.auth.getSession();
@@ -845,11 +1028,33 @@
     if (error || !data) { console.error('loadProfile:', error); return; }
     currentProfile = data;
     isAdmin        = !!data.is_admin;
+    isOwner        = !!data.is_owner;
+    isDeveloper    = !!data.is_developer;
     activeBadges   = pj(data.badges, []);
     unlockedBadges = pj(data.unlocked_badges, []);
     CS             = pj(data.custom_settings, {});
 
-    // Unlock uid scramble toggle for admins only
+    // Owners auto-unlock all badges
+    if (isOwner) {
+      unlockedBadges = BADGE_DEFS.map(b => b.id);
+      isAdmin = true; // owners are always admin
+    }
+    // Developers auto-unlock developer badge
+    if (isDeveloper && !unlockedBadges.includes('developer')) {
+      unlockedBadges.push('developer');
+    }
+
+    // Restore custom font from CS
+    if (cs('custom_font_data') && cs('custom_font_family')) {
+      injectCustomFont(cs('custom_font_family'), cs('custom_font_data'));
+      customFontFamily  = cs('custom_font_family');
+      customFontName    = cs('custom_font_name') || 'Custom';
+      customFontDataUrl = cs('custom_font_data');
+    }
+
+    // Restore custom icons from CS
+    customIcons = cs('custom_icons') || [];
+
     if (isAdmin) {
       document.getElementById('adminNavSection').style.display = 'block';
       const tUid = document.getElementById('tUid');
@@ -859,9 +1064,32 @@
       if (adminTag) adminTag.style.display = 'none';
     }
 
+    // Fill SQL admin grant box
+    const sqlEl = document.getElementById('sqlGrantAdmin');
+    if (sqlEl) {
+      sqlEl.innerHTML =
+        `<span class="kw">UPDATE</span> profiles\n` +
+        `  <span class="kw">SET</span> is_admin = <span class="str">true</span>\n` +
+        `  <span class="kw">WHERE</span> id = <span class="str">'${currentUser.id}'</span>;\n\n` +
+        `<span class="kw">-- to make yourself owner (all badges + perms):</span>\n` +
+        `<span class="kw">UPDATE</span> profiles\n` +
+        `  <span class="kw">SET</span> is_admin = <span class="str">true</span>, is_owner = <span class="str">true</span>\n` +
+        `  <span class="kw">WHERE</span> id = <span class="str">'${currentUser.id}'</span>;`;
+    }
+
     populateForm(data);
     buildFontGrid();
     renderBadgeGrid();
+
+    // Fetch UID number — position in signup order (oldest = uid 1)
+    sb.from('profiles').select('id').order('created_at', { ascending: true }).then(({ data: allIds }) => {
+      if (!allIds) return;
+      const pos = allIds.findIndex(r => r.id === currentUser.id);
+      if (pos !== -1) {
+        const uidEl = document.getElementById('sideUid');
+        if (uidEl) uidEl.textContent = 'uid ' + (pos + 1);
+      }
+    });
   }
 
   function pj(v, fallback) {
@@ -872,7 +1100,6 @@
 
   // ─── POPULATE ────────────────────────────────────────────────────────────────
   function populateForm(p) {
-    // Core fields
     document.getElementById('fDisplayName').value = p.display_name || '';
     document.getElementById('fHandle').value      = p.handle || '';
     document.getElementById('fBio').value         = p.bio || '';
@@ -885,56 +1112,46 @@
     tog('tSplash',      p.show_splash  !== false);
     tog('tTilt',        p.show_tilt    !== false);
     tog('tViews',       p.show_views   !== false);
-
-    // UID scramble: ALWAYS off by default for non-admins
-    // For admins, read from CS
     if (isAdmin) tog('tUid', cs('show_uid_scramble') === true);
-    // else stays locked + off
-
-    // Video toggles from CS
     tog('tShowVideo',   cs('show_video_bg') !== false);
     tog('tMuteDefault', cs('mute_video')    === true);
 
-    // Background fields from CS
-    const bgImageUrl = cs('bg_image_url');
-    const bgColor    = cs('bg_color');
-    const bgGrad1    = cs('bg_grad1');
-    const bgGrad2    = cs('bg_grad2');
-    const bgOpacity  = cs('bg_opacity');
-    const bgGradDir  = cs('bg_grad_dir');
+    // BG fields
+    document.getElementById('fBgImageUrl').value   = cs('bg_image_url');
+    document.getElementById('fBgColor').value      = cs('bg_color');
+    document.getElementById('fBgColorHex').value   = cs('bg_color');
+    document.getElementById('fGrad1').value        = cs('bg_grad1');
+    document.getElementById('fGrad1Hex').value     = cs('bg_grad1');
+    document.getElementById('fGrad2').value        = cs('bg_grad2');
+    document.getElementById('fGrad2Hex').value     = cs('bg_grad2');
+    document.getElementById('fBgOpacity').value    = cs('bg_opacity');
+    document.getElementById('bgOpacityVal').textContent = cs('bg_opacity') + '%';
 
-    document.getElementById('fBgImageUrl').value   = bgImageUrl;
-    document.getElementById('fBgColor').value      = bgColor;
-    document.getElementById('fBgColorHex').value   = bgColor;
-    document.getElementById('fGrad1').value        = bgGrad1;
-    document.getElementById('fGrad1Hex').value     = bgGrad1;
-    document.getElementById('fGrad2').value        = bgGrad2;
-    document.getElementById('fGrad2Hex').value     = bgGrad2;
-    document.getElementById('fBgOpacity').value    = bgOpacity;
-    document.getElementById('bgOpacityVal').textContent = bgOpacity + '%';
-
-    // Set gradient direction select
+    // Gradient direction
     const dirSel = document.getElementById('fGradDir');
+    const dir    = cs('bg_grad_dir');
     for (let i = 0; i < dirSel.options.length; i++) {
-      if (dirSel.options[i].value === bgGradDir) { dirSel.selectedIndex = i; break; }
+      if (dirSel.options[i].value === dir) { dirSel.selectedIndex = i; break; }
     }
 
-    // Customize fields from CS
+    // Customize
     const accent = cs('accent_color');
     document.getElementById('fAccentColor').value = accent;
     document.getElementById('fAccentHex').value   = accent;
+    // Mark selected chip
+    document.querySelectorAll('#tab-customize .color-chip').forEach(chip => {
+      chip.classList.toggle('selected', chip.style.background.toLowerCase() === accent.toLowerCase() ||
+        chip.style.backgroundColor === accent);
+    });
 
-    const cardBlur    = cs('card_blur');
-    const cardOpacity = cs('card_opacity');
-    document.getElementById('fCardBlur').value    = cardBlur;
-    document.getElementById('blurVal').textContent = cardBlur + 'px';
-    document.getElementById('fCardOpacity').value  = cardOpacity;
-    document.getElementById('cardOpacityVal').textContent = cardOpacity + '%';
-
+    document.getElementById('fCardBlur').value    = cs('card_blur');
+    document.getElementById('blurVal').textContent = cs('card_blur') + 'px';
+    document.getElementById('fCardOpacity').value  = cs('card_opacity');
+    document.getElementById('cardOpacityVal').textContent = cs('card_opacity') + '%';
     tog('tCardGlow', cs('card_glow')    !== false);
     tog('tRounded',  cs('card_rounded') !== false);
 
-    // Sidebar
+    // Sidebar + topbar
     const name = p.display_name || p.handle || '?';
     document.getElementById('sideName').textContent    = name;
     document.getElementById('sideHandle').textContent  = '@' + p.handle;
@@ -942,6 +1159,8 @@
     document.getElementById('sideUrl').href            = '/@' + p.handle;
     document.getElementById('viewProfileLink').href    = '/@' + p.handle;
     document.getElementById('hdrHandle').textContent   = p.handle;
+    document.getElementById('topBarHandle').textContent = '@' + p.handle;
+    document.getElementById('topBarViewLink').href     = '/@' + p.handle;
 
     const sav = document.getElementById('sideAvatar');
     if (p.avatar_url) {
@@ -954,20 +1173,13 @@
     }
 
     setPfpPreview(p.avatar_url, name);
-
-    // Stats
     document.getElementById('statViews').textContent   = (p.view_count || 0).toLocaleString();
     const socs = pj(p.socials, []);
     document.getElementById('statSocials').textContent = socs.length;
-    document.getElementById('statBadges').textContent  = activeBadges.length;
-
     renderSocials(socs);
 
-    // Activate the saved BG tab (do this after fields are set)
-    currentBgTab = cs('bg_type');
+    currentBgTab = cs('bg_type') || 'video';
     activateBgTab(currentBgTab);
-
-    // Refresh previews
     updateBgPreview();
     updateCardPreview();
   }
@@ -993,22 +1205,18 @@
     window.scrollTo(0, 0);
   }
 
-  // ─── BG TABS ──────────────────────────────────────────────────────────────────
-  // activateBgTab: sets currentBgTab, shows panel, updates pill highlight
+  // ─── BG TABS ─────────────────────────────────────────────────────────────────
   function activateBgTab(tab) {
     currentBgTab = tab || 'video';
-    // Show correct panel
     document.querySelectorAll('.bg-panel').forEach(p => p.classList.remove('active'));
     const panel = document.getElementById('bgPanel-' + currentBgTab);
     if (panel) panel.classList.add('active');
-    // Highlight correct pill
     document.querySelectorAll('.tab-pill').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.bgtab === currentBgTab);
     });
   }
 
-  // Called by pill buttons
-  function switchBgTab(tab, btn) {
+  function switchBgTab(tab) {
     activateBgTab(tab);
     updateBgPreview();
   }
@@ -1016,12 +1224,10 @@
   function updateBgPreview() {
     const box = document.getElementById('bgPreviewBox');
     if (!box) return;
-    // Reset all inline styles first
     box.style.cssText = 'width:100%;height:80px;border-radius:10px;border:1px solid var(--border);transition:all 0.3s;';
-
     if (currentBgTab === 'video') {
       box.style.background = '#0a0a0a';
-      box.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:\'Geist Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.2);gap:6px"><i class="fab fa-youtube"></i> video bg — set id above to preview</div>';
+      box.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:\'Geist Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.2);gap:6px"><i class="fab fa-youtube"></i> video background plays on your profile page</div>';
     } else if (currentBgTab === 'image') {
       const url = document.getElementById('fBgImageUrl').value.trim();
       const op  = parseInt(document.getElementById('fBgOpacity').value) / 100;
@@ -1030,18 +1236,25 @@
         box.style.backgroundSize     = 'cover';
         box.style.backgroundPosition = 'center';
         box.style.opacity            = String(op);
+        box.innerHTML                = '';
       } else {
         box.style.background = '#111';
         box.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:\'Geist Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.18)">paste an image url above</div>';
       }
     } else if (currentBgTab === 'color') {
       box.style.background = document.getElementById('fBgColor').value;
+      box.innerHTML = '';
     } else if (currentBgTab === 'gradient') {
       const c1  = document.getElementById('fGrad1').value;
       const c2  = document.getElementById('fGrad2').value;
       const dir = document.getElementById('fGradDir').value;
       box.style.background = 'linear-gradient(' + dir + ', ' + c1 + ', ' + c2 + ')';
+      box.innerHTML = '';
     }
+  }
+
+  function syncGradHex(colorId, hexId) {
+    document.getElementById(hexId).value = document.getElementById(colorId).value;
   }
 
   function pickPreset(chip, color) {
@@ -1059,6 +1272,39 @@
     }
   }
 
+  // ─── CUSTOM FONT ─────────────────────────────────────────────────────────────
+  function handleCustomFont(input) {
+    const file = input.files[0]; if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { alert('font file too large — max 5mb'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const dataUrl  = e.target.result;
+      const safeName = 'CustomFont_' + Date.now();
+      injectCustomFont(safeName, dataUrl);
+      customFontFamily  = safeName;
+      customFontName    = file.name.replace(/\.[^.]+$/, '');
+      customFontDataUrl = dataUrl;
+      CS.card_font      = safeName;
+      CS.custom_font_name   = customFontName;
+      CS.custom_font_family = safeName;
+      CS.custom_font_data   = dataUrl;
+      document.getElementById('customFontName').textContent = '✓ ' + customFontName;
+      buildFontGrid();
+      updateCardPreview();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function injectCustomFont(family, dataUrl) {
+    // Remove existing
+    const old = document.getElementById('customFontStyle');
+    if (old) old.remove();
+    const style = document.createElement('style');
+    style.id = 'customFontStyle';
+    style.textContent = `@font-face { font-family: '${family}'; src: url('${dataUrl}'); }`;
+    document.head.appendChild(style);
+  }
+
   // ─── FONT GRID ────────────────────────────────────────────────────────────────
   function buildFontGrid() {
     const grid = document.getElementById('fontGrid'); if (!grid) return;
@@ -1073,9 +1319,19 @@
       card.onclick = () => { CS.card_font = f.name; buildFontGrid(); updateCardPreview(); };
       grid.appendChild(card);
     });
+    // Add custom font card if loaded
+    if (customFontFamily) {
+      const card = document.createElement('div');
+      card.className = 'font-card custom-font-card' + (cur === customFontFamily ? ' selected' : '');
+      card.innerHTML =
+        '<div class="font-card-name" style="font-family:\'' + customFontFamily + '\',sans-serif">Aa</div>' +
+        '<div class="font-card-label">' + (customFontName || 'custom') + '</div>';
+      card.onclick = () => { CS.card_font = customFontFamily; buildFontGrid(); updateCardPreview(); };
+      grid.appendChild(card);
+    }
   }
 
-  // ─── ACCENT ───────────────────────────────────────────────────────────────────
+  // ─── ACCENT ──────────────────────────────────────────────────────────────────
   function pickAccent(chip, color) {
     document.querySelectorAll('#tab-customize .color-chip').forEach(c => c.classList.remove('selected'));
     chip.classList.add('selected');
@@ -1097,48 +1353,66 @@
     }
   }
 
-  // ─── CARD PREVIEW ────────────────────────────────────────────────────────────
+  // ─── CARD PREVIEW (3D TILT + LIVE FONT/STYLE APPLY) ─────────────────────────
   function updateCardPreview() {
     const mini = document.getElementById('cardPreviewMini'); if (!mini) return;
-    const blur    = document.getElementById('fCardBlur').value;
-    const opacity = document.getElementById('fCardOpacity').value;
+    const blur    = parseInt(document.getElementById('fCardBlur')?.value    || cs('card_blur'));
+    const opacity = parseInt(document.getElementById('fCardOpacity')?.value  || cs('card_opacity'));
     const glow    = gtog('tCardGlow');
     const rounded = gtog('tRounded');
     const accent  = cs('accent_color');
     const font    = cs('card_font');
-    const name    = document.getElementById('fDisplayName').value || currentProfile?.display_name || 'your name';
-    const bio     = document.getElementById('fBio').value || currentProfile?.bio || 'your bio here...';
-    const avatar  = document.getElementById('fAvatarUrl').value || currentProfile?.avatar_url || '';
-    const alpha   = Math.round(parseInt(opacity) * 2.55).toString(16).padStart(2, '0');
+    const name    = document.getElementById('fDisplayName')?.value || currentProfile?.display_name || 'your name';
+    const bio     = document.getElementById('fBio')?.value         || currentProfile?.bio          || 'your bio here...';
+    const avatar  = document.getElementById('fAvatarUrl')?.value   || currentProfile?.avatar_url   || '';
+    const alpha   = Math.round(opacity * 2.55).toString(16).padStart(2, '0');
 
+    // Apply card styles — use backdrop on a real color background
     mini.style.background     = '#111111' + alpha;
     mini.style.backdropFilter = 'blur(' + blur + 'px)';
+    mini.style.webkitBackdropFilter = 'blur(' + blur + 'px)';
     mini.style.borderColor    = glow ? accent + '55' : 'rgba(255,255,255,0.08)';
-    mini.style.boxShadow      = glow ? '0 0 20px ' + accent + '22' : 'none';
-    mini.style.borderRadius   = rounded ? '16px' : '6px';
+    mini.style.boxShadow      = glow ? '0 0 24px ' + accent + '33, inset 0 0 0 1px ' + accent + '22' : 'none';
+    mini.style.borderRadius   = rounded ? '16px' : '4px';
+
+    // Font — CRITICAL: apply to all child text elements
+    mini.style.fontFamily = "'" + font + "', sans-serif";
 
     const pName = document.getElementById('previewName');
     const pBio  = document.getElementById('previewBio');
     const pAv   = document.getElementById('previewAvatar');
-    pName.style.fontFamily = "'" + font + "', sans-serif";
-    pBio.style.fontFamily  = "'" + font + "', monospace";
-    pName.style.color = accent;
-    pName.textContent = name;
-    pBio.textContent  = bio;
-    if (avatar) { pAv.style.backgroundImage = 'url(' + avatar + ')'; pAv.style.backgroundSize = 'cover'; }
-    else pAv.style.backgroundImage = 'none';
+
+    if (pName) {
+      pName.style.fontFamily = "'" + font + "', sans-serif";
+      pName.style.color      = accent;
+      pName.textContent      = name;
+    }
+    if (pBio) {
+      pBio.style.fontFamily = "'" + font + "', monospace";
+      pBio.textContent      = bio;
+    }
+    if (pAv) {
+      if (avatar) {
+        // Use an img tag for correct object-fit
+        pAv.innerHTML = '<img src="' + avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">';
+        pAv.style.backgroundImage = 'none';
+      } else {
+        pAv.innerHTML = '';
+        pAv.style.backgroundImage = 'none';
+        pAv.style.background = '#1a1a1a';
+      }
+    }
   }
 
-  // ─── PFP ─────────────────────────────────────────────────────────────────────
+  // ─── PFP ──────────────────────────────────────────────────────────────────────
+  // Fixed: use img tag for proper object-fit cover fitting in the circle
   function setPfpPreview(url, name) {
     const el = document.getElementById('pfpPreview');
     if (url) {
-      el.style.backgroundImage    = 'url(' + url + ')';
-      el.style.backgroundSize     = 'cover';
-      el.style.backgroundPosition = 'center';
-      el.textContent = '';
+      el.innerHTML = '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0;display:block">';
+      el.style.textContent = '';
     } else {
-      el.style.backgroundImage = '';
+      el.innerHTML = '';
       el.textContent = (name || '?')[0].toUpperCase();
     }
   }
@@ -1160,10 +1434,10 @@
 
     const ext  = file.name.split('.').pop();
     const path = 'avatars/' + currentUser.id + '.' + ext;
-    const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+    const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
 
     if (upErr) {
-      // Fallback: base64
+      // Fallback: base64 dataurl
       const reader = new FileReader();
       reader.onload = ev => {
         const url = ev.target.result;
@@ -1208,26 +1482,218 @@
       iframe = document.createElement('iframe');
       iframe.setAttribute('allow', 'autoplay; encrypted-media');
       iframe.setAttribute('allowfullscreen', '');
+      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none';
       wrap.appendChild(iframe);
     }
-    iframe.src = 'https://www.youtube.com/embed/' + id.trim() +
-      '?autoplay=0&controls=1&mute=1&modestbranding=1&rel=0&enablejsapi=0';
-    if (!wrap.querySelector('.video-thumb-overlay')) {
-      const ov = document.createElement('div'); ov.className = 'video-thumb-overlay';
-      ov.innerHTML = '<span class="video-thumb-label">preview — muted</span>';
-      wrap.appendChild(ov);
-    }
+    iframe.src = 'https://www.youtube-nocookie.com/embed/' + id.trim() +
+      '?autoplay=0&controls=1&mute=1&modestbranding=1&rel=0';
+    // Remove old overlay before adding new
+    const oldOv = wrap.querySelector('.video-thumb-overlay');
+    if (oldOv) oldOv.remove();
+    const ov = document.createElement('div'); ov.className = 'video-thumb-overlay';
+    ov.innerHTML = '<span class="video-thumb-label">preview — muted</span>';
+    wrap.appendChild(ov);
   }
 
-  // ─── BADGES ───────────────────────────────────────────────────────────────────
+  // ─── CUSTOM ICON ─────────────────────────────────────────────────────────────
+  function handleCustomIcon(input) {
+    const file = input.files[0]; if (!file) return;
+    if (file.size > 1024 * 1024) { alert('icon too large — max 1mb'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const id = 'custom_' + Date.now();
+      const obj = { id, dataUrl: e.target.result, label: file.name.replace(/\.[^.]+$/, '') };
+      customIcons.push(obj);
+      _iconPickerSelected = { type: 'custom', id, dataUrl: obj.dataUrl, label: obj.label };
+      renderCustomIconsRow();
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  function renderCustomIconsRow() {
+    const row = document.getElementById('customIconsRow'); if (!row) return;
+    row.innerHTML = '';
+    customIcons.forEach(ci => {
+      const el = document.createElement('div');
+      const isSelected = _iconPickerSelected && typeof _iconPickerSelected === 'object' && _iconPickerSelected.id === ci.id;
+      el.className = 'icon-opt' + (isSelected ? ' selected' : '');
+      el.title = ci.label;
+      el.innerHTML = '<img src="' + ci.dataUrl + '" style="width:20px;height:20px;object-fit:contain;border-radius:3px">';
+      el.onclick = () => {
+        _iconPickerSelected = { type:'custom', id:ci.id, dataUrl:ci.dataUrl, label:ci.label };
+        document.querySelectorAll('.icon-opt').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        buildIconGrid(document.getElementById('iconSearchInput')?.value || '');
+        renderCustomIconsRow();
+      };
+      row.appendChild(el);
+    });
+  }
+
+  // ─── ICON PICKER ─────────────────────────────────────────────────────────────
+  let _iconPickerTarget   = null;
+  let _iconPickerSelected = null;
+
+  function openIconPicker(rowEl) {
+    _iconPickerTarget   = rowEl;
+    _iconPickerSelected = rowEl.dataset.iconType === 'custom'
+      ? { type:'custom', id:rowEl.dataset.iconId, dataUrl:rowEl.dataset.iconData, label:rowEl.dataset.iconLabel }
+      : rowEl.dataset.icon || 'fas fa-link';
+    const si = document.getElementById('iconSearchInput');
+    if (si) si.value = '';
+    buildIconGrid('');
+    renderCustomIconsRow();
+    document.getElementById('iconPickerOverlay').classList.add('open');
+    si && si.focus();
+  }
+
+  function closeIconPicker() {
+    document.getElementById('iconPickerOverlay').classList.remove('open');
+    _iconPickerTarget = null;
+  }
+
+  function buildIconGrid(filter) {
+    const grid = document.getElementById('iconGrid'); grid.innerHTML = '';
+    const filtered = filter
+      ? ICON_OPTIONS.filter(o => o.label.toLowerCase().includes(filter.toLowerCase()))
+      : ICON_OPTIONS;
+    filtered.forEach(opt => {
+      const isSelected = typeof _iconPickerSelected === 'string' && _iconPickerSelected === opt.icon;
+      const el = document.createElement('div');
+      el.className = 'icon-opt' + (isSelected ? ' selected' : '');
+      el.title = opt.label;
+      el.innerHTML = '<i class="' + opt.icon + '"></i>';
+      el.onclick = () => {
+        _iconPickerSelected = opt.icon;
+        document.querySelectorAll('.icon-opt').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        renderCustomIconsRow();
+      };
+      grid.appendChild(el);
+    });
+  }
+
+  function filterIcons(val) { buildIconGrid(val); }
+
+  function confirmIconPick() {
+    if (!_iconPickerTarget) { closeIconPicker(); return; }
+    const btn = _iconPickerTarget.querySelector('.social-icon-btn');
+    const i   = btn.querySelector('i');
+
+    if (typeof _iconPickerSelected === 'object' && _iconPickerSelected?.type === 'custom') {
+      // Custom image icon
+      const { id, dataUrl, label } = _iconPickerSelected;
+      btn.innerHTML = '<img src="' + dataUrl + '" style="width:18px;height:18px;object-fit:contain;border-radius:3px">';
+      _iconPickerTarget.dataset.iconType  = 'custom';
+      _iconPickerTarget.dataset.iconId    = id;
+      _iconPickerTarget.dataset.iconData  = dataUrl;
+      _iconPickerTarget.dataset.iconLabel = label;
+      _iconPickerTarget.dataset.icon      = '';
+    } else if (typeof _iconPickerSelected === 'string' && _iconPickerSelected) {
+      btn.innerHTML = '<i class="' + _iconPickerSelected + '"></i>';
+      _iconPickerTarget.dataset.icon      = _iconPickerSelected;
+      _iconPickerTarget.dataset.iconType  = '';
+      _iconPickerTarget.dataset.iconId    = '';
+      _iconPickerTarget.dataset.iconData  = '';
+    }
+    closeIconPicker();
+  }
+
+  // ─── SOCIALS ─────────────────────────────────────────────────────────────────
+  function renderSocials(arr) {
+    const ed = document.getElementById('socialsEditor'); ed.innerHTML = '';
+    arr.forEach(s => addSocialRow(s.icon || guessIcon(s.label), s.label||'', s.url||'', s.icon_type, s.icon_data, s.icon_label));
+  }
+
+  function guessIcon(label) {
+    const map = { discord:'fab fa-discord', youtube:'fab fa-youtube', twitter:'fab fa-twitter',
+      x:'fab fa-x-twitter', instagram:'fab fa-instagram', tiktok:'fab fa-tiktok',
+      roblox:'fas fa-gamepad', twitch:'fab fa-twitch', github:'fab fa-github',
+      spotify:'fab fa-spotify', 'guns.lol':'fas fa-crosshairs', steam:'fab fa-steam',
+      reddit:'fab fa-reddit', telegram:'fab fa-telegram' };
+    return map[(label||'').toLowerCase()] || 'fas fa-link';
+  }
+
+  function addSocialRow(icon, label, url, iconType, iconData, iconLabel) {
+    icon  = icon  || 'fas fa-link';
+    label = label || '';
+    url   = url   || '';
+    const ed = document.getElementById('socialsEditor');
+    if (ed.querySelectorAll('.social-row-edit').length >= 6) {
+      showAlert('socialsAlert', 'max 6 links.', 'error'); return;
+    }
+    const row = document.createElement('div');
+    row.className  = 'social-row-edit';
+    row.dataset.icon      = icon;
+    row.dataset.iconType  = iconType  || '';
+    row.dataset.iconId    = '';
+    row.dataset.iconData  = iconData  || '';
+    row.dataset.iconLabel = iconLabel || '';
+
+    const iconBtn = document.createElement('button');
+    iconBtn.className = 'social-icon-btn';
+    iconBtn.title = 'click to change icon';
+    if (iconType === 'custom' && iconData) {
+      iconBtn.innerHTML = '<img src="' + iconData + '" style="width:18px;height:18px;object-fit:contain;border-radius:3px">';
+    } else {
+      iconBtn.innerHTML = '<i class="' + icon + '"></i>';
+    }
+    iconBtn.onclick = () => openIconPicker(row);
+
+    const lblIn = document.createElement('input');
+    lblIn.className   = 'social-input';
+    lblIn.type        = 'text';
+    lblIn.placeholder = 'label';
+    lblIn.value       = label;
+    lblIn.style.cssText = 'border-right:1px solid var(--border);padding-right:8px';
+
+    const urlIn = document.createElement('input');
+    urlIn.className   = 'social-input';
+    urlIn.type        = 'url';
+    urlIn.placeholder = 'https://...';
+    urlIn.value       = url;
+
+    const drag = document.createElement('i');
+    drag.className = 'fas fa-grip-vertical social-drag';
+    drag.title = 'drag to reorder';
+
+    const delBtn = document.createElement('button');
+    delBtn.style.cssText = 'background:none;border:none;color:rgba(255,80,80,0.45);cursor:pointer;font-size:13px;padding:0;transition:color 0.2s';
+    delBtn.innerHTML = '<i class="fas fa-times"></i>';
+    delBtn.onmouseenter = () => delBtn.style.color = 'rgba(255,80,80,0.9)';
+    delBtn.onmouseleave = () => delBtn.style.color = 'rgba(255,80,80,0.45)';
+    delBtn.onclick   = () => row.remove();
+
+    row.append(iconBtn, lblIn, urlIn, drag, delBtn);
+    ed.appendChild(row);
+  }
+
+  function getSocials() {
+    return Array.from(document.querySelectorAll('.social-row-edit')).map(r => {
+      const inputs = r.querySelectorAll('.social-input');
+      const obj = {
+        icon:       r.dataset.icon || 'fas fa-link',
+        label:      inputs[0].value.trim(),
+        url:        inputs[1].value.trim(),
+        icon_type:  r.dataset.iconType  || '',
+        icon_data:  r.dataset.iconData  || '',
+        icon_label: r.dataset.iconLabel || '',
+      };
+      return obj;
+    }).filter(s => s.url);
+  }
+
+  // ─── BADGES ──────────────────────────────────────────────────────────────────
   function renderBadgeGrid() {
     const grid = document.getElementById('badgeGrid'); grid.innerHTML = '';
     BADGE_DEFS.forEach(def => {
-      const canUse   = !def.locked || unlockedBadges.includes(def.id);
+      const canUse   = isOwner || !def.locked || unlockedBadges.includes(def.id);
       const isActive = activeBadges.includes(def.id);
       const card = document.createElement('div');
       card.className = ['badge-card', def.early ? 'early-badge' : '', canUse ? 'unlocked' : 'locked', isActive ? 'selected' : ''].filter(Boolean).join(' ');
       card.dataset.id = def.id;
+
       let stateHtml;
       if (!canUse) {
         stateHtml = '<div class="badge-state"><span class="badge-locked-tag">locked</span></div>';
@@ -1236,8 +1702,9 @@
           ? '<div class="badge-pip"><i class="fas fa-check"></i></div>'
           : '<span class="badge-early-tag">early</span>') + '</div>';
       } else {
-        stateHtml = '<div class="badge-state"><div class="badge-pip' + (isActive ? ' checked' : '') + '"><i class="fas fa-check"></i></div></div>';
+        stateHtml = '<div class="badge-state"><div class="badge-pip"><i class="fas fa-check"></i></div></div>';
       }
+
       card.innerHTML =
         '<div class="badge-icon"><i class="' + def.icon + '"></i></div>' +
         '<div class="badge-info"><div class="badge-name">' + def.label + '</div><div class="badge-desc">' + def.desc + '</div></div>' +
@@ -1271,126 +1738,7 @@
     });
   }
 
-  // ─── ICON PICKER ─────────────────────────────────────────────────────────────
-  let _iconPickerTarget   = null;
-  let _iconPickerSelected = null;
-
-  function openIconPicker(rowEl) {
-    _iconPickerTarget   = rowEl;
-    _iconPickerSelected = rowEl.dataset.icon || 'fas fa-link';
-    buildIconGrid('');
-    document.getElementById('iconPickerOverlay').classList.add('open');
-    const search = document.querySelector('.icon-search');
-    search.value = '';
-    search.focus();
-  }
-
-  function closeIconPicker() {
-    document.getElementById('iconPickerOverlay').classList.remove('open');
-    _iconPickerTarget = null;
-  }
-
-  function buildIconGrid(filter) {
-    const grid = document.getElementById('iconGrid'); grid.innerHTML = '';
-    const filtered = filter
-      ? ICON_OPTIONS.filter(o => o.label.toLowerCase().includes(filter.toLowerCase()))
-      : ICON_OPTIONS;
-    filtered.forEach(opt => {
-      const el = document.createElement('div');
-      el.className = 'icon-opt' + (opt.icon === _iconPickerSelected ? ' selected' : '');
-      el.title = opt.label;
-      el.innerHTML = '<i class="' + opt.icon + '"></i>';
-      el.onclick = () => {
-        _iconPickerSelected = opt.icon;
-        document.querySelectorAll('.icon-opt').forEach(o => o.classList.remove('selected'));
-        el.classList.add('selected');
-      };
-      grid.appendChild(el);
-    });
-  }
-
-  function filterIcons(val) { buildIconGrid(val); }
-
-  function confirmIconPick() {
-    if (!_iconPickerTarget || !_iconPickerSelected) { closeIconPicker(); return; }
-    const btn = _iconPickerTarget.querySelector('.social-icon-btn i');
-    if (btn) btn.className = _iconPickerSelected;
-    _iconPickerTarget.dataset.icon = _iconPickerSelected;
-    closeIconPicker();
-  }
-
-  // ─── SOCIALS ─────────────────────────────────────────────────────────────────
-  function renderSocials(arr) {
-    const ed = document.getElementById('socialsEditor'); ed.innerHTML = '';
-    arr.forEach(s => addSocialRow(s.icon || guessIcon(s.label), s.label || '', s.url || ''));
-  }
-
-  function guessIcon(label) {
-    const map = {
-      discord:'fab fa-discord', youtube:'fab fa-youtube', twitter:'fab fa-twitter',
-      x:'fab fa-x-twitter', instagram:'fab fa-instagram', tiktok:'fab fa-tiktok',
-      roblox:'fas fa-gamepad', twitch:'fab fa-twitch', github:'fab fa-github',
-      spotify:'fab fa-spotify', 'guns.lol':'fas fa-crosshairs', steam:'fab fa-steam',
-      reddit:'fab fa-reddit', telegram:'fab fa-telegram'
-    };
-    return map[(label || '').toLowerCase()] || 'fas fa-link';
-  }
-
-  function addSocialRow(icon, label, url) {
-    icon  = icon  || 'fas fa-link';
-    label = label || '';
-    url   = url   || '';
-    const ed = document.getElementById('socialsEditor');
-    if (ed.querySelectorAll('.social-row-edit').length >= 6) {
-      showAlert('socialsAlert', 'max 6 links.', 'error'); return;
-    }
-    const row = document.createElement('div');
-    row.className  = 'social-row-edit';
-    row.dataset.icon = icon;
-
-    const iconBtn = document.createElement('button');
-    iconBtn.className = 'social-icon-btn';
-    iconBtn.title = 'click to change icon';
-    iconBtn.innerHTML = '<i class="' + icon + '"></i>';
-    iconBtn.onclick = () => openIconPicker(row);
-
-    const lblIn = document.createElement('input');
-    lblIn.className   = 'social-input';
-    lblIn.type        = 'text';
-    lblIn.placeholder = 'label';
-    lblIn.value       = label;
-    lblIn.style.cssText = 'border-right:1px solid var(--border);padding-right:8px';
-
-    const urlIn = document.createElement('input');
-    urlIn.className   = 'social-input';
-    urlIn.type        = 'url';
-    urlIn.placeholder = 'https://...';
-    urlIn.value       = url;
-
-    const drag = document.createElement('i');
-    drag.className = 'fas fa-grip-vertical social-drag';
-    drag.title = 'drag to reorder';
-
-    const delBtn = document.createElement('button');
-    delBtn.style.cssText = 'background:none;border:none;color:rgba(255,80,80,0.45);cursor:pointer;font-size:13px;padding:0';
-    delBtn.innerHTML = '<i class="fas fa-times"></i>';
-    delBtn.onclick   = () => row.remove();
-
-    row.append(iconBtn, lblIn, urlIn, drag, delBtn);
-    ed.appendChild(row);
-  }
-
-  function getSocials() {
-    return Array.from(document.querySelectorAll('.social-row-edit')).map(r => ({
-      icon:  r.dataset.icon || 'fas fa-link',
-      label: r.querySelectorAll('.social-input')[0].value.trim(),
-      url:   r.querySelectorAll('.social-input')[1].value.trim()
-    })).filter(s => s.url);
-  }
-
   // ─── SAVE ────────────────────────────────────────────────────────────────────
-  // All customization saved into one `custom_settings` JSON column.
-  // Only core columns (which definitely exist) are saved directly.
   async function saveProfile() {
     const btn = document.getElementById('saveBtn');
     const st  = document.getElementById('saveStatus');
@@ -1410,9 +1758,8 @@
       }
     }
 
-    // Build CS blob — snapshot ALL customization from current UI state
+    // Build full CS blob from current UI state
     const newCS = {
-      // background
       bg_type:           currentBgTab,
       bg_image_url:      document.getElementById('fBgImageUrl').value.trim(),
       bg_opacity:        parseInt(document.getElementById('fBgOpacity').value),
@@ -1420,21 +1767,23 @@
       bg_grad1:          document.getElementById('fGrad1').value,
       bg_grad2:          document.getElementById('fGrad2').value,
       bg_grad_dir:       document.getElementById('fGradDir').value,
-      // video
       show_video_bg:     gtog('tShowVideo'),
       mute_video:        gtog('tMuteDefault'),
-      // customize
-      card_font:         cs('card_font'),        // updated directly in CS when clicked
+      card_font:         CS.card_font || 'Syne',
       accent_color:      document.getElementById('fAccentColor').value,
       card_blur:         parseInt(document.getElementById('fCardBlur').value),
       card_opacity:      parseInt(document.getElementById('fCardOpacity').value),
       card_glow:         gtog('tCardGlow'),
       card_rounded:      gtog('tRounded'),
-      // uid scramble — never save as true for non-admins
       show_uid_scramble: isAdmin ? gtog('tUid') : false,
+      // Custom font — store base64 data URL (may be large, warn user)
+      custom_font_name:   customFontName,
+      custom_font_family: customFontFamily,
+      custom_font_data:   customFontDataUrl,
+      // Custom icons
+      custom_icons: customIcons,
     };
 
-    // Core schema columns only — guaranteed to exist
     const updates = {
       display_name:      document.getElementById('fDisplayName').value.trim() || handle,
       handle,
@@ -1445,43 +1794,42 @@
       show_splash:       gtog('tSplash'),
       show_tilt:         gtog('tTilt'),
       show_views:        gtog('tViews'),
-      // Keep these core cols in sync for the public profile page to read
       show_uid_scramble: newCS.show_uid_scramble,
       show_video_bg:     newCS.show_video_bg,
       mute_video:        newCS.mute_video,
       badges:            JSON.stringify(activeBadges),
       socials:           JSON.stringify(getSocials()),
-      custom_settings:   JSON.stringify(newCS),   // ← one blob, zero extra columns
+      custom_settings:   JSON.stringify(newCS),
       updated_at:        new Date().toISOString()
     };
 
     let { error } = await sb.from('profiles').update(updates).eq('id', currentUser.id);
 
-    // Graceful fallback: if custom_settings column doesn't exist yet, save without it
-    if (error && error.message && error.message.includes('custom_settings')) {
-      console.warn('custom_settings column missing — run SQL migration. Saving core fields only.');
+    if (error && error.message && (error.message.includes('custom_settings') || error.message.includes('column'))) {
+      console.warn('Column missing — saving core fields only. Run the SQL migration from admin panel.');
       const fallback = { ...updates };
       delete fallback.custom_settings;
       const res2 = await sb.from('profiles').update(fallback).eq('id', currentUser.id);
       error = res2.error;
-      if (!error) showAlert('profileAlert', 'saved! add custom_settings column to persist customization.', 'success');
+      if (!error) showAlert('profileAlert', 'saved (core fields). add missing columns via admin SQL to persist custom settings.', 'success');
     }
 
     btn.disabled = false; btn.textContent = 'save changes →';
-
     if (error) { showAlert('profileAlert', 'save failed: ' + error.message, 'error'); return; }
 
     CS = newCS;
     currentProfile = { ...currentProfile, ...updates };
 
-    // Refresh sidebar name/avatar
+    // Refresh sidebar/topbar
     const name = currentProfile.display_name || currentProfile.handle || '?';
-    document.getElementById('sideName').textContent    = name;
-    document.getElementById('sideHandle').textContent  = '@' + currentProfile.handle;
-    document.getElementById('sideUrlText').textContent = 'swaqq.xyz/@' + currentProfile.handle;
-    document.getElementById('sideUrl').href            = '/@' + currentProfile.handle;
-    document.getElementById('viewProfileLink').href    = '/@' + currentProfile.handle;
-    document.getElementById('hdrHandle').textContent   = currentProfile.handle;
+    document.getElementById('sideName').textContent     = name;
+    document.getElementById('sideHandle').textContent   = '@' + currentProfile.handle;
+    document.getElementById('sideUrlText').textContent  = 'swaqq.xyz/@' + currentProfile.handle;
+    document.getElementById('sideUrl').href             = '/@' + currentProfile.handle;
+    document.getElementById('viewProfileLink').href     = '/@' + currentProfile.handle;
+    document.getElementById('hdrHandle').textContent    = currentProfile.handle;
+    document.getElementById('topBarHandle').textContent = '@' + currentProfile.handle;
+    document.getElementById('topBarViewLink').href      = '/@' + currentProfile.handle;
 
     st.textContent = 'all changes saved ✓'; st.classList.add('saved');
     setTimeout(() => { st.textContent = 'unsaved changes'; st.classList.remove('saved'); }, 3500);
@@ -1512,7 +1860,7 @@
 
   // ─── ADMIN ────────────────────────────────────────────────────────────────────
   async function loadAdminData() {
-    const { data } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+    const { data } = await sb.from('profiles').select('*').order('created_at', { ascending:false });
     allUsers = data || [];
     renderAdminStats(allUsers);
     renderAdminTable(allUsers);
@@ -1520,36 +1868,38 @@
 
   function renderAdminStats(users) {
     document.getElementById('aTotalUsers').textContent = users.length;
-    document.getElementById('aTotalViews').textContent = users.reduce((a, u) => a + (u.view_count || 0), 0).toLocaleString();
-    document.getElementById('aEarlyCount').textContent = users.filter(u => pj(u.unlocked_badges, []).includes('early')).length;
+    document.getElementById('aTotalViews').textContent = users.reduce((a,u) => a+(u.view_count||0), 0).toLocaleString();
+    document.getElementById('aEarlyCount').textContent = users.filter(u => pj(u.unlocked_badges,[]).includes('early')).length;
     const today = new Date().toDateString();
-    document.getElementById('aNewToday').textContent   = users.filter(u => new Date(u.created_at).toDateString() === today).length;
+    document.getElementById('aNewToday').textContent = users.filter(u => new Date(u.created_at).toDateString()===today).length;
   }
 
   function renderAdminTable(users) {
     const tb = document.getElementById('adminUserTbody');
     if (!users.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">no users</td></tr>'; return; }
     tb.innerHTML = users.map(u => {
-      const unlocked = pj(u.unlocked_badges, []);
-      const initials = (u.display_name || u.handle || '?')[0].toUpperCase();
-      const av       = u.avatar_url
-        ? '<div class="user-av" style="background-image:url(' + u.avatar_url + ');background-size:cover"></div>'
-        : '<div class="user-av">' + initials + '</div>';
+      const unlocked  = pj(u.unlocked_badges, []);
+      const initials  = (u.display_name||u.handle||'?')[0].toUpperCase();
+      const av = u.avatar_url
+        ? '<div class="user-av" style="background-image:url('+u.avatar_url+');background-size:cover"></div>'
+        : '<div class="user-av">'+initials+'</div>';
       const pills = unlocked.length
-        ? unlocked.map(id => '<span class="badge-mini' + (id === 'early' ? ' early' : '') + '">' + id + '</span>').join('')
+        ? unlocked.map(id=>'<span class="badge-mini'+(id==='early'?' early':'')+'">'+id+'</span>').join('')
         : '<span style="color:var(--muted);font-size:10px">—</span>';
-      const joined   = new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      const adminStar = u.is_admin ? '<span class="user-admin-star">★</span>' : '';
+      const joined   = new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      const roleTags = [u.is_owner?'<span style="font-size:9px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--gold);border-radius:3px;padding:1px 5px;font-family:\'Geist Mono\',monospace">owner</span>':'',
+        u.is_developer?'<span style="font-size:9px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:#38bdf8;border-radius:3px;padding:1px 5px;font-family:\'Geist Mono\',monospace">dev</span>':'',
+        u.is_admin && !u.is_owner?'<span class="user-admin-star">★</span>':''].filter(Boolean).join('');
       return '<tr>' +
-        '<td><div class="user-cell">' + av + '<div><div class="user-handle">@' + u.handle + adminStar + '</div><div style="font-size:10px;color:var(--muted)">' + (u.display_name || '') + '</div></div></div></td>' +
-        '<td><div class="badges-cell">' + pills + '</div></td>' +
-        '<td>' + (u.view_count || 0).toLocaleString() + '</td>' +
-        '<td>' + joined + '</td>' +
-        '<td><div class="admin-actions">' +
-          '<button class="btn-sm btn-sm-gold" onclick="openBadgeModal(\'' + u.id + '\',\'' + u.handle + '\')"><i class="fas fa-star"></i> badges</button>' +
-          '<button class="btn-sm btn-sm-ghost" onclick="toggleAdminRole(\'' + u.id + '\',' + (!u.is_admin) + ',\'' + u.handle + '\')">' + (u.is_admin ? '<i class="fas fa-user"></i> unadmin' : '<i class="fas fa-shield-alt"></i> admin') + '</button>' +
-          '<button class="btn-sm btn-sm-danger" onclick="banUser(\'' + u.id + '\',\'' + u.handle + '\')"><i class="fas fa-ban"></i></button>' +
-        '</div></td>' +
+        '<td><div class="user-cell">'+av+'<div><div class="user-handle">@'+u.handle+' '+roleTags+'</div><div style="font-size:10px;color:var(--muted)">'+(u.display_name||'')+'</div></div></div></td>' +
+        '<td><div class="badges-cell">'+pills+'</div></td>' +
+        '<td>'+(u.view_count||0).toLocaleString()+'</td>' +
+        '<td>'+joined+'</td>' +
+        '<td><div class="admin-actions">'+
+          '<button class="btn-sm btn-sm-gold" onclick="openBadgeModal(\''+u.id+'\',\''+u.handle+'\')"><i class="fas fa-star"></i> badges</button>'+
+          '<button class="btn-sm btn-sm-ghost" onclick="cycleRole(\''+u.id+'\',\''+u.handle+'\')"><i class="fas fa-shield-alt"></i> role</button>'+
+          '<button class="btn-sm btn-sm-danger" onclick="banUser(\''+u.id+'\',\''+u.handle+'\')"><i class="fas fa-ban"></i></button>'+
+        '</div></td>'+
       '</tr>';
     }).join('');
   }
@@ -1557,44 +1907,78 @@
   function filterUsers() {
     const q = document.getElementById('adminSearch').value.toLowerCase();
     renderAdminTable(allUsers.filter(u =>
-      u.handle.toLowerCase().includes(q) || (u.display_name || '').toLowerCase().includes(q)
+      u.handle.toLowerCase().includes(q) || (u.display_name||'').toLowerCase().includes(q)
     ));
   }
 
-  async function toggleAdminRole(uid, makeAdmin, handle) {
-    if (!confirm((makeAdmin ? 'grant' : 'revoke') + ' admin for @' + handle + '?')) return;
-    const { error } = await sb.from('profiles').update({ is_admin: makeAdmin }).eq('id', uid);
-    if (error) { alert('failed: ' + error.message); return; }
-    const idx = allUsers.findIndex(u => u.id === uid);
-    if (idx !== -1) allUsers[idx].is_admin = makeAdmin;
+  // Cycle through role: normal → admin → developer → owner → normal
+  async function cycleRole(uid, handle) {
+    const u = allUsers.find(u => u.id === uid);
+    if (!u) return;
+    let updates;
+    if (!u.is_admin && !u.is_developer && !u.is_owner) {
+      updates = { is_admin:true, is_developer:false, is_owner:false };
+    } else if (u.is_admin && !u.is_developer && !u.is_owner) {
+      updates = { is_admin:true, is_developer:true, is_owner:false };
+    } else if (u.is_developer) {
+      updates = { is_admin:true, is_developer:false, is_owner:true };
+    } else {
+      updates = { is_admin:false, is_developer:false, is_owner:false };
+    }
+    const label = updates.is_owner ? 'owner' : updates.is_developer ? 'developer' : updates.is_admin ? 'admin' : 'user';
+    if (!confirm('set @'+handle+' as '+label+'?')) return;
+    const { error } = await sb.from('profiles').update(updates).eq('id', uid);
+    if (error) { alert('failed: '+error.message); return; }
+    Object.assign(allUsers.find(u=>u.id===uid), updates);
     renderAdminTable(allUsers);
   }
 
   async function banUser(uid, handle) {
-    if (!confirm('ban @' + handle + '? this deletes their profile.')) return;
+    if (!confirm('ban @'+handle+'? this deletes their profile.')) return;
     const { error } = await sb.from('profiles').delete().eq('id', uid);
-    if (error) { alert('failed: ' + error.message); return; }
+    if (error) { alert('failed: '+error.message); return; }
     allUsers = allUsers.filter(u => u.id !== uid);
     renderAdminStats(allUsers); renderAdminTable(allUsers);
   }
 
-  // ─── BADGE MODAL ──────────────────────────────────────────────────────────────
+  // ─── BADGE MODAL ─────────────────────────────────────────────────────────────
   let _modalUid = null;
+  let _modalRoles = {};
 
   function openBadgeModal(uid, handle) {
     _modalUid = uid;
-    document.getElementById('badgeModalSub').textContent = 'for @' + handle;
     const user    = allUsers.find(u => u.id === uid);
     const current = pj(user?.unlocked_badges, []);
+    _modalRoles = { is_owner:!!user?.is_owner, is_developer:!!user?.is_developer };
+    document.getElementById('badgeModalSub').textContent = 'for @'+handle;
     document.getElementById('badgeModalList').innerHTML = BADGE_DEFS.map(def =>
-      '<div class="modal-badge-row' + (def.early ? ' early-row' : '') + (current.includes(def.id) ? ' checked' : '') +
-      '" onclick="this.classList.toggle(\'checked\')" data-id="' + def.id + '">' +
+      '<div class="modal-badge-row'+(def.early?' early-row':'')+(current.includes(def.id)?' checked':'')+'" onclick="this.classList.toggle(\'checked\')" data-id="'+def.id+'">' +
       '<div class="modal-check"><i class="fas fa-check"></i></div>' +
-      '<i class="modal-badge-icon ' + def.icon + '"></i>' +
-      '<div class="modal-badge-name">' + def.label + '</div>' +
-      (def.early ? '<span style="font-family:\'Geist Mono\',monospace;font-size:9px;color:var(--gold);background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:3px;padding:2px 6px">early</span>' : '') +
+      '<i class="modal-badge-icon '+def.icon+'"></i>' +
+      '<div class="modal-badge-name">'+def.label+'</div>' +
+      (def.early?'<span style="font-family:\'Geist Mono\',monospace;font-size:9px;color:var(--gold);background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:3px;padding:2px 6px">early</span>':'') +
       '</div>'
     ).join('');
+
+    // Role toggles
+    const rolesEl = document.getElementById('badgeModalRoles');
+    rolesEl.innerHTML = '';
+    [
+      { key:'is_owner',     label:'owner',     color:'var(--gold)' },
+      { key:'is_developer', label:'developer', color:'#38bdf8'     },
+    ].forEach(r => {
+      const btn = document.createElement('button');
+      btn.textContent = r.label;
+      btn.style.cssText = 'font-family:\'Geist Mono\',monospace;font-size:10px;padding:4px 10px;border-radius:5px;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);background:'+(_modalRoles[r.key]?'rgba(255,255,255,0.1)':'transparent')+';color:'+(_modalRoles[r.key]?r.color:'var(--muted)')+';';
+      btn.dataset.role = r.key;
+      btn.onclick = () => {
+        _modalRoles[r.key] = !_modalRoles[r.key];
+        btn.style.background = _modalRoles[r.key] ? 'rgba(255,255,255,0.1)' : 'transparent';
+        btn.style.color      = _modalRoles[r.key] ? r.color : 'var(--muted)';
+      };
+      rolesEl.appendChild(btn);
+    });
+
     document.getElementById('badgeModal').classList.add('open');
   }
 
@@ -1602,26 +1986,52 @@
 
   async function saveBadgeGrant() {
     if (!_modalUid) return;
-    const checked = Array.from(document.querySelectorAll('#badgeModalList .modal-badge-row.checked')).map(el => el.dataset.id);
+    const checked = Array.from(document.querySelectorAll('#badgeModalList .modal-badge-row.checked')).map(el=>el.dataset.id);
+    const roleUpd = { is_owner:_modalRoles.is_owner, is_developer:_modalRoles.is_developer };
+    if (_modalRoles.is_owner) roleUpd.is_admin = true;
     const { error } = await sb.from('profiles')
-      .update({ unlocked_badges: JSON.stringify(checked), updated_at: new Date().toISOString() })
+      .update({ unlocked_badges:JSON.stringify(checked), ...roleUpd, updated_at:new Date().toISOString() })
       .eq('id', _modalUid);
-    if (error) { alert('save failed: ' + error.message); return; }
-    const idx = allUsers.findIndex(u => u.id === _modalUid);
-    if (idx !== -1) allUsers[idx].unlocked_badges = JSON.stringify(checked);
+    if (error) { alert('save failed: '+error.message); return; }
+    const idx = allUsers.findIndex(u=>u.id===_modalUid);
+    if (idx!==-1) { allUsers[idx].unlocked_badges=JSON.stringify(checked); Object.assign(allUsers[idx],roleUpd); }
     closeBadgeModal(); renderAdminTable(allUsers); renderAdminStats(allUsers);
   }
 
   document.getElementById('badgeModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('badgeModal')) closeBadgeModal();
+    if (e.target===document.getElementById('badgeModal')) closeBadgeModal();
   });
 
-  // ─── ALERT ────────────────────────────────────────────────────────────────────
+  // ─── SQL HELPERS ─────────────────────────────────────────────────────────────
+  function copySql(elId) {
+    const el = document.getElementById(elId);
+    navigator.clipboard.writeText(el.innerText).then(() => {
+      const btn = el.nextElementSibling?.querySelector?.('.copy-sql-btn') || document.querySelector('.copy-sql-btn');
+      // find the button after this specific element
+    });
+    // Simple fallback
+    const text = el.innerText;
+    if (navigator.clipboard) navigator.clipboard.writeText(text);
+    else { const t = document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+  }
+  function copyInnerText(el) {
+    const text = el.innerText;
+    if (navigator.clipboard) navigator.clipboard.writeText(text);
+    else { const t = document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+  }
+
+  // ─── ALERT ───────────────────────────────────────────────────────────────────
   function showAlert(id, msg, type) {
     const el = document.getElementById(id); if (!el) return;
     el.textContent = msg; el.className = 'alert ' + type;
-    setTimeout(() => { el.className = 'alert'; el.textContent = ''; }, 5000);
+    setTimeout(() => { el.className = 'alert'; el.textContent = ''; }, 6000);
   }
+
+  // ─── LIVE INPUT WATCHERS (update card preview as user types) ─────────────────
+  ['fDisplayName','fBio','fAvatarUrl'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateCardPreview);
+  });
 
 </script>
 </body>
