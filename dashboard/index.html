@@ -76,7 +76,6 @@
     .field:last-child { margin-bottom:0; }
     .field-label { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--sub); margin-bottom:7px; display:flex; align-items:center; gap:6px; }
     .tag { background:rgba(255,255,255,0.07); border:1px solid var(--border); border-radius:4px; padding:1px 5px; font-size:8px; }
-    .tag-gold { background:rgba(245,166,35,0.12); border-color:rgba(245,166,35,0.3); color:var(--gold); }
     .field-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:9px; padding:11px 14px; color:var(--text); font-family:'Geist Mono',monospace; font-size:13px; outline:none; transition:border-color 0.2s,box-shadow 0.2s; }
     .field-input:focus { border-color:rgba(255,255,255,0.25); box-shadow:0 0 0 3px rgba(255,255,255,0.04); }
     .field-input::placeholder { color:var(--muted); }
@@ -250,7 +249,7 @@
 
   <!-- ══ SIDEBAR ══ -->
   <aside class="sidebar">
-    <a class="sidebar-logo" href="index.html">swaqq.xyz</a>
+    <a class="sidebar-logo" href="/">swaqq.xyz</a>
     <div class="sidebar-user">
       <div class="sidebar-avatar" id="sideAvatar"></div>
       <div class="sidebar-name" id="sideName">...</div>
@@ -268,7 +267,6 @@
     <button class="nav-item" onclick="showTab('settings')"><i class="fas fa-cog"></i> settings</button>
     <div class="nav-section-label" style="margin-top:8px">view</div>
     <a class="nav-item" id="viewProfileLink" href="#" target="_blank"><i class="fas fa-eye"></i> view profile</a>
-    <!-- admin link — shown only if is_admin -->
     <div id="adminNavSection" style="display:none">
       <div class="nav-section-label" style="margin-top:8px">admin</div>
       <button class="nav-item admin-nav" onclick="showTab('admin')"><i class="fas fa-shield-alt"></i> admin panel</button>
@@ -342,8 +340,6 @@
         <p class="page-sub">profile picture and video background</p>
       </div>
       <div class="alert" id="appearanceAlert"></div>
-
-      <!-- PFP -->
       <div class="dash-section">
         <div class="dash-section-title">profile picture</div>
         <div class="dash-section-sub">your avatar shown on the card</div>
@@ -367,8 +363,6 @@
           </div>
         </div>
       </div>
-
-      <!-- VIDEO BG -->
       <div class="dash-section">
         <div class="dash-section-title">video background</div>
         <div class="dash-section-sub">plays behind your card when people visit your page</div>
@@ -476,16 +470,8 @@
         <div class="dash-section-sub">grant / revoke badges, ban users</div>
         <input class="admin-search" type="text" id="adminSearch" placeholder="search by handle..." oninput="filterUsers()">
         <div class="card-edit" style="padding:0;overflow:hidden">
-          <table class="admin-table" style="width:100%">
-            <thead>
-              <tr>
-                <th>user</th>
-                <th>unlocked badges</th>
-                <th>views</th>
-                <th>joined</th>
-                <th>actions</th>
-              </tr>
-            </thead>
+          <table class="admin-table">
+            <thead><tr><th>user</th><th>unlocked badges</th><th>views</th><th>joined</th><th>actions</th></tr></thead>
             <tbody id="adminUserTbody">
               <tr><td colspan="5" style="text-align:center;padding:28px;color:var(--muted)">loading...</td></tr>
             </tbody>
@@ -523,43 +509,55 @@
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  let currentUser   = null;
+  let currentUser    = null;
   let currentProfile = null;
-  let isAdmin       = false;
-  let allUsers      = [];       // admin cache
-  let activeBadges  = [];       // badges array currently selected by user
-  let unlockedBadges = [];      // badges this user is allowed to use
+  let isAdmin        = false;
+  let allUsers       = [];
+  let activeBadges   = [];
+  let unlockedBadges = [];
 
-  // ══ BADGE DEFINITIONS ══
-  // locked:true  → only admin can grant/revoke via unlocked_badges column
-  // locked:false → anyone can self-toggle (just the early badge for now)
   const BADGE_DEFS = [
-    { id:'early',     label:'Early',     icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',   locked:false, early:true  },
-    { id:'owner',     label:'Owner',     icon:'fas fa-crown',       desc:'platform owner',                         locked:true,  early:false },
-    { id:'developer', label:'Developer', icon:'fas fa-code',        desc:'built something for swaqq.xyz',          locked:true,  early:false },
-    { id:'staff',     label:'Staff',     icon:'fas fa-shield-alt',  desc:'part of the swaqq.xyz team',             locked:true,  early:false },
-    { id:'vip',       label:'VIP',       icon:'fas fa-star',        desc:'very important person',                  locked:true,  early:false },
-    { id:'verified',  label:'Verified',  icon:'fas fa-check-circle','desc':'verified identity',                    locked:true,  early:false },
-    { id:'og',        label:'OG',        icon:'fas fa-fire',        desc:'been here from day one',                 locked:true,  early:false },
+    { id:'early',     label:'Early',     icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',  locked:false, early:true  },
+    { id:'owner',     label:'Owner',     icon:'fas fa-crown',       desc:'platform owner',                        locked:true,  early:false },
+    { id:'developer', label:'Developer', icon:'fas fa-code',        desc:'built something for swaqq.xyz',         locked:true,  early:false },
+    { id:'staff',     label:'Staff',     icon:'fas fa-shield-alt',  desc:'part of the swaqq.xyz team',            locked:true,  early:false },
+    { id:'vip',       label:'VIP',       icon:'fas fa-star',        desc:'very important person',                 locked:true,  early:false },
+    { id:'verified',  label:'Verified',  icon:'fas fa-check-circle',desc:'verified identity',                     locked:true,  early:false },
+    { id:'og',        label:'OG',        icon:'fas fa-fire',        desc:'been here from day one',                locked:true,  early:false },
   ];
 
-  // ══ AUTH ══
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (!session) { window.location.href = 'index.html'; return; }
+  // ══ FAST AUTH — reads localStorage instantly, no network wait ══
+  async function initAuth() {
+    const { data: { session } } = await sb.auth.getSession();
+
+    if (!session) {
+      window.location.href = '/';
+      return;
+    }
+
     currentUser = session.user;
     await loadProfile();
     document.getElementById('authGate').style.display   = 'none';
     document.getElementById('dashLayout').style.display = 'flex';
     document.getElementById('saveBar').style.display    = 'flex';
+  }
+
+  initAuth();
+
+  // Handle logouts and token expiry in the background
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT' || !session) {
+      window.location.href = '/';
+    }
   });
 
   async function loadProfile() {
-    const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+    const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
     if (error || !data) return;
-    currentProfile  = data;
-    isAdmin         = !!data.is_admin;
-    activeBadges    = pj(data.badges, []);
-    unlockedBadges  = pj(data.unlocked_badges, []);
+    currentProfile = data;
+    isAdmin        = !!data.is_admin;
+    activeBadges   = pj(data.badges, []);
+    unlockedBadges = pj(data.unlocked_badges, []);
     if (isAdmin) document.getElementById('adminNavSection').style.display = 'block';
     populateForm(data);
   }
@@ -572,42 +570,36 @@
 
   // ══ POPULATE FORM ══
   function populateForm(p) {
-    document.getElementById('fDisplayName').value  = p.display_name || '';
-    document.getElementById('fHandle').value       = p.handle || '';
-    document.getElementById('fBio').value          = p.bio || '';
-    document.getElementById('fDiscordId').value    = p.discord_id || '';
-    document.getElementById('fAvatarUrl').value    = p.avatar_url || '';
-    document.getElementById('fYoutubeId').value    = p.youtube_video_id || '';
+    document.getElementById('fDisplayName').value = p.display_name || '';
+    document.getElementById('fHandle').value      = p.handle || '';
+    document.getElementById('fBio').value         = p.bio || '';
+    document.getElementById('fDiscordId').value   = p.discord_id || '';
+    document.getElementById('fAvatarUrl').value   = p.avatar_url || '';
+    document.getElementById('fYoutubeId').value   = p.youtube_video_id || '';
 
-    tog('tSplash',     p.show_splash      !== false);
-    tog('tTilt',       p.show_tilt        !== false);
-    tog('tUid',        p.show_uid_scramble!== false);
-    tog('tViews',      p.show_views       !== false);
-    tog('tShowVideo',  p.show_video_bg    !== false);
-    tog('tMuteDefault',p.mute_video       === true);
+    tog('tSplash',      p.show_splash       !== false);
+    tog('tTilt',        p.show_tilt         !== false);
+    tog('tUid',         p.show_uid_scramble !== false);
+    tog('tViews',       p.show_views        !== false);
+    tog('tShowVideo',   p.show_video_bg     !== false);
+    tog('tMuteDefault', p.mute_video        === true);
 
-    // sidebar
     const name = p.display_name || p.handle || '?';
     document.getElementById('sideName').textContent    = name;
     document.getElementById('sideHandle').textContent  = '@' + p.handle;
     document.getElementById('sideUrlText').textContent = `swaqq.xyz/@${p.handle}`;
-    document.getElementById('sideUrl').href            = `./@${p.handle}`;
-    document.getElementById('viewProfileLink').href    = `./@${p.handle}`;
+    document.getElementById('sideUrl').href            = `/@${p.handle}`;
+    document.getElementById('viewProfileLink').href    = `/@${p.handle}`;
     document.getElementById('hdrHandle').textContent   = p.handle;
 
-    // sidebar avatar
     const sav = document.getElementById('sideAvatar');
     if (p.avatar_url) { sav.style.backgroundImage = `url(${p.avatar_url})`; sav.textContent = ''; }
     else              { sav.style.backgroundImage = ''; sav.textContent = name[0].toUpperCase(); }
 
-    // pfp preview
     setPfpPreview(p.avatar_url, name);
-
-    // video thumb
     if (p.youtube_video_id) renderVideoThumb(p.youtube_video_id);
 
-    // stats
-    document.getElementById('statViews').textContent  = (p.view_count || 0).toLocaleString();
+    document.getElementById('statViews').textContent   = (p.view_count || 0).toLocaleString();
     const socs = pj(p.socials, []);
     document.getElementById('statSocials').textContent = socs.length;
     document.getElementById('statBadges').textContent  = activeBadges.length;
@@ -617,7 +609,7 @@
   }
 
   function tog(id, on) {
-    const el = document.getElementById(id); if(!el) return;
+    const el = document.getElementById(id); if (!el) return;
     on ? el.classList.add('on') : el.classList.remove('on');
   }
   function gtog(id) { return document.getElementById(id)?.classList.contains('on') ?? false; }
@@ -626,33 +618,31 @@
   const TABS = ['profile','appearance','socials','badges','settings','admin'];
   function showTab(name) {
     TABS.forEach(t => {
-      document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
+      document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
       document.querySelectorAll('.nav-item').forEach(el => {
-        if (el.getAttribute('onclick') === `showTab('${t}')`) el.classList.toggle('active', t===name);
+        if (el.getAttribute('onclick') === `showTab('${t}')`) el.classList.toggle('active', t === name);
       });
     });
     if (name === 'admin' && isAdmin) loadAdminData();
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   }
 
-  // ══ PFP UPLOAD ══
+  // ══ PFP ══
   function setPfpPreview(url, name) {
     const el = document.getElementById('pfpPreview');
     if (url) { el.style.backgroundImage = `url(${url})`; el.textContent = ''; }
     else     { el.style.backgroundImage = ''; el.textContent = (name||'?')[0].toUpperCase(); }
   }
 
-  // drag/drop
   const pfpZone = document.getElementById('pfpZone');
   pfpZone.addEventListener('dragover', e => { e.preventDefault(); pfpZone.classList.add('drag'); });
   pfpZone.addEventListener('dragleave', () => pfpZone.classList.remove('drag'));
   pfpZone.addEventListener('drop', e => {
     e.preventDefault(); pfpZone.classList.remove('drag');
-    const f = e.dataTransfer.files[0];
-    if (f) uploadPfpFile(f);
+    const f = e.dataTransfer.files[0]; if (f) uploadPfpFile(f);
   });
 
-  function handlePfpUpload(input) { if(input.files[0]) uploadPfpFile(input.files[0]); }
+  function handlePfpUpload(input) { if (input.files[0]) uploadPfpFile(input.files[0]); }
 
   async function uploadPfpFile(file) {
     if (file.size > 2*1024*1024) { showAlert('appearanceAlert','file too large — max 2mb.','error'); return; }
@@ -665,7 +655,6 @@
     const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
 
     if (upErr) {
-      // if bucket doesn't exist yet, fall back to data URL for now
       const reader = new FileReader();
       reader.onload = e => {
         const url = e.target.result;
@@ -685,12 +674,11 @@
   }
 
   function applyAvatarUrl() {
-    const url = document.getElementById('fAvatarUrl').value.trim();
-    if (!url) return;
+    const url = document.getElementById('fAvatarUrl').value.trim(); if (!url) return;
     setPfpPreview(url, currentProfile?.display_name || currentProfile?.handle);
   }
 
-  // ══ VIDEO PREVIEW ══
+  // ══ VIDEO ══
   let _vTimer;
   function debounceVideoPreview(val) { clearTimeout(_vTimer); _vTimer = setTimeout(() => renderVideoThumb(val), 700); }
 
@@ -702,14 +690,13 @@
     let iframe = wrap.querySelector('iframe');
     if (!iframe) { iframe = document.createElement('iframe'); iframe.setAttribute('allow','autoplay;encrypted-media'); wrap.appendChild(iframe); }
     iframe.src = `https://www.youtube.com/embed/${id.trim()}?autoplay=0&controls=0&mute=1&modestbranding=1&rel=0`;
-    // overlay label
     if (!wrap.querySelector('.video-thumb-overlay')) {
       const ov = document.createElement('div'); ov.className='video-thumb-overlay';
       ov.innerHTML='<span class="video-thumb-label">preview — muted</span>'; wrap.appendChild(ov);
     }
   }
 
-  // ══ BADGE GRID ══
+  // ══ BADGES ══
   function renderBadgeGrid() {
     const grid = document.getElementById('badgeGrid');
     grid.innerHTML = '';
@@ -717,33 +704,22 @@
       const canUse   = !def.locked || unlockedBadges.includes(def.id);
       const isActive = activeBadges.includes(def.id);
       const card = document.createElement('div');
-      card.className = [
-        'badge-card',
-        def.early ? 'early-badge' : '',
-        canUse ? 'unlocked' : 'locked',
-        isActive ? 'selected' : ''
-      ].filter(Boolean).join(' ');
+      card.className = ['badge-card', def.early?'early-badge':'', canUse?'unlocked':'locked', isActive?'selected':''].filter(Boolean).join(' ');
       card.dataset.id = def.id;
 
       let stateHtml;
       if (!canUse) {
         stateHtml = `<div class="badge-state"><span class="badge-locked-tag">locked</span></div>`;
       } else if (def.early) {
-        stateHtml = `<div class="badge-state">${isActive
-          ? `<div class="badge-pip checked"><i class="fas fa-check"></i></div>`
-          : `<span class="badge-early-tag">early</span>`}</div>`;
+        stateHtml = `<div class="badge-state">${isActive ? `<div class="badge-pip checked"><i class="fas fa-check"></i></div>` : `<span class="badge-early-tag">early</span>`}</div>`;
       } else {
         stateHtml = `<div class="badge-state"><div class="badge-pip ${isActive?'checked':''}"><i class="fas fa-check"></i></div></div>`;
       }
 
       card.innerHTML = `
         <div class="badge-icon"><i class="${def.icon}"></i></div>
-        <div class="badge-info">
-          <div class="badge-name">${def.label}</div>
-          <div class="badge-desc">${def.desc}</div>
-        </div>
-        ${stateHtml}
-      `;
+        <div class="badge-info"><div class="badge-name">${def.label}</div><div class="badge-desc">${def.desc}</div></div>
+        ${stateHtml}`;
       if (canUse) card.addEventListener('click', () => toggleBadge(def.id));
       grid.appendChild(card);
     });
@@ -758,18 +734,15 @@
       if (activeBadges.length >= 5) { showAlert('profileAlert','max 5 active badges.','error'); return; }
       activeBadges.push(id);
     }
-    currentProfile.badges = JSON.stringify(activeBadges);
     renderBadgeGrid();
   }
 
   function renderActivePills() {
     const row = document.getElementById('activeBadgesPreview');
     row.innerHTML = '';
-    if (activeBadges.length === 0) {
-      row.innerHTML = '<span class="no-badges-msg">no badges active</span>'; return;
-    }
+    if (!activeBadges.length) { row.innerHTML = '<span class="no-badges-msg">no badges active</span>'; return; }
     activeBadges.forEach(id => {
-      const def = BADGE_DEFS.find(b => b.id === id); if(!def) return;
+      const def = BADGE_DEFS.find(b => b.id === id); if (!def) return;
       const pill = document.createElement('div');
       pill.className = `active-pill ${def.early ? 'early' : ''}`;
       pill.innerHTML = `<i class="${def.icon}" style="font-size:10px"></i> ${def.label}`;
@@ -788,13 +761,12 @@
   function addSocialRow(label='', url='') {
     const ed = document.getElementById('socialsEditor');
     if (ed.querySelectorAll('.social-row-edit').length >= 6) { showAlert('socialsAlert','max 6 links.','error'); return; }
-    const row = document.createElement('div'); row.className='social-row-edit';
+    const row = document.createElement('div'); row.className = 'social-row-edit';
     row.innerHTML = `
       <div class="social-icon-box"><i class="${sicon(label)}"></i></div>
       <input class="field-input social-label" type="text" placeholder="label" value="${label}" style="width:120px;flex-shrink:0" oninput="updateSIcon(this)">
-      <input class="field-input social-url" type="url"  placeholder="https://..." value="${url}" style="flex:1">
-      <button class="btn btn-ghost" style="padding:7px 10px;color:rgba(255,80,80,0.5)" onclick="this.closest('.social-row-edit').remove()"><i class="fas fa-times"></i></button>
-    `;
+      <input class="field-input social-url" type="url" placeholder="https://..." value="${url}" style="flex:1">
+      <button class="btn btn-ghost" style="padding:7px 10px;color:rgba(255,80,80,0.5)" onclick="this.closest('.social-row-edit').remove()"><i class="fas fa-times"></i></button>`;
     ed.appendChild(row);
   }
   function updateSIcon(inp) { inp.closest('.social-row-edit').querySelector('.social-icon-box i').className = sicon(inp.value); }
@@ -817,7 +789,7 @@
       btn.disabled=false; btn.textContent='save changes →'; return;
     }
     if (handle !== currentProfile.handle) {
-      const { data: taken } = await sb.from('profiles').select('id').eq('handle',handle).single();
+      const { data: taken } = await sb.from('profiles').select('id').eq('handle',handle).maybeSingle();
       if (taken && taken.id !== currentUser.id) {
         showAlert('profileAlert',`@${handle} is already taken.`,'error');
         btn.disabled=false; btn.textContent='save changes →'; return;
@@ -868,12 +840,15 @@
     if (!confirm('permanently delete your account and profile? this cannot be undone.')) return;
     await sb.from('profiles').delete().eq('id',currentUser.id);
     await sb.auth.signOut();
-    window.location.href = 'index.html';
+    window.location.href = '/';
   }
 
-  async function doLogout() { await sb.auth.signOut(); window.location.href='index.html'; }
+  async function doLogout() {
+    await sb.auth.signOut();
+    window.location.href = '/';
+  }
 
-  // ══ ADMIN PANEL ══
+  // ══ ADMIN ══
   async function loadAdminData() {
     const { data, error } = await sb.from('profiles').select('*').order('created_at',{ ascending:false });
     if (error) return;
@@ -896,7 +871,7 @@
     tb.innerHTML = users.map(u => {
       const unlocked = pj(u.unlocked_badges,[]);
       const initials = (u.display_name||u.handle||'?')[0].toUpperCase();
-      const av = u.avatar_url ? `<div class="user-av" style="background-image:url(${u.avatar_url})"></div>` : `<div class="user-av">${initials}</div>`;
+      const av    = u.avatar_url ? `<div class="user-av" style="background-image:url(${u.avatar_url})"></div>` : `<div class="user-av">${initials}</div>`;
       const pills = unlocked.length ? unlocked.map(id=>`<span class="badge-mini ${id==='early'?'early':''}">${id}</span>`).join('') : '<span style="color:var(--muted);font-size:10px">—</span>';
       const joined = new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
       const adminStar = u.is_admin ? '<span class="user-admin-star">★</span>' : '';
@@ -905,13 +880,11 @@
         <td><div class="badges-cell">${pills}</div></td>
         <td>${(u.view_count||0).toLocaleString()}</td>
         <td>${joined}</td>
-        <td>
-          <div class="admin-actions">
-            <button class="btn-sm btn-sm-gold" onclick="openBadgeModal('${u.id}','${u.handle}')"><i class="fas fa-star"></i> badges</button>
-            <button class="btn-sm btn-sm-ghost" onclick="toggleAdminRole('${u.id}',${!u.is_admin},'${u.handle}')">${u.is_admin?'<i class="fas fa-user"></i> unadmin':'<i class="fas fa-shield-alt"></i> admin'}</button>
-            <button class="btn-sm btn-sm-danger" onclick="banUser('${u.id}','${u.handle}')"><i class="fas fa-ban"></i></button>
-          </div>
-        </td>
+        <td><div class="admin-actions">
+          <button class="btn-sm btn-sm-gold" onclick="openBadgeModal('${u.id}','${u.handle}')"><i class="fas fa-star"></i> badges</button>
+          <button class="btn-sm btn-sm-ghost" onclick="toggleAdminRole('${u.id}',${!u.is_admin},'${u.handle}')">${u.is_admin?'<i class="fas fa-user"></i> unadmin':'<i class="fas fa-shield-alt"></i> admin'}</button>
+          <button class="btn-sm btn-sm-danger" onclick="banUser('${u.id}','${u.handle}')"><i class="fas fa-ban"></i></button>
+        </div></td>
       </tr>`;
     }).join('');
   }
@@ -939,7 +912,7 @@
     renderAdminTable(allUsers);
   }
 
-  // ══ BADGE GRANT MODAL ══
+  // ══ BADGE MODAL ══
   let _modalUid = null;
 
   function openBadgeModal(uid, handle) {
@@ -947,17 +920,13 @@
     document.getElementById('badgeModalSub').textContent = `for @${handle}`;
     const user = allUsers.find(u=>u.id===uid);
     const current = pj(user?.unlocked_badges, []);
-
     document.getElementById('badgeModalList').innerHTML = BADGE_DEFS.map(def => `
-      <div class="modal-badge-row ${def.early?'early-row':''} ${current.includes(def.id)?'checked':''}"
-           onclick="this.classList.toggle('checked')" data-id="${def.id}">
+      <div class="modal-badge-row ${def.early?'early-row':''} ${current.includes(def.id)?'checked':''}" onclick="this.classList.toggle('checked')" data-id="${def.id}">
         <div class="modal-check"><i class="fas fa-check"></i></div>
         <i class="modal-badge-icon ${def.icon}"></i>
         <div class="modal-badge-name">${def.label}</div>
-        ${def.early ? `<span style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:3px;padding:2px 6px">early</span>` : ''}
-      </div>`
-    ).join('');
-
+        ${def.early ? `<span style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--gold);background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:3px;padding:2px 6px">early</span>` : ''}
+      </div>`).join('');
     document.getElementById('badgeModal').classList.add('open');
   }
 
@@ -968,11 +937,8 @@
 
   async function saveBadgeGrant() {
     if (!_modalUid) return;
-    const checked = Array.from(document.querySelectorAll('#badgeModalList .modal-badge-row.checked'))
-      .map(el => el.dataset.id);
-    const { error } = await sb.from('profiles')
-      .update({ unlocked_badges:JSON.stringify(checked), updated_at:new Date().toISOString() })
-      .eq('id', _modalUid);
+    const checked = Array.from(document.querySelectorAll('#badgeModalList .modal-badge-row.checked')).map(el => el.dataset.id);
+    const { error } = await sb.from('profiles').update({ unlocked_badges:JSON.stringify(checked), updated_at:new Date().toISOString() }).eq('id', _modalUid);
     if (error) { alert('save failed: '+error.message); return; }
     const idx = allUsers.findIndex(u=>u.id===_modalUid);
     if (idx !== -1) allUsers[idx].unlocked_badges = JSON.stringify(checked);
@@ -981,12 +947,11 @@
     renderAdminStats(allUsers);
   }
 
-  // close modal on bg click
-  document.getElementById('badgeModal').addEventListener('click', e => { if(e.target===document.getElementById('badgeModal')) closeBadgeModal(); });
+  document.getElementById('badgeModal').addEventListener('click', e => { if (e.target===document.getElementById('badgeModal')) closeBadgeModal(); });
 
   // ══ ALERT ══
   function showAlert(id, msg, type) {
-    const el = document.getElementById(id); if(!el) return;
+    const el = document.getElementById(id); if (!el) return;
     el.textContent = msg; el.className = 'alert '+type;
     setTimeout(()=>{ el.className='alert'; el.textContent=''; }, 5000);
   }
