@@ -372,26 +372,22 @@
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  // ── AUTH STATE — handles returning logged-in users only ──
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (!session?.user) { showGuest(); return; }
+  // ── AUTH STATE — check session on load for nav display only ──
+  async function initNav() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.user) return; // stay as guest
     const { data: profile } = await sb
       .from('profiles').select('handle, avatar_url')
       .eq('id', session.user.id).maybeSingle();
-    if (profile) showLoggedIn(profile.handle, profile.avatar_url);
-  });
-
-  function showLoggedIn(handle, avatarUrl) {
-    document.getElementById('navGuest').style.display = 'none';
-    const nav = document.getElementById('navLoggedIn');
-    nav.classList.add('visible');
-    document.getElementById('navHandle').textContent = '@' + handle;
-    if (avatarUrl) document.getElementById('navAvatar').style.backgroundImage = `url(${avatarUrl})`;
+    if (profile) {
+      document.getElementById('navGuest').style.display = 'none';
+      const nav = document.getElementById('navLoggedIn');
+      nav.classList.add('visible');
+      document.getElementById('navHandle').textContent = '@' + profile.handle;
+      if (profile.avatar_url) document.getElementById('navAvatar').style.backgroundImage = `url(${profile.avatar_url})`;
+    }
   }
-  function showGuest() {
-    document.getElementById('navGuest').style.display = 'flex';
-    document.getElementById('navLoggedIn').classList.remove('visible');
-  }
+  initNav();
 
   // ── STATS ──
   async function loadStats() {
