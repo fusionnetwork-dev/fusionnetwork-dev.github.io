@@ -246,7 +246,7 @@
   <div class="nav-user" id="navLoggedIn">
     <div class="nav-avatar" id="navAvatar"></div>
     <span id="navHandle">@you</span>
-    <a class="btn btn-ghost" href="dashboard.html">dashboard</a>
+    <a class="btn btn-ghost" href="/dashboard">dashboard</a>
     <button class="btn btn-ghost" onclick="logout()">log out</button>
   </div>
 </nav>
@@ -427,7 +427,7 @@
       }
 
       // Success — redirect to dashboard
-      window.location.href = 'dashboard.html';
+      window.location.href = '/dashboard';
       return;
     }
 
@@ -563,7 +563,7 @@
     }
 
     showAlert('loginAlert', '✓ logged in! redirecting...', 'success');
-    setTimeout(() => window.location.href = 'dashboard.html', 900);
+    setTimeout(() => window.location.href = '/dashboard', 900);
   }
 
   // ── LOG OUT ──
