@@ -40,8 +40,27 @@
     .nf-btn:hover { color:var(--text); background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.25); }
     #imgBg { position:fixed; inset:0; z-index:-1; background:center/cover no-repeat; opacity:0; transition:opacity 1s ease; pointer-events:none; }
     #imgBg.visible { opacity:1; }
-    #ytBg { position:fixed; inset:0; width:100%; height:100%; overflow:hidden; z-index:-1; pointer-events:none; background:#000; display:none; }
-    #ytBg iframe, #yt-player { position:fixed; inset:0; width:100%; height:100%; object-fit:cover; transform:none; border:none; }
+
+    /* FIX: removed display:none — visibility is now controlled entirely via JS */
+    #ytBg {
+      position:fixed; inset:0; width:100%; height:100%;
+      overflow:hidden; z-index:-1; pointer-events:none;
+      background:#000;
+      visibility:hidden; /* use visibility instead of display:none so iframe renders */
+    }
+    #ytBg.active { visibility:visible; }
+
+    /* FIX: iframe must fill its parent, not the viewport, since parent is already fixed */
+    #ytBg iframe, #yt-player {
+      position:absolute; /* NOT fixed — parent is already fixed */
+      top:50%; left:50%;
+      width:calc(100% + 200px); /* overshoot to ensure full cover */
+      height:calc(100% + 200px);
+      transform:translate(-50%, -50%);
+      border:none;
+      pointer-events:none;
+    }
+
     #splash { position:fixed; inset:0; background:#000; display:none; flex-direction:column; align-items:center; justify-content:center; z-index:99998; cursor:pointer; gap:14px; transition:opacity 0.9s ease; }
     #splash.active { display:flex; }
     #splash.out { opacity:0; pointer-events:none; }
@@ -141,6 +160,8 @@
   </div>
 
   <div id="imgBg"></div>
+
+  <!-- FIX: ytBg is always in the DOM, shown/hidden via .active class (visibility toggle) -->
   <div id="ytBg"></div>
 
   <div id="topBarTrigger"></div>
@@ -312,14 +333,15 @@
       ytApiReady = true;
     };
 
-    // Create / manage YouTube background player
-    function createYouTubeBackground(videoId) {
+    // FIX: Create YouTube background using the IFrame API properly
+    function createYouTubeBackground(videoId, muted) {
       if (!videoId) return;
 
       const container = document.getElementById('ytBg');
       if (!container) return;
 
-      container.style.display = 'block !important';
+      // FIX: Use classList instead of style to show — avoids !important issue entirely
+      container.classList.add('active');
 
       // Clean up old player
       if (ytPlayer) {
@@ -334,7 +356,7 @@
       container.appendChild(playerDiv);
 
       function initWhenReady() {
-        if (!ytApiReady) {
+        if (!ytApiReady || !window.YT || !window.YT.Player) {
           setTimeout(initWhenReady, 120);
           return;
         }
@@ -346,6 +368,7 @@
           playerVars: {
             autoplay: 1,
             controls: 0,
+            // FIX: always mute via playerVars — required by browsers for autoplay to work
             mute: 1,
             loop: 1,
             playlist: videoId,
@@ -358,6 +381,7 @@
             rel: 0,
             showinfo: 0,
             autohide: 1,
+            start: 0,
           },
           events: {
             onReady: (event) => {
@@ -365,13 +389,22 @@
               event.target.playVideo();
             },
             onStateChange: (event) => {
-              if (event.data === YT.PlayerState.ENDED || event.data === YT.PlayerState.UNSTARTED) {
-                event.target.seekTo(0);
-                event.target.playVideo();
+              // FIX: also handle PAUSED state — some browsers pause instead of ending
+              if (
+                event.data === YT.PlayerState.ENDED ||
+                event.data === YT.PlayerState.UNSTARTED ||
+                event.data === YT.PlayerState.PAUSED
+              ) {
+                try {
+                  event.target.seekTo(0);
+                  event.target.playVideo();
+                } catch(e) {}
               }
             },
             onError: (event) => {
               console.warn("YouTube background error:", event.data);
+              // FIX: hide container gracefully on error so it doesn't leave a black box
+              container.classList.remove('active');
             }
           }
         });
@@ -556,8 +589,10 @@
       if (profile.show_views !== false) document.getElementById('views').classList.add('visible');
       window._showTopBarBriefly && window._showTopBarBriefly();
 
-      if (CS.bg_type === 'video' && profile.youtube_video_id && CS.show_video_bg !== false) {
-        createYouTubeBackground(profile.youtube_video_id);
+      // FIX: check bg_type, show_video_bg, AND that a video ID actually exists
+      const videoId = CS.youtube_video_id || profile.youtube_video_id;
+      if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
+        createYouTubeBackground(videoId, CS.mute_video !== false);
       }
 
       typeBio(profile.bio || '');
