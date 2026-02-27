@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600;700&family=Syne:wght@400;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Raleway:wght@400;600;700;800&family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     *, *::before, *::after {
       margin: 0;
@@ -67,6 +66,7 @@
       gap: 16px;
       transition: opacity 0.6s ease;
     }
+
     #loading.out {
       opacity: 0;
       pointer-events: none;
@@ -84,9 +84,10 @@
       -webkit-text-fill-color: transparent;
       animation: shimmer 2s ease infinite;
     }
+
     @keyframes shimmer {
       0%, 100% { background-position: 0% }
-      50%      { background-position: 100% }
+      50% { background-position: 100% }
     }
 
     .load-handle {
@@ -111,9 +112,10 @@
       animation: loadSlide 1.2s ease-in-out infinite;
       border-radius: 2px;
     }
+
     @keyframes loadSlide {
-      0%   { background-position: 0%; width: 0% }
-      50%  { background-position: 100%; width: 70% }
+      0% { background-position: 0%; width: 0% }
+      50% { background-position: 100%; width: 70% }
       100% { background-position: 200%; width: 100% }
     }
 
@@ -129,6 +131,7 @@
       padding: 20px;
       z-index: 1;
     }
+
     #notFound.visible {
       display: flex;
     }
@@ -169,6 +172,7 @@
       transition: all 0.2s;
       margin-top: 8px;
     }
+
     .nf-btn:hover {
       color: var(--text);
       background: rgba(255,255,255,0.05);
@@ -184,6 +188,7 @@
       transition: opacity 1s ease;
       pointer-events: none;
     }
+
     #imgBg.visible {
       opacity: 1;
     }
@@ -194,18 +199,20 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-    
+      z-index: -1;
       pointer-events: none;
       background: #000;
       display: none;
     }
+
     #ytBg iframe, #yt-player {
- position: fixed;
-inset: 0;
-width: 100%;
-height: 100%;
-object-fit: cover;
-transform: none;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: none;
+      border: none;
     }
 
     #splash {
@@ -221,8 +228,15 @@ transform: none;
       gap: 14px;
       transition: opacity 0.9s ease;
     }
-    #splash.active  { display: flex; }
-    #splash.out     { opacity: 0; pointer-events: none; }
+
+    #splash.active {
+      display: flex;
+    }
+
+    #splash.out {
+      opacity: 0;
+      pointer-events: none;
+    }
 
     .splash-site {
       font-family: 'Geist Mono', monospace;
@@ -246,9 +260,10 @@ transform: none;
       -webkit-text-fill-color: transparent;
       animation: splashShimmer 2.8s ease-in-out infinite;
     }
+
     @keyframes splashShimmer {
       0%, 100% { background-position: 0% 50% }
-      50%      { background-position: 100% 50% }
+      50% { background-position: 100% 50% }
     }
 
     .splash-hint {
@@ -259,9 +274,10 @@ transform: none;
       text-transform: uppercase;
       animation: pulse 2s ease-in-out infinite;
     }
+
     @keyframes pulse {
       0%, 100% { opacity: 0.18 }
-      50%      { opacity: 0.5 }
+      50% { opacity: 0.5 }
     }
 
     #topBarTrigger {
@@ -291,6 +307,7 @@ transform: none;
       transform: translateY(-100%);
       transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
     }
+
     .top-bar.visible {
       transform: translateY(0);
     }
@@ -325,6 +342,7 @@ transform: none;
       justify-content: center;
       padding: 80px 20px 60px;
     }
+
     .page.visible {
       display: flex;
     }
@@ -344,12 +362,14 @@ transform: none;
       opacity: 0;
       transition: transform 0.1s ease-out;
     }
+
     .card.loaded {
       animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
     }
+
     @keyframes fadeUp {
       from { opacity: 0 }
-      to   { opacity: 1 }
+      to { opacity: 1 }
     }
 
     .card::before {
@@ -366,8 +386,9 @@ transform: none;
       animation: borderScroll 4s linear infinite;
       pointer-events: none;
     }
+
     @keyframes borderScroll {
-      0%   { background-position: 0% }
+      0% { background-position: 0% }
       100% { background-position: 300% }
     }
 
@@ -398,6 +419,7 @@ transform: none;
       color: rgba(255,255,255,0.4);
       background: #1a1a1a;
     }
+
     .avatar img {
       width: 100%;
       height: 100%;
@@ -405,12 +427,14 @@ transform: none;
       border-radius: 50%;
       display: block;
     }
+
     .avatar:hover {
       transform: scale(1.1) rotate(6deg) !important;
     }
+
     @keyframes yinYang {
       0%, 100% { box-shadow: -4px -4px 14px rgba(255,255,255,0.5), 4px 4px 14px rgba(0,0,0,0.9) }
-      50%      { box-shadow: 4px 4px 14px rgba(255,255,255,0.5), -4px -4px 14px rgba(0,0,0,0.9) }
+      50% { box-shadow: 4px 4px 14px rgba(255,255,255,0.5), -4px -4px 14px rgba(0,0,0,0.9) }
     }
 
     .user-info {
@@ -469,6 +493,7 @@ transform: none;
       height: 20px;
       cursor: default;
     }
+
     .badge i {
       font-size: 10px;
       background: linear-gradient(110deg, #666, #ccc, #fff, #ccc, #666);
@@ -478,6 +503,7 @@ transform: none;
       -webkit-text-fill-color: transparent;
       animation: shimmer 3s ease infinite;
     }
+
     .badge img {
       width: 14px;
       height: 14px;
@@ -485,6 +511,7 @@ transform: none;
       border-radius: 2px;
       filter: brightness(0.7);
     }
+
     .badge:hover img {
       filter: brightness(1);
     }
@@ -510,6 +537,7 @@ transform: none;
       z-index: 10;
       color: rgba(255,255,255,0.7);
     }
+
     .badge:hover .badge-tip {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
@@ -535,6 +563,7 @@ transform: none;
       border-radius: 8px;
       padding: 5px 11px;
     }
+
     .status.visible {
       display: inline-flex;
     }
@@ -545,9 +574,13 @@ transform: none;
       border-radius: 50%;
       flex-shrink: 0;
     }
+
     .status-dot.online { background: #43b581; box-shadow: 0 0 6px #43b581; }
-    .status-dot.idle   { background: #faa61a; box-shadow: 0 0 6px #faa61a; }
-    .status-dot.dnd    { background: #f04747;  box-shadow: 0 0 6px #f04747; }
+
+    .status-dot.idle { background: #faa61a; box-shadow: 0 0 6px #faa61a; }
+
+    .status-dot.dnd { background: #f04747; box-shadow: 0 0 6px #f04747; }
+
     .status-dot.offline { background: #4f545c; }
 
     .bio {
@@ -568,9 +601,10 @@ transform: none;
       vertical-align: middle;
       margin-left: 1px;
     }
+
     @keyframes blink {
       0%, 100% { opacity: 1 }
-      50%      { opacity: 0 }
+      50% { opacity: 0 }
     }
 
     .socials {
@@ -598,6 +632,7 @@ transform: none;
       letter-spacing: 0.05em;
       white-space: nowrap;
     }
+
     .social-btn:hover {
       background: rgba(255,255,255,0.09);
       border-color: var(--border2);
@@ -605,9 +640,11 @@ transform: none;
       transform: translateY(-3px);
       box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
+
     .social-btn i {
       font-size: 13px;
     }
+
     .social-btn img {
       width: 16px;
       height: 16px;
@@ -649,9 +686,11 @@ transform: none;
       font-size: 13px;
       color: rgba(255,255,255,0.6);
     }
+
     .views.visible {
       display: flex;
     }
+
     .views i {
       font-size: 12px;
       color: rgba(255,255,255,0.35);
@@ -669,6 +708,7 @@ transform: none;
       text-decoration: none;
       transition: color 0.2s;
     }
+
     .watermark:hover {
       color: rgba(255,255,255,0.4);
     }
@@ -687,6 +727,7 @@ transform: none;
       pointer-events: none;
       transition: opacity 0.2s;
     }
+
     .nav-overlay.active {
       opacity: 1;
       pointer-events: all;
@@ -706,6 +747,7 @@ transform: none;
       transform: translateY(16px) scale(0.97);
       transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
     }
+
     .nav-overlay.active .nav-box {
       transform: none;
     }
@@ -757,6 +799,7 @@ transform: none;
       cursor: pointer;
       transition: all 0.2s;
     }
+
     .nav-no:hover {
       background: rgba(255,255,255,0.04);
       color: var(--text);
@@ -779,6 +822,7 @@ transform: none;
       text-transform: uppercase;
       transition: filter 0.2s;
     }
+
     .nav-yes:hover {
       filter: brightness(1.3);
     }
@@ -790,7 +834,6 @@ transform: none;
   </style>
 </head>
 <body>
-
   <div id="loading">
     <div class="load-logo">swaqq.xyz</div>
     <div class="load-handle" id="loadHandle"></div>
@@ -868,22 +911,19 @@ transform: none;
   </div>
 
   <script>
-    const SUPABASE_URL  = 'https://cwaifnbgkqqecatggvrx.supabase.co';
+    const SUPABASE_URL = 'https://cwaifnbgkqqecatggvrx.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YWlmbmJna3FxZWNhdGdndnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzgzNzUsImV4cCI6MjA4NzcxNDM3NX0.5o3aI40Z8orNW1yOVWt7uAsP4TJ6MvVPqFidaTOf0cE';
-
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
-
     const BADGE_DEFS = [
-      { id: 'early',     label: 'Early',     icon: 'fas fa-seedling'    },
-      { id: 'owner',     label: 'Owner',     icon: 'fas fa-crown'       },
-      { id: 'developer', label: 'Developer', icon: 'fas fa-code'        },
-      { id: 'staff',     label: 'Staff',     icon: 'fas fa-shield-alt'  },
-      { id: 'vip',       label: 'VIP',       icon: 'fas fa-star'        },
-      { id: 'verified',  label: 'Verified',  icon: 'fas fa-check-circle'},
-      { id: 'og',        label: 'OG',        icon: 'fas fa-fire'        },
+      { id: 'early', label: 'Early', icon: 'fas fa-seedling' },
+      { id: 'owner', label: 'Owner', icon: 'fas fa-crown' },
+      { id: 'developer', label: 'Developer', icon: 'fas fa-code' },
+      { id: 'staff', label: 'Staff', icon: 'fas fa-shield-alt' },
+      { id: 'vip', label: 'VIP', icon: 'fas fa-star' },
+      { id: 'verified', label: 'Verified', icon: 'fas fa-check-circle' },
+      { id: 'og', label: 'OG', icon: 'fas fa-fire' },
     ];
-
     const CS_DEF = {
       bg_type: 'video',
       bg_image_url: '',
@@ -916,51 +956,52 @@ transform: none;
         if (profile[key] !== undefined && profile[key] !== null) return profile[key];
         return CS_DEF[key];
       };
-return {
-    bg_type: get('bg_type'),
-    bg_image_url: get('bg_image_url'),
-    bg_opacity: get('bg_opacity'),
-    bg_color: get('bg_color'),
-    bg_grad1: get('bg_grad1'),
-    bg_grad2: get('bg_grad2'),
-    bg_grad_dir: get('bg_grad_dir'),
-    show_video_bg: get('show_video_bg'),
-    mute_video: get('mute_video'),
-    card_font: get('card_font'),
-    accent_color: get('accent_color'),
-    card_blur: get('card_blur'),
-    card_opacity: get('card_opacity'),
-    card_glow: get('card_glow'),
-    card_rounded: get('card_rounded'),
-    show_uid_scramble: get('show_uid_scramble'),
-    youtube_video_id: get('youtube_video_id') || profile.youtube_video_id || '',   // ← here
-    custom_font_name: blob.custom_font_name || null,
-    custom_font_family: blob.custom_font_family || null,
-    custom_font_data: blob.custom_font_data || null,
-    custom_icons: blob.custom_icons || [],
-  };
+
+      return {
+        bg_type: get('bg_type'),
+        bg_image_url: get('bg_image_url'),
+        bg_opacity: get('bg_opacity'),
+        bg_color: get('bg_color'),
+        bg_grad1: get('bg_grad1'),
+        bg_grad2: get('bg_grad2'),
+        bg_grad_dir: get('bg_grad_dir'),
+        show_video_bg: get('show_video_bg'),
+        mute_video: get('mute_video'),
+        card_font: get('card_font'),
+        accent_color: get('accent_color'),
+        card_blur: get('card_blur'),
+        card_opacity: get('card_opacity'),
+        card_glow: get('card_glow'),
+        card_rounded: get('card_rounded'),
+        show_uid_scramble: get('show_uid_scramble'),
+        youtube_video_id: get('youtube_video_id') || profile.youtube_video_id || '',
+        custom_font_name: blob.custom_font_name || null,
+        custom_font_family: blob.custom_font_family || null,
+        custom_font_data: blob.custom_font_data || null,
+        custom_icons: blob.custom_icons || [],
+      };
     }
 
     function guessIcon(label) {
       const map = {
-        discord:    'fab fa-discord',
-        youtube:    'fab fa-youtube',
-        twitter:    'fab fa-twitter',
-        x:          'fab fa-x-twitter',
-        instagram:  'fab fa-instagram',
-        tiktok:     'fab fa-tiktok',
-        roblox:     'fas fa-gamepad',
-        twitch:     'fab fa-twitch',
-        github:     'fab fa-github',
-        spotify:    'fab fa-spotify',
+        discord: 'fab fa-discord',
+        youtube: 'fab fa-youtube',
+        twitter: 'fab fa-twitter',
+        x: 'fab fa-x-twitter',
+        instagram: 'fab fa-instagram',
+        tiktok: 'fab fa-tiktok',
+        roblox: 'fas fa-gamepad',
+        twitch: 'fab fa-twitch',
+        github: 'fab fa-github',
+        spotify: 'fab fa-spotify',
         'guns.lol': 'fas fa-crosshairs',
-        steam:      'fab fa-steam',
-        reddit:     'fab fa-reddit',
-        telegram:   'fab fa-telegram',
-        music:      'fas fa-music',
-        website:    'fas fa-globe',
-        link:       'fas fa-link',
-        email:      'fas fa-envelope'
+        steam: 'fab fa-steam',
+        reddit: 'fab fa-reddit',
+        telegram: 'fab fa-telegram',
+        music: 'fas fa-music',
+        website: 'fas fa-globe',
+        link: 'fas fa-link',
+        email: 'fas fa-envelope'
       };
       return map[(label || '').toLowerCase()] || 'fas fa-link';
     }
@@ -996,8 +1037,8 @@ return {
       window._showTopBarBriefly = () => showBar();
     })();
 
-    let ytPlayer    = null;
-    let ytApiReady  = false;
+    let ytPlayer = null;
+    let ytApiReady = false;
 
     function loadYouTubeIframeAPI() {
       if (window.YT && window.YT.Player) {
@@ -1006,8 +1047,8 @@ return {
       }
       const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
-      const first = document.getElementsByTagName('script')[0];
-      first.parentNode.insertBefore(tag, first);
+      const firstScript = document.getElementsByTagName('script')[0];
+      firstScript.parentNode.insertBefore(tag, firstScript);
     }
 
     window.onYouTubeIframeAPIReady = function() {
@@ -1016,31 +1057,32 @@ return {
 
     function createYouTubeBackground(videoId) {
       if (!videoId) return;
-
       const container = document.getElementById('ytBg');
       if (!container) return;
 
+      container.style.display = 'block !important';
+
       if (ytPlayer) {
-        try { ytPlayer.destroy(); } catch {}
+        ytPlayer.destroy();
         ytPlayer = null;
       }
 
-      const old = document.getElementById('yt-player');
-      if (old) old.remove();
+      const oldPlayer = document.getElementById('yt-player');
+      if (oldPlayer) oldPlayer.remove();
 
       const playerDiv = document.createElement('div');
       playerDiv.id = 'yt-player';
       container.appendChild(playerDiv);
 
-     container.style.display = 'block !important';
-
-      function initWhenReady() {
+      function initPlayer() {
         if (!ytApiReady) {
-          setTimeout(initWhenReady, 120);
+          setTimeout(initPlayer, 100);
           return;
         }
 
         ytPlayer = new YT.Player('yt-player', {
+          height: '100%',
+          width: '100%',
           videoId: videoId,
           playerVars: {
             autoplay: 1,
@@ -1048,33 +1090,35 @@ return {
             mute: 1,
             loop: 1,
             playlist: videoId,
+            modestbranding: 1,
+            rel: 0,
+            showinfo: 0,
+            iv_load_policy: 3,
             playsinline: 1,
             disablekb: 1,
             fs: 0,
-            iv_load_policy: 3,
             cc_load_policy: 0,
-            rel: 0,
-           
+            autohide: 1,
           },
           events: {
-            onReady: (e) => {
-              e.target.mute();
-              e.target.playVideo();
+            onReady: function(event) {
+              event.target.mute();
+              event.target.playVideo();
             },
-            onStateChange: (e) => {
-              if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.UNSTARTED) {
-                e.target.seekTo(0);
-                e.target.playVideo();
+            onStateChange: function(event) {
+              if (event.data === YT.PlayerState.ENDED) {
+                event.target.seekTo(0, true);
+                event.target.playVideo();
               }
             },
-            onError: (e) => {
-              console.warn("YouTube background error:", e.data);
+            onError: function(event) {
+              console.warn('YouTube Player Error:', event.data);
             }
           }
         });
       }
 
-      initWhenReady();
+      initPlayer();
     }
 
     loadYouTubeIframeAPI();
@@ -1143,7 +1187,6 @@ return {
       const rawBadges = Array.isArray(profile.badges) ? profile.badges : (() => {
         try { return JSON.parse(profile.badges || '[]'); } catch { return []; }
       })();
-
       if (rawBadges.length > 0) {
         badgesEl.style.display = 'inline-flex';
         rawBadges.forEach(badgeId => {
@@ -1160,13 +1203,11 @@ return {
       const rawSocials = Array.isArray(profile.socials) ? profile.socials : (() => {
         try { return JSON.parse(profile.socials || '[]'); } catch { return []; }
       })();
-
       rawSocials.forEach(s => {
         if (!s.url) return;
         const a = document.createElement('a');
         a.className = 'social-btn nav-link';
         a.dataset.href = s.url;
-
         let iconHtml;
         if (s.icon_type === 'custom' && s.icon_data) {
           iconHtml = `<img src="${s.icon_data}" alt="">`;
@@ -1175,7 +1216,6 @@ return {
         } else {
           iconHtml = `<i class="${guessIcon(s.label)}"></i>`;
         }
-
         a.innerHTML = iconHtml + ' ' + (s.label || '');
         socialsEl.appendChild(a);
       });
@@ -1199,12 +1239,12 @@ return {
     function applyCardStyles(CS) {
       const card = document.getElementById('card');
       const accent = CS.accent_color || '#ffffff';
-      const blur   = CS.card_blur  ?? 12;
-      const op     = CS.card_opacity ?? 85;
-      const glow   = CS.card_glow   !== false;
+      const blur = CS.card_blur ?? 12;
+      const op = CS.card_opacity ?? 85;
+      const glow = CS.card_glow !== false;
       const rounded = CS.card_rounded !== false;
-      const font   = CS.card_font || 'Syne';
-      const alpha  = Math.round(op * 2.55).toString(16).padStart(2, '0');
+      const font = CS.card_font || 'Syne';
+      const alpha = Math.round(op * 2.55).toString(16).padStart(2, '0');
 
       card.style.background = '#111111' + alpha;
       card.style.backdropFilter = `blur(${blur}px)`;
@@ -1268,10 +1308,7 @@ return {
 
       document.getElementById('profilePage').classList.add('visible');
       document.getElementById('card').classList.add('loaded');
-console.log('revealProfile called');
-console.log('CS.bg_type:', CS.bg_type);
-console.log('profile.youtube_video_id:', profile.youtube_video_id);
-console.log('CS.show_video_bg:', CS.show_video_bg);
+
       if (profile.show_views !== false) {
         document.getElementById('views').classList.add('visible');
       }
@@ -1347,7 +1384,6 @@ console.log('CS.show_video_bg:', CS.show_video_bg);
 
       function tick() {
         bioEl.innerHTML = text.slice(0, idx) + '<span class="bio-cursor"></span>';
-
         if (!deleting) {
           if (idx < text.length) {
             idx++;
