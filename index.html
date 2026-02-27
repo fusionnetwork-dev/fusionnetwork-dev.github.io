@@ -432,7 +432,7 @@
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
 
-  // ── SIGN UP — fully self-contained, no onAuthStateChange dependency ──
+  // ── SIGN UP ──
   async function signUp() {
     const handle   = document.getElementById('signupHandle').value.trim().toLowerCase();
     const email    = document.getElementById('signupEmail').value.trim();
@@ -451,60 +451,80 @@
 
     setLoading('signupBtn', true);
 
-    // Check handle availability
-    const { data: taken } = await sb
-      .from('profiles').select('id').eq('handle', handle).maybeSingle();
-    if (taken) {
+    // Safety net — never hang forever
+    const safetyTimer = setTimeout(() => {
       setLoading('signupBtn', false);
-      return showAlert('signupAlert', `@${handle} is already taken. try another.`, 'error');
-    }
+      showAlert('signupAlert', 'request timed out — check your connection and try again.', 'error');
+    }, 12000);
 
-    // Create auth user — signUp returns the session directly when email confirm is off
-    const { data: authData, error: authErr } = await sb.auth.signUp({ email, password });
-    if (authErr) {
-      setLoading('signupBtn', false);
-      return showAlert('signupAlert', authErr.message, 'error');
-    }
-
-    const userId = authData?.user?.id;
-    if (!userId) {
-      setLoading('signupBtn', false);
-      return showAlert('signupAlert', 'signup failed — no user returned. try again.', 'error');
-    }
-
-    // Insert profile row — user is now in auth.users so FK is safe
-    const { error: profileErr } = await sb.from('profiles').insert({
-      id:                userId,
-      handle:            handle,
-      display_name:      handle,
-      bio:               '',
-      discord_id:        '',
-      youtube_video_id:  '',
-      badges:            JSON.stringify([]),
-      socials:           JSON.stringify([]),
-      show_views:        true,
-      show_splash:       true,
-      show_tilt:         true,
-      show_uid_scramble: true,
-      show_video_bg:     true,
-      mute_video:        false,
-      view_count:        0,
-      created_at:        new Date().toISOString()
-    });
-
-    if (profileErr) {
-      setLoading('signupBtn', false);
-      // If it's a duplicate (rare double-submit), still continue
-      if (profileErr.code === '23505') {
-        showAlert('signupAlert', '✓ account ready! redirecting...', 'success');
-        setTimeout(() => window.location.href = '/dashboard', 900);
-        return;
+    try {
+      // Check handle availability
+      const { data: taken } = await sb
+        .from('profiles').select('id').eq('handle', handle).maybeSingle();
+      if (taken) {
+        clearTimeout(safetyTimer);
+        setLoading('signupBtn', false);
+        return showAlert('signupAlert', `@${handle} is already taken. try another.`, 'error');
       }
-      return showAlert('signupAlert', 'profile setup failed: ' + profileErr.message, 'error');
-    }
 
-    showAlert('signupAlert', '✓ account created! redirecting...', 'success');
-    setTimeout(() => window.location.href = '/dashboard', 900);
+      // Create auth user
+      const { data: authData, error: authErr } = await sb.auth.signUp({ email, password });
+      if (authErr) {
+        clearTimeout(safetyTimer);
+        setLoading('signupBtn', false);
+        return showAlert('signupAlert', authErr.message, 'error');
+      }
+
+      const userId = authData?.user?.id;
+      if (!userId) {
+        clearTimeout(safetyTimer);
+        setLoading('signupBtn', false);
+        // This usually means email confirmation is still ON in Supabase
+        return showAlert('signupAlert', 'signup incomplete — make sure "Confirm email" is OFF in Supabase Auth settings.', 'error');
+      }
+
+      // Insert profile row
+      const { error: profileErr } = await sb.from('profiles').insert({
+        id:                userId,
+        handle:            handle,
+        display_name:      handle,
+        bio:               '',
+        discord_id:        '',
+        youtube_video_id:  '',
+        badges:            JSON.stringify([]),
+        socials:           JSON.stringify([]),
+        show_views:        true,
+        show_splash:       true,
+        show_tilt:         true,
+        show_uid_scramble: true,
+        show_video_bg:     true,
+        mute_video:        false,
+        view_count:        0,
+        created_at:        new Date().toISOString()
+      });
+
+      clearTimeout(safetyTimer);
+
+      if (profileErr) {
+        setLoading('signupBtn', false);
+        if (profileErr.code === '23505') {
+          // Duplicate — account already existed, just redirect
+          showAlert('signupAlert', '✓ account ready! redirecting...', 'success');
+          setTimeout(() => window.location.href = '/dashboard', 900);
+          return;
+        }
+        // Show the actual error so we know what's wrong
+        return showAlert('signupAlert', 'profile error: ' + profileErr.message + ' (code: ' + profileErr.code + ')', 'error');
+      }
+
+      showAlert('signupAlert', '✓ account created! redirecting...', 'success');
+      setTimeout(() => window.location.href = '/dashboard', 900);
+
+    } catch (err) {
+      clearTimeout(safetyTimer);
+      setLoading('signupBtn', false);
+      showAlert('signupAlert', 'unexpected error: ' + err.message, 'error');
+    }
   }
 
   // ── LOG IN ──
