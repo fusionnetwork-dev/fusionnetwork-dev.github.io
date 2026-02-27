@@ -389,10 +389,10 @@
           <div class="toggle-row"><div><div class="toggle-title">3d card tilt</div><div class="toggle-sub">card tilts in 3d with mouse movement</div></div><div class="toggle on" id="tTilt" onclick="this.classList.toggle('on')"></div></div>
           <div class="toggle-row" id="tUidRow">
             <div>
-              <div class="toggle-title">uid scramble <span id="tUidAdminTag" style="display:none;font-family:'Geist Mono',monospace;font-size:9px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--gold);border-radius:4px;padding:1px 6px;margin-left:6px">admin only</span></div>
+              <div class="toggle-title">uid scramble <span id="tUidAdminTag" style="font-family:'Geist Mono',monospace;font-size:9px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--gold);border-radius:4px;padding:1px 6px;margin-left:6px">admin only</span></div>
               <div class="toggle-sub" id="tUidSub">animated runic characters next to your name</div>
             </div>
-            <div class="toggle on locked" id="tUid"></div>
+            <div class="toggle locked" id="tUid"></div>
           </div>
           <div class="toggle-row"><div><div class="toggle-title">view counter</div><div class="toggle-sub">show total visits at the bottom of your page</div></div><div class="toggle on" id="tViews" onclick="this.classList.toggle('on')"></div></div>
         </div>
@@ -434,10 +434,10 @@
         <div class="dash-section-sub">what plays behind your card</div>
         <div class="card-edit">
           <div class="tab-pills">
-            <button class="tab-pill active" onclick="switchBgTab('video',this)">video</button>
-            <button class="tab-pill" onclick="switchBgTab('image',this)">image url</button>
-            <button class="tab-pill" onclick="switchBgTab('color',this)">solid color</button>
-            <button class="tab-pill" onclick="switchBgTab('gradient',this)">gradient</button>
+            <button class="tab-pill active" data-bgtab="video" onclick="switchBgTab('video',this)">video</button>
+            <button class="tab-pill" data-bgtab="image" onclick="switchBgTab('image',this)">image url</button>
+            <button class="tab-pill" data-bgtab="color" onclick="switchBgTab('color',this)">solid color</button>
+            <button class="tab-pill" data-bgtab="gradient" onclick="switchBgTab('gradient',this)">gradient</button>
           </div>
 
           <!-- VIDEO BG -->
@@ -507,14 +507,14 @@
                 <div class="field-label">color 1</div>
                 <div style="display:flex;gap:8px;align-items:center">
                   <input type="color" id="fGrad1" value="#0a0a1a" oninput="updateBgPreview()">
-                  <input class="field-input" type="text" id="fGrad1Hex" placeholder="#0a0a1a" oninput="document.getElementById('fGrad1').value=this.value;updateBgPreview()">
+                  <input class="field-input" type="text" id="fGrad1Hex" placeholder="#0a0a1a" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){document.getElementById('fGrad1').value=this.value;updateBgPreview()}">
                 </div>
               </div>
               <div class="field">
                 <div class="field-label">color 2</div>
                 <div style="display:flex;gap:8px;align-items:center">
                   <input type="color" id="fGrad2" value="#1a0a0a" oninput="updateBgPreview()">
-                  <input class="field-input" type="text" id="fGrad2Hex" placeholder="#1a0a0a" oninput="document.getElementById('fGrad2').value=this.value;updateBgPreview()">
+                  <input class="field-input" type="text" id="fGrad2Hex" placeholder="#1a0a0a" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){document.getElementById('fGrad2').value=this.value;updateBgPreview()}">
                 </div>
               </div>
             </div>
@@ -738,84 +738,95 @@
 </div>
 
 <script>
-  // ══ SUPABASE ══
   const SUPABASE_URL  = 'https://cwaifnbgkqqecatggvrx.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YWlmbmJna3FxZWNhdGdndnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzgzNzUsImV4cCI6MjA4NzcxNDM3NX0.5o3aI40Z8orNW1yOVWt7uAsP4TJ6MvVPqFidaTOf0cE';
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
+  // ─── STATE ────────────────────────────────────────────────────────────────────
   let currentUser    = null;
   let currentProfile = null;
   let isAdmin        = false;
   let allUsers       = [];
   let activeBadges   = [];
   let unlockedBadges = [];
-  let currentBgTab   = 'video';
-  let selectedFont   = 'Syne';
-  let selectedAccent = '#ffffff';
+  let currentBgTab   = 'video';  // tracks which BG panel is visible
 
+  // All customization lives in one JSON blob — no schema changes needed
+  let CS = {};
+  const CS_DEF = {
+    bg_type:'video', bg_image_url:'', bg_opacity:70,
+    bg_color:'#070707', bg_grad1:'#0a0a1a', bg_grad2:'#1a0a0a', bg_grad_dir:'to bottom right',
+    show_video_bg:true, mute_video:false,
+    card_font:'Syne', accent_color:'#ffffff',
+    card_blur:12, card_opacity:85, card_glow:true, card_rounded:true,
+    show_uid_scramble:false   // ← always starts false
+  };
+  function cs(k){ return (CS[k] !== undefined && CS[k] !== null) ? CS[k] : CS_DEF[k]; }
+
+  // ─── DEFS ─────────────────────────────────────────────────────────────────────
   const BADGE_DEFS = [
     { id:'early',     label:'Early',     icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',  locked:false, early:true  },
-    { id:'owner',     label:'Owner',     icon:'fas fa-crown',       desc:'platform owner',                        locked:true,  early:false },
-    { id:'developer', label:'Developer', icon:'fas fa-code',        desc:'built something for swaqq.xyz',         locked:true,  early:false },
-    { id:'staff',     label:'Staff',     icon:'fas fa-shield-alt',  desc:'part of the swaqq.xyz team',            locked:true,  early:false },
-    { id:'vip',       label:'VIP',       icon:'fas fa-star',        desc:'very important person',                 locked:true,  early:false },
-    { id:'verified',  label:'Verified',  icon:'fas fa-check-circle',desc:'verified identity',                     locked:true,  early:false },
-    { id:'og',        label:'OG',        icon:'fas fa-fire',        desc:'been here from day one',                locked:true,  early:false },
+    { id:'owner',     label:'Owner',     icon:'fas fa-crown',       desc:'platform owner',                        locked:true  },
+    { id:'developer', label:'Developer', icon:'fas fa-code',        desc:'built something for swaqq.xyz',         locked:true  },
+    { id:'staff',     label:'Staff',     icon:'fas fa-shield-alt',  desc:'part of the swaqq.xyz team',            locked:true  },
+    { id:'vip',       label:'VIP',       icon:'fas fa-star',        desc:'very important person',                 locked:true  },
+    { id:'verified',  label:'Verified',  icon:'fas fa-check-circle',desc:'verified identity',                     locked:true  },
+    { id:'og',        label:'OG',        icon:'fas fa-fire',        desc:'been here from day one',                locked:true  },
   ];
 
   const FONTS = [
-    { name:'Syne',           label:'Syne',         sample:'Aa' },
-    { name:'Geist Mono',     label:'Geist Mono',   sample:'Aa' },
-    { name:'Space Grotesk',  label:'Space',        sample:'Aa' },
-    { name:'Raleway',        label:'Raleway',      sample:'Aa' },
-    { name:'Bebas Neue',     label:'Bebas',        sample:'AA' },
-    { name:'Inter',          label:'Inter',        sample:'Aa' },
-    { name:'JetBrains Mono', label:'JetBrains',    sample:'Aa' },
-    { name:'DM Mono',        label:'DM Mono',      sample:'Aa' },
-    { name:'serif',          label:'Serif',        sample:'Aa' },
+    { name:'Syne',           label:'Syne',        sample:'Aa' },
+    { name:'Geist Mono',     label:'Geist Mono',  sample:'Aa' },
+    { name:'Space Grotesk',  label:'Space',       sample:'Aa' },
+    { name:'Raleway',        label:'Raleway',     sample:'Aa' },
+    { name:'Bebas Neue',     label:'Bebas',       sample:'AA' },
+    { name:'Inter',          label:'Inter',       sample:'Aa' },
+    { name:'JetBrains Mono', label:'JetBrains',  sample:'Aa' },
+    { name:'DM Mono',        label:'DM Mono',     sample:'Aa' },
+    { name:'serif',          label:'Serif',       sample:'Aa' },
   ];
 
   const ICON_OPTIONS = [
-    { icon:'fab fa-discord',    label:'discord' },
-    { icon:'fab fa-youtube',    label:'youtube' },
-    { icon:'fab fa-twitter',    label:'twitter' },
-    { icon:'fab fa-x-twitter',  label:'x' },
-    { icon:'fab fa-instagram',  label:'instagram' },
-    { icon:'fab fa-tiktok',     label:'tiktok' },
-    { icon:'fab fa-twitch',     label:'twitch' },
-    { icon:'fab fa-github',     label:'github' },
-    { icon:'fab fa-spotify',    label:'spotify' },
-    { icon:'fab fa-steam',      label:'steam' },
-    { icon:'fab fa-reddit',     label:'reddit' },
-    { icon:'fab fa-snapchat',   label:'snapchat' },
-    { icon:'fab fa-linkedin',   label:'linkedin' },
-    { icon:'fab fa-pinterest',  label:'pinterest' },
-    { icon:'fab fa-tumblr',     label:'tumblr' },
-    { icon:'fab fa-telegram',   label:'telegram' },
-    { icon:'fab fa-whatsapp',   label:'whatsapp' },
-    { icon:'fab fa-kick',       label:'kick' },
-    { icon:'fas fa-gamepad',    label:'roblox' },
-    { icon:'fas fa-crosshairs', label:'guns.lol' },
-    { icon:'fas fa-music',      label:'music' },
-    { icon:'fas fa-globe',      label:'website' },
-    { icon:'fas fa-link',       label:'link' },
-    { icon:'fas fa-envelope',   label:'email' },
-    { icon:'fas fa-shopping-bag',label:'shop' },
-    { icon:'fas fa-heart',      label:'heart' },
-    { icon:'fas fa-star',       label:'star' },
-    { icon:'fas fa-fire',       label:'fire' },
-    { icon:'fas fa-bolt',       label:'bolt' },
-    { icon:'fas fa-camera',     label:'photo' },
-    { icon:'fas fa-film',       label:'film' },
-    { icon:'fas fa-coffee',     label:'coffee' },
-    { icon:'fas fa-code',       label:'code' },
-    { icon:'fas fa-paint-brush',label:'art' },
+    { icon:'fab fa-discord',     label:'discord'  },
+    { icon:'fab fa-youtube',     label:'youtube'  },
+    { icon:'fab fa-twitter',     label:'twitter'  },
+    { icon:'fab fa-x-twitter',   label:'x'        },
+    { icon:'fab fa-instagram',   label:'instagram'},
+    { icon:'fab fa-tiktok',      label:'tiktok'   },
+    { icon:'fab fa-twitch',      label:'twitch'   },
+    { icon:'fab fa-github',      label:'github'   },
+    { icon:'fab fa-spotify',     label:'spotify'  },
+    { icon:'fab fa-steam',       label:'steam'    },
+    { icon:'fab fa-reddit',      label:'reddit'   },
+    { icon:'fab fa-snapchat',    label:'snapchat' },
+    { icon:'fab fa-linkedin',    label:'linkedin' },
+    { icon:'fab fa-pinterest',   label:'pinterest'},
+    { icon:'fab fa-tumblr',      label:'tumblr'   },
+    { icon:'fab fa-telegram',    label:'telegram' },
+    { icon:'fab fa-whatsapp',    label:'whatsapp' },
+    { icon:'fab fa-kick',        label:'kick'     },
+    { icon:'fas fa-gamepad',     label:'roblox'   },
+    { icon:'fas fa-crosshairs',  label:'guns.lol' },
+    { icon:'fas fa-music',       label:'music'    },
+    { icon:'fas fa-globe',       label:'website'  },
+    { icon:'fas fa-link',        label:'link'     },
+    { icon:'fas fa-envelope',    label:'email'    },
+    { icon:'fas fa-shopping-bag',label:'shop'     },
+    { icon:'fas fa-heart',       label:'heart'    },
+    { icon:'fas fa-star',        label:'star'     },
+    { icon:'fas fa-fire',        label:'fire'     },
+    { icon:'fas fa-bolt',        label:'bolt'     },
+    { icon:'fas fa-camera',      label:'photo'    },
+    { icon:'fas fa-film',        label:'film'     },
+    { icon:'fas fa-coffee',      label:'coffee'   },
+    { icon:'fas fa-code',        label:'code'     },
+    { icon:'fas fa-paint-brush', label:'art'      },
   ];
 
-  // ══ AUTH ══
+  // ─── AUTH ────────────────────────────────────────────────────────────────────
   async function initAuth() {
-    const { data: { session } } = await sb.auth.getSession();
+    const { data:{ session } } = await sb.auth.getSession();
     if (!session) { window.location.href = '/'; return; }
     currentUser = session.user;
     await loadProfile();
@@ -831,20 +842,21 @@
 
   async function loadProfile() {
     const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
-    if (error || !data) return;
+    if (error || !data) { console.error('loadProfile:', error); return; }
     currentProfile = data;
     isAdmin        = !!data.is_admin;
     activeBadges   = pj(data.badges, []);
     unlockedBadges = pj(data.unlocked_badges, []);
+    CS             = pj(data.custom_settings, {});
 
+    // Unlock uid scramble toggle for admins only
     if (isAdmin) {
       document.getElementById('adminNavSection').style.display = 'block';
-      // Unlock uid scramble for admins
       const tUid = document.getElementById('tUid');
       tUid.classList.remove('locked');
       tUid.onclick = () => tUid.classList.toggle('on');
-      document.getElementById('tUidAdminTag').style.display = 'none';
-      document.getElementById('tUidSub').textContent = 'animated runic characters next to your name';
+      const adminTag = document.getElementById('tUidAdminTag');
+      if (adminTag) adminTag.style.display = 'none';
     }
 
     populateForm(data);
@@ -853,69 +865,111 @@
   }
 
   function pj(v, fallback) {
-    if (!v) return fallback;
+    if (v === null || v === undefined) return fallback;
     if (typeof v === 'object') return v;
     try { return JSON.parse(v); } catch { return fallback; }
   }
 
-  // ══ POPULATE FORM ══
+  // ─── POPULATE ────────────────────────────────────────────────────────────────
   function populateForm(p) {
+    // Core fields
     document.getElementById('fDisplayName').value = p.display_name || '';
     document.getElementById('fHandle').value      = p.handle || '';
     document.getElementById('fBio').value         = p.bio || '';
     document.getElementById('fDiscordId').value   = p.discord_id || '';
     document.getElementById('fAvatarUrl').value   = p.avatar_url || '';
     document.getElementById('fYoutubeId').value   = p.youtube_video_id || '';
+    if (p.youtube_video_id) renderVideoThumb(p.youtube_video_id);
 
-    // Background fields
-    if (p.bg_image_url) document.getElementById('fBgImageUrl').value = p.bg_image_url;
-    if (p.bg_color) { document.getElementById('fBgColor').value = p.bg_color; document.getElementById('fBgColorHex').value = p.bg_color; }
-    if (p.bg_grad1) { document.getElementById('fGrad1').value = p.bg_grad1; document.getElementById('fGrad1Hex').value = p.bg_grad1; }
-    if (p.bg_grad2) { document.getElementById('fGrad2').value = p.bg_grad2; document.getElementById('fGrad2Hex').value = p.bg_grad2; }
-    if (p.bg_opacity) { document.getElementById('fBgOpacity').value = p.bg_opacity; document.getElementById('bgOpacityVal').textContent = p.bg_opacity + '%'; }
-    if (p.bg_type) switchBgTab(p.bg_type, null, true);
+    // Core toggles
+    tog('tSplash',      p.show_splash  !== false);
+    tog('tTilt',        p.show_tilt    !== false);
+    tog('tViews',       p.show_views   !== false);
 
-    // Customize
-    selectedFont   = p.card_font   || 'Syne';
-    selectedAccent = p.accent_color || '#ffffff';
-    document.getElementById('fAccentColor').value = selectedAccent;
-    document.getElementById('fAccentHex').value   = selectedAccent;
-    if (p.card_blur !== undefined) { document.getElementById('fCardBlur').value = p.card_blur; document.getElementById('blurVal').textContent = p.card_blur + 'px'; }
-    if (p.card_opacity !== undefined) { document.getElementById('fCardOpacity').value = p.card_opacity; document.getElementById('cardOpacityVal').textContent = p.card_opacity + '%'; }
-    tog('tCardGlow', p.card_glow !== false);
-    tog('tRounded',  p.card_rounded !== false);
+    // UID scramble: ALWAYS off by default for non-admins
+    // For admins, read from CS
+    if (isAdmin) tog('tUid', cs('show_uid_scramble') === true);
+    // else stays locked + off
 
-    tog('tSplash',      p.show_splash       !== false);
-    tog('tTilt',        p.show_tilt         !== false);
-    tog('tViews',       p.show_views        !== false);
-    tog('tShowVideo',   p.show_video_bg     !== false);
-    tog('tMuteDefault', p.mute_video        === true);
-    // uid scramble only for admin
-    if (isAdmin) tog('tUid', p.show_uid_scramble !== false);
+    // Video toggles from CS
+    tog('tShowVideo',   cs('show_video_bg') !== false);
+    tog('tMuteDefault', cs('mute_video')    === true);
 
+    // Background fields from CS
+    const bgImageUrl = cs('bg_image_url');
+    const bgColor    = cs('bg_color');
+    const bgGrad1    = cs('bg_grad1');
+    const bgGrad2    = cs('bg_grad2');
+    const bgOpacity  = cs('bg_opacity');
+    const bgGradDir  = cs('bg_grad_dir');
+
+    document.getElementById('fBgImageUrl').value   = bgImageUrl;
+    document.getElementById('fBgColor').value      = bgColor;
+    document.getElementById('fBgColorHex').value   = bgColor;
+    document.getElementById('fGrad1').value        = bgGrad1;
+    document.getElementById('fGrad1Hex').value     = bgGrad1;
+    document.getElementById('fGrad2').value        = bgGrad2;
+    document.getElementById('fGrad2Hex').value     = bgGrad2;
+    document.getElementById('fBgOpacity').value    = bgOpacity;
+    document.getElementById('bgOpacityVal').textContent = bgOpacity + '%';
+
+    // Set gradient direction select
+    const dirSel = document.getElementById('fGradDir');
+    for (let i = 0; i < dirSel.options.length; i++) {
+      if (dirSel.options[i].value === bgGradDir) { dirSel.selectedIndex = i; break; }
+    }
+
+    // Customize fields from CS
+    const accent = cs('accent_color');
+    document.getElementById('fAccentColor').value = accent;
+    document.getElementById('fAccentHex').value   = accent;
+
+    const cardBlur    = cs('card_blur');
+    const cardOpacity = cs('card_opacity');
+    document.getElementById('fCardBlur').value    = cardBlur;
+    document.getElementById('blurVal').textContent = cardBlur + 'px';
+    document.getElementById('fCardOpacity').value  = cardOpacity;
+    document.getElementById('cardOpacityVal').textContent = cardOpacity + '%';
+
+    tog('tCardGlow', cs('card_glow')    !== false);
+    tog('tRounded',  cs('card_rounded') !== false);
+
+    // Sidebar
     const name = p.display_name || p.handle || '?';
     document.getElementById('sideName').textContent    = name;
     document.getElementById('sideHandle').textContent  = '@' + p.handle;
-    document.getElementById('sideUrlText').textContent = `swaqq.xyz/@${p.handle}`;
-    document.getElementById('sideUrl').href            = `/@${p.handle}`;
-    document.getElementById('viewProfileLink').href    = `/@${p.handle}`;
+    document.getElementById('sideUrlText').textContent = 'swaqq.xyz/@' + p.handle;
+    document.getElementById('sideUrl').href            = '/@' + p.handle;
+    document.getElementById('viewProfileLink').href    = '/@' + p.handle;
     document.getElementById('hdrHandle').textContent   = p.handle;
 
     const sav = document.getElementById('sideAvatar');
-    if (p.avatar_url) { sav.style.backgroundImage = `url(${p.avatar_url})`; sav.textContent = ''; }
-    else              { sav.style.backgroundImage = ''; sav.textContent = name[0].toUpperCase(); }
+    if (p.avatar_url) {
+      sav.style.backgroundImage = 'url(' + p.avatar_url + ')';
+      sav.style.backgroundSize  = 'cover';
+      sav.textContent = '';
+    } else {
+      sav.style.backgroundImage = '';
+      sav.textContent = name[0].toUpperCase();
+    }
 
     setPfpPreview(p.avatar_url, name);
-    if (p.youtube_video_id) renderVideoThumb(p.youtube_video_id);
 
+    // Stats
     document.getElementById('statViews').textContent   = (p.view_count || 0).toLocaleString();
     const socs = pj(p.socials, []);
     document.getElementById('statSocials').textContent = socs.length;
     document.getElementById('statBadges').textContent  = activeBadges.length;
 
     renderSocials(socs);
-    updateCardPreview();
+
+    // Activate the saved BG tab (do this after fields are set)
+    currentBgTab = cs('bg_type');
+    activateBgTab(currentBgTab);
+
+    // Refresh previews
     updateBgPreview();
+    updateCardPreview();
   }
 
   function tog(id, on) {
@@ -924,139 +978,173 @@
   }
   function gtog(id) { return document.getElementById(id)?.classList.contains('on') ?? false; }
 
-  // ══ TABS ══
+  // ─── TABS ─────────────────────────────────────────────────────────────────────
   const TABS = ['profile','appearance','customize','socials','badges','settings','admin'];
   function showTab(name) {
     TABS.forEach(t => {
-      document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
+      document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
     });
     document.querySelectorAll('.nav-item[onclick]').forEach(el => {
-      const match = el.getAttribute('onclick').match(/showTab\('(\w+)'\)/);
-      if (match) el.classList.toggle('active', match[1] === name);
+      const m = el.getAttribute('onclick').match(/showTab\('(\w+)'\)/);
+      if (m) el.classList.toggle('active', m[1] === name);
     });
     if (name === 'admin' && isAdmin) loadAdminData();
     if (name === 'customize') { buildFontGrid(); updateCardPreview(); }
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   }
 
-  // ══ BG TABS ══
-  function switchBgTab(tab, btnEl, silent) {
-    currentBgTab = tab;
+  // ─── BG TABS ──────────────────────────────────────────────────────────────────
+  // activateBgTab: sets currentBgTab, shows panel, updates pill highlight
+  function activateBgTab(tab) {
+    currentBgTab = tab || 'video';
+    // Show correct panel
     document.querySelectorAll('.bg-panel').forEach(p => p.classList.remove('active'));
-    const panel = document.getElementById('bgPanel-' + tab);
+    const panel = document.getElementById('bgPanel-' + currentBgTab);
     if (panel) panel.classList.add('active');
-    if (!silent) {
-      document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-      else document.querySelectorAll('.tab-pill').forEach(b => { if(b.textContent.toLowerCase().trim()===tab) b.classList.add('active'); });
-    }
+    // Highlight correct pill
+    document.querySelectorAll('.tab-pill').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.bgtab === currentBgTab);
+    });
+  }
+
+  // Called by pill buttons
+  function switchBgTab(tab, btn) {
+    activateBgTab(tab);
     updateBgPreview();
   }
 
   function updateBgPreview() {
     const box = document.getElementById('bgPreviewBox');
+    if (!box) return;
+    // Reset all inline styles first
+    box.style.cssText = 'width:100%;height:80px;border-radius:10px;border:1px solid var(--border);transition:all 0.3s;';
+
     if (currentBgTab === 'video') {
       box.style.background = '#0a0a0a';
-      box.style.backgroundImage = 'none';
-      box.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:Geist Mono,monospace;font-size:11px;color:rgba(255,255,255,0.2)"><i class="fab fa-youtube" style="margin-right:6px"></i> video bg active</div>';
+      box.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:\'Geist Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.2);gap:6px"><i class="fab fa-youtube"></i> video bg — set id above to preview</div>';
     } else if (currentBgTab === 'image') {
-      const url = document.getElementById('fBgImageUrl').value;
-      const op  = document.getElementById('fBgOpacity').value;
-      box.style.backgroundImage = url ? `url(${url})` : 'none';
-      box.style.backgroundSize  = 'cover';
-      box.style.backgroundPosition = 'center';
-      box.style.opacity = op / 100;
-      box.innerHTML = '';
+      const url = document.getElementById('fBgImageUrl').value.trim();
+      const op  = parseInt(document.getElementById('fBgOpacity').value) / 100;
+      if (url) {
+        box.style.backgroundImage    = 'url(' + url + ')';
+        box.style.backgroundSize     = 'cover';
+        box.style.backgroundPosition = 'center';
+        box.style.opacity            = String(op);
+      } else {
+        box.style.background = '#111';
+        box.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:\'Geist Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.18)">paste an image url above</div>';
+      }
     } else if (currentBgTab === 'color') {
       box.style.background = document.getElementById('fBgColor').value;
-      box.style.backgroundImage = 'none';
-      box.style.opacity = 1;
-      box.innerHTML = '';
     } else if (currentBgTab === 'gradient') {
       const c1  = document.getElementById('fGrad1').value;
       const c2  = document.getElementById('fGrad2').value;
       const dir = document.getElementById('fGradDir').value;
-      box.style.background = `linear-gradient(${dir}, ${c1}, ${c2})`;
-      box.style.backgroundImage = 'none';
-      box.style.opacity = 1;
-      box.innerHTML = '';
+      box.style.background = 'linear-gradient(' + dir + ', ' + c1 + ', ' + c2 + ')';
     }
   }
 
   function pickPreset(chip, color) {
     document.querySelectorAll('#bgPanel-color .color-chip').forEach(c => c.classList.remove('selected'));
     chip.classList.add('selected');
-    document.getElementById('fBgColor').value   = color;
+    document.getElementById('fBgColor').value    = color;
     document.getElementById('fBgColorHex').value = color;
     updateBgPreview();
   }
-  function syncColorFromHex(val) { if(/^#[0-9a-f]{6}$/i.test(val)) { document.getElementById('fBgColor').value = val; updateBgPreview(); } }
 
-  // ══ FONT GRID ══
+  function syncColorFromHex(val) {
+    if (/^#[0-9a-f]{6}$/i.test(val)) {
+      document.getElementById('fBgColor').value = val;
+      updateBgPreview();
+    }
+  }
+
+  // ─── FONT GRID ────────────────────────────────────────────────────────────────
   function buildFontGrid() {
-    const grid = document.getElementById('fontGrid'); grid.innerHTML = '';
+    const grid = document.getElementById('fontGrid'); if (!grid) return;
+    const cur  = cs('card_font');
+    grid.innerHTML = '';
     FONTS.forEach(f => {
       const card = document.createElement('div');
-      card.className = 'font-card' + (f.name === selectedFont ? ' selected' : '');
-      card.innerHTML = `<div class="font-card-name" style="font-family:'${f.name}',sans-serif">${f.sample}</div><div class="font-card-label">${f.label}</div>`;
-      card.onclick = () => { selectedFont = f.name; buildFontGrid(); updateCardPreview(); };
+      card.className = 'font-card' + (f.name === cur ? ' selected' : '');
+      card.innerHTML =
+        '<div class="font-card-name" style="font-family:\'' + f.name + '\',sans-serif">' + f.sample + '</div>' +
+        '<div class="font-card-label">' + f.label + '</div>';
+      card.onclick = () => { CS.card_font = f.name; buildFontGrid(); updateCardPreview(); };
       grid.appendChild(card);
     });
   }
 
-  // ══ ACCENT ══
+  // ─── ACCENT ───────────────────────────────────────────────────────────────────
   function pickAccent(chip, color) {
     document.querySelectorAll('#tab-customize .color-chip').forEach(c => c.classList.remove('selected'));
     chip.classList.add('selected');
-    selectedAccent = color;
+    CS.accent_color = color;
     document.getElementById('fAccentColor').value = color;
     document.getElementById('fAccentHex').value   = color;
     updateCardPreview();
   }
-  function pickAccentFromInput(val) { selectedAccent = val; document.getElementById('fAccentHex').value = val; updateCardPreview(); }
-  function syncAccentHex(val) { if(/^#[0-9a-f]{6}$/i.test(val)) { selectedAccent = val; document.getElementById('fAccentColor').value = val; updateCardPreview(); } }
+  function pickAccentFromInput(val) {
+    CS.accent_color = val;
+    document.getElementById('fAccentHex').value = val;
+    updateCardPreview();
+  }
+  function syncAccentHex(val) {
+    if (/^#[0-9a-f]{6}$/i.test(val)) {
+      CS.accent_color = val;
+      document.getElementById('fAccentColor').value = val;
+      updateCardPreview();
+    }
+  }
 
-  // ══ CARD PREVIEW ══
+  // ─── CARD PREVIEW ────────────────────────────────────────────────────────────
   function updateCardPreview() {
-    const mini    = document.getElementById('cardPreviewMini');
+    const mini = document.getElementById('cardPreviewMini'); if (!mini) return;
     const blur    = document.getElementById('fCardBlur').value;
     const opacity = document.getElementById('fCardOpacity').value;
     const glow    = gtog('tCardGlow');
     const rounded = gtog('tRounded');
+    const accent  = cs('accent_color');
+    const font    = cs('card_font');
     const name    = document.getElementById('fDisplayName').value || currentProfile?.display_name || 'your name';
     const bio     = document.getElementById('fBio').value || currentProfile?.bio || 'your bio here...';
     const avatar  = document.getElementById('fAvatarUrl').value || currentProfile?.avatar_url || '';
-    const alpha   = Math.round(parseInt(opacity) * 2.55);
-    const hexAlpha = alpha.toString(16).padStart(2,'0');
-    const bgColor = `#111111${hexAlpha}`;
+    const alpha   = Math.round(parseInt(opacity) * 2.55).toString(16).padStart(2, '0');
 
-    mini.style.background    = bgColor;
-    mini.style.backdropFilter= `blur(${blur}px)`;
-    mini.style.borderColor   = glow ? selectedAccent + '55' : 'rgba(255,255,255,0.08)';
-    mini.style.boxShadow     = glow ? `0 0 20px ${selectedAccent}22` : 'none';
-    mini.style.borderRadius  = rounded ? '16px' : '6px';
+    mini.style.background     = '#111111' + alpha;
+    mini.style.backdropFilter = 'blur(' + blur + 'px)';
+    mini.style.borderColor    = glow ? accent + '55' : 'rgba(255,255,255,0.08)';
+    mini.style.boxShadow      = glow ? '0 0 20px ' + accent + '22' : 'none';
+    mini.style.borderRadius   = rounded ? '16px' : '6px';
 
     const pName = document.getElementById('previewName');
     const pBio  = document.getElementById('previewBio');
     const pAv   = document.getElementById('previewAvatar');
-    pName.style.fontFamily = `'${selectedFont}', sans-serif`;
-    pBio.style.fontFamily  = `'${selectedFont}', monospace`;
-    pName.style.color      = selectedAccent;
-    pName.textContent      = name;
-    pBio.textContent       = bio;
-    if (avatar) pAv.style.backgroundImage = `url(${avatar})`;
+    pName.style.fontFamily = "'" + font + "', sans-serif";
+    pBio.style.fontFamily  = "'" + font + "', monospace";
+    pName.style.color = accent;
+    pName.textContent = name;
+    pBio.textContent  = bio;
+    if (avatar) { pAv.style.backgroundImage = 'url(' + avatar + ')'; pAv.style.backgroundSize = 'cover'; }
     else pAv.style.backgroundImage = 'none';
   }
 
-  // ══ PFP ══
+  // ─── PFP ─────────────────────────────────────────────────────────────────────
   function setPfpPreview(url, name) {
     const el = document.getElementById('pfpPreview');
-    if (url) { el.style.backgroundImage = `url(${url})`; el.style.backgroundSize = 'cover'; el.textContent = ''; }
-    else     { el.style.backgroundImage = ''; el.textContent = (name||'?')[0].toUpperCase(); }
+    if (url) {
+      el.style.backgroundImage    = 'url(' + url + ')';
+      el.style.backgroundSize     = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.textContent = '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = (name || '?')[0].toUpperCase();
+    }
   }
 
   const pfpZone = document.getElementById('pfpZone');
-  pfpZone.addEventListener('dragover', e => { e.preventDefault(); pfpZone.classList.add('drag'); });
+  pfpZone.addEventListener('dragover',  e => { e.preventDefault(); pfpZone.classList.add('drag'); });
   pfpZone.addEventListener('dragleave', () => pfpZone.classList.remove('drag'));
   pfpZone.addEventListener('drop', e => {
     e.preventDefault(); pfpZone.classList.remove('drag');
@@ -1065,22 +1153,23 @@
   function handlePfpUpload(input) { if (input.files[0]) uploadPfpFile(input.files[0]); }
 
   async function uploadPfpFile(file) {
-    if (file.size > 2*1024*1024) { showAlert('appearanceAlert','file too large — max 2mb.','error'); return; }
+    if (file.size > 2 * 1024 * 1024) { showAlert('appearanceAlert', 'file too large — max 2mb.', 'error'); return; }
     const st = document.getElementById('pfpStatus');
     st.className = 'pfp-upload-status uploading';
     st.innerHTML = '<div class="spinner-sm"></div><span>uploading...</span>';
 
     const ext  = file.name.split('.').pop();
-    const path = `avatars/${currentUser.id}.${ext}`;
-    const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
+    const path = 'avatars/' + currentUser.id + '.' + ext;
+    const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
 
     if (upErr) {
-      // Fallback to base64
+      // Fallback: base64
       const reader = new FileReader();
-      reader.onload = e => {
-        const url = e.target.result;
+      reader.onload = ev => {
+        const url = ev.target.result;
         document.getElementById('fAvatarUrl').value = url;
         setPfpPreview(url, currentProfile?.display_name || currentProfile?.handle);
+        updateCardPreview();
         st.className = 'pfp-upload-status done'; st.textContent = '✓ ready — hit save to apply';
       };
       reader.readAsDataURL(file);
@@ -1092,7 +1181,7 @@
     setPfpPreview(publicUrl, currentProfile?.display_name || currentProfile?.handle);
     updateCardPreview();
     st.className = 'pfp-upload-status done'; st.textContent = '✓ uploaded — hit save to apply';
-    showAlert('appearanceAlert','avatar uploaded! save to apply it.','success');
+    showAlert('appearanceAlert', 'avatar uploaded! save to apply it.', 'success');
   }
 
   function applyAvatarUrl() {
@@ -1101,41 +1190,58 @@
     updateCardPreview();
   }
 
-  // ══ VIDEO ══
+  // ─── VIDEO ────────────────────────────────────────────────────────────────────
   let _vTimer;
   function debounceVideoPreview(val) { clearTimeout(_vTimer); _vTimer = setTimeout(() => renderVideoThumb(val), 700); }
+
   function renderVideoThumb(id) {
     const wrap = document.getElementById('videoThumb');
     const ph   = document.getElementById('videoPlaceholder');
-    if (!id || id.trim().length < 4) { ph.style.display='flex'; const old=wrap.querySelector('iframe'); if(old)old.remove(); return; }
+    if (!id || id.trim().length < 4) {
+      ph.style.display = 'flex';
+      const old = wrap.querySelector('iframe'); if (old) old.remove();
+      return;
+    }
     ph.style.display = 'none';
     let iframe = wrap.querySelector('iframe');
-    if (!iframe) { iframe = document.createElement('iframe'); iframe.setAttribute('allow','autoplay;encrypted-media'); wrap.appendChild(iframe); }
-    iframe.src = `https://www.youtube.com/embed/${id.trim()}?autoplay=0&controls=0&mute=1&modestbranding=1&rel=0`;
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.setAttribute('allow', 'autoplay; encrypted-media');
+      iframe.setAttribute('allowfullscreen', '');
+      wrap.appendChild(iframe);
+    }
+    iframe.src = 'https://www.youtube.com/embed/' + id.trim() +
+      '?autoplay=0&controls=1&mute=1&modestbranding=1&rel=0&enablejsapi=0';
     if (!wrap.querySelector('.video-thumb-overlay')) {
-      const ov = document.createElement('div'); ov.className='video-thumb-overlay';
-      ov.innerHTML='<span class="video-thumb-label">preview — muted</span>'; wrap.appendChild(ov);
+      const ov = document.createElement('div'); ov.className = 'video-thumb-overlay';
+      ov.innerHTML = '<span class="video-thumb-label">preview — muted</span>';
+      wrap.appendChild(ov);
     }
   }
 
-  // ══ BADGES ══
+  // ─── BADGES ───────────────────────────────────────────────────────────────────
   function renderBadgeGrid() {
     const grid = document.getElementById('badgeGrid'); grid.innerHTML = '';
     BADGE_DEFS.forEach(def => {
       const canUse   = !def.locked || unlockedBadges.includes(def.id);
       const isActive = activeBadges.includes(def.id);
       const card = document.createElement('div');
-      card.className = ['badge-card', def.early?'early-badge':'', canUse?'unlocked':'locked', isActive?'selected':''].filter(Boolean).join(' ');
+      card.className = ['badge-card', def.early ? 'early-badge' : '', canUse ? 'unlocked' : 'locked', isActive ? 'selected' : ''].filter(Boolean).join(' ');
       card.dataset.id = def.id;
       let stateHtml;
       if (!canUse) {
-        stateHtml = `<div class="badge-state"><span class="badge-locked-tag">locked</span></div>`;
+        stateHtml = '<div class="badge-state"><span class="badge-locked-tag">locked</span></div>';
       } else if (def.early) {
-        stateHtml = `<div class="badge-state">${isActive ? `<div class="badge-pip"><i class="fas fa-check"></i></div>` : `<span class="badge-early-tag">early</span>`}</div>`;
+        stateHtml = '<div class="badge-state">' + (isActive
+          ? '<div class="badge-pip"><i class="fas fa-check"></i></div>'
+          : '<span class="badge-early-tag">early</span>') + '</div>';
       } else {
-        stateHtml = `<div class="badge-state"><div class="badge-pip ${isActive?'checked':''}"><i class="fas fa-check"></i></div></div>`;
+        stateHtml = '<div class="badge-state"><div class="badge-pip' + (isActive ? ' checked' : '') + '"><i class="fas fa-check"></i></div></div>';
       }
-      card.innerHTML = `<div class="badge-icon"><i class="${def.icon}"></i></div><div class="badge-info"><div class="badge-name">${def.label}</div><div class="badge-desc">${def.desc}</div></div>${stateHtml}`;
+      card.innerHTML =
+        '<div class="badge-icon"><i class="' + def.icon + '"></i></div>' +
+        '<div class="badge-info"><div class="badge-name">' + def.label + '</div><div class="badge-desc">' + def.desc + '</div></div>' +
+        stateHtml;
       if (canUse) card.addEventListener('click', () => toggleBadge(def.id));
       grid.appendChild(card);
     });
@@ -1144,9 +1250,10 @@
   }
 
   function toggleBadge(id) {
-    if (activeBadges.includes(id)) activeBadges = activeBadges.filter(b => b !== id);
-    else {
-      if (activeBadges.length >= 5) { showAlert('profileAlert','max 5 active badges.','error'); return; }
+    if (activeBadges.includes(id)) {
+      activeBadges = activeBadges.filter(b => b !== id);
+    } else {
+      if (activeBadges.length >= 5) { showAlert('profileAlert', 'max 5 active badges.', 'error'); return; }
       activeBadges.push(id);
     }
     renderBadgeGrid();
@@ -1158,14 +1265,14 @@
     activeBadges.forEach(id => {
       const def = BADGE_DEFS.find(b => b.id === id); if (!def) return;
       const pill = document.createElement('div');
-      pill.className = `active-pill ${def.early ? 'early' : ''}`;
-      pill.innerHTML = `<i class="${def.icon}" style="font-size:10px"></i> ${def.label}`;
+      pill.className = 'active-pill' + (def.early ? ' early' : '');
+      pill.innerHTML = '<i class="' + def.icon + '" style="font-size:10px"></i> ' + def.label;
       row.appendChild(pill);
     });
   }
 
-  // ══ ICON PICKER ══
-  let _iconPickerTarget = null;
+  // ─── ICON PICKER ─────────────────────────────────────────────────────────────
+  let _iconPickerTarget   = null;
   let _iconPickerSelected = null;
 
   function openIconPicker(rowEl) {
@@ -1173,8 +1280,9 @@
     _iconPickerSelected = rowEl.dataset.icon || 'fas fa-link';
     buildIconGrid('');
     document.getElementById('iconPickerOverlay').classList.add('open');
-    document.querySelector('.icon-search').value = '';
-    document.querySelector('.icon-search').focus();
+    const search = document.querySelector('.icon-search');
+    search.value = '';
+    search.focus();
   }
 
   function closeIconPicker() {
@@ -1184,12 +1292,14 @@
 
   function buildIconGrid(filter) {
     const grid = document.getElementById('iconGrid'); grid.innerHTML = '';
-    const filtered = filter ? ICON_OPTIONS.filter(o => o.label.includes(filter.toLowerCase())) : ICON_OPTIONS;
+    const filtered = filter
+      ? ICON_OPTIONS.filter(o => o.label.toLowerCase().includes(filter.toLowerCase()))
+      : ICON_OPTIONS;
     filtered.forEach(opt => {
       const el = document.createElement('div');
       el.className = 'icon-opt' + (opt.icon === _iconPickerSelected ? ' selected' : '');
       el.title = opt.label;
-      el.innerHTML = `<i class="${opt.icon}"></i>`;
+      el.innerHTML = '<i class="' + opt.icon + '"></i>';
       el.onclick = () => {
         _iconPickerSelected = opt.icon;
         document.querySelectorAll('.icon-opt').forEach(o => o.classList.remove('selected'));
@@ -1209,29 +1319,64 @@
     closeIconPicker();
   }
 
-  // ══ SOCIALS ══
+  // ─── SOCIALS ─────────────────────────────────────────────────────────────────
   function renderSocials(arr) {
     const ed = document.getElementById('socialsEditor'); ed.innerHTML = '';
-    (arr.length ? arr : []).forEach(s => addSocialRow(s.icon || guessIcon(s.label), s.label || '', s.url || ''));
+    arr.forEach(s => addSocialRow(s.icon || guessIcon(s.label), s.label || '', s.url || ''));
   }
 
   function guessIcon(label) {
-    const map = { discord:'fab fa-discord',youtube:'fab fa-youtube',twitter:'fab fa-twitter',x:'fab fa-x-twitter',instagram:'fab fa-instagram',tiktok:'fab fa-tiktok',roblox:'fas fa-gamepad',twitch:'fab fa-twitch',github:'fab fa-github',spotify:'fab fa-spotify','guns.lol':'fas fa-crosshairs',steam:'fab fa-steam',reddit:'fab fa-reddit',telegram:'fab fa-telegram' };
-    return map[(label||'').toLowerCase()] || 'fas fa-link';
+    const map = {
+      discord:'fab fa-discord', youtube:'fab fa-youtube', twitter:'fab fa-twitter',
+      x:'fab fa-x-twitter', instagram:'fab fa-instagram', tiktok:'fab fa-tiktok',
+      roblox:'fas fa-gamepad', twitch:'fab fa-twitch', github:'fab fa-github',
+      spotify:'fab fa-spotify', 'guns.lol':'fas fa-crosshairs', steam:'fab fa-steam',
+      reddit:'fab fa-reddit', telegram:'fab fa-telegram'
+    };
+    return map[(label || '').toLowerCase()] || 'fas fa-link';
   }
 
-  function addSocialRow(icon='fas fa-link', label='', url='') {
+  function addSocialRow(icon, label, url) {
+    icon  = icon  || 'fas fa-link';
+    label = label || '';
+    url   = url   || '';
     const ed = document.getElementById('socialsEditor');
-    if (ed.querySelectorAll('.social-row-edit').length >= 6) { showAlert('socialsAlert','max 6 links.','error'); return; }
+    if (ed.querySelectorAll('.social-row-edit').length >= 6) {
+      showAlert('socialsAlert', 'max 6 links.', 'error'); return;
+    }
     const row = document.createElement('div');
-    row.className = 'social-row-edit';
+    row.className  = 'social-row-edit';
     row.dataset.icon = icon;
-    row.innerHTML = `
-      <button class="social-icon-btn" title="click to change icon" onclick="openIconPicker(this.closest('.social-row-edit'))"><i class="${icon}"></i></button>
-      <input class="social-input" type="text" placeholder="label" value="${label}" style="border-right:1px solid var(--border);padding-right:8px">
-      <input class="social-input" type="url" placeholder="https://..." value="${url}">
-      <i class="fas fa-grip-vertical social-drag" title="drag to reorder"></i>
-      <button style="background:none;border:none;color:rgba(255,80,80,0.45);cursor:pointer;font-size:13px;padding:0" onclick="this.closest('.social-row-edit').remove()" title="remove"><i class="fas fa-times"></i></button>`;
+
+    const iconBtn = document.createElement('button');
+    iconBtn.className = 'social-icon-btn';
+    iconBtn.title = 'click to change icon';
+    iconBtn.innerHTML = '<i class="' + icon + '"></i>';
+    iconBtn.onclick = () => openIconPicker(row);
+
+    const lblIn = document.createElement('input');
+    lblIn.className   = 'social-input';
+    lblIn.type        = 'text';
+    lblIn.placeholder = 'label';
+    lblIn.value       = label;
+    lblIn.style.cssText = 'border-right:1px solid var(--border);padding-right:8px';
+
+    const urlIn = document.createElement('input');
+    urlIn.className   = 'social-input';
+    urlIn.type        = 'url';
+    urlIn.placeholder = 'https://...';
+    urlIn.value       = url;
+
+    const drag = document.createElement('i');
+    drag.className = 'fas fa-grip-vertical social-drag';
+    drag.title = 'drag to reorder';
+
+    const delBtn = document.createElement('button');
+    delBtn.style.cssText = 'background:none;border:none;color:rgba(255,80,80,0.45);cursor:pointer;font-size:13px;padding:0';
+    delBtn.innerHTML = '<i class="fas fa-times"></i>';
+    delBtn.onclick   = () => row.remove();
+
+    row.append(iconBtn, lblIn, urlIn, drag, delBtn);
     ed.appendChild(row);
   }
 
@@ -1243,25 +1388,53 @@
     })).filter(s => s.url);
   }
 
-  // ══ SAVE ══
+  // ─── SAVE ────────────────────────────────────────────────────────────────────
+  // All customization saved into one `custom_settings` JSON column.
+  // Only core columns (which definitely exist) are saved directly.
   async function saveProfile() {
-    const btn = document.getElementById('saveBtn'), st = document.getElementById('saveStatus');
+    const btn = document.getElementById('saveBtn');
+    const st  = document.getElementById('saveStatus');
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner" style="width:11px;height:11px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff"></span>';
+    btn.innerHTML = '<span class="spinner" style="display:inline-block;width:11px;height:11px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite"></span>';
 
     const handle = document.getElementById('fHandle').value.trim().toLowerCase();
     if (!/^[a-z0-9_]{2,20}$/.test(handle)) {
-      showAlert('profileAlert','handle: 2–20 chars, letters/numbers/underscores only.','error');
-      btn.disabled=false; btn.textContent='save changes →'; return;
+      showAlert('profileAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
+      btn.disabled = false; btn.textContent = 'save changes →'; return;
     }
     if (handle !== currentProfile.handle) {
-      const { data: taken } = await sb.from('profiles').select('id').eq('handle',handle).maybeSingle();
+      const { data: taken } = await sb.from('profiles').select('id').eq('handle', handle).maybeSingle();
       if (taken && taken.id !== currentUser.id) {
-        showAlert('profileAlert',`@${handle} is already taken.`,'error');
-        btn.disabled=false; btn.textContent='save changes →'; return;
+        showAlert('profileAlert', '@' + handle + ' is already taken.', 'error');
+        btn.disabled = false; btn.textContent = 'save changes →'; return;
       }
     }
 
+    // Build CS blob — snapshot ALL customization from current UI state
+    const newCS = {
+      // background
+      bg_type:           currentBgTab,
+      bg_image_url:      document.getElementById('fBgImageUrl').value.trim(),
+      bg_opacity:        parseInt(document.getElementById('fBgOpacity').value),
+      bg_color:          document.getElementById('fBgColor').value,
+      bg_grad1:          document.getElementById('fGrad1').value,
+      bg_grad2:          document.getElementById('fGrad2').value,
+      bg_grad_dir:       document.getElementById('fGradDir').value,
+      // video
+      show_video_bg:     gtog('tShowVideo'),
+      mute_video:        gtog('tMuteDefault'),
+      // customize
+      card_font:         cs('card_font'),        // updated directly in CS when clicked
+      accent_color:      document.getElementById('fAccentColor').value,
+      card_blur:         parseInt(document.getElementById('fCardBlur').value),
+      card_opacity:      parseInt(document.getElementById('fCardOpacity').value),
+      card_glow:         gtog('tCardGlow'),
+      card_rounded:      gtog('tRounded'),
+      // uid scramble — never save as true for non-admins
+      show_uid_scramble: isAdmin ? gtog('tUid') : false,
+    };
+
+    // Core schema columns only — guaranteed to exist
     const updates = {
       display_name:      document.getElementById('fDisplayName').value.trim() || handle,
       handle,
@@ -1271,64 +1444,75 @@
       youtube_video_id:  document.getElementById('fYoutubeId').value.trim(),
       show_splash:       gtog('tSplash'),
       show_tilt:         gtog('tTilt'),
-      show_uid_scramble: isAdmin ? gtog('tUid') : (currentProfile.show_uid_scramble || false),
       show_views:        gtog('tViews'),
-      show_video_bg:     gtog('tShowVideo'),
-      mute_video:        gtog('tMuteDefault'),
+      // Keep these core cols in sync for the public profile page to read
+      show_uid_scramble: newCS.show_uid_scramble,
+      show_video_bg:     newCS.show_video_bg,
+      mute_video:        newCS.mute_video,
       badges:            JSON.stringify(activeBadges),
       socials:           JSON.stringify(getSocials()),
-      // customize
-      card_font:         selectedFont,
-      accent_color:      selectedAccent,
-      card_blur:         parseInt(document.getElementById('fCardBlur').value),
-      card_opacity:      parseInt(document.getElementById('fCardOpacity').value),
-      card_glow:         gtog('tCardGlow'),
-      card_rounded:      gtog('tRounded'),
-      // background
-      bg_type:           currentBgTab,
-      bg_image_url:      document.getElementById('fBgImageUrl').value.trim(),
-      bg_opacity:        parseInt(document.getElementById('fBgOpacity').value),
-      bg_color:          document.getElementById('fBgColor').value,
-      bg_grad1:          document.getElementById('fGrad1').value,
-      bg_grad2:          document.getElementById('fGrad2').value,
-      bg_grad_dir:       document.getElementById('fGradDir').value,
+      custom_settings:   JSON.stringify(newCS),   // ← one blob, zero extra columns
       updated_at:        new Date().toISOString()
     };
 
-    const { error } = await sb.from('profiles').update(updates).eq('id', currentUser.id);
-    btn.disabled=false; btn.textContent='save changes →';
+    let { error } = await sb.from('profiles').update(updates).eq('id', currentUser.id);
 
-    if (error) { showAlert('profileAlert','save failed: '+error.message,'error'); return; }
+    // Graceful fallback: if custom_settings column doesn't exist yet, save without it
+    if (error && error.message && error.message.includes('custom_settings')) {
+      console.warn('custom_settings column missing — run SQL migration. Saving core fields only.');
+      const fallback = { ...updates };
+      delete fallback.custom_settings;
+      const res2 = await sb.from('profiles').update(fallback).eq('id', currentUser.id);
+      error = res2.error;
+      if (!error) showAlert('profileAlert', 'saved! add custom_settings column to persist customization.', 'success');
+    }
+
+    btn.disabled = false; btn.textContent = 'save changes →';
+
+    if (error) { showAlert('profileAlert', 'save failed: ' + error.message, 'error'); return; }
+
+    CS = newCS;
     currentProfile = { ...currentProfile, ...updates };
-    populateForm(currentProfile);
+
+    // Refresh sidebar name/avatar
+    const name = currentProfile.display_name || currentProfile.handle || '?';
+    document.getElementById('sideName').textContent    = name;
+    document.getElementById('sideHandle').textContent  = '@' + currentProfile.handle;
+    document.getElementById('sideUrlText').textContent = 'swaqq.xyz/@' + currentProfile.handle;
+    document.getElementById('sideUrl').href            = '/@' + currentProfile.handle;
+    document.getElementById('viewProfileLink').href    = '/@' + currentProfile.handle;
+    document.getElementById('hdrHandle').textContent   = currentProfile.handle;
+
     st.textContent = 'all changes saved ✓'; st.classList.add('saved');
-    setTimeout(() => { st.textContent='unsaved changes'; st.classList.remove('saved'); }, 3000);
+    setTimeout(() => { st.textContent = 'unsaved changes'; st.classList.remove('saved'); }, 3500);
   }
 
-  // ══ SETTINGS ══
+  // ─── SETTINGS ────────────────────────────────────────────────────────────────
   async function changePassword() {
-    const p1=document.getElementById('fNewPassword').value, p2=document.getElementById('fConfirmPassword').value;
-    if (!p1) return showAlert('settingsAlert','enter a new password.','error');
-    if (p1!==p2) return showAlert('settingsAlert','passwords do not match.','error');
-    if (p1.length<6) return showAlert('settingsAlert','password must be at least 6 chars.','error');
-    const { error } = await sb.auth.updateUser({ password:p1 });
-    if (error) return showAlert('settingsAlert',error.message,'error');
-    showAlert('settingsAlert','password updated!','success');
-    document.getElementById('fNewPassword').value=''; document.getElementById('fConfirmPassword').value='';
+    const p1 = document.getElementById('fNewPassword').value;
+    const p2 = document.getElementById('fConfirmPassword').value;
+    if (!p1) return showAlert('settingsAlert', 'enter a new password.', 'error');
+    if (p1 !== p2) return showAlert('settingsAlert', 'passwords do not match.', 'error');
+    if (p1.length < 6) return showAlert('settingsAlert', 'password must be at least 6 chars.', 'error');
+    const { error } = await sb.auth.updateUser({ password: p1 });
+    if (error) return showAlert('settingsAlert', error.message, 'error');
+    showAlert('settingsAlert', 'password updated!', 'success');
+    document.getElementById('fNewPassword').value = '';
+    document.getElementById('fConfirmPassword').value = '';
   }
 
   async function deleteAccount() {
     if (!confirm('permanently delete your account and profile? this cannot be undone.')) return;
-    await sb.from('profiles').delete().eq('id',currentUser.id);
+    await sb.from('profiles').delete().eq('id', currentUser.id);
     await sb.auth.signOut();
     window.location.href = '/';
   }
 
   async function doLogout() { await sb.auth.signOut(); window.location.href = '/'; }
 
-  // ══ ADMIN ══
+  // ─── ADMIN ────────────────────────────────────────────────────────────────────
   async function loadAdminData() {
-    const { data } = await sb.from('profiles').select('*').order('created_at',{ ascending:false });
+    const { data } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
     allUsers = data || [];
     renderAdminStats(allUsers);
     renderAdminTable(allUsers);
@@ -1336,92 +1520,109 @@
 
   function renderAdminStats(users) {
     document.getElementById('aTotalUsers').textContent = users.length;
-    document.getElementById('aTotalViews').textContent = users.reduce((a,u)=>a+(u.view_count||0),0).toLocaleString();
-    document.getElementById('aEarlyCount').textContent = users.filter(u=>pj(u.unlocked_badges,[]).includes('early')).length;
+    document.getElementById('aTotalViews').textContent = users.reduce((a, u) => a + (u.view_count || 0), 0).toLocaleString();
+    document.getElementById('aEarlyCount').textContent = users.filter(u => pj(u.unlocked_badges, []).includes('early')).length;
     const today = new Date().toDateString();
-    document.getElementById('aNewToday').textContent   = users.filter(u=>new Date(u.created_at).toDateString()===today).length;
+    document.getElementById('aNewToday').textContent   = users.filter(u => new Date(u.created_at).toDateString() === today).length;
   }
 
   function renderAdminTable(users) {
     const tb = document.getElementById('adminUserTbody');
-    if (!users.length) { tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">no users</td></tr>'; return; }
+    if (!users.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">no users</td></tr>'; return; }
     tb.innerHTML = users.map(u => {
-      const unlocked = pj(u.unlocked_badges,[]);
-      const initials = (u.display_name||u.handle||'?')[0].toUpperCase();
-      const av    = u.avatar_url ? `<div class="user-av" style="background-image:url(${u.avatar_url})"></div>` : `<div class="user-av">${initials}</div>`;
-      const pills = unlocked.length ? unlocked.map(id=>`<span class="badge-mini ${id==='early'?'early':''}">${id}</span>`).join('') : '<span style="color:var(--muted);font-size:10px">—</span>';
-      const joined = new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      const unlocked = pj(u.unlocked_badges, []);
+      const initials = (u.display_name || u.handle || '?')[0].toUpperCase();
+      const av       = u.avatar_url
+        ? '<div class="user-av" style="background-image:url(' + u.avatar_url + ');background-size:cover"></div>'
+        : '<div class="user-av">' + initials + '</div>';
+      const pills = unlocked.length
+        ? unlocked.map(id => '<span class="badge-mini' + (id === 'early' ? ' early' : '') + '">' + id + '</span>').join('')
+        : '<span style="color:var(--muted);font-size:10px">—</span>';
+      const joined   = new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       const adminStar = u.is_admin ? '<span class="user-admin-star">★</span>' : '';
-      return `<tr>
-        <td><div class="user-cell">${av}<div><div class="user-handle">@${u.handle}${adminStar}</div><div style="font-size:10px;color:var(--muted)">${u.display_name||''}</div></div></div></td>
-        <td><div class="badges-cell">${pills}</div></td>
-        <td>${(u.view_count||0).toLocaleString()}</td>
-        <td>${joined}</td>
-        <td><div class="admin-actions">
-          <button class="btn-sm btn-sm-gold" onclick="openBadgeModal('${u.id}','${u.handle}')"><i class="fas fa-star"></i> badges</button>
-          <button class="btn-sm btn-sm-ghost" onclick="toggleAdminRole('${u.id}',${!u.is_admin},'${u.handle}')">${u.is_admin?'<i class="fas fa-user"></i> unadmin':'<i class="fas fa-shield-alt"></i> admin'}</button>
-          <button class="btn-sm btn-sm-danger" onclick="banUser('${u.id}','${u.handle}')"><i class="fas fa-ban"></i></button>
-        </div></td>
-      </tr>`;
+      return '<tr>' +
+        '<td><div class="user-cell">' + av + '<div><div class="user-handle">@' + u.handle + adminStar + '</div><div style="font-size:10px;color:var(--muted)">' + (u.display_name || '') + '</div></div></div></td>' +
+        '<td><div class="badges-cell">' + pills + '</div></td>' +
+        '<td>' + (u.view_count || 0).toLocaleString() + '</td>' +
+        '<td>' + joined + '</td>' +
+        '<td><div class="admin-actions">' +
+          '<button class="btn-sm btn-sm-gold" onclick="openBadgeModal(\'' + u.id + '\',\'' + u.handle + '\')"><i class="fas fa-star"></i> badges</button>' +
+          '<button class="btn-sm btn-sm-ghost" onclick="toggleAdminRole(\'' + u.id + '\',' + (!u.is_admin) + ',\'' + u.handle + '\')">' + (u.is_admin ? '<i class="fas fa-user"></i> unadmin' : '<i class="fas fa-shield-alt"></i> admin') + '</button>' +
+          '<button class="btn-sm btn-sm-danger" onclick="banUser(\'' + u.id + '\',\'' + u.handle + '\')"><i class="fas fa-ban"></i></button>' +
+        '</div></td>' +
+      '</tr>';
     }).join('');
   }
 
   function filterUsers() {
     const q = document.getElementById('adminSearch').value.toLowerCase();
-    renderAdminTable(allUsers.filter(u => u.handle.toLowerCase().includes(q) || (u.display_name||'').toLowerCase().includes(q)));
+    renderAdminTable(allUsers.filter(u =>
+      u.handle.toLowerCase().includes(q) || (u.display_name || '').toLowerCase().includes(q)
+    ));
   }
 
   async function toggleAdminRole(uid, makeAdmin, handle) {
-    if (!confirm(`${makeAdmin?'grant':'revoke'} admin for @${handle}?`)) return;
-    const { error } = await sb.from('profiles').update({ is_admin:makeAdmin }).eq('id',uid);
-    if (error) { alert('failed: '+error.message); return; }
-    const idx = allUsers.findIndex(u=>u.id===uid);
+    if (!confirm((makeAdmin ? 'grant' : 'revoke') + ' admin for @' + handle + '?')) return;
+    const { error } = await sb.from('profiles').update({ is_admin: makeAdmin }).eq('id', uid);
+    if (error) { alert('failed: ' + error.message); return; }
+    const idx = allUsers.findIndex(u => u.id === uid);
     if (idx !== -1) allUsers[idx].is_admin = makeAdmin;
     renderAdminTable(allUsers);
   }
 
   async function banUser(uid, handle) {
-    if (!confirm(`ban @${handle}? this deletes their profile.`)) return;
-    const { error } = await sb.from('profiles').delete().eq('id',uid);
-    if (error) { alert('failed: '+error.message); return; }
-    allUsers = allUsers.filter(u=>u.id!==uid);
+    if (!confirm('ban @' + handle + '? this deletes their profile.')) return;
+    const { error } = await sb.from('profiles').delete().eq('id', uid);
+    if (error) { alert('failed: ' + error.message); return; }
+    allUsers = allUsers.filter(u => u.id !== uid);
     renderAdminStats(allUsers); renderAdminTable(allUsers);
   }
 
-  // ══ BADGE MODAL ══
+  // ─── BADGE MODAL ──────────────────────────────────────────────────────────────
   let _modalUid = null;
+
   function openBadgeModal(uid, handle) {
     _modalUid = uid;
-    document.getElementById('badgeModalSub').textContent = `for @${handle}`;
-    const user = allUsers.find(u=>u.id===uid);
+    document.getElementById('badgeModalSub').textContent = 'for @' + handle;
+    const user    = allUsers.find(u => u.id === uid);
     const current = pj(user?.unlocked_badges, []);
-    document.getElementById('badgeModalList').innerHTML = BADGE_DEFS.map(def => `
-      <div class="modal-badge-row ${def.early?'early-row':''} ${current.includes(def.id)?'checked':''}" onclick="this.classList.toggle('checked')" data-id="${def.id}">
-        <div class="modal-check"><i class="fas fa-check"></i></div>
-        <i class="modal-badge-icon ${def.icon}"></i>
-        <div class="modal-badge-name">${def.label}</div>
-        ${def.early ? `<span style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--gold);background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:3px;padding:2px 6px">early</span>` : ''}
-      </div>`).join('');
+    document.getElementById('badgeModalList').innerHTML = BADGE_DEFS.map(def =>
+      '<div class="modal-badge-row' + (def.early ? ' early-row' : '') + (current.includes(def.id) ? ' checked' : '') +
+      '" onclick="this.classList.toggle(\'checked\')" data-id="' + def.id + '">' +
+      '<div class="modal-check"><i class="fas fa-check"></i></div>' +
+      '<i class="modal-badge-icon ' + def.icon + '"></i>' +
+      '<div class="modal-badge-name">' + def.label + '</div>' +
+      (def.early ? '<span style="font-family:\'Geist Mono\',monospace;font-size:9px;color:var(--gold);background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:3px;padding:2px 6px">early</span>' : '') +
+      '</div>'
+    ).join('');
     document.getElementById('badgeModal').classList.add('open');
   }
+
   function closeBadgeModal() { document.getElementById('badgeModal').classList.remove('open'); _modalUid = null; }
+
   async function saveBadgeGrant() {
     if (!_modalUid) return;
     const checked = Array.from(document.querySelectorAll('#badgeModalList .modal-badge-row.checked')).map(el => el.dataset.id);
-    const { error } = await sb.from('profiles').update({ unlocked_badges:JSON.stringify(checked), updated_at:new Date().toISOString() }).eq('id', _modalUid);
-    if (error) { alert('save failed: '+error.message); return; }
-    const idx = allUsers.findIndex(u=>u.id===_modalUid);
+    const { error } = await sb.from('profiles')
+      .update({ unlocked_badges: JSON.stringify(checked), updated_at: new Date().toISOString() })
+      .eq('id', _modalUid);
+    if (error) { alert('save failed: ' + error.message); return; }
+    const idx = allUsers.findIndex(u => u.id === _modalUid);
     if (idx !== -1) allUsers[idx].unlocked_badges = JSON.stringify(checked);
     closeBadgeModal(); renderAdminTable(allUsers); renderAdminStats(allUsers);
   }
-  document.getElementById('badgeModal').addEventListener('click', e => { if (e.target===document.getElementById('badgeModal')) closeBadgeModal(); });
 
-  // ══ ALERT ══
+  document.getElementById('badgeModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('badgeModal')) closeBadgeModal();
+  });
+
+  // ─── ALERT ────────────────────────────────────────────────────────────────────
   function showAlert(id, msg, type) {
     const el = document.getElementById(id); if (!el) return;
-    el.textContent = msg; el.className = 'alert '+type;
-    setTimeout(()=>{ el.className='alert'; el.textContent=''; }, 5000);
+    el.textContent = msg; el.className = 'alert ' + type;
+    setTimeout(() => { el.className = 'alert'; el.textContent = ''; }, 5000);
   }
+
 </script>
 </body>
 </html>
