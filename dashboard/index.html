@@ -1818,7 +1818,7 @@
       const v = el ? parseInt(el.value) : NaN;
       return isNaN(v) ? (cs(csKey)) : v;
     };
-newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
+
     // Build full CS blob from current UI state
     const newCS = {
       bg_type:           currentBgTab,
@@ -1842,7 +1842,7 @@ newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
       custom_font_data:   customFontDataUrl,
       custom_icons: customIcons,
     };
-
+newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
     console.log('[swaqq] saving newCS:', newCS);
 
     // Write BOTH custom_settings blob AND flat columns so profile page can read either
