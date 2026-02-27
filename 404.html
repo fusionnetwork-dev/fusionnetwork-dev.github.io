@@ -180,13 +180,13 @@
   <div class="nf-code">404</div>
   <div class="nf-title">profile not found</div>
   <div class="nf-sub" id="nfSub">this handle doesn't exist yet.</div>
-  <a class="nf-btn" href="https://swaqq.xyz"><i class="fas fa-arrow-left" style="font-size:10px"></i> back to swaqq.xyz</a>
-  <a class="nf-btn" href="https://swaqq.xyz" onclick="localStorage.setItem('claimHandle', window._handle || '')"><i class="fas fa-plus" style="font-size:10px"></i> claim this handle</a>
+  <a class="nf-btn" href="/"><i class="fas fa-arrow-left" style="font-size:10px"></i> back to swaqq.xyz</a>
+  <a class="nf-btn" href="/" onclick="localStorage.setItem('claimHandle', window._handle || '')"><i class="fas fa-plus" style="font-size:10px"></i> claim this handle</a>
 </div>
 
 <!-- SPLASH -->
 <div id="splash">
-  <a class="splash-site" href="index.html">swaqq.xyz</a>
+  <a class="splash-site" href="/">swaqq.xyz</a>
   <div class="splash-name" id="splashName"></div>
   <div class="splash-hint">click anywhere to enter</div>
 </div>
@@ -196,7 +196,7 @@
 
 <!-- TOP BAR -->
 <div class="top-bar" id="topBar">
-  <a class="top-bar-logo" href="index.html">swaqq.xyz</a>
+  <a class="top-bar-logo" href="/">swaqq.xyz</a>
   <span class="top-bar-handle" id="topBarHandle"></span>
 </div>
 
@@ -233,7 +233,7 @@
 <div class="views" id="views"><i class="fas fa-eye"></i><span id="viewCount">0</span></div>
 
 <!-- WATERMARK -->
-<a class="watermark" href="index.html">swaqq.xyz</a>
+<a class="watermark" href="/">swaqq.xyz</a>
 
 <!-- NAV CONFIRM -->
 <div class="nav-overlay" id="navOverlay">
@@ -298,7 +298,7 @@
   window._handle = handle;
 
   // If somehow the path is empty or just "/" — redirect home
-  if (!handle) { window.location.href = 'index.html'; }
+  if (!handle) { window.location.href = '/'; }
 
   document.getElementById('loadHandle').textContent = '@' + handle;
 
