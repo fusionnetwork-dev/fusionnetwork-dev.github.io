@@ -1271,7 +1271,10 @@ return {
 
       document.getElementById('profilePage').classList.add('visible');
       document.getElementById('card').classList.add('loaded');
-
+console.log('revealProfile called');
+console.log('CS.bg_type:', CS.bg_type);
+console.log('profile.youtube_video_id:', profile.youtube_video_id);
+console.log('CS.show_video_bg:', CS.show_video_bg);
       if (profile.show_views !== false) {
         document.getElementById('views').classList.add('visible');
       }
