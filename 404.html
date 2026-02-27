@@ -919,29 +919,29 @@
         if (profile[key] !== undefined && profile[key] !== null) return profile[key];
         return CS_DEF[key];
       };
-youtube_video_id: get('youtube_video_id') || profile.youtube_video_id || '',
-      return {
-        bg_type:           get('bg_type'),
-        bg_image_url:      get('bg_image_url'),
-        bg_opacity:        get('bg_opacity'),
-        bg_color:          get('bg_color'),
-        bg_grad1:          get('bg_grad1'),
-        bg_grad2:          get('bg_grad2'),
-        bg_grad_dir:       get('bg_grad_dir'),
-        show_video_bg:     get('show_video_bg'),
-        mute_video:        get('mute_video'),
-        card_font:         get('card_font'),
-        accent_color:      get('accent_color'),
-        card_blur:         get('card_blur'),
-        card_opacity:      get('card_opacity'),
-        card_glow:         get('card_glow'),
-        card_rounded:      get('card_rounded'),
-        show_uid_scramble: get('show_uid_scramble'),
-        custom_font_name:   blob.custom_font_name   || null,
-        custom_font_family: blob.custom_font_family || null,
-        custom_font_data:   blob.custom_font_data   || null,
-        custom_icons:       blob.custom_icons       || [],
-      };
+return {
+    bg_type: get('bg_type'),
+    bg_image_url: get('bg_image_url'),
+    bg_opacity: get('bg_opacity'),
+    bg_color: get('bg_color'),
+    bg_grad1: get('bg_grad1'),
+    bg_grad2: get('bg_grad2'),
+    bg_grad_dir: get('bg_grad_dir'),
+    show_video_bg: get('show_video_bg'),
+    mute_video: get('mute_video'),
+    card_font: get('card_font'),
+    accent_color: get('accent_color'),
+    card_blur: get('card_blur'),
+    card_opacity: get('card_opacity'),
+    card_glow: get('card_glow'),
+    card_rounded: get('card_rounded'),
+    show_uid_scramble: get('show_uid_scramble'),
+    youtube_video_id: get('youtube_video_id') || profile.youtube_video_id || '',   // ← here
+    custom_font_name: blob.custom_font_name || null,
+    custom_font_family: blob.custom_font_family || null,
+    custom_font_data: blob.custom_font_data || null,
+    custom_icons: blob.custom_icons || [],
+  };
     }
 
     function guessIcon(label) {
