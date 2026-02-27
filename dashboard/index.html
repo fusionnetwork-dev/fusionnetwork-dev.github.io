@@ -1032,7 +1032,32 @@
     isDeveloper    = !!data.is_developer;
     activeBadges   = pj(data.badges, []);
     unlockedBadges = pj(data.unlocked_badges, []);
-    CS             = pj(data.custom_settings, {});
+    // Parse custom_settings blob, then layer in flat columns as fallback
+    // so even if custom_settings is empty, the saved flat columns apply
+    const csBlob = pj(data.custom_settings, {});
+    CS = {
+      bg_type:           csBlob.bg_type           ?? data.bg_type          ?? 'video',
+      bg_image_url:      csBlob.bg_image_url       ?? data.bg_image_url     ?? '',
+      bg_opacity:        csBlob.bg_opacity          ?? data.bg_opacity       ?? 70,
+      bg_color:          csBlob.bg_color            ?? data.bg_color         ?? '#070707',
+      bg_grad1:          csBlob.bg_grad1            ?? data.bg_grad1         ?? '#0a0a1a',
+      bg_grad2:          csBlob.bg_grad2            ?? data.bg_grad2         ?? '#1a0a0a',
+      bg_grad_dir:       csBlob.bg_grad_dir         ?? data.bg_grad_dir      ?? 'to bottom right',
+      show_video_bg:     csBlob.show_video_bg       ?? data.show_video_bg    ?? true,
+      mute_video:        csBlob.mute_video           ?? data.mute_video       ?? false,
+      card_font:         csBlob.card_font            ?? data.card_font        ?? 'Syne',
+      accent_color:      csBlob.accent_color         ?? data.accent_color     ?? '#ffffff',
+      card_blur:         csBlob.card_blur            ?? data.card_blur        ?? 12,
+      card_opacity:      csBlob.card_opacity         ?? data.card_opacity     ?? 85,
+      card_glow:         csBlob.card_glow            ?? data.card_glow        ?? true,
+      card_rounded:      csBlob.card_rounded         ?? data.card_rounded     ?? true,
+      show_uid_scramble: csBlob.show_uid_scramble    ?? data.show_uid_scramble ?? false,
+      custom_font_name:  csBlob.custom_font_name  ?? null,
+      custom_font_family:csBlob.custom_font_family ?? null,
+      custom_font_data:  csBlob.custom_font_data   ?? null,
+      custom_icons:      csBlob.custom_icons       ?? [],
+    };
+    console.log('[swaqq] loaded CS:', CS);
 
     // Owners auto-unlock all badges
     if (isOwner) {
@@ -1758,32 +1783,40 @@
       }
     }
 
+    // Safe parseInt that falls back to CS value or default
+    const safeInt = (elId, csKey) => {
+      const el = document.getElementById(elId);
+      const v = el ? parseInt(el.value) : NaN;
+      return isNaN(v) ? (cs(csKey)) : v;
+    };
+
     // Build full CS blob from current UI state
     const newCS = {
       bg_type:           currentBgTab,
-      bg_image_url:      document.getElementById('fBgImageUrl').value.trim(),
-      bg_opacity:        parseInt(document.getElementById('fBgOpacity').value),
-      bg_color:          document.getElementById('fBgColor').value,
-      bg_grad1:          document.getElementById('fGrad1').value,
-      bg_grad2:          document.getElementById('fGrad2').value,
-      bg_grad_dir:       document.getElementById('fGradDir').value,
+      bg_image_url:      (document.getElementById('fBgImageUrl')?.value || '').trim(),
+      bg_opacity:        safeInt('fBgOpacity', 'bg_opacity'),
+      bg_color:          document.getElementById('fBgColor')?.value || cs('bg_color'),
+      bg_grad1:          document.getElementById('fGrad1')?.value   || cs('bg_grad1'),
+      bg_grad2:          document.getElementById('fGrad2')?.value   || cs('bg_grad2'),
+      bg_grad_dir:       document.getElementById('fGradDir')?.value || cs('bg_grad_dir'),
       show_video_bg:     gtog('tShowVideo'),
       mute_video:        gtog('tMuteDefault'),
-      card_font:         CS.card_font || 'Syne',
-      accent_color:      document.getElementById('fAccentColor').value,
-      card_blur:         parseInt(document.getElementById('fCardBlur').value),
-      card_opacity:      parseInt(document.getElementById('fCardOpacity').value),
+      card_font:         CS.card_font || cs('card_font'),
+      accent_color:      document.getElementById('fAccentColor')?.value || cs('accent_color'),
+      card_blur:         safeInt('fCardBlur', 'card_blur'),
+      card_opacity:      safeInt('fCardOpacity', 'card_opacity'),
       card_glow:         gtog('tCardGlow'),
       card_rounded:      gtog('tRounded'),
       show_uid_scramble: isAdmin ? gtog('tUid') : false,
-      // Custom font — store base64 data URL (may be large, warn user)
       custom_font_name:   customFontName,
       custom_font_family: customFontFamily,
       custom_font_data:   customFontDataUrl,
-      // Custom icons
       custom_icons: customIcons,
     };
 
+    console.log('[swaqq] saving newCS:', newCS);
+
+    // Write BOTH custom_settings blob AND flat columns so profile page can read either
     const updates = {
       display_name:      document.getElementById('fDisplayName').value.trim() || handle,
       handle,
@@ -1799,19 +1832,57 @@
       mute_video:        newCS.mute_video,
       badges:            JSON.stringify(activeBadges),
       socials:           JSON.stringify(getSocials()),
+      // Flat columns (for profile page compatibility)
+      card_font:         newCS.card_font,
+      accent_color:      newCS.accent_color,
+      card_blur:         newCS.card_blur,
+      card_opacity:      newCS.card_opacity,
+      card_glow:         newCS.card_glow,
+      card_rounded:      newCS.card_rounded,
+      bg_type:           newCS.bg_type,
+      bg_image_url:      newCS.bg_image_url,
+      bg_opacity:        newCS.bg_opacity,
+      bg_color:          newCS.bg_color,
+      bg_grad1:          newCS.bg_grad1,
+      bg_grad2:          newCS.bg_grad2,
+      bg_grad_dir:       newCS.bg_grad_dir,
+      // custom_settings blob as backup
       custom_settings:   JSON.stringify(newCS),
       updated_at:        new Date().toISOString()
     };
 
-    let { error } = await sb.from('profiles').update(updates).eq('id', currentUser.id);
+    console.log('[swaqq] update payload:', updates);
 
-    if (error && error.message && (error.message.includes('custom_settings') || error.message.includes('column'))) {
-      console.warn('Column missing — saving core fields only. Run the SQL migration from admin panel.');
-      const fallback = { ...updates };
-      delete fallback.custom_settings;
-      const res2 = await sb.from('profiles').update(fallback).eq('id', currentUser.id);
-      error = res2.error;
-      if (!error) showAlert('profileAlert', 'saved (core fields). add missing columns via admin SQL to persist custom settings.', 'success');
+    // Try full update first
+    let { data: saveData, error } = await sb.from('profiles').update(updates).eq('id', currentUser.id).select();
+    console.log('[swaqq] save result:', saveData, error);
+
+    // If any column is missing, strip unknowns and retry with just the guaranteed columns
+    if (error) {
+      console.warn('[swaqq] full save failed, trying slim save:', error.message);
+      const slim = {
+        display_name: updates.display_name, handle, bio: updates.bio,
+        discord_id: updates.discord_id, avatar_url: updates.avatar_url,
+        youtube_video_id: updates.youtube_video_id,
+        show_splash: updates.show_splash, show_tilt: updates.show_tilt,
+        show_views: updates.show_views, show_uid_scramble: updates.show_uid_scramble,
+        show_video_bg: updates.show_video_bg, mute_video: updates.mute_video,
+        badges: updates.badges, socials: updates.socials,
+        updated_at: updates.updated_at,
+      };
+      // Add custom_settings if that column exists
+      slim.custom_settings = updates.custom_settings;
+      const res2 = await sb.from('profiles').update(slim).eq('id', currentUser.id).select();
+      console.log('[swaqq] slim save result:', res2.data, res2.error);
+      if (res2.error) {
+        // Last resort: no custom_settings
+        delete slim.custom_settings;
+        const res3 = await sb.from('profiles').update(slim).eq('id', currentUser.id);
+        error = res3.error;
+      } else {
+        error = null;
+      }
+      if (!error) showAlert('profileAlert', 'saved! (some custom columns may be missing — check admin SQL)', 'success');
     }
 
     btn.disabled = false; btn.textContent = 'save changes →';
