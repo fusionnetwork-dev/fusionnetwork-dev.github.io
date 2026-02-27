@@ -616,7 +616,7 @@ console.log("SHOW VIDEO:", CS.show_video_bg);
   // ── YOUTUBE ──
   let ytPlayer;
 
-function initYT(videoId, muted) {
+function initYT(videoId) {
   const wrap = document.getElementById('ytBg');
   wrap.innerHTML = '<div id="yt-player"></div>';
 
@@ -631,15 +631,18 @@ function initYT(videoId, muted) {
       playsinline: 1,
       loop: 1,
       playlist: videoId,
-      mute: muted ? 1 : 0,
+      mute: 0, // ensure it's NOT muted
       iv_load_policy: 3
     },
     events: {
       onReady: (e) => {
         wrap.classList.add('visible');
-        if (!muted) {
-          e.target.unMute();
-          e.target.setVolume(60);
+        try {
+          e.target.unMute(); // attempt to unmute
+          e.target.setVolume(60); // set reasonable volume
+          e.target.playVideo();
+        } catch (err) {
+          console.warn('YT autoplay with audio blocked until user interaction.');
         }
       },
       onStateChange: (e) => {
@@ -651,7 +654,6 @@ function initYT(videoId, muted) {
     }
   });
 }
-
 function waitForYT(videoId, muted) {
   if (typeof YT !== 'undefined' && YT.Player) {
     initYT(videoId, muted);
@@ -785,7 +787,10 @@ function waitForYT(videoId, muted) {
     document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
   }
 
-  // ── INIT ──
+<!-- YT IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+ 
   loadProfile();
 </script>
 </body>
