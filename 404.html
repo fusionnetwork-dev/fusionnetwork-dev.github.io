@@ -567,6 +567,9 @@
 
   // ── REVEAL PROFILE ──
   function revealProfile(profile, CS) {
+  console.log("BG TYPE:", CS.bg_type);
+console.log("YT ID:", profile.youtube_video_id);
+console.log("SHOW VIDEO:", CS.show_video_bg);
     document.getElementById('loading').classList.add('out');
     setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
 
@@ -581,7 +584,7 @@
     // video bg — only after reveal so it doesn't play behind splash
     const CS_ref = CS; // closure
     if (CS_ref.bg_type === 'video' && profile.youtube_video_id && CS_ref.show_video_bg !== false) {
-      initYT(profile.youtube_video_id, CS_ref.mute_video === true);
+      waitForYT(profile.youtube_video_id, CS_ref.mute_video === true);
     }
 
     // bio typewriter
@@ -598,30 +601,51 @@
   }
 
   // ── YOUTUBE ──
-  var tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(tag);
-  let _ytReady = false, _ytPendingFn = null;
-  window.onYouTubeIframeAPIReady = () => { _ytReady = true; if (_ytPendingFn) _ytPendingFn(); };
+  let ytPlayer;
 
-  function initYT(videoId, muted) {
-    function go() {
-      const wrap = document.getElementById('ytBg');
-      const div = document.createElement('div'); div.id = 'yt-player'; wrap.appendChild(div);
-      new YT.Player('yt-player', {
-        videoId,
-        playerVars: { autoplay:1, controls:0, disablekb:1, fs:0, modestbranding:1, playsinline:1, loop:1, playlist:videoId, mute:muted?1:0, iv_load_policy:3 },
-        events: {
-          onReady: e => {
-            wrap.classList.add('visible');
-            if (!muted) { try { e.target.unMute(); e.target.setVolume(60); } catch(_){} }
-          },
-          onStateChange: e => { if (e.data === YT.PlayerState.ENDED) { e.target.seekTo(0); e.target.playVideo(); } }
+function initYT(videoId, muted) {
+  const wrap = document.getElementById('ytBg');
+  wrap.innerHTML = '<div id="yt-player"></div>';
+
+  ytPlayer = new YT.Player('yt-player', {
+    videoId,
+    playerVars: {
+      autoplay: 1,
+      controls: 0,
+      disablekb: 1,
+      fs: 0,
+      modestbranding: 1,
+      playsinline: 1,
+      loop: 1,
+      playlist: videoId,
+      mute: muted ? 1 : 0,
+      iv_load_policy: 3
+    },
+    events: {
+      onReady: (e) => {
+        wrap.classList.add('visible');
+        if (!muted) {
+          e.target.unMute();
+          e.target.setVolume(60);
         }
-      });
+      },
+      onStateChange: (e) => {
+        if (e.data === YT.PlayerState.ENDED) {
+          e.target.seekTo(0);
+          e.target.playVideo();
+        }
+      }
     }
-    if (_ytReady) go(); else _ytPendingFn = go;
+  });
+}
+
+function waitForYT(videoId, muted) {
+  if (typeof YT !== 'undefined' && YT.Player) {
+    initYT(videoId, muted);
+  } else {
+    setTimeout(() => waitForYT(videoId, muted), 100);
   }
+}
 
   // ── CLOCK ──
   function updateClock() {
