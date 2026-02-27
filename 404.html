@@ -919,7 +919,7 @@
         if (profile[key] !== undefined && profile[key] !== null) return profile[key];
         return CS_DEF[key];
       };
-
+youtube_video_id: get('youtube_video_id') || profile.youtube_video_id || '',
       return {
         bg_type:           get('bg_type'),
         bg_image_url:      get('bg_image_url'),
