@@ -850,10 +850,10 @@
     <div class="icon-grid" id="iconGrid"></div>
     <!-- Custom icon upload -->
     <div class="icon-upload-area">
-      <span class="icon-upload-label">custom icon <span class="tag">image file</span></span>
+      <span class="icon-upload-label">custom icon <span class="tag">image/gif file — max 10 mb</span></span>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <div class="icon-drop-zone" onclick="document.getElementById('customIconInput').click()">
-          <i class="fas fa-upload" style="font-size:10px;margin-right:5px"></i> upload png / svg / jpg
+          <i class="fas fa-upload" style="font-size:10px;margin-right:5px"></i> upload png / jpg / gif / webp 
         </div>
         <input type="file" id="customIconInput" accept="image/png,image/svg+xml,image/jpeg,image/webp" onchange="handleCustomIcon(this)">
       </div>
@@ -1523,8 +1523,11 @@
 
   // ─── CUSTOM ICON ─────────────────────────────────────────────────────────────
   function handleCustomIcon(input) {
-    const file = input.files[0]; if (!file) return;
-    if (file.size > 1024 * 1024) { alert('icon too large — max 1mb'); return; }
+   const file = input.files[0]; if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { 
+    alert('icon too large — max 10mb'); 
+    return; 
+  }
     const reader = new FileReader();
     reader.onload = e => {
       const id = 'custom_' + Date.now();
