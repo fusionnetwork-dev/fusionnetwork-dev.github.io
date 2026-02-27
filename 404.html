@@ -41,21 +41,28 @@
     #imgBg { position:fixed; inset:0; z-index:-1; background:center/cover no-repeat; opacity:0; transition:opacity 1s ease; pointer-events:none; }
     #imgBg.visible { opacity:1; }
 
-    /* FIX: removed display:none — visibility is now controlled entirely via JS */
     #ytBg {
       position:fixed; inset:0; width:100%; height:100%;
-      overflow:hidden; z-index:-1; pointer-events:none;
+      overflow:hidden;
+      /* z-index:0 so it sits above the body bg color but below z-index:1 content */
+      z-index:0;
+      pointer-events:none;
       background:#000;
-      visibility:hidden; /* use visibility instead of display:none so iframe renders */
+      /* hidden by default via opacity so the iframe still renders & loads */
+      opacity:0;
+      transition:opacity 1s ease;
     }
-    #ytBg.active { visibility:visible; }
+    #ytBg.active { opacity:1; }
 
-    /* FIX: iframe must fill its parent, not the viewport, since parent is already fixed */
+    /* iframe fills parent (which is already fixed/full-screen) */
     #ytBg iframe, #yt-player {
-      position:absolute; /* NOT fixed — parent is already fixed */
+      position:absolute;
       top:50%; left:50%;
-      width:calc(100% + 200px); /* overshoot to ensure full cover */
-      height:calc(100% + 200px);
+      /* overshoot dimensions to guarantee full coverage at any aspect ratio */
+      width:177.78vh;  /* 16/9 * 100vh */
+      height:56.25vw;  /* 9/16 * 100vw */
+      min-width:100%;
+      min-height:100%;
       transform:translate(-50%, -50%);
       border:none;
       pointer-events:none;
@@ -74,7 +81,7 @@
     .top-bar.visible { transform:translateY(0); }
     .top-bar-logo { font-family:'Geist Mono',monospace; font-size:13px; font-weight:700; letter-spacing:0.05em; text-decoration:none; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
     .top-bar-handle { font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:0.1em; }
-    .page { display:none; position:relative; z-index:1; min-height:100vh; align-items:center; justify-content:center; padding:80px 20px 60px; }
+    .page { display:none; position:relative; z-index:2; min-height:100vh; align-items:center; justify-content:center; padding:80px 20px 60px; }
     .page.visible { display:flex; }
     .card-wrap { perspective:1200px; }
     .card { width:420px; max-width:calc(100vw - 40px); background:var(--card); backdrop-filter:blur(12px); border-radius:20px; padding:28px 28px 54px; position:relative; opacity:0; transition:transform 0.1s ease-out; }
@@ -117,10 +124,10 @@
     .social-btn img { width:16px; height:16px; object-fit:contain; border-radius:3px; }
     .card-footer { position:absolute; bottom:16px; left:28px; right:28px; display:flex; align-items:center; justify-content:space-between; }
     .footer-text { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:0.1em; }
-    .views { position:fixed; bottom:22px; left:22px; z-index:100; display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.6); }
+    .views { position:fixed; bottom:22px; left:22px; z-index:102; display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.6); }
     .views.visible { display:flex; }
     .views i { font-size:12px; color:rgba(255,255,255,0.35); }
-    .watermark { position:fixed; bottom:22px; right:22px; z-index:100; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.15); letter-spacing:0.1em; text-decoration:none; transition:color 0.2s; }
+    .watermark { position:fixed; bottom:22px; right:22px; z-index:102; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.15); letter-spacing:0.1em; text-decoration:none; transition:color 0.2s; }
     .watermark:hover { color:rgba(255,255,255,0.4); }
     .nav-overlay { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.65); backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
     .nav-overlay.active { opacity:1; pointer-events:all; }
@@ -334,14 +341,11 @@
     };
 
     // FIX: Create YouTube background using the IFrame API properly
-    function createYouTubeBackground(videoId, muted) {
+    function createYouTubeBackground(videoId, shouldMute) {
       if (!videoId) return;
 
       const container = document.getElementById('ytBg');
       if (!container) return;
-
-      // FIX: Use classList instead of style to show — avoids !important issue entirely
-      container.classList.add('active');
 
       // Clean up old player
       if (ytPlayer) {
@@ -368,8 +372,7 @@
           playerVars: {
             autoplay: 1,
             controls: 0,
-            // FIX: always mute via playerVars — required by browsers for autoplay to work
-            mute: 1,
+            mute: 1,          // always start muted — browsers require this for autoplay
             loop: 1,
             playlist: videoId,
             modestbranding: 1,
@@ -382,28 +385,32 @@
             showinfo: 0,
             autohide: 1,
             start: 0,
+            origin: window.location.origin,
           },
           events: {
             onReady: (event) => {
               event.target.mute();
               event.target.playVideo();
+              // show the background once the player is ready
+              container.classList.add('active');
             },
             onStateChange: (event) => {
-              // FIX: also handle PAUSED state — some browsers pause instead of ending
+              if (event.data === YT.PlayerState.PLAYING) {
+                // unmute after playback starts if the profile allows it
+                if (!shouldMute) {
+                  try { event.target.unMute(); event.target.setVolume(60); } catch(e) {}
+                }
+              }
+              // loop: restart on end or unexpected pause
               if (
                 event.data === YT.PlayerState.ENDED ||
-                event.data === YT.PlayerState.UNSTARTED ||
-                event.data === YT.PlayerState.PAUSED
+                event.data === YT.PlayerState.UNSTARTED
               ) {
-                try {
-                  event.target.seekTo(0);
-                  event.target.playVideo();
-                } catch(e) {}
+                try { event.target.seekTo(0); event.target.playVideo(); } catch(e) {}
               }
             },
             onError: (event) => {
               console.warn("YouTube background error:", event.data);
-              // FIX: hide container gracefully on error so it doesn't leave a black box
               container.classList.remove('active');
             }
           }
