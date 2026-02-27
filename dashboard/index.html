@@ -1818,7 +1818,7 @@
       const v = el ? parseInt(el.value) : NaN;
       return isNaN(v) ? (cs(csKey)) : v;
     };
-
+newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
     // Build full CS blob from current UI state
     const newCS = {
       bg_type:           currentBgTab,
