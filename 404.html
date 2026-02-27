@@ -17,7 +17,7 @@
       --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
       --text: #f0f0f0; --sub: rgba(255,255,255,0.4); --muted: rgba(255,255,255,0.18);
     }
-    html, body { min-height:100vh; background:var(--bg); font-family:'Syne',sans-serif; color:var(--text); overflow-x:hidden; }
+    html, body { min-height:100vh; background:var(--bg); font-family:'Syne',sans-serif; color:var(--text); overflow-x:hidden; overflow-y:auto !important; }
     body::before {
       content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
       background-image: linear-gradient(rgba(255,255,255,0.014) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.014) 1px, transparent 1px);
@@ -99,7 +99,8 @@
     .social-btn { height:44px; border-radius:11px; padding:0 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); display:flex; align-items:center; gap:8px; cursor:pointer; transition:all 0.22s; text-decoration:none; color:var(--sub); font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.05em; white-space:nowrap; }
     .social-btn:hover { background:rgba(255,255,255,0.09); border-color:var(--border2); color:var(--text); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.4); }
     .social-btn i { font-size:13px; }
-    .social-btn img { width:16px; height:16px; object-fit:contain; border-radius:3px; }
+    .social-btn img { width:16px; height:16px; object-fit:contain; border-radius:3px; animation: playGif 0.1s steps(1) forwards; }
+    @keyframes playGif { to { filter: none; } }
     .card-footer { position:absolute; bottom:16px; left:28px; right:28px; display:flex; align-items:center; justify-content:space-between; }
     .footer-text { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:0.1em; }
     .views { position:fixed; bottom:22px; left:22px; z-index:100; display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.6); }
@@ -120,6 +121,47 @@
     .nav-yes { flex:1; padding:10px; border-radius:10px; border:none; cursor:pointer; background:linear-gradient(110deg,#333,#777,#bbb,#777,#333); background-size:200%; animation:shimmer 3s ease infinite; color:#fff; font-family:'Geist Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; transition:filter 0.2s; }
     .nav-yes:hover { filter:brightness(1.3); }
     @media(max-width:480px){ .card{padding:22px 20px 50px} .socials{flex-wrap:wrap} }
+
+    /* Custom icon fixes */
+    .custom-icons-row {
+      max-height: 140px;
+      overflow-y: auto;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .custom-icons-row .icon-opt {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .custom-icons-row img {
+      max-width: 32px;
+      max-height: 32px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .custom-icons-row .icon-opt:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: var(--border2);
+    }
+    .custom-icons-row .icon-opt.selected {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.12);
+    }
   </style>
 </head>
 <body>
@@ -211,6 +253,7 @@
       card_font:'Syne', accent_color:'#ffffff',
       card_blur:12, card_opacity:85, card_glow:true, card_rounded:true,
       show_uid_scramble:false,
+      custom_icons:[]
     };
 
     function buildCS(profile) {
@@ -288,7 +331,6 @@
     })();
 
     let ytPlayer = null;
-
     function initYT(videoId) {
       if (ytPlayer) return;
       ytPlayer = new YT.Player('yt-player', {
@@ -411,7 +453,7 @@
         a.dataset.href = s.url;
         let iconHtml;
         if (s.icon_type === 'custom' && s.icon_data) {
-          iconHtml = `<img src="${s.icon_data}" alt="">`;
+          iconHtml = `<img src="${s.icon_data}" alt="${s.label || 'custom'}">`;
         } else if (s.icon) {
           iconHtml = `<i class="${s.icon}"></i>`;
         } else {
@@ -637,9 +679,10 @@
       const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
       document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
     }
+
+    loadProfile();
   </script>
 
   <script src="https://www.youtube.com/iframe_api"></script>
-  <script>loadProfile();</script>
 </body>
 </html>
