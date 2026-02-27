@@ -367,77 +367,17 @@
 </div>
 
 <script>
-  // ── SUPABASE ──
   const SUPABASE_URL  = 'https://cwaifnbgkqqecatggvrx.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YWlmbmJna3FxZWNhdGdndnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzgzNzUsImV4cCI6MjA4NzcxNDM3NX0.5o3aI40Z8orNW1yOVWt7uAsP4TJ6MvVPqFidaTOf0cE';
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  // ── PROFILE CREATION HELPER ──
-  // Called from onAuthStateChange so the auth.users row is guaranteed to exist
-  async function createProfileIfNeeded(userId, handle) {
-    // Check if profile already exists (safety guard against double-insert)
-    const { data: existing } = await sb
-      .from('profiles')
-      .select('id')
-      .eq('id', userId)
-      .maybeSingle();
-
-    if (existing) return { alreadyExisted: true };
-
-    const { error } = await sb.from('profiles').insert({
-      id:               userId,
-      handle:           handle,
-      display_name:     handle,
-      bio:              '',
-      discord_id:       '',
-      youtube_video_id: '',
-      badges:           JSON.stringify([]),
-      socials:          JSON.stringify([]),
-      show_views:       true,
-      show_splash:      true,
-      show_tilt:        true,
-      show_uid_scramble:true,
-      show_video_bg:    true,
-      mute_video:       false,
-      view_count:       0,
-      created_at:       new Date().toISOString()
-    });
-
-    return { error };
-  }
-
-  // ── AUTH STATE ──
+  // ── AUTH STATE — handles returning logged-in users only ──
   sb.auth.onAuthStateChange(async (event, session) => {
     if (!session?.user) { showGuest(); return; }
-
-    const pendingHandle = sessionStorage.getItem('swaqq_pending_handle');
-
-    if (event === 'SIGNED_IN' && pendingHandle) {
-      // New signup — create the profile row now that auth is settled
-      sessionStorage.removeItem('swaqq_pending_handle');
-      const { error, alreadyExisted } = await createProfileIfNeeded(session.user.id, pendingHandle);
-
-      if (error && !alreadyExisted) {
-        // Rare edge case: auth succeeded but profile insert failed
-        // Show error on whichever modal is open, don't redirect
-        showAlert('signupAlert', 'profile setup failed: ' + error.message + ' — please contact support.', 'error');
-        setLoading('signupBtn', false);
-        return;
-      }
-
-      // Success — redirect to dashboard
-      window.location.href = '/dashboard';
-      return;
-    }
-
-    // Already logged-in user (page refresh / returning session)
     const { data: profile } = await sb
-      .from('profiles')
-      .select('handle, avatar_url')
-      .eq('id', session.user.id)
-      .maybeSingle();
-
+      .from('profiles').select('handle, avatar_url')
+      .eq('id', session.user.id).maybeSingle();
     if (profile) showLoggedIn(profile.handle, profile.avatar_url);
   });
 
@@ -492,13 +432,12 @@
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
 
-  // ── SIGN UP ──
+  // ── SIGN UP — fully self-contained, no onAuthStateChange dependency ──
   async function signUp() {
     const handle   = document.getElementById('signupHandle').value.trim().toLowerCase();
     const email    = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
 
-    // ── Validate inputs ──
     if (!handle)
       return showAlert('signupAlert', 'please enter a handle.', 'error');
     if (!/^[a-z0-9_]{2,20}$/.test(handle))
@@ -512,34 +451,60 @@
 
     setLoading('signupBtn', true);
 
-    // ── Check handle availability ──
+    // Check handle availability
     const { data: taken } = await sb
-      .from('profiles')
-      .select('id')
-      .eq('handle', handle)
-      .maybeSingle();
-
+      .from('profiles').select('id').eq('handle', handle).maybeSingle();
     if (taken) {
       setLoading('signupBtn', false);
       return showAlert('signupAlert', `@${handle} is already taken. try another.`, 'error');
     }
 
-    // ── Store pending handle BEFORE signUp call ──
-    // onAuthStateChange will pick this up and create the profile row
-    sessionStorage.setItem('swaqq_pending_handle', handle);
-
-    // ── Create auth user ──
-    const { error: authErr } = await sb.auth.signUp({ email, password });
-
+    // Create auth user — signUp returns the session directly when email confirm is off
+    const { data: authData, error: authErr } = await sb.auth.signUp({ email, password });
     if (authErr) {
-      sessionStorage.removeItem('swaqq_pending_handle');
       setLoading('signupBtn', false);
       return showAlert('signupAlert', authErr.message, 'error');
     }
 
-    // ── Show success state; onAuthStateChange handles the redirect ──
-    showAlert('signupAlert', '✓ account created! setting up your profile...', 'success');
-    // Keep button disabled so user can't double-submit while we wait for onAuthStateChange
+    const userId = authData?.user?.id;
+    if (!userId) {
+      setLoading('signupBtn', false);
+      return showAlert('signupAlert', 'signup failed — no user returned. try again.', 'error');
+    }
+
+    // Insert profile row — user is now in auth.users so FK is safe
+    const { error: profileErr } = await sb.from('profiles').insert({
+      id:                userId,
+      handle:            handle,
+      display_name:      handle,
+      bio:               '',
+      discord_id:        '',
+      youtube_video_id:  '',
+      badges:            JSON.stringify([]),
+      socials:           JSON.stringify([]),
+      show_views:        true,
+      show_splash:       true,
+      show_tilt:         true,
+      show_uid_scramble: true,
+      show_video_bg:     true,
+      mute_video:        false,
+      view_count:        0,
+      created_at:        new Date().toISOString()
+    });
+
+    if (profileErr) {
+      setLoading('signupBtn', false);
+      // If it's a duplicate (rare double-submit), still continue
+      if (profileErr.code === '23505') {
+        showAlert('signupAlert', '✓ account ready! redirecting...', 'success');
+        setTimeout(() => window.location.href = '/dashboard', 900);
+        return;
+      }
+      return showAlert('signupAlert', 'profile setup failed: ' + profileErr.message, 'error');
+    }
+
+    showAlert('signupAlert', '✓ account created! redirecting...', 'success');
+    setTimeout(() => window.location.href = '/dashboard', 900);
   }
 
   // ── LOG IN ──
@@ -555,7 +520,6 @@
 
     if (error) {
       setLoading('loginBtn', false);
-      // Give a friendlier message for the most common case
       const msg = error.message.toLowerCase().includes('invalid')
         ? 'invalid email or password.'
         : error.message;
@@ -572,7 +536,7 @@
     window.location.reload();
   }
 
-  // ── CLAIM HANDLE (hero input) ──
+  // ── CLAIM HANDLE ──
   function claimHandle() {
     const val = document.getElementById('heroHandle').value.trim();
     if (!val) { document.getElementById('heroHandle').focus(); return; }
