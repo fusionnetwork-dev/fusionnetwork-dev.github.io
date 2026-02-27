@@ -44,7 +44,7 @@
     #imgBg { position:fixed; inset:0; z-index:-1; background:center/cover no-repeat; opacity:0; transition:opacity 1s ease; pointer-events:none; }
     #imgBg.visible { opacity:1; }
     #ytBg { position:fixed; inset:0; width:100%; height:100%; overflow:hidden; z-index:-2; pointer-events:none; background:#000; display:none; }
-    #ytBg iframe, #yt-player { position:absolute; top:50%; left:50%; min-width:100%; min-height:100%; width:auto; height:auto; transform:translate(-50%,-50%); object-fit:cover; border:none; }
+    #ytBg iframe, #yt-player { position:absolute; top:50%; left:50%; width:100vw; height:56.25vw; min-height:100vh; min-width:177.77vh; transform:translate(-50%,-50%); object-fit:cover; border:none; }
     #splash { position:fixed; inset:0; background:#000; display:none; flex-direction:column; align-items:center; justify-content:center; z-index:99998; cursor:pointer; gap:14px; transition:opacity 0.9s ease; }
     #splash.active { display:flex; }
     #splash.out { opacity:0; pointer-events:none; }
@@ -140,7 +140,7 @@
     <div class="splash-hint">click anywhere to enter</div>
   </div>
   <div id="imgBg"></div>
-  <div id="ytBg"><div id="yt-player"></div></div>
+  <div id="ytBg"></div>
   <div id="topBarTrigger"></div>
   <div class="top-bar" id="topBar">
     <a class="top-bar-logo" href="/">swaqq.xyz</a>
@@ -289,49 +289,40 @@
     let ytPlayer = null;
     let apiReady = false;
 
-    // Dynamic YouTube API load (exactly like your example)
+    // Exact API load from your example
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-    window.onYouTubeIframeAPIReady = function() {
-      apiReady = true;
-    };
+    window.onYouTubeIframeAPIReady = function() { apiReady = true; }
 
     function initYouTubePlayer(videoId) {
       if (!apiReady) { setTimeout(() => initYouTubePlayer(videoId), 100); return; }
 
-      const playerDiv = document.getElementById('yt-player');
-      playerDiv.innerHTML = '';
+      const ytBg = document.getElementById('ytBg');
+      const playerDiv = document.createElement('div');
+      playerDiv.id = 'youtube-player';
+      ytBg.appendChild(playerDiv);
 
-      ytPlayer = new YT.Player('yt-player', {
+      ytPlayer = new YT.Player('youtube-player', {
         videoId: videoId,
         playerVars: {
-          autoplay: 1,
-          controls: 0,
-          disablekb: 1,
-          fs: 0,
-          modestbranding: 1,
-          playsinline: 1,
-          loop: 1,
-          playlist: videoId,
-          rel: 0,
-          iv_load_policy: 3,
-          showinfo: 0,
-          autohide: 1,
-          mute: 0,           // tries unmuted
-          origin: window.location.origin
+          autoplay: 1, controls: 0, disablekb: 1, fs: 0,
+          modestbranding: 1, playsinline: 1, loop: 1,
+          playlist: videoId, mute: 0, vq: 'hd2160',
+          iv_load_policy: 3, cc_load_policy: 0, showinfo: 0
         },
-        events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange
-        }
+        events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
       });
     }
 
     function onPlayerReady(event) {
       event.target.setVolume(80);
+      const availableQualities = event.target.getAvailableQualityLevels();
+      if (availableQualities.length > 0) {
+        event.target.setPlaybackQuality(availableQualities[0]);
+      }
       event.target.playVideo();
     }
 
@@ -665,6 +656,5 @@
 
     loadProfile();
   </script>
-  <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
