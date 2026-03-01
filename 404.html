@@ -199,9 +199,19 @@
         <div class="bio" id="cardBio"><span class="bio-cursor"></span></div>
         <div class="socials" id="cardSocials"></div>
         <div class="card-footer">
-          <span class="footer-text" id="footerVersion">swaqq.xyz</span>
-          <span class="footer-text" id="footerClock">--:-- --</span>
-        </div>
+  <span class="footer-text" id="footerVersion">swaqq.xyz</span>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button id="likeBtn" onclick="handleReaction('like')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
+      <i class="fas fa-thumbs-up"></i>
+      <span id="likeCount">0</span>
+    </button>
+    <button id="dislikeBtn" onclick="handleReaction('dislike')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
+      <i class="fas fa-thumbs-down"></i>
+      <span id="dislikeCount">0</span>
+    </button>
+    <span class="footer-text" id="footerClock">--:-- --</span>
+  </div>
+</div>
       </div>
     </div>
   </div>
