@@ -813,6 +813,13 @@ async function logIn() {
     openModal('signup');
   }
   document.getElementById('heroHandle').addEventListener('keydown', e => { if (e.key === 'Enter') claimHandle(); });
+  // Add at the bottom of the <script> in index.html:
+if (new URLSearchParams(window.location.search).get('banned') === '1') {
+  setTimeout(() => {
+    openModal('login');
+    showAlert('loginAlert', 'your account has been suspended.', 'error');
+  }, 500);
+}
 </script>
 </body>
 </html>
