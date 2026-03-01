@@ -658,6 +658,8 @@ rawSocials.forEach(s => {
       }
 
       typeBio(profile.bio || '');
+      _profileIdForReactions = profile.id;
+initReactions(profile.id);
       if (profile.show_tilt !== false) initTilt();
       initNavLinks();
       updateClock();
@@ -783,7 +785,61 @@ rawSocials.forEach(s => {
       const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
       document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
     }
+    // ── LIKES / DISLIKES ──────────────────────────────────────────────────────────
+async function initReactions(profileId) {
+  const { data } = await sb.from('profiles')
+    .select('like_count, dislike_count')
+    .eq('id', profileId).single();
+  
+  if (data) {
+    document.getElementById('likeCount').textContent = data.like_count || 0;
+    document.getElementById('dislikeCount').textContent = data.dislike_count || 0;
+  }
+  
+  // Check if user already reacted (localStorage per profile)
+  const reacted = localStorage.getItem(`swaqq_react_${profileId}`);
+  if (reacted === 'like') {
+    document.getElementById('likeBtn').style.color = '#43b581';
+    document.getElementById('likeBtn').style.borderColor = 'rgba(67,181,129,0.3)';
+  } else if (reacted === 'dislike') {
+    document.getElementById('dislikeBtn').style.color = '#f04747';
+    document.getElementById('dislikeBtn').style.borderColor = 'rgba(240,71,71,0.3)';
+  }
+}
 
+let _profileIdForReactions = null;
+
+async function handleReaction(type) {
+  if (!_profileIdForReactions) return;
+  const key = `swaqq_react_${_profileIdForReactions}`;
+  const existing = localStorage.getItem(key);
+  if (existing) return; // already reacted — one per visitor
+  
+  localStorage.setItem(key, type);
+  
+  await sb.rpc('toggle_like', { 
+    profile_id: _profileIdForReactions, 
+    action: type 
+  }).catch(() => {
+    // fallback direct update
+    const col = type === 'like' ? 'like_count' : 'dislike_count';
+    sb.from('profiles')
+      .update({ [col]: sb.rpc('increment', { x: 1 }) })
+      .eq('id', _profileIdForReactions);
+  });
+  
+  // Update UI
+  const btn = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
+  const countEl = document.getElementById(type === 'like' ? 'likeCount' : 'dislikeCount');
+  const cur = parseInt(countEl.textContent) || 0;
+  countEl.textContent = cur + 1;
+  btn.style.color = type === 'like' ? '#43b581' : '#f04747';
+  btn.style.borderColor = type === 'like' ? 'rgba(67,181,129,0.3)' : 'rgba(240,71,71,0.3)';
+  
+  // Animate
+  btn.style.transform = 'scale(1.2)';
+  setTimeout(() => btn.style.transform = '', 300);
+}
     loadProfile();
   </script>
 </body>
