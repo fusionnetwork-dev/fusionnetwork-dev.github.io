@@ -534,12 +534,27 @@
         <div class="dash-section-sub">what shows behind your card on your profile page</div>
         <div class="card-edit">
           <div class="tab-pills">
+            <button class="tab-pill" data-bgtab="audio" onclick="switchBgTab('audio',this)"><i class="fas fa-headphones" style="font-size:9px"></i> audio only</button>
             <button class="tab-pill active" data-bgtab="video" onclick="switchBgTab('video',this)"><i class="fab fa-youtube" style="font-size:9px"></i> video</button>
             <button class="tab-pill" data-bgtab="image" onclick="switchBgTab('image',this)"><i class="fas fa-image" style="font-size:9px"></i> image url</button>
             <button class="tab-pill" data-bgtab="color" onclick="switchBgTab('color',this)"><i class="fas fa-circle" style="font-size:9px"></i> solid color</button>
             <button class="tab-pill" data-bgtab="gradient" onclick="switchBgTab('gradient',this)"><i class="fas fa-swatchbook" style="font-size:9px"></i> gradient</button>
           </div>
-
+<!-- AUDIO ONLY BG -->
+<div class="bg-panel" id="bgPanel-audio">
+  <div class="field">
+    <div class="field-label">youtube audio id <span class="tag">music only — no video</span></div>
+    <div class="prefix-wrap">
+      <span class="prefix-text">youtube.com/watch?v=</span>
+      <input class="prefix-input" type="text" id="fAudioId" placeholder="dQw4w9WgXcQ">
+    </div>
+    <div class="field-hint">plays audio only — no video renders. great for lo-fi, beats, ambience.</div>
+  </div>
+  <div class="toggle-row">
+    <div><div class="toggle-title">mute audio by default</div><div class="toggle-sub">visitors click to unmute</div></div>
+    <div class="toggle" id="tMuteAudio" onclick="this.classList.toggle('on')"></div>
+  </div>
+</div>
           <!-- VIDEO BG -->
           <div class="bg-panel active" id="bgPanel-video">
             <div class="video-thumb" id="videoThumb">
@@ -1309,6 +1324,11 @@ if (data.discord_id) {
     const box = document.getElementById('bgPreviewBox');
     if (!box) return;
     box.style.cssText = 'width:100%;height:80px;border-radius:10px;border:1px solid var(--border);transition:all 0.3s;';
+    if (currentBgTab === 'audio') {
+  box.style.background = '#0a0a0a';
+  box.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:\'Geist Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.2);gap:6px"><i class="fas fa-headphones"></i> audio only — no visual background</div>';
+  return;
+}
     if (currentBgTab === 'video') {
       box.style.background = '#0a0a0a';
       box.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:\'Geist Mono\',monospace;font-size:11px;color:rgba(255,255,255,0.2);gap:6px"><i class="fab fa-youtube"></i> video background plays on your profile page</div>';
@@ -1930,6 +1950,8 @@ async function syncDiscordRoleBadges(discordId) {
       custom_font_family: customFontFamily,
       custom_font_data:   customFontDataUrl,
       custom_icons: customIcons,
+  audio_only_id: document.getElementById('fAudioId')?.value.trim() || '',
+mute_audio: gtog('tMuteAudio'),
     };
 newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
     console.log('[swaqq] saving newCS:', newCS);
