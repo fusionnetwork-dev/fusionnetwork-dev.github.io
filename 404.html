@@ -320,6 +320,8 @@ function sanitizeHtml(html) {
         custom_font_family: blob.custom_font_family || null,
         custom_font_data: blob.custom_font_data || null,
         custom_icons: blob.custom_icons || [],
+        audio_only_id: blob.audio_only_id || '',
+mute_audio: blob.mute_audio !== undefined ? blob.mute_audio : true,
       };
     }
 
@@ -731,7 +733,7 @@ initReactions(profile.id);
       if (!text) { bioEl.innerHTML = ''; return; }
       let idx = 0, deleting = false;
       function tick() {
-        bioEl.innerHTML = text.slice(0, idx) + '<span class="bio-cursor"></span>';
+        bioEl.innerHTML = sanitizeHtml(text.slice(0, idx)) + '<span class="bio-cursor"></span>';
         if (!deleting) {
           if (idx < text.length) { idx++; setTimeout(tick, 90); }
           else { deleting = true; setTimeout(tick, 2200); }
