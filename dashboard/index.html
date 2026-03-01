@@ -2472,17 +2472,18 @@ async function unbanUser(uid, handle) {
   });
 
   // ─── SQL HELPERS ─────────────────────────────────────────────────────────────
-  function copySql(elId) {
-    const el = document.getElementById(elId);
-    navigator.clipboard.writeText(el.innerText).then(() => {
-      const btn = el.nextElementSibling?.querySelector?.('.copy-sql-btn') || document.querySelector('.copy-sql-btn');
-      // find the button after this specific element
-    });
-    // Simple fallback
-    const text = el.innerText;
-    if (navigator.clipboard) navigator.clipboard.writeText(text);
-    else { const t = document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+ function copySql(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const text = el.innerText;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch(() => {});
+  } else {
+    const t = document.createElement('textarea');
+    t.value = text; document.body.appendChild(t); t.select();
+    document.execCommand('copy'); t.remove();
   }
+}
   function copyInnerText(el) {
     const text = el.innerText;
     if (navigator.clipboard) navigator.clipboard.writeText(text);
