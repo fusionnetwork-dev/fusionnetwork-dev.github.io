@@ -474,10 +474,12 @@ function sanitizeHtml(html) {
 
       const avatarEl = document.getElementById('cardAvatar');
       if (profile.avatar_url) {
-        avatarEl.innerHTML = `<img src="${profile.avatar_url}" alt="">`;
-      } else {
-        avatarEl.textContent = (profile.display_name || profile.handle)[0].toUpperCase();
-      }
+  // Validate avatar URL before injecting
+  const safeAvatar = sanitizeUrl(profile.avatar_url);
+  if (safeAvatar) {
+    avatarEl.innerHTML = `<img src="${safeAvatar}" alt="">`;
+  }
+}
 
       const nameEl = document.getElementById('cardName');
       nameEl.textContent = profile.display_name || profile.handle;
