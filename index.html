@@ -533,8 +533,8 @@
       </div>
     </div>
     <div class="modal-field">
-      <label class="modal-label">email</label>
-      <input class="modal-input" type="email" id="signupEmail" placeholder="you@example.com">
+<label class="modal-label">email or username</label>
+<input class="modal-input" type="text" id="loginEmail" placeholder="you@example.com or @yourname">
     </div>
     <div class="modal-field">
       <label class="modal-label">password</label>
@@ -728,7 +728,7 @@ if (!userId) {
 }
 
       const { error: profileErr } = await sb.from('profiles').insert({
-        id: userId, handle, display_name: handle, bio: '', discord_id: '',
+        id: userId, handle, email: email, display_name: handle, bio: '', discord_id: '',
         youtube_video_id: '', badges: JSON.stringify([]), socials: JSON.stringify([]),
         show_views: true, show_splash: true, show_tilt: true,
         show_uid_scramble: true, show_video_bg: true, mute_video: false,
@@ -753,20 +753,56 @@ setTimeout(() => openModal('login'), 3000);
   }
 
   // ── LOG IN ──
-  async function logIn() {
-    const email    = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    if (!email || !password) return showAlert('loginAlert', 'please fill in all fields.', 'error');
-    setLoading('loginBtn', true);
-    const { error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) {
+async function logIn() {
+  const emailOrHandle = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!emailOrHandle || !password) return showAlert('loginAlert', 'please fill in all fields.', 'error');
+  
+  setLoading('loginBtn', true);
+  
+  let email = emailOrHandle;
+  
+  // If it doesn't look like an email, treat it as a handle and look up the email
+  if (!emailOrHandle.includes('@') || emailOrHandle.startsWith('@')) {
+    const handle = emailOrHandle.replace(/^@/, '').toLowerCase();
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('id')
+      .eq('handle', handle)
+      .maybeSingle();
+    
+    if (!profile) {
       setLoading('loginBtn', false);
-      return showAlert('loginAlert', error.message.toLowerCase().includes('invalid') ? 'invalid email or password.' : error.message, 'error');
+      return showAlert('loginAlert', `no account found for @${handle}.`, 'error');
     }
-    showAlert('loginAlert', '✓ logged in! redirecting...', 'success');
-    setTimeout(() => window.location.href = '/dashboard', 900);
+    
+    // Get email from auth — we need to look it up via a secure server function
+    // Since we can't expose emails client-side, use a Supabase edge function or
+    // store email on the profile row (recommended approach below)
+    const { data: profileEmail } = await sb
+      .from('profiles')
+      .select('email')
+      .eq('handle', handle)
+      .maybeSingle();
+    
+    if (!profileEmail?.email) {
+      setLoading('loginBtn', false);
+      return showAlert('loginAlert', 'could not resolve handle — try logging in with your email instead.', 'error');
+    }
+    
+    email = profileEmail.email;
   }
-
+  
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) {
+    setLoading('loginBtn', false);
+    return showAlert('loginAlert', error.message.toLowerCase().includes('invalid') 
+      ? 'invalid email/username or password.' 
+      : error.message, 'error');
+  }
+  showAlert('loginAlert', '✓ logged in! redirecting...', 'success');
+  setTimeout(() => window.location.href = '/dashboard', 900);
+}
   // ── LOG OUT ──
   async function logout() { await sb.auth.signOut(); window.location.reload(); }
 
