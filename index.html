@@ -757,47 +757,35 @@ async function logIn() {
   const emailOrHandle = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   if (!emailOrHandle || !password) return showAlert('loginAlert', 'please fill in all fields.', 'error');
-  
+
   setLoading('loginBtn', true);
-  
+
   let email = emailOrHandle;
-  
-  // If it doesn't look like an email, treat it as a handle and look up the email
+
   if (!emailOrHandle.includes('@') || emailOrHandle.startsWith('@')) {
     const handle = emailOrHandle.replace(/^@/, '').toLowerCase();
     const { data: profile } = await sb
       .from('profiles')
-      .select('id')
+      .select('id, email')
       .eq('handle', handle)
       .maybeSingle();
-    
+
     if (!profile) {
       setLoading('loginBtn', false);
       return showAlert('loginAlert', `no account found for @${handle}.`, 'error');
     }
-    
-    // Get email from auth — we need to look it up via a secure server function
-    // Since we can't expose emails client-side, use a Supabase edge function or
-    // store email on the profile row (recommended approach below)
-    const { data: profileEmail } = await sb
-      .from('profiles')
-      .select('email')
-      .eq('handle', handle)
-      .maybeSingle();
-    
-    if (!profileEmail?.email) {
+    if (!profile.email) {
       setLoading('loginBtn', false);
       return showAlert('loginAlert', 'could not resolve handle — try logging in with your email instead.', 'error');
     }
-    
-    email = profileEmail.email;
+    email = profile.email;
   }
-  
+
   const { error } = await sb.auth.signInWithPassword({ email, password });
   if (error) {
     setLoading('loginBtn', false);
-    return showAlert('loginAlert', error.message.toLowerCase().includes('invalid') 
-      ? 'invalid email/username or password.' 
+    return showAlert('loginAlert', error.message.toLowerCase().includes('invalid')
+      ? 'invalid email/username or password.'
       : error.message, 'error');
   }
   showAlert('loginAlert', '✓ logged in! redirecting...', 'success');
