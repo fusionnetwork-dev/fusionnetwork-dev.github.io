@@ -379,7 +379,7 @@ function sanitizeHtml(html) {
     };
 
     // FIX: Create YouTube background using the IFrame API properly
-    function createYouTubeBackground(videoId, shouldMute) {
+    function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
  if (!videoId) return;
   const container = document.getElementById('ytBg');
   if (!container) return;
