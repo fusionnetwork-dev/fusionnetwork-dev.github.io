@@ -40,34 +40,19 @@
     .nf-btn:hover { color:var(--text); background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.25); }
     #imgBg { position:fixed; inset:0; z-index:-1; background:center/cover no-repeat; opacity:0; transition:opacity 1s ease; pointer-events:none; }
     #imgBg.visible { opacity:1; }
-
     #ytBg {
       position:fixed; inset:0; width:100%; height:100%;
-      overflow:hidden;
-      /* z-index:0 so it sits above the body bg color but below z-index:1 content */
-      z-index:0;
-      pointer-events:none;
-      background:#000;
-      /* hidden by default via opacity so the iframe still renders & loads */
-      opacity:0;
-      transition:opacity 1s ease;
+      overflow:hidden; z-index:0; pointer-events:none;
+      background:#000; opacity:0; transition:opacity 1s ease;
     }
     #ytBg.active { opacity:1; }
-
-    /* iframe fills parent (which is already fixed/full-screen) */
     #ytBg iframe, #yt-player {
-      position:absolute;
-      top:50%; left:50%;
-      /* overshoot dimensions to guarantee full coverage at any aspect ratio */
-      width:177.78vh;  /* 16/9 * 100vh */
-      height:56.25vw;  /* 9/16 * 100vw */
-      min-width:100%;
-      min-height:100%;
+      position:absolute; top:50%; left:50%;
+      width:177.78vh; height:56.25vw;
+      min-width:100%; min-height:100%;
       transform:translate(-50%, -50%);
-      border:none;
-      pointer-events:none;
+      border:none; pointer-events:none;
     }
-
     #splash { position:fixed; inset:0; background:#000; display:none; flex-direction:column; align-items:center; justify-content:center; z-index:99998; cursor:pointer; gap:14px; transition:opacity 0.9s ease; }
     #splash.active { display:flex; }
     #splash.out { opacity:0; pointer-events:none; }
@@ -167,8 +152,6 @@
   </div>
 
   <div id="imgBg"></div>
-
-  <!-- FIX: ytBg is always in the DOM, shown/hidden via .active class (visibility toggle) -->
   <div id="ytBg"></div>
 
   <div id="topBarTrigger"></div>
@@ -199,19 +182,19 @@
         <div class="bio" id="cardBio"><span class="bio-cursor"></span></div>
         <div class="socials" id="cardSocials"></div>
         <div class="card-footer">
-  <span class="footer-text" id="footerVersion">swaqq.xyz</span>
-  <div style="display:flex;align-items:center;gap:12px">
-    <button id="likeBtn" onclick="handleReaction('like')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
-      <i class="fas fa-thumbs-up"></i>
-      <span id="likeCount">0</span>
-    </button>
-    <button id="dislikeBtn" onclick="handleReaction('dislike')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
-      <i class="fas fa-thumbs-down"></i>
-      <span id="dislikeCount">0</span>
-    </button>
-    <span class="footer-text" id="footerClock">--:-- --</span>
-  </div>
-</div>
+          <span class="footer-text" id="footerVersion">swaqq.xyz</span>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button id="likeBtn" onclick="handleReaction('like')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
+              <i class="fas fa-thumbs-up"></i>
+              <span id="likeCount">0</span>
+            </button>
+            <button id="dislikeBtn" onclick="handleReaction('dislike')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
+              <i class="fas fa-thumbs-down"></i>
+              <span id="dislikeCount">0</span>
+            </button>
+            <span class="footer-text" id="footerClock">--:-- --</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -232,55 +215,53 @@
   </div>
 
   <script>
+    // ── SANITIZE HELPERS ─────────────────────────────────────────────────────────
     function sanitize(str) {
-  if (typeof str !== 'string') return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;')
-    .replace(/`/g, '&#x60;')
-    .trim();
-}
+      if (typeof str !== 'string') return '';
+      return str
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;').replace(/`/g, '&#x60;').trim();
+    }
 
-function sanitizeUrl(url) {
-  if (!url || typeof url !== 'string') return '';
-  url = url.trim();
-  // Block javascript:, data:, vbscript:, and other dangerous schemes
-  if (/^(javascript|data|vbscript|blob|file):/i.test(url)) return '';
-  // Only allow http, https, mailto
-  if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) return '';
-  return url;
-}
+    function sanitizeUrl(url) {
+      if (!url || typeof url !== 'string') return '';
+      url = url.trim();
+      if (/^(javascript|data|vbscript|blob|file):/i.test(url)) return '';
+      if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) return '';
+      return url;
+    }
 
-function sanitizeHtml(html) {
-  const div = document.createElement('div');
-  div.textContent = html;
-  return div.innerHTML;
-}
-    const SUPABASE_URL = 'https://cwaifnbgkqqecatggvrx.supabase.co';
+    function sanitizeHtml(html) {
+      const div = document.createElement('div');
+      div.textContent = html;
+      return div.innerHTML;
+    }
+
+    // ── SUPABASE ─────────────────────────────────────────────────────────────────
+    const SUPABASE_URL  = 'https://cwaifnbgkqqecatggvrx.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YWlmbmJna3FxZWNhdGdndnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzgzNzUsImV4cCI6MjA4NzcxNDM3NX0.5o3aI40Z8orNW1yOVWt7uAsP4TJ6MvVPqFidaTOf0cE';
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
+    // ── BADGE DEFS ───────────────────────────────────────────────────────────────
     const BADGE_DEFS = [
-      { id:'early', label:'Early', icon:'fas fa-seedling' },
-      { id:'owner', label:'Owner', icon:'fas fa-crown' },
-      { id:'supporter',   label:'Supporter',   icon:'fas fa-heart' },
+      { id:'early',       label:'Early',       icon:'fas fa-seedling'    },
+      { id:'owner',       label:'Owner',       icon:'fas fa-crown'       },
+      { id:'supporter',   label:'Supporter',   icon:'fas fa-heart'       },
       { id:'contributor', label:'Contributor', icon:'fas fa-code-branch' },
-      { id:'developer', label:'Developer', icon:'fas fa-code' },
-      { id:'staff', label:'Staff', icon:'fas fa-shield-alt' },
-      { id:'vip', label:'VIP', icon:'fas fa-star' },
-      { id:'verified', label:'Verified', icon:'fas fa-check-circle'},
-      { id:'og', label:'OG', icon:'fas fa-fire' },
+      { id:'developer',   label:'Developer',   icon:'fas fa-code'        },
+      { id:'staff',       label:'Staff',       icon:'fas fa-shield-alt'  },
+      { id:'vip',         label:'VIP',         icon:'fas fa-star'        },
+      { id:'verified',    label:'Verified',    icon:'fas fa-check-circle'},
+      { id:'og',          label:'OG',          icon:'fas fa-fire'        },
     ];
 
+    // ── CUSTOM SETTINGS ──────────────────────────────────────────────────────────
     const CS_DEF = {
       bg_type:'video', bg_image_url:'', bg_opacity:70,
       bg_color:'#070707', bg_grad1:'#0a0a1a', bg_grad2:'#1a0a0a', bg_grad_dir:'to bottom right',
-      show_video_bg:true, mute_video:false,
+      show_video_bg:true, mute_video:false, audio_only_id:'', mute_audio:true,
       card_font:'Syne', accent_color:'#ffffff',
       card_blur:12, card_opacity:85, card_glow:true, card_rounded:true,
       show_uid_scramble:false,
@@ -299,43 +280,45 @@ function sanitizeHtml(html) {
         return CS_DEF[key];
       };
       return {
-        bg_type: get('bg_type'),
-        bg_image_url: get('bg_image_url'),
-        bg_opacity: get('bg_opacity'),
-        bg_color: get('bg_color'),
-        bg_grad1: get('bg_grad1'),
-        bg_grad2: get('bg_grad2'),
-        bg_grad_dir: get('bg_grad_dir'),
-        show_video_bg: get('show_video_bg'),
-        mute_video: get('mute_video'),
-        card_font: get('card_font'),
-        accent_color: get('accent_color'),
-        card_blur: get('card_blur'),
-        card_opacity: get('card_opacity'),
-        card_glow: get('card_glow'),
-        card_rounded: get('card_rounded'),
+        bg_type:           get('bg_type'),
+        bg_image_url:      get('bg_image_url'),
+        bg_opacity:        get('bg_opacity'),
+        bg_color:          get('bg_color'),
+        bg_grad1:          get('bg_grad1'),
+        bg_grad2:          get('bg_grad2'),
+        bg_grad_dir:       get('bg_grad_dir'),
+        show_video_bg:     get('show_video_bg'),
+        mute_video:        get('mute_video'),
+        audio_only_id:     blob.audio_only_id || '',
+        mute_audio:        blob.mute_audio !== undefined ? blob.mute_audio : true,
+        card_font:         get('card_font'),
+        accent_color:      get('accent_color'),
+        card_blur:         get('card_blur'),
+        card_opacity:      get('card_opacity'),
+        card_glow:         get('card_glow'),
+        card_rounded:      get('card_rounded'),
         show_uid_scramble: get('show_uid_scramble'),
-        youtube_video_id: get('youtube_video_id') || profile.youtube_video_id || '',
-        custom_font_name: blob.custom_font_name || null,
-        custom_font_family: blob.custom_font_family || null,
-        custom_font_data: blob.custom_font_data || null,
-        custom_icons: blob.custom_icons || [],
-        audio_only_id: blob.audio_only_id || '',
-mute_audio: blob.mute_audio !== undefined ? blob.mute_audio : true,
+        youtube_video_id:  get('youtube_video_id') || profile.youtube_video_id || '',
+        custom_font_name:  blob.custom_font_name  || null,
+        custom_font_family:blob.custom_font_family || null,
+        custom_font_data:  blob.custom_font_data  || null,
+        custom_icons:      blob.custom_icons      || [],
       };
     }
 
     function guessIcon(label) {
       const map = {
-        discord:'fab fa-discord', youtube:'fab fa-youtube', twitter:'fab fa-twitter', x:'fab fa-x-twitter',
-        instagram:'fab fa-instagram', tiktok:'fab fa-tiktok', roblox:'fas fa-gamepad', twitch:'fab fa-twitch',
-        github:'fab fa-github', spotify:'fab fa-spotify', 'guns.lol':'fas fa-crosshairs', steam:'fab fa-steam',
-        reddit:'fab fa-reddit', telegram:'fab fa-telegram', music:'fas fa-music', website:'fas fa-globe',
-        link:'fas fa-link', email:'fas fa-envelope'
+        discord:'fab fa-discord', youtube:'fab fa-youtube', twitter:'fab fa-twitter',
+        x:'fab fa-x-twitter', instagram:'fab fa-instagram', tiktok:'fab fa-tiktok',
+        roblox:'fas fa-gamepad', twitch:'fab fa-twitch', github:'fab fa-github',
+        spotify:'fab fa-spotify', 'guns.lol':'fas fa-crosshairs', steam:'fab fa-steam',
+        reddit:'fab fa-reddit', telegram:'fab fa-telegram', music:'fas fa-music',
+        website:'fas fa-globe', link:'fas fa-link', email:'fas fa-envelope'
       };
       return map[(label||'').toLowerCase()] || 'fas fa-link';
     }
 
+    // ── HANDLE FROM PATH ─────────────────────────────────────────────────────────
     function getHandleFromPath() {
       const path = window.location.pathname;
       return path.replace(/^\//, '').replace(/^@/, '').split('/')[0].toLowerCase();
@@ -346,8 +329,9 @@ mute_audio: blob.mute_audio !== undefined ? blob.mute_audio : true,
     if (!handle) { window.location.href = '/'; }
     document.getElementById('loadHandle').textContent = '@' + handle;
 
+    // ── TOP BAR ──────────────────────────────────────────────────────────────────
     (function() {
-      const bar = document.getElementById('topBar');
+      const bar     = document.getElementById('topBar');
       const trigger = document.getElementById('topBarTrigger');
       let hideTimer;
       function showBar() {
@@ -360,43 +344,35 @@ mute_audio: blob.mute_audio !== undefined ? blob.mute_audio : true,
       bar.addEventListener('mouseleave', () => {
         hideTimer = setTimeout(() => bar.classList.remove('visible'), 700);
       });
-      window._showTopBarBriefly = () => { showBar(); };
+      window._showTopBarBriefly = showBar;
     })();
 
-    let ytPlayer = null;
+    // ── YOUTUBE PLAYER ───────────────────────────────────────────────────────────
+    let ytPlayer   = null;
     let ytApiReady = false;
 
-    // Load YouTube IFrame API
     function loadYouTubeIframeAPI() {
-      if (window.YT && window.YT.Player) {
-        ytApiReady = true;
-        return;
-      }
+      if (window.YT && window.YT.Player) { ytApiReady = true; return; }
       const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.getElementsByTagName('script')[0].parentNode.insertBefore(tag, document.getElementsByTagName('script')[0]);
     }
 
-    window.onYouTubeIframeAPIReady = function() {
-      ytApiReady = true;
-    };
+    window.onYouTubeIframeAPIReady = function() { ytApiReady = true; };
 
-    // FIX: Create YouTube background using the IFrame API properly
     function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
- if (!videoId) return;
-  const container = document.getElementById('ytBg');
-  if (!container) return;
-      
-if (audioOnly) {
-    container.style.opacity = '0';
-    container.style.pointerEvents = 'none';
-  }
-      // Clean up old player
-      if (ytPlayer) {
-        try { ytPlayer.destroy(); } catch (e) {}
-        ytPlayer = null;
+      if (!videoId) return;
+      const container = document.getElementById('ytBg');
+      if (!container) return;
+
+      // For audio-only mode keep the container invisible
+      if (audioOnly) {
+        container.style.opacity = '0';
+        container.style.pointerEvents = 'none';
       }
+
+      // Clean up old player
+      if (ytPlayer) { try { ytPlayer.destroy(); } catch(e) {} ytPlayer = null; }
       const old = document.getElementById('yt-player');
       if (old) old.remove();
 
@@ -409,66 +385,41 @@ if (audioOnly) {
           setTimeout(initWhenReady, 120);
           return;
         }
-
         ytPlayer = new YT.Player('yt-player', {
-          height: '100%',
-          width: '100%',
-          videoId: videoId,
+          height: '100%', width: '100%', videoId,
           playerVars: {
-            autoplay: 1,
-            controls: 0,
-            mute: 1,          // always start muted — browsers require this for autoplay
-            loop: 1,
-            playlist: videoId,
-            modestbranding: 1,
-            playsinline: 1,
-            disablekb: 1,
-            fs: 0,
-            iv_load_policy: 3,
-            cc_load_policy: 0,
-            rel: 0,
-            showinfo: 0,
-            autohide: 1,
-            start: 0,
-            origin: window.location.origin,
+            autoplay:1, controls:0, mute:1, loop:1, playlist:videoId,
+            modestbranding:1, playsinline:1, disablekb:1, fs:0,
+            iv_load_policy:3, cc_load_policy:0, rel:0, showinfo:0, autohide:1,
+            start:0, origin:window.location.origin,
           },
           events: {
-            onReady: (event) => {
-              event.target.mute();
-              event.target.playVideo();
-              // show the background once the player is ready
-              container.classList.add('active');
+            onReady: (e) => {
+              e.target.mute();
+              e.target.playVideo();
+              if (!audioOnly) container.classList.add('active');
             },
-            onStateChange: (event) => {
-              if (event.data === YT.PlayerState.PLAYING) {
-                // unmute after playback starts if the profile allows it
-                if (!shouldMute) {
-                  try { event.target.unMute(); event.target.setVolume(60); } catch(e) {}
-                }
+            onStateChange: (e) => {
+              if (e.data === YT.PlayerState.PLAYING && !shouldMute) {
+                try { e.target.unMute(); e.target.setVolume(60); } catch(_) {}
               }
-              // loop: restart on end or unexpected pause
-              if (
-                event.data === YT.PlayerState.ENDED ||
-                event.data === YT.PlayerState.UNSTARTED
-              ) {
-                try { event.target.seekTo(0); event.target.playVideo(); } catch(e) {}
+              if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.UNSTARTED) {
+                try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {}
               }
             },
-            onError: (event) => {
-              console.warn("YouTube background error:", event.data);
-              container.classList.remove('active');
-            }
+            onError: () => container.classList.remove('active'),
           }
         });
       }
-
       initWhenReady();
     }
 
     loadYouTubeIframeAPI();
 
+    // ── LOAD PROFILE ─────────────────────────────────────────────────────────────
     async function loadProfile() {
       const { data: profile, error } = await sb.from('profiles').select('*').eq('handle', handle).single();
+
       if (error || !profile) {
         document.getElementById('loading').classList.add('out');
         setTimeout(() => {
@@ -478,6 +429,8 @@ if (audioOnly) {
         }, 600);
         return;
       }
+
+      // Ban check
       if (profile.is_banned) {
         document.getElementById('loading').classList.add('out');
         setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
@@ -485,8 +438,10 @@ if (audioOnly) {
         document.getElementById('nfSub').textContent = 'this profile has been suspended.';
         return;
       }
+
       const CS = buildCS(profile);
 
+      // Custom font injection
       if (CS.custom_font_data && CS.custom_font_family) {
         const style = document.createElement('style');
         style.textContent = `@font-face { font-family: '${CS.custom_font_family}'; src: url('${CS.custom_font_data}'); }`;
@@ -495,9 +450,9 @@ if (audioOnly) {
 
       applyCardStyles(CS);
 
+      // Avatar — handle relative Supabase storage paths and full URLs
       const avatarEl = document.getElementById('cardAvatar');
       if (profile.avatar_url) {
-        // Handle both relative Supabase storage paths and full URLs
         let avatarUrl = profile.avatar_url;
         if (avatarUrl.startsWith('/') || avatarUrl.startsWith('storage/')) {
           avatarUrl = SUPABASE_URL + '/' + avatarUrl.replace(/^\//, '');
@@ -506,36 +461,33 @@ if (audioOnly) {
         if (safeAvatar) {
           avatarEl.innerHTML = `<img src="${safeAvatar}" alt="" onerror="this.parentElement.innerHTML=''">`;
         } else if (/^https?:\/\//i.test(profile.avatar_url)) {
-          // If sanitizeUrl still rejects it, fall back to direct use for plain https URLs
           avatarEl.innerHTML = `<img src="${profile.avatar_url}" alt="" onerror="this.parentElement.innerHTML=''">`;
         }
-      
-}
+      }
 
+      // Name
       const nameEl = document.getElementById('cardName');
       nameEl.textContent = profile.display_name || profile.handle;
       nameEl.style.background = 'none';
       nameEl.style.webkitTextFillColor = CS.accent_color;
       nameEl.style.color = CS.accent_color;
 
-      document.getElementById('cardHandle').textContent = '@' + profile.handle;
+      document.getElementById('cardHandle').textContent   = '@' + profile.handle;
       document.getElementById('topBarHandle').textContent = '@' + profile.handle;
       document.getElementById('footerVersion').textContent = `swaqq.xyz/@${profile.handle}`;
       document.title = `${profile.display_name || profile.handle} — swaqq.xyz`;
 
+      // UID position (oldest signup = uid 1)
       sb.from('profiles').select('id').order('created_at', { ascending: true }).then(({ data: allIds }) => {
         if (!allIds) return;
-        const pos = allIds.findIndex(r => r.id === profile.id);
+        const pos   = allIds.findIndex(r => r.id === profile.id);
+        const num   = pos !== -1 ? pos + 1 : '?';
         const uidEl = document.getElementById('uidVal');
-        const num = pos !== -1 ? pos + 1 : '?';
-        if (CS.show_uid_scramble) {
-          startUidScramble(num);
-        } else {
-          uidEl.textContent = num;
-        }
+        CS.show_uid_scramble ? startUidScramble(num) : (uidEl.textContent = num);
       });
 
-      const badgesEl = document.getElementById('cardBadges');
+      // Badges
+      const badgesEl  = document.getElementById('cardBadges');
       const rawBadges = Array.isArray(profile.badges) ? profile.badges : (() => {
         try { return JSON.parse(profile.badges || '[]'); } catch { return []; }
       })();
@@ -551,87 +503,83 @@ if (audioOnly) {
         });
       }
 
-      const socialsEl = document.getElementById('cardSocials');
+      // Socials
+      const socialsEl  = document.getElementById('cardSocials');
       const rawSocials = Array.isArray(profile.socials) ? profile.socials : (() => {
         try { return JSON.parse(profile.socials || '[]'); } catch { return []; }
       })();
+      rawSocials.forEach(s => {
+        if (!s.url) return;
+        const safeUrl = sanitizeUrl(s.url);
+        if (!safeUrl) return;
+        const a = document.createElement('a');
+        a.className    = 'social-btn nav-link';
+        a.dataset.href = safeUrl;
 
-rawSocials.forEach(s => {
-  if (!s.url) return;
-  const safeUrl = sanitizeUrl(s.url); 
-  if (!safeUrl) return; 
-  const a = document.createElement('a');
-  a.className = 'social-btn nav-link';
-  a.dataset.href = safeUrl;
-  
-  let iconHtml;
-  if (s.icon_type === 'custom' && s.icon_data) {
-    
-    if (/^data:image\/(png|jpeg|gif|webp|svg\+xml);base64,/i.test(s.icon_data)) {
-      iconHtml = `<img src="${s.icon_data}" alt="">`;
-    } else {
-      iconHtml = `<i class="fas fa-link"></i>`;
-    }
-  } else if (s.icon) {
+        let iconHtml;
+        if (s.icon_type === 'custom' && s.icon_data) {
+          iconHtml = /^data:image\/(png|jpeg|gif|webp|svg\+xml);base64,/i.test(s.icon_data)
+            ? `<img src="${s.icon_data}" alt="">`
+            : `<i class="fas fa-link"></i>`;
+        } else if (s.icon) {
+          const safeIcon = /^fa[bsrl]? fa-[\w-]+$/.test(s.icon) ? s.icon : 'fas fa-link';
+          iconHtml = `<i class="${safeIcon}"></i>`;
+        } else {
+          iconHtml = `<i class="${guessIcon(s.label)}"></i>`;
+        }
 
-    const safeIcon = /^fa[bsrl]? fa-[\w-]+$/.test(s.icon) ? s.icon : 'fas fa-link';
-    iconHtml = `<i class="${safeIcon}"></i>`;
-  } else {
-    iconHtml = `<i class="${guessIcon(s.label)}"></i>`;
-  }
-  
-  const labelSpan = document.createElement('span');
-  labelSpan.textContent = s.label || '';
-  a.innerHTML = iconHtml + ' ';
-  a.appendChild(labelSpan);
-  socialsEl.appendChild(a);
-});
+        const labelSpan = document.createElement('span');
+        labelSpan.textContent = s.label || '';
+        a.innerHTML = iconHtml + ' ';
+        a.appendChild(labelSpan);
+        socialsEl.appendChild(a);
+      });
 
+      // Discord status
       if (profile.discord_id) {
         document.getElementById('discordStatus').classList.add('visible');
         fetchDiscordStatus(profile.discord_id);
       }
 
+      // Splash or direct reveal
       if (profile.show_splash !== false) {
         renderSplash(profile, CS);
       } else {
         revealProfile(profile, CS);
       }
 
+      // Views (only if enabled)
       if (profile.show_views !== false) {
         countView(profile.id, profile.handle);
       }
     }
 
+    // ── APPLY CARD STYLES ────────────────────────────────────────────────────────
     function applyCardStyles(CS) {
-      const card = document.getElementById('card');
-      const accent = CS.accent_color || '#ffffff';
-      const blur = CS.card_blur ?? 12;
-      const op = CS.card_opacity ?? 85;
-      const glow = CS.card_glow !== false;
+      const card    = document.getElementById('card');
+      const accent  = CS.accent_color || '#ffffff';
+      const blur    = CS.card_blur    ?? 12;
+      const op      = CS.card_opacity ?? 85;
+      const glow    = CS.card_glow    !== false;
       const rounded = CS.card_rounded !== false;
-      const font = CS.card_font || 'Syne';
-      const alpha = Math.round(op * 2.55).toString(16).padStart(2, '0');
+      const font    = CS.card_font    || 'Syne';
+      const alpha   = Math.round(op * 2.55).toString(16).padStart(2, '0');
 
-      card.style.background = '#111111' + alpha;
-      card.style.backdropFilter = `blur(${blur}px)`;
+      card.style.background          = '#111111' + alpha;
+      card.style.backdropFilter      = `blur(${blur}px)`;
       card.style.webkitBackdropFilter = `blur(${blur}px)`;
-      card.style.borderRadius = rounded ? '20px' : '4px';
-      card.style.fontFamily = `'${font}', sans-serif`;
+      card.style.borderRadius        = rounded ? '20px' : '4px';
+      card.style.fontFamily          = `'${font}', sans-serif`;
+      if (glow) card.style.boxShadow = `0 0 40px ${accent}22, 0 0 80px ${accent}0a`;
 
-      if (glow) {
-        card.style.boxShadow = `0 0 40px ${accent}22, 0 0 80px ${accent}0a`;
-      }
-
-      document.getElementById('cardBio').style.fontFamily = `'${font}', monospace`;
+      document.getElementById('cardBio').style.fontFamily    = `'${font}', monospace`;
       document.getElementById('cardHandle').style.fontFamily = `'${font}', monospace`;
 
       const bgType = CS.bg_type || 'video';
-
       if (bgType === 'image' && CS.bg_image_url) {
         const imgBg = document.getElementById('imgBg');
         imgBg.style.backgroundImage = `url(${CS.bg_image_url})`;
-        imgBg.style.opacity = (CS.bg_opacity ?? 70) / 100;
+        imgBg.style.opacity         = (CS.bg_opacity ?? 70) / 100;
         imgBg.classList.add('visible');
       } else if (bgType === 'color' && CS.bg_color) {
         document.body.style.background = CS.bg_color;
@@ -640,30 +588,28 @@ rawSocials.forEach(s => {
       }
     }
 
+    // ── SPLASH ───────────────────────────────────────────────────────────────────
     function renderSplash(profile, CS) {
-      const splashEl = document.getElementById('splash');
+      const splashEl   = document.getElementById('splash');
       const splashName = document.getElementById('splashName');
       splashEl.classList.add('active');
       document.getElementById('loading').classList.add('out');
       setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
+
       const name = profile.display_name || profile.handle;
       let i = 0;
       function type() {
-        if (i <= name.length) {
-          splashName.textContent = name.slice(0, i++);
-          setTimeout(type, 110);
-        }
+        if (i <= name.length) { splashName.textContent = name.slice(0, i++); setTimeout(type, 110); }
       }
       setTimeout(type, 200);
+
       splashEl.addEventListener('click', () => {
         splashEl.classList.add('out');
-        setTimeout(() => {
-          splashEl.style.display = 'none';
-          revealProfile(profile, CS);
-        }, 900);
+        setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
       }, { once: true });
     }
 
+    // ── REVEAL ───────────────────────────────────────────────────────────────────
     function revealProfile(profile, CS) {
       document.getElementById('loading').classList.add('out');
       setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
@@ -672,34 +618,40 @@ rawSocials.forEach(s => {
       if (profile.show_views !== false) document.getElementById('views').classList.add('visible');
       window._showTopBarBriefly && window._showTopBarBriefly();
 
-      // FIX: check bg_type, show_video_bg, AND that a video ID actually exists
-      const videoId = CS.youtube_video_id || profile.youtube_video_id;
-const audioId = CS.audio_only_id || '';
+      // Background video / audio
+      const videoId = CS.youtube_video_id || profile.youtube_video_id || '';
+      const audioId = CS.audio_only_id || '';
 
-if (CS.bg_type === 'audio' && audioId) {
-  // Audio only — hidden iframe, no visual
-  createYouTubeBackground(audioId, CS.mute_audio !== false, true);
-} else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
-  createYouTubeBackground(videoId, CS.mute_video !== false, false);
-}
+      if (CS.bg_type === 'audio' && audioId) {
+        createYouTubeBackground(audioId, CS.mute_audio !== false, true);
+      } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
+        createYouTubeBackground(videoId, CS.mute_video !== false, false);
+      }
 
       typeBio(profile.bio || '');
+
+      // Set up reactions
       _profileIdForReactions = profile.id;
-initReactions(profile.id);
+      initReactions(profile.id);
+
       if (profile.show_tilt !== false) initTilt();
       initNavLinks();
       updateClock();
       setInterval(updateClock, 1000);
     }
 
+    // ── CLOCK ────────────────────────────────────────────────────────────────────
     function updateClock() {
       const now = new Date();
-      let h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
+      let h  = now.getHours();
+      const m  = String(now.getMinutes()).padStart(2, '0');
+      const s  = String(now.getSeconds()).padStart(2, '0');
       const ap = h >= 12 ? 'PM' : 'AM';
       h = h % 12 || 12;
       document.getElementById('footerClock').textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
     }
 
+    // ── DISCORD STATUS ───────────────────────────────────────────────────────────
     async function fetchDiscordStatus(discordId) {
       try {
         const r = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
@@ -714,13 +666,14 @@ initReactions(profile.id);
       } catch(_) {}
     }
 
+    // ── UID SCRAMBLE ─────────────────────────────────────────────────────────────
     const scrambleChars = '0123456789ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛟ⚡☠✦✧⚔◊◈△▽';
 
     function startUidScramble(realNum) {
-      const el = document.getElementById('uidVal');
+      const el  = document.getElementById('uidVal');
       const len = String(realNum).length;
       let count = 0;
-      const iv = setInterval(() => {
+      const iv  = setInterval(() => {
         let s = '';
         for (let i = 0; i < len; i++) s += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
         el.textContent = s;
@@ -728,6 +681,7 @@ initReactions(profile.id);
       }, 55);
     }
 
+    // ── BIO TYPEWRITER ───────────────────────────────────────────────────────────
     function typeBio(text) {
       const bioEl = document.getElementById('cardBio');
       if (!text) { bioEl.innerHTML = ''; return; }
@@ -745,19 +699,21 @@ initReactions(profile.id);
       setTimeout(tick, 400);
     }
 
+    // ── 3D TILT ──────────────────────────────────────────────────────────────────
     function initTilt() {
       const card = document.getElementById('card');
-      let tx=0, ty=0, cx=0, cy=0, hovering=false;
+      let tx = 0, ty = 0, cx = 0, cy = 0, hovering = false;
       card.addEventListener('mouseenter', () => hovering = true);
       card.addEventListener('mouseleave', () => { hovering = false; tx = ty = 0; });
       card.addEventListener('mousemove', e => {
         if (!hovering) return;
         const r = card.getBoundingClientRect();
-        tx = (e.clientX - r.left - r.width / 2) / 12;
-        ty = (e.clientY - r.top - r.height / 2) / 12;
+        tx = (e.clientX - r.left - r.width  / 2) / 12;
+        ty = (e.clientY - r.top  - r.height / 2) / 12;
       });
       function anim() {
-        cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
+        cx += (tx - cx) * 0.18;
+        cy += (ty - cy) * 0.18;
         card.style.transform = `perspective(1200px) rotateY(${cx}deg) rotateX(${-cy}deg)`;
         requestAnimationFrame(anim);
       }
@@ -765,11 +721,12 @@ initReactions(profile.id);
       document.getElementById('cardAvatar').addEventListener('click', () => {
         const av = document.getElementById('cardAvatar');
         av.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-        av.style.transform = 'scale(1.15) rotate(360deg)';
+        av.style.transform  = 'scale(1.15) rotate(360deg)';
         setTimeout(() => { av.style.transform = ''; }, 620);
       });
     }
 
+    // ── NAV LINKS ────────────────────────────────────────────────────────────────
     function initNavLinks() {
       const overlay = document.getElementById('navOverlay');
       let pending = '';
@@ -787,117 +744,119 @@ initReactions(profile.id);
         pending = '';
       });
       document.getElementById('navNo').addEventListener('click', () => {
-        overlay.classList.remove('active'); pending = '';
+        overlay.classList.remove('active');
+        pending = '';
       });
       overlay.addEventListener('click', e => {
         if (e.target === overlay) { overlay.classList.remove('active'); pending = ''; }
       });
     }
 
-async function countView(profileId, profileHandle) {
-  // Don't count views on your own profile
-  const { data: { session } } = await sb.auth.getSession();
-  if (session?.user?.id === profileId) {
-    // Still fetch and display the count, just don't increment
-    const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
-    document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
-    return;
-  }
+    // ── VIEWS ────────────────────────────────────────────────────────────────────
+    async function countView(profileId, profileHandle) {
+      // Don't count views on your own profile
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user?.id === profileId) {
+        const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
+        document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
+        return;
+      }
 
-  // Fingerprint-based dedup — max 2 views per person per day
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d'); ctx.fillText('fp', 0, 0);
-  const fp = {
-    ua: navigator.userAgent,
-    lang: navigator.language,
-    res: `${screen.width}x${screen.height}`,
-    tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    cv: canvas.toDataURL()
-  };
-  let hash = 0;
-  const str = JSON.stringify(fp);
-  for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
+      // Fingerprint-based dedup — max 2 views per person per day
+      const canvas = document.createElement('canvas');
+      canvas.getContext('2d').fillText('fp', 0, 0);
+      const fp  = {
+        ua:   navigator.userAgent,
+        lang: navigator.language,
+        res:  `${screen.width}x${screen.height}`,
+        tz:   Intl.DateTimeFormat().resolvedOptions().timeZone,
+        cv:   canvas.toDataURL(),
+      };
+      let hash = 0;
+      const str = JSON.stringify(fp);
+      for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
 
-  const key = `sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
-  const today = new Date().toDateString();
-  const stored = JSON.parse(localStorage.getItem(key) || '{"c":0,"d":""}');
-  if (stored.d !== today) stored.c = 0; // reset on new day
+      const key    = `sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
+      const today  = new Date().toDateString();
+      const stored = JSON.parse(localStorage.getItem(key) || '{"c":0,"d":""}');
+      if (stored.d !== today) stored.c = 0; // reset each day
 
-  if (stored.c < 2) {
-    stored.c++;
-    stored.d = today;
-    localStorage.setItem(key, JSON.stringify(stored));
+      if (stored.c < 2) {
+        stored.c++;
+        stored.d = today;
+        localStorage.setItem(key, JSON.stringify(stored));
+        const { error } = await sb.rpc('increment_views', { profile_id: profileId });
+        if (error) console.error('[swaqq] views rpc failed:', error.message);
+      }
 
-    const { error } = await sb.rpc('increment_views', { profile_id: profileId });
-    if (error) console.error('[swaqq] views rpc failed:', error.message);
-  }
+      // Always display current count
+      const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
+      document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
+    }
 
-  // Always fetch and display current count
-  const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
-  document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
-}
-    // ── LIKES / DISLIKES ──────────────────────────────────────────────────────────
-async function initReactions(profileId) {
-  const { data } = await sb.from('profiles')
-    .select('like_count, dislike_count')
-    .eq('id', profileId).single();
-  
-  if (data) {
-    document.getElementById('likeCount').textContent = data.like_count || 0;
-    document.getElementById('dislikeCount').textContent = data.dislike_count || 0;
-  }
-  
-  // Check if user already reacted (localStorage per profile)
-  const reacted = localStorage.getItem(`swaqq_react_${profileId}`);
-  if (reacted === 'like') {
-    document.getElementById('likeBtn').style.color = '#43b581';
-    document.getElementById('likeBtn').style.borderColor = 'rgba(67,181,129,0.3)';
-  } else if (reacted === 'dislike') {
-    document.getElementById('dislikeBtn').style.color = '#f04747';
-    document.getElementById('dislikeBtn').style.borderColor = 'rgba(240,71,71,0.3)';
-  }
-}
+    // ── REACTIONS ────────────────────────────────────────────────────────────────
+    let _profileIdForReactions = null;
 
-let _profileIdForReactions = null;
+    async function initReactions(profileId) {
+      const { data } = await sb.from('profiles')
+        .select('like_count, dislike_count')
+        .eq('id', profileId).single();
 
-async function handleReaction(type) {
-  if (!_profileIdForReactions) return;
+      if (data) {
+        document.getElementById('likeCount').textContent    = data.like_count    || 0;
+        document.getElementById('dislikeCount').textContent = data.dislike_count || 0;
+      }
 
-  // Don't let people react to their own profile
-  const { data: { session } } = await sb.auth.getSession();
-  if (session?.user?.id === _profileIdForReactions) return;
+      // Restore previous reaction state from localStorage
+      const reacted = localStorage.getItem(`swaqq_react_${profileId}`);
+      if (reacted === 'like') {
+        document.getElementById('likeBtn').style.color       = '#43b581';
+        document.getElementById('likeBtn').style.borderColor = 'rgba(67,181,129,0.3)';
+      } else if (reacted === 'dislike') {
+        document.getElementById('dislikeBtn').style.color       = '#f04747';
+        document.getElementById('dislikeBtn').style.borderColor = 'rgba(240,71,71,0.3)';
+      }
+    }
 
-  const key = `swaqq_react_${_profileIdForReactions}`;
-  const existing = localStorage.getItem(key);
-  if (existing) return; // already reacted
+    async function handleReaction(type) {
+      if (!_profileIdForReactions) return;
 
-  localStorage.setItem(key, type);
+      // Don't allow reacting to your own profile
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user?.id === _profileIdForReactions) return;
 
-  const { error } = await sb.rpc('toggle_like', {
-    profile_id: _profileIdForReactions,
-    action: type
-  });
+      // One reaction per visitor — locked in localStorage
+      const key = `swaqq_react_${_profileIdForReactions}`;
+      if (localStorage.getItem(key)) return;
+      localStorage.setItem(key, type);
 
-  if (error) {
-    // RPC failed — fallback to direct update
-    const col = type === 'like' ? 'like_count' : 'dislike_count';
-    await sb.from('profiles')
-      .update({ [col]: (type === 'like'
-        ? (parseInt(document.getElementById('likeCount').textContent) || 0) + 1
-        : (parseInt(document.getElementById('dislikeCount').textContent) || 0) + 1
-      )})
-      .eq('id', _profileIdForReactions);
-  }
+      // Try RPC first, fall back to direct update
+      const { error } = await sb.rpc('toggle_like', {
+        profile_id: _profileIdForReactions,
+        action: type,
+      });
 
-  // Update UI
-  const btn = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
-  const countEl = document.getElementById(type === 'like' ? 'likeCount' : 'dislikeCount');
-  countEl.textContent = (parseInt(countEl.textContent) || 0) + 1;
-  btn.style.color = type === 'like' ? '#43b581' : '#f04747';
-  btn.style.borderColor = type === 'like' ? 'rgba(67,181,129,0.3)' : 'rgba(240,71,71,0.3)';
-  btn.style.transform = 'scale(1.2)';
-  setTimeout(() => btn.style.transform = '', 300);
-}
+      if (error) {
+        // Direct update fallback using current displayed count
+        const col      = type === 'like' ? 'like_count' : 'dislike_count';
+        const countEl  = document.getElementById(type === 'like' ? 'likeCount' : 'dislikeCount');
+        const newCount = (parseInt(countEl.textContent) || 0) + 1;
+        await sb.from('profiles')
+          .update({ [col]: newCount })
+          .eq('id', _profileIdForReactions);
+      }
+
+      // Update UI
+      const btn     = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
+      const countEl = document.getElementById(type === 'like' ? 'likeCount' : 'dislikeCount');
+      countEl.textContent          = (parseInt(countEl.textContent) || 0) + 1;
+      btn.style.color              = type === 'like' ? '#43b581' : '#f04747';
+      btn.style.borderColor        = type === 'like' ? 'rgba(67,181,129,0.3)' : 'rgba(240,71,71,0.3)';
+      btn.style.transform          = 'scale(1.2)';
+      setTimeout(() => btn.style.transform = '', 300);
+    }
+
+    // ── INIT ─────────────────────────────────────────────────────────────────────
     loadProfile();
   </script>
 </body>
