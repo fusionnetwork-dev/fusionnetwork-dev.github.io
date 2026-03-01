@@ -892,6 +892,34 @@
 </div>
 
 <script>
+  function sanitize(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;')
+    .replace(/`/g, '&#x60;')
+    .trim();
+}
+
+function sanitizeUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  url = url.trim();
+  // Block javascript:, data:, vbscript:, and other dangerous schemes
+  if (/^(javascript|data|vbscript|blob|file):/i.test(url)) return '';
+  // Only allow http, https, mailto
+  if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) return '';
+  return url;
+}
+
+function sanitizeHtml(html) {
+  const div = document.createElement('div');
+  div.textContent = html;
+  return div.innerHTML;
+}
   const SUPABASE_URL  = 'https://cwaifnbgkqqecatggvrx.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YWlmbmJna3FxZWNhdGdndnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzgzNzUsImV4cCI6MjA4NzcxNDM3NX0.5o3aI40Z8orNW1yOVWt7uAsP4TJ6MvVPqFidaTOf0cE';
   const { createClient } = supabase;
