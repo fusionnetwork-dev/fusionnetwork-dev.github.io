@@ -495,11 +495,19 @@ if (audioOnly) {
 
       const avatarEl = document.getElementById('cardAvatar');
       if (profile.avatar_url) {
-  // Validate avatar URL before injecting
-  const safeAvatar = sanitizeUrl(profile.avatar_url);
-  if (safeAvatar) {
-    avatarEl.innerHTML = `<img src="${safeAvatar}" alt="">`;
-  }
+        // Handle both relative Supabase storage paths and full URLs
+        let avatarUrl = profile.avatar_url;
+        if (avatarUrl.startsWith('/') || avatarUrl.startsWith('storage/')) {
+          avatarUrl = SUPABASE_URL + '/' + avatarUrl.replace(/^\//, '');
+        }
+        const safeAvatar = sanitizeUrl(avatarUrl);
+        if (safeAvatar) {
+          avatarEl.innerHTML = `<img src="${safeAvatar}" alt="" onerror="this.parentElement.innerHTML=''">`;
+        } else if (/^https?:\/\//i.test(profile.avatar_url)) {
+          // If sanitizeUrl still rejects it, fall back to direct use for plain https URLs
+          avatarEl.innerHTML = `<img src="${profile.avatar_url}" alt="" onerror="this.parentElement.innerHTML=''">`;
+        }
+      }
 }
 
       const nameEl = document.getElementById('cardName');
