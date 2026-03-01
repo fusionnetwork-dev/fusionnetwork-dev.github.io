@@ -717,7 +717,15 @@ function sanitizeHtml(html) {
       if (authErr) { clearTimeout(safetyTimer); setLoading('signupBtn', false); return showAlert('signupAlert', authErr.message, 'error'); }
 
       const userId = authData?.user?.id;
-      if (!userId) { clearTimeout(safetyTimer); setLoading('signupBtn', false); return showAlert('signupAlert', 'signup incomplete — make sure "Confirm email" is OFF in Supabase Auth settings.', 'error'); }
+if (!userId) {
+  clearTimeout(safetyTimer);
+  setLoading('signupBtn', false);
+  // With email confirmation ON, user exists but isn't confirmed yet
+  // Profile insert still works, they just can't log in until confirmed
+  showAlert('signupAlert', '✓ check your email and click the confirmation link!', 'success');
+  setTimeout(() => openModal('login'), 3000);
+  return;
+}
 
       const { error: profileErr } = await sb.from('profiles').insert({
         id: userId, handle, display_name: handle, bio: '', discord_id: '',
@@ -734,8 +742,10 @@ function sanitizeHtml(html) {
         return showAlert('signupAlert', 'profile error: ' + profileErr.message + ' (code: ' + profileErr.code + ')', 'error');
       }
 
-      showAlert('signupAlert', '✓ account created! redirecting...', 'success');
-      setTimeout(() => window.location.href = '/dashboard', 900);
+showAlert('signupAlert', '✓ check your email to confirm your account, then log in!', 'success');
+setLoading('signupBtn', false);
+// Switch to login modal after a delay
+setTimeout(() => openModal('login'), 3000);
     } catch (err) {
       clearTimeout(safetyTimer); setLoading('signupBtn', false);
       showAlert('signupAlert', 'unexpected error: ' + err.message, 'error');
