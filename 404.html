@@ -380,11 +380,14 @@ function sanitizeHtml(html) {
 
     // FIX: Create YouTube background using the IFrame API properly
     function createYouTubeBackground(videoId, shouldMute) {
-      if (!videoId) return;
-
-      const container = document.getElementById('ytBg');
-      if (!container) return;
-
+ if (!videoId) return;
+  const container = document.getElementById('ytBg');
+  if (!container) return;
+      
+if (audioOnly) {
+    container.style.opacity = '0';
+    container.style.pointerEvents = 'none';
+  }
       // Clean up old player
       if (ytPlayer) {
         try { ytPlayer.destroy(); } catch (e) {}
@@ -653,9 +656,14 @@ rawSocials.forEach(s => {
 
       // FIX: check bg_type, show_video_bg, AND that a video ID actually exists
       const videoId = CS.youtube_video_id || profile.youtube_video_id;
-      if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
-        createYouTubeBackground(videoId, CS.mute_video !== false);
-      }
+const audioId = CS.audio_only_id || '';
+
+if (CS.bg_type === 'audio' && audioId) {
+  // Audio only — hidden iframe, no visual
+  createYouTubeBackground(audioId, CS.mute_audio !== false, true);
+} else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
+  createYouTubeBackground(videoId, CS.mute_video !== false, false);
+}
 
       typeBio(profile.bio || '');
       _profileIdForReactions = profile.id;
