@@ -862,32 +862,39 @@ let _profileIdForReactions = null;
 
 async function handleReaction(type) {
   if (!_profileIdForReactions) return;
+
+  // Don't let people react to their own profile
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user?.id === _profileIdForReactions) return;
+
   const key = `swaqq_react_${_profileIdForReactions}`;
   const existing = localStorage.getItem(key);
-  if (existing) return; // already reacted — one per visitor
-  
+  if (existing) return; // already reacted
+
   localStorage.setItem(key, type);
-  
-  await sb.rpc('toggle_like', { 
-    profile_id: _profileIdForReactions, 
-    action: type 
-  }).catch(() => {
-    // fallback direct update
-    const col = type === 'like' ? 'like_count' : 'dislike_count';
-    sb.from('profiles')
-      .update({ [col]: sb.rpc('increment', { x: 1 }) })
-      .eq('id', _profileIdForReactions);
+
+  const { error } = await sb.rpc('toggle_like', {
+    profile_id: _profileIdForReactions,
+    action: type
   });
-  
+
+  if (error) {
+    // RPC failed — fallback to direct update
+    const col = type === 'like' ? 'like_count' : 'dislike_count';
+    await sb.from('profiles')
+      .update({ [col]: (type === 'like'
+        ? (parseInt(document.getElementById('likeCount').textContent) || 0) + 1
+        : (parseInt(document.getElementById('dislikeCount').textContent) || 0) + 1
+      )})
+      .eq('id', _profileIdForReactions);
+  }
+
   // Update UI
   const btn = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
   const countEl = document.getElementById(type === 'like' ? 'likeCount' : 'dislikeCount');
-  const cur = parseInt(countEl.textContent) || 0;
-  countEl.textContent = cur + 1;
+  countEl.textContent = (parseInt(countEl.textContent) || 0) + 1;
   btn.style.color = type === 'like' ? '#43b581' : '#f04747';
   btn.style.borderColor = type === 'like' ? 'rgba(67,181,129,0.3)' : 'rgba(240,71,71,0.3)';
-  
-  // Animate
   btn.style.transform = 'scale(1.2)';
   setTimeout(() => btn.style.transform = '', 300);
 }
