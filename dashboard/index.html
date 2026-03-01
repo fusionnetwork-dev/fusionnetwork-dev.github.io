@@ -88,6 +88,8 @@
     .dash-section { margin-bottom:28px; }
     .dash-section-title { font-size:15px; font-weight:700; margin-bottom:4px; }
     .dash-section-sub { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:16px; }
+    #tab-admin .dash-section { max-width:100%; }
+#tab-admin { max-width:100%; }
     .card-edit { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; }
     
     /* ── FIELDS ── */
@@ -314,7 +316,7 @@
     .admin-search { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:9px; padding:10px 14px; color:var(--text); font-family:'Geist Mono',monospace; font-size:13px; outline:none; margin-bottom:14px; transition:border-color 0.2s; }
     .admin-search:focus { border-color:rgba(255,255,255,0.2); }
     .admin-search::placeholder { color:var(--muted); }
-    .admin-table { width:100%; border-collapse:collapse; min-width:760px; }
+    .admin-table { width:100%; border-collapse:collapse; min-width:860px; }
     .admin-table th { text-align:left; padding:8px 14px; border-bottom:1px solid var(--border); font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); font-weight:400; }
     .admin-table td { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.03); font-family:'Geist Mono',monospace; font-size:12px; color:var(--sub); vertical-align:middle; white-space:nowrap; }
     .admin-table tr:hover td { background:rgba(255,255,255,0.02); }
@@ -865,7 +867,7 @@
       <button class="btn btn-ghost" onclick="loadAdminData()" style="font-size:10px"><i class="fas fa-sync"></i> refresh</button>
     </div>
 
-    <div class="card-edit" style="padding:0;overflow-x:auto">
+  <div class="card-edit" style="padding:0;overflow-x:auto;width:100%">
       <table class="admin-table">
         <thead>
           <tr>
