@@ -2120,88 +2120,247 @@ delete updates.unlocked_badges;
 
   async function doLogout() { await sb.auth.signOut(); window.location.href = '/'; }
 
-  // ─── ADMIN ────────────────────────────────────────────────────────────────────
-  async function loadAdminData() {
-    const { data } = await sb.from('profiles').select('*').order('created_at', { ascending:false });
-    allUsers = data || [];
-    renderAdminStats(allUsers);
-    renderAdminTable(allUsers);
-  }
+ // ─── ADMIN ────────────────────────────────────────────────────────────────────
+async function loadAdminData() {
+  document.getElementById('adminUserTbody').innerHTML =
+    '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--muted)"><div class="spinner" style="display:inline-block"></div></td></tr>';
 
-  function renderAdminStats(users) {
-    document.getElementById('aTotalUsers').textContent = users.length;
-    document.getElementById('aTotalViews').textContent = users.reduce((a,u) => a+(u.view_count||0), 0).toLocaleString();
-    document.getElementById('aEarlyCount').textContent = users.filter(u => pj(u.unlocked_badges,[]).includes('early')).length;
-    const today = new Date().toDateString();
-    document.getElementById('aNewToday').textContent = users.filter(u => new Date(u.created_at).toDateString()===today).length;
-  }
+  const { data } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+  allUsers = data || [];
+  renderAdminStats(allUsers);
+  renderAdminTable(allUsers);
+  populateNoteUserSelect(allUsers);
+}
 
-  function renderAdminTable(users) {
-    const tb = document.getElementById('adminUserTbody');
-    if (!users.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">no users</td></tr>'; return; }
-    tb.innerHTML = users.map(u => {
-      const unlocked  = pj(u.unlocked_badges, []);
-      const initials  = (u.display_name||u.handle||'?')[0].toUpperCase();
-      const av = u.avatar_url
-        ? '<div class="user-av" style="background-image:url('+u.avatar_url+');background-size:cover"></div>'
-        : '<div class="user-av">'+initials+'</div>';
-      const pills = unlocked.length
-        ? unlocked.map(id=>'<span class="badge-mini'+(id==='early'?' early':'')+'">'+id+'</span>').join('')
-        : '<span style="color:var(--muted);font-size:10px">—</span>';
-      const joined   = new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-      const roleTags = [u.is_owner?'<span style="font-size:9px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--gold);border-radius:3px;padding:1px 5px;font-family:\'Geist Mono\',monospace">owner</span>':'',
-        u.is_developer?'<span style="font-size:9px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:#38bdf8;border-radius:3px;padding:1px 5px;font-family:\'Geist Mono\',monospace">dev</span>':'',
-        u.is_admin && !u.is_owner?'<span class="user-admin-star">★</span>':''].filter(Boolean).join('');
-      return '<tr>' +
-        '<td><div class="user-cell">'+av+'<div><div class="user-handle">@'+u.handle+' '+roleTags+'</div><div style="font-size:10px;color:var(--muted)">'+(u.display_name||'')+'</div></div></div></td>' +
-        '<td><div class="badges-cell">'+pills+'</div></td>' +
-        '<td>'+(u.view_count||0).toLocaleString()+'</td>' +
-        '<td>'+joined+'</td>' +
-        '<td><div class="admin-actions">'+
-          '<button class="btn-sm btn-sm-gold" onclick="openBadgeModal(\''+u.id+'\',\''+u.handle+'\')"><i class="fas fa-star"></i> badges</button>'+
-          '<button class="btn-sm btn-sm-ghost" onclick="cycleRole(\''+u.id+'\',\''+u.handle+'\')"><i class="fas fa-shield-alt"></i> role</button>'+
-          '<button class="btn-sm btn-sm-danger" onclick="banUser(\''+u.id+'\',\''+u.handle+'\')"><i class="fas fa-ban"></i></button>'+
-        '</div></td>'+
-      '</tr>';
-    }).join('');
-  }
+function renderAdminStats(users) {
+  document.getElementById('aTotalUsers').textContent  = users.length;
+  document.getElementById('aTotalViews').textContent  = users.reduce((a,u) => a+(u.view_count||0), 0).toLocaleString();
+  document.getElementById('aEarlyCount').textContent  = users.filter(u => pj(u.unlocked_badges,[]).includes('early')).length;
+  document.getElementById('aBannedCount').textContent = users.filter(u => u.is_banned).length;
+  const today = new Date().toDateString();
+  document.getElementById('aNewToday').textContent = users.filter(u => new Date(u.created_at).toDateString()===today).length;
+}
 
-  function filterUsers() {
-    const q = document.getElementById('adminSearch').value.toLowerCase();
-    renderAdminTable(allUsers.filter(u =>
-      u.handle.toLowerCase().includes(q) || (u.display_name||'').toLowerCase().includes(q)
-    ));
-  }
+function filterUsers() {
+  const q       = (document.getElementById('adminSearch').value || '').toLowerCase();
+  const role    = document.getElementById('adminRoleFilter').value;
+  const sortBy  = document.getElementById('adminSortBy').value;
 
-  // Cycle through role: normal → admin → developer → owner → normal
-  async function cycleRole(uid, handle) {
-    const u = allUsers.find(u => u.id === uid);
-    if (!u) return;
-    let updates;
-    if (!u.is_admin && !u.is_developer && !u.is_owner) {
-      updates = { is_admin:true, is_developer:false, is_owner:false };
-    } else if (u.is_admin && !u.is_developer && !u.is_owner) {
-      updates = { is_admin:true, is_developer:true, is_owner:false };
-    } else if (u.is_developer) {
-      updates = { is_admin:true, is_developer:false, is_owner:true };
-    } else {
-      updates = { is_admin:false, is_developer:false, is_owner:false };
-    }
-    const label = updates.is_owner ? 'owner' : updates.is_developer ? 'developer' : updates.is_admin ? 'admin' : 'user';
-    if (!confirm('set @'+handle+' as '+label+'?')) return;
-    const { error } = await sb.from('profiles').update(updates).eq('id', uid);
-    if (error) { alert('failed: '+error.message); return; }
-    Object.assign(allUsers.find(u=>u.id===uid), updates);
-    renderAdminTable(allUsers);
-  }
+  let filtered = allUsers.filter(u => {
+    const matchQ = !q ||
+      (u.handle||'').toLowerCase().includes(q) ||
+      (u.display_name||'').toLowerCase().includes(q) ||
+      (u.email||'').toLowerCase().includes(q);
 
-  async function banUser(uid, handle) {
-    if (!confirm('ban @'+handle+'? this deletes their profile.')) return;
-    const { error } = await sb.from('profiles').delete().eq('id', uid);
-    if (error) { alert('failed: '+error.message); return; }
-    allUsers = allUsers.filter(u => u.id !== uid);
-    renderAdminStats(allUsers); renderAdminTable(allUsers);
+    const matchRole =
+      role === 'all'       ? true :
+      role === 'owner'     ? u.is_owner :
+      role === 'admin'     ? (u.is_admin && !u.is_owner) :
+      role === 'developer' ? u.is_developer :
+      role === 'banned'    ? u.is_banned :
+      role === 'normal'    ? (!u.is_admin && !u.is_owner && !u.is_developer && !u.is_banned) :
+      true;
+
+    return matchQ && matchRole;
+  });
+
+  filtered.sort((a, b) => {
+    if (sortBy === 'oldest')  return new Date(a.created_at) - new Date(b.created_at);
+    if (sortBy === 'views')   return (b.view_count||0) - (a.view_count||0);
+    if (sortBy === 'handle')  return (a.handle||'').localeCompare(b.handle||'');
+    return new Date(b.created_at) - new Date(a.created_at); // newest
+  });
+
+  renderAdminTable(filtered);
+  const el = document.getElementById('adminUserCount');
+  if (el) el.textContent = `showing ${filtered.length} of ${allUsers.length} users`;
+}
+
+function renderAdminTable(users) {
+  const tb = document.getElementById('adminUserTbody');
+  if (!users.length) {
+    tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">no users found</td></tr>';
+    return;
   }
+  tb.innerHTML = users.map(u => {
+    const unlocked = pj(u.unlocked_badges, []);
+    const initials = (u.display_name||u.handle||'?')[0].toUpperCase();
+    const av = u.avatar_url
+      ? `<div class="user-av" style="background-image:url(${u.avatar_url});background-size:cover"></div>`
+      : `<div class="user-av">${initials}</div>`;
+
+    // Role tags
+    const roleTags = [
+      u.is_owner     ? `<span style="font-size:9px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--gold);border-radius:3px;padding:1px 5px;font-family:'Geist Mono',monospace">owner</span>` : '',
+      u.is_developer ? `<span style="font-size:9px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:#38bdf8;border-radius:3px;padding:1px 5px;font-family:'Geist Mono',monospace">dev</span>` : '',
+      u.is_admin && !u.is_owner ? `<span style="font-size:9px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);border-radius:3px;padding:1px 5px;font-family:'Geist Mono',monospace">admin</span>` : '',
+      u.is_banned    ? `<span style="font-size:9px;background:rgba(240,71,71,0.12);border:1px solid rgba(240,71,71,0.3);color:rgba(255,100,100,0.8);border-radius:3px;padding:1px 5px;font-family:'Geist Mono',monospace">banned</span>` : '',
+    ].filter(Boolean).join(' ');
+
+    const pills = unlocked.length
+      ? unlocked.map(id => `<span class="badge-mini${id==='early'?' early':''}">${id}</span>`).join('')
+      : `<span style="color:var(--muted);font-size:10px">—</span>`;
+
+    const joined  = new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const noteTag = u.note ? `<div style="font-size:9px;color:rgba(245,166,35,0.6);margin-top:2px;font-family:'Geist Mono',monospace;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${u.note}">📝 ${u.note}</div>` : '';
+    const emailDisplay = u.email
+      ? `<span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted)">${u.email}</span>`
+      : `<span style="color:var(--muted);font-size:10px">—</span>`;
+
+    return `<tr>
+      <td>
+        <div class="user-cell">
+          ${av}
+          <div>
+            <div class="user-handle">@${u.handle} ${roleTags}</div>
+            <div style="font-size:10px;color:var(--muted)">${u.display_name||''}</div>
+            ${noteTag}
+          </div>
+        </div>
+      </td>
+      <td>${emailDisplay}</td>
+      <td><div class="badges-cell">${pills}</div></td>
+      <td style="font-family:'Geist Mono',monospace">${(u.view_count||0).toLocaleString()}</td>
+      <td style="font-family:'Geist Mono',monospace;font-size:11px">${joined}</td>
+      <td>
+        <div class="admin-actions">
+          <button class="btn-sm btn-sm-gold" onclick="openBadgeModal('${u.id}','${u.handle}')"><i class="fas fa-star"></i> badges</button>
+          <button class="btn-sm btn-sm-ghost" onclick="openRoleModal('${u.id}','${u.handle}')"><i class="fas fa-shield-alt"></i> role</button>
+          ${u.is_banned
+            ? `<button class="btn-sm btn-sm-ghost" onclick="unbanUser('${u.id}','${u.handle}')"><i class="fas fa-user-check"></i> unban</button>`
+            : `<button class="btn-sm btn-sm-danger" onclick="banUser('${u.id}','${u.handle}')"><i class="fas fa-ban"></i> ban</button>`
+          }
+          <a class="btn-sm btn-sm-ghost" href="/@${u.handle}" target="_blank"><i class="fas fa-eye"></i></a>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function populateNoteUserSelect(users) {
+  const sel = document.getElementById('noteUserSelect');
+  if (!sel) return;
+  sel.innerHTML = users.map(u =>
+    `<option value="${u.id}">@${u.handle}${u.display_name ? ' — '+u.display_name : ''}</option>`
+  ).join('');
+}
+
+async function saveAdminNote() {
+  const uid  = document.getElementById('noteUserSelect').value;
+  const note = document.getElementById('noteText').value.trim();
+  if (!uid) return;
+  const { error } = await sb.from('profiles').update({ note }).eq('id', uid);
+  const alertEl = document.getElementById('noteAlert');
+  if (error) {
+    alertEl.textContent = 'failed: ' + error.message;
+    alertEl.className = 'alert error';
+  } else {
+    alertEl.textContent = '✓ note saved';
+    alertEl.className = 'alert success';
+    const idx = allUsers.findIndex(u => u.id === uid);
+    if (idx !== -1) allUsers[idx].note = note;
+    filterUsers();
+    setTimeout(() => { alertEl.className = 'alert'; }, 3000);
+  }
+}
+
+// ─── ROLE MODAL ───────────────────────────────────────────────────────────────
+let _roleModalUid = null;
+
+function openRoleModal(uid, handle) {
+  _roleModalUid = uid;
+  const u = allUsers.find(u => u.id === uid);
+  if (!u) return;
+
+  // Build a quick inline modal (reuse badge modal pattern)
+  document.getElementById('badgeModalSub').textContent = 'set role for @' + handle;
+  const list = document.getElementById('badgeModalList');
+  list.innerHTML = '';
+
+  const roles = [
+    { key:'normal',    label:'Normal User',  icon:'fas fa-user',       desc:'default — no special permissions' },
+    { key:'admin',     label:'Admin',         icon:'fas fa-shield-alt', desc:'access to admin panel' },
+    { key:'developer', label:'Developer',     icon:'fas fa-code',       desc:'developer badge + perms' },
+    { key:'owner',     label:'Owner',         icon:'fas fa-crown',      desc:'full access, all badges' },
+  ];
+
+  const currentRole = u.is_owner ? 'owner' : u.is_developer ? 'developer' : u.is_admin ? 'admin' : 'normal';
+
+  roles.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'modal-badge-row' + (currentRole === r.key ? ' checked' : '');
+    row.dataset.role = r.key;
+    row.innerHTML = `
+      <div class="modal-check"><i class="fas fa-check"></i></div>
+      <i class="modal-badge-icon ${r.icon}"></i>
+      <div style="flex:1">
+        <div class="modal-badge-name">${r.label}</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted)">${r.desc}</div>
+      </div>`;
+    row.onclick = () => {
+      list.querySelectorAll('.modal-badge-row').forEach(el => el.classList.remove('checked'));
+      row.classList.add('checked');
+    };
+    list.appendChild(row);
+  });
+
+  // Override save button to use role save
+  const saveBtn = document.querySelector('.modal-save');
+  saveBtn.textContent = 'apply role →';
+  saveBtn.onclick = saveRoleGrant;
+
+  document.getElementById('badgeModalRoles').innerHTML = '';
+  document.getElementById('badgeModal').classList.add('open');
+}
+
+async function saveRoleGrant() {
+  if (!_roleModalUid) return;
+  const selected = document.querySelector('#badgeModalList .modal-badge-row.checked');
+  if (!selected) return;
+  const role = selected.dataset.role;
+
+  const updates = {
+    is_admin:     role === 'admin' || role === 'developer' || role === 'owner',
+    is_developer: role === 'developer',
+    is_owner:     role === 'owner',
+    updated_at:   new Date().toISOString(),
+  };
+
+  const { error } = await sb.from('profiles').update(updates).eq('id', _roleModalUid);
+  if (error) { alert('failed: ' + error.message); return; }
+
+  Object.assign(allUsers.find(u => u.id === _roleModalUid), updates);
+  closeBadgeModal();
+  filterUsers();
+  renderAdminStats(allUsers);
+
+  // Reset save button back to badge modal behavior
+  document.querySelector('.modal-save').onclick = saveBadgeGrant;
+  document.querySelector('.modal-save').textContent = 'save →';
+}
+
+async function banUser(uid, handle) {
+  const reason = prompt(`ban reason for @${handle} (shown in records):`);
+  if (reason === null) return; // cancelled
+  const { error } = await sb.from('profiles')
+    .update({ is_banned: true, ban_reason: reason || 'no reason given', updated_at: new Date().toISOString() })
+    .eq('id', uid);
+  if (error) { alert('failed: ' + error.message); return; }
+  Object.assign(allUsers.find(u => u.id === uid), { is_banned: true, ban_reason: reason });
+  filterUsers();
+  renderAdminStats(allUsers);
+}
+
+async function unbanUser(uid, handle) {
+  if (!confirm(`unban @${handle}?`)) return;
+  const { error } = await sb.from('profiles')
+    .update({ is_banned: false, ban_reason: null, updated_at: new Date().toISOString() })
+    .eq('id', uid);
+  if (error) { alert('failed: ' + error.message); return; }
+  Object.assign(allUsers.find(u => u.id === uid), { is_banned: false, ban_reason: null });
+  filterUsers();
+  renderAdminStats(allUsers);
+}
 
   // ─── BADGE MODAL ─────────────────────────────────────────────────────────────
   let _modalUid = null;
@@ -2247,18 +2406,59 @@ delete updates.unlocked_badges;
   function closeBadgeModal() { document.getElementById('badgeModal').classList.remove('open'); _modalUid = null; }
 
   async function saveBadgeGrant() {
-    if (!_modalUid) return;
-    const checked = Array.from(document.querySelectorAll('#badgeModalList .modal-badge-row.checked')).map(el=>el.dataset.id);
-    const roleUpd = { is_owner:_modalRoles.is_owner, is_developer:_modalRoles.is_developer };
-    if (_modalRoles.is_owner) roleUpd.is_admin = true;
-    const { error } = await sb.from('profiles')
-      .update({ unlocked_badges:JSON.stringify(checked), ...roleUpd, updated_at:new Date().toISOString() })
-      .eq('id', _modalUid);
-    if (error) { alert('save failed: '+error.message); return; }
-    const idx = allUsers.findIndex(u=>u.id===_modalUid);
-    if (idx!==-1) { allUsers[idx].unlocked_badges=JSON.stringify(checked); Object.assign(allUsers[idx],roleUpd); }
-    closeBadgeModal(); renderAdminTable(allUsers); renderAdminStats(allUsers);
+  if (!_modalUid) return;
+
+  const checked = Array.from(
+    document.querySelectorAll('#badgeModalList .modal-badge-row.checked')
+  ).map(el => el.dataset.id);
+
+  const roleUpd = {
+    is_owner:     _modalRoles.is_owner,
+    is_developer: _modalRoles.is_developer,
+    updated_at:   new Date().toISOString(),
+  };
+  if (_modalRoles.is_owner) roleUpd.is_admin = true;
+
+  // KEY FIX: also update the active badges array to include newly granted badges
+  // so they show on the profile immediately without the user needing to toggle them
+  const targetUser = allUsers.find(u => u.id === _modalUid);
+  const currentActive = pj(targetUser?.badges, []);
+
+  // Auto-add newly granted badges to active badges (but don't exceed 5)
+  const wasUnlocked = pj(targetUser?.unlocked_badges, []);
+  const newlyGranted = checked.filter(id => !wasUnlocked.includes(id));
+  let newActive = [...currentActive];
+  newlyGranted.forEach(id => {
+    if (!newActive.includes(id) && newActive.length < 5) {
+      newActive.push(id);
+    }
+  });
+  // Remove from active if badge was revoked
+  const revoked = wasUnlocked.filter(id => !checked.includes(id));
+  newActive = newActive.filter(id => !revoked.includes(id));
+
+  const { error } = await sb.from('profiles').update({
+    unlocked_badges: JSON.stringify(checked),
+    badges:          JSON.stringify(newActive), // ← auto-applies to profile
+    ...roleUpd,
+  }).eq('id', _modalUid);
+
+  if (error) { alert('save failed: ' + error.message); return; }
+
+  // Update local cache
+  const idx = allUsers.findIndex(u => u.id === _modalUid);
+  if (idx !== -1) {
+    allUsers[idx].unlocked_badges = JSON.stringify(checked);
+    allUsers[idx].badges          = JSON.stringify(newActive);
+    Object.assign(allUsers[idx], roleUpd);
   }
+
+  closeBadgeModal();
+  filterUsers();
+  renderAdminStats(allUsers);
+  document.querySelector('.modal-save').onclick = saveBadgeGrant;
+  document.querySelector('.modal-save').textContent = 'save →';
+}
 
   document.getElementById('badgeModal').addEventListener('click', e => {
     if (e.target===document.getElementById('badgeModal')) closeBadgeModal();
