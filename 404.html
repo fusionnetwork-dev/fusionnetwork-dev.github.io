@@ -794,23 +794,48 @@ initReactions(profile.id);
       });
     }
 
-    async function countView(profileId, profileHandle) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d'); ctx.fillText('fp', 0, 0);
-      const fp = { ua:navigator.userAgent, lang:navigator.language, res:`${screen.width}x${screen.height}`, tz:Intl.DateTimeFormat().resolvedOptions().timeZone, cv:canvas.toDataURL() };
-      let hash = 0; const str = JSON.stringify(fp);
-      for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
-      const key = `sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
-      const today = new Date().toDateString();
-      const stored = JSON.parse(localStorage.getItem(key) || '{"c":0,"d":""}');
-      if (stored.d !== today) stored.c = 0;
-      if (stored.c < 2) {
-        stored.c++; stored.d = today; localStorage.setItem(key, JSON.stringify(stored));
-        await sb.rpc('increment_views', { profile_id: profileId }).catch(() => {});
-      }
-      const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
-      document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
-    }
+async function countView(profileId, profileHandle) {
+  // Don't count views on your own profile
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user?.id === profileId) {
+    // Still fetch and display the count, just don't increment
+    const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
+    document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
+    return;
+  }
+
+  // Fingerprint-based dedup — max 2 views per person per day
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d'); ctx.fillText('fp', 0, 0);
+  const fp = {
+    ua: navigator.userAgent,
+    lang: navigator.language,
+    res: `${screen.width}x${screen.height}`,
+    tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    cv: canvas.toDataURL()
+  };
+  let hash = 0;
+  const str = JSON.stringify(fp);
+  for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
+
+  const key = `sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
+  const today = new Date().toDateString();
+  const stored = JSON.parse(localStorage.getItem(key) || '{"c":0,"d":""}');
+  if (stored.d !== today) stored.c = 0; // reset on new day
+
+  if (stored.c < 2) {
+    stored.c++;
+    stored.d = today;
+    localStorage.setItem(key, JSON.stringify(stored));
+
+    const { error } = await sb.rpc('increment_views', { profile_id: profileId });
+    if (error) console.error('[swaqq] views rpc failed:', error.message);
+  }
+
+  // Always fetch and display current count
+  const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
+  document.getElementById('viewCount').textContent = (data?.view_count || 0).toLocaleString();
+}
     // ── LIKES / DISLIKES ──────────────────────────────────────────────────────────
 async function initReactions(profileId) {
   const { data } = await sb.from('profiles')
