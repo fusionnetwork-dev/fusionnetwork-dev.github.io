@@ -959,15 +959,17 @@ function sanitizeHtml(html) {
 
   // ─── BADGE DEFS ─────────────────────────────────────────────────────────────
   // owner gets ALL badges; developer gets developer badge auto
-  const BADGE_DEFS = [
-    { id:'early',     label:'Early',     icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',  locked:false, early:true  },
-    { id:'owner',     label:'Owner',     icon:'fas fa-crown',       desc:'platform owner',                        locked:true  },
-    { id:'developer', label:'Developer', icon:'fas fa-code',        desc:'built something for swaqq.xyz',         locked:true  },
-    { id:'staff',     label:'Staff',     icon:'fas fa-shield-alt',  desc:'part of the swaqq.xyz team',            locked:true  },
-    { id:'vip',       label:'VIP',       icon:'fas fa-star',        desc:'very important person',                 locked:true  },
-    { id:'verified',  label:'Verified',  icon:'fas fa-check-circle',desc:'verified identity',                     locked:true  },
-    { id:'og',        label:'OG',        icon:'fas fa-fire',        desc:'been here from day one',                locked:true  },
-  ];
+const BADGE_DEFS = [
+  { id:'early',       label:'Early',       icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',      locked:true, early:true  },
+  { id:'supporter',   label:'Supporter',   icon:'fas fa-heart',       desc:'supports swaqq.xyz',                        locked:true  },
+  { id:'contributor', label:'Contributor', icon:'fas fa-code-branch', desc:'contributed to swaqq.xyz',                  locked:true  },
+  { id:'owner',       label:'Owner',       icon:'fas fa-crown',       desc:'platform owner',                            locked:true  },
+  { id:'developer',   label:'Developer',   icon:'fas fa-code',        desc:'built something for swaqq.xyz',             locked:true  },
+  { id:'staff',       label:'Staff',       icon:'fas fa-shield-alt',  desc:'part of the swaqq.xyz team',                locked:true  },
+  { id:'vip',         label:'VIP',         icon:'fas fa-star',        desc:'very important person',                     locked:true  },
+  { id:'verified',    label:'Verified',    icon:'fas fa-check-circle',desc:'verified identity',                         locked:true  },
+  { id:'og',          label:'OG',          icon:'fas fa-fire',        desc:'been here from day one',                    locked:true  },
+];
 
   const FONTS = [
     { name:'Syne',           label:'Syne',        sample:'Aa' },
@@ -1751,21 +1753,28 @@ function sanitizeHtml(html) {
     ed.appendChild(row);
   }
 
-  function getSocials() {
-    return Array.from(document.querySelectorAll('.social-row-edit')).map(r => {
-      const inputs = r.querySelectorAll('.social-input');
-      const obj = {
-        icon:       r.dataset.icon || 'fas fa-link',
-        label:      inputs[0].value.trim(),
-        url:        inputs[1].value.trim(),
-        icon_type:  r.dataset.iconType  || '',
-        icon_data:  r.dataset.iconData  || '',
-        icon_label: r.dataset.iconLabel || '',
-      };
-      return obj;
-    }).filter(s => s.url);
-  }
-
+ function getSocials() {
+  return Array.from(document.querySelectorAll('.social-row-edit')).map(r => {
+    const inputs = r.querySelectorAll('.social-input');
+    const rawUrl = inputs[1].value.trim();
+    const safeUrl = sanitizeUrl(rawUrl);
+    
+    let iconData = r.dataset.iconData || '';
+    // Validate custom icon data URLs
+    if (iconData && !/^data:image\/(png|jpeg|gif|webp|svg\+xml);base64,/i.test(iconData)) {
+      iconData = ''; // strip dangerous data URLs
+    }
+    
+    return {
+      icon:       r.dataset.icon || 'fas fa-link',
+      label:      sanitize(inputs[0].value.trim()).slice(0, 30), // max 30 chars
+      url:        safeUrl,
+      icon_type:  r.dataset.iconType  || '',
+      icon_data:  iconData,
+      icon_label: sanitize(r.dataset.iconLabel || '').slice(0, 30),
+    };
+  }).filter(s => s.url);
+}
   // ─── BADGES ──────────────────────────────────────────────────────────────────
   function renderBadgeGrid() {
     const grid = document.getElementById('badgeGrid'); grid.innerHTML = '';
