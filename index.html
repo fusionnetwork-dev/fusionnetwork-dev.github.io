@@ -572,6 +572,35 @@
 
 <script>
   // ── INTRO ──
+  function sanitize(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;')
+    .replace(/`/g, '&#x60;')
+    .trim();
+}
+
+function sanitizeUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  url = url.trim();
+  // Block javascript:, data:, vbscript:, and other dangerous schemes
+  if (/^(javascript|data|vbscript|blob|file):/i.test(url)) return '';
+  // Only allow http, https, mailto
+  if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) return '';
+  return url;
+}
+
+function sanitizeHtml(html) {
+  const div = document.createElement('div');
+  div.textContent = html;
+  return div.innerHTML;
+}
+  
   (function() {
     const intro = document.getElementById('intro');
     const DURATION = 2600; // ms before exit starts
