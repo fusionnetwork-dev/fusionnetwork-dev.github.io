@@ -1145,6 +1145,11 @@ const BADGE_DEFS = [
     const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
     if (error || !data) { console.error('loadProfile:', error); return; }
     currentProfile = data;
+    if (data.is_banned) {
+  await sb.auth.signOut();
+  window.location.href = '/?banned=1';
+  return;
+}
     isAdmin        = !!data.is_admin;
     isOwner        = !!data.is_owner;
     isDeveloper    = !!data.is_developer;
