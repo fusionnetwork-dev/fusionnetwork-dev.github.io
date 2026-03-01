@@ -522,22 +522,37 @@ function sanitizeHtml(html) {
       const rawSocials = Array.isArray(profile.socials) ? profile.socials : (() => {
         try { return JSON.parse(profile.socials || '[]'); } catch { return []; }
       })();
-      rawSocials.forEach(s => {
-        if (!s.url) return;
-        const a = document.createElement('a');
-        a.className = 'social-btn nav-link';
-        a.dataset.href = s.url;
-        let iconHtml;
-        if (s.icon_type === 'custom' && s.icon_data) {
-          iconHtml = `<img src="${s.icon_data}" alt="">`;
-        } else if (s.icon) {
-          iconHtml = `<i class="${s.icon}"></i>`;
-        } else {
-          iconHtml = `<i class="${guessIcon(s.label)}"></i>`;
-        }
-        a.innerHTML = iconHtml + ' ' + (s.label || '');
-        socialsEl.appendChild(a);
-      });
+
+rawSocials.forEach(s => {
+  if (!s.url) return;
+  const safeUrl = sanitizeUrl(s.url); 
+  if (!safeUrl) return; 
+  const a = document.createElement('a');
+  a.className = 'social-btn nav-link';
+  a.dataset.href = safeUrl;
+  
+  let iconHtml;
+  if (s.icon_type === 'custom' && s.icon_data) {
+    
+    if (/^data:image\/(png|jpeg|gif|webp|svg\+xml);base64,/i.test(s.icon_data)) {
+      iconHtml = `<img src="${s.icon_data}" alt="">`;
+    } else {
+      iconHtml = `<i class="fas fa-link"></i>`;
+    }
+  } else if (s.icon) {
+
+    const safeIcon = /^fa[bsrl]? fa-[\w-]+$/.test(s.icon) ? s.icon : 'fas fa-link';
+    iconHtml = `<i class="${safeIcon}"></i>`;
+  } else {
+    iconHtml = `<i class="${guessIcon(s.label)}"></i>`;
+  }
+  
+  const labelSpan = document.createElement('span');
+  labelSpan.textContent = s.label || '';
+  a.innerHTML = iconHtml + ' ';
+  a.appendChild(labelSpan);
+  socialsEl.appendChild(a);
+});
 
       if (profile.discord_id) {
         document.getElementById('discordStatus').classList.add('visible');
