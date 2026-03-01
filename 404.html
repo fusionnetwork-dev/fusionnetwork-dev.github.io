@@ -474,7 +474,13 @@ if (audioOnly) {
         }, 600);
         return;
       }
-
+      if (profile.is_banned) {
+        document.getElementById('loading').classList.add('out');
+        setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
+        document.getElementById('notFound').classList.add('visible');
+        document.getElementById('nfSub').textContent = 'this profile has been suspended.';
+        return;
+      }
       const CS = buildCS(profile);
 
       if (CS.custom_font_data && CS.custom_font_family) {
@@ -584,14 +590,7 @@ rawSocials.forEach(s => {
         countView(profile.id, profile.handle);
       }
     }
-    // Block banned users
-if (profile.is_banned) {
-  document.getElementById('loading').classList.add('out');
-  setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
-  document.getElementById('notFound').classList.add('visible');
-  document.getElementById('nfSub').textContent = 'this profile has been suspended.';
-  return;
-}
+
     function applyCardStyles(CS) {
       const card = document.getElementById('card');
       const accent = CS.accent_color || '#ffffff';
