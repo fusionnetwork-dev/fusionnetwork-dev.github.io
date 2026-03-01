@@ -805,58 +805,105 @@
       </div>
     </div>
 
-    <!-- ═══ ADMIN TAB ═══ -->
-    <div id="tab-admin" style="display:none">
-      <div class="page-header">
-        <h1 class="page-title">admin panel <span class="admin-pill"><i class="fas fa-shield-alt" style="font-size:8px;margin-right:3px"></i>admin</span></h1>
-        <p class="page-sub">manage users, grant badges, view platform stats</p>
-      </div>
+   <!-- ═══ ADMIN TAB ═══ -->
+<div id="tab-admin" style="display:none">
+  <div class="page-header">
+    <h1 class="page-title">admin panel <span class="admin-pill"><i class="fas fa-shield-alt" style="font-size:8px;margin-right:3px"></i>admin</span></h1>
+    <p class="page-sub">manage users, badges, roles, bans — changes apply instantly</p>
+  </div>
 
-      <!-- SQL helper to grant yourself admin -->
-      <div class="dash-section">
-        <div class="dash-section-title">🔧 grant yourself admin (supabase sql)</div>
-        <div class="dash-section-sub">run this in your supabase sql editor — <a href="https://supabase.com/dashboard" target="_blank" style="color:var(--sub);text-underline-offset:2px">supabase.com/dashboard</a> → sql editor</div>
-        <div class="card-edit" style="padding:18px">
-          <div class="sql-box" id="sqlGrantAdmin"><!-- filled by JS --></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="copy-sql-btn" onclick="copySql('sqlGrantAdmin')"><i class="fas fa-copy" style="font-size:9px"></i> copy sql</button>
-            <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);align-self:center">run this, then refresh the page</span>
-          </div>
-          <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-            <div class="field-label" style="margin-bottom:8px">also run this to add missing columns if needed</div>
-            <div class="sql-box"><span class="kw">ALTER TABLE</span> profiles
+  <!-- SQL HELPER -->
+  <div class="dash-section">
+    <div class="dash-section-title">🔧 supabase sql helpers</div>
+    <div class="card-edit" style="padding:18px">
+      <div class="sql-box" id="sqlGrantAdmin"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+        <button class="copy-sql-btn" onclick="copySql('sqlGrantAdmin')"><i class="fas fa-copy" style="font-size:9px"></i> copy sql</button>
+      </div>
+      <div style="padding-top:14px;border-top:1px solid var(--border)">
+        <div class="field-label" style="margin-bottom:8px">add missing columns</div>
+        <div class="sql-box" id="sqlColumns"><span class="kw">ALTER TABLE</span> profiles
   <span class="kw">ADD COLUMN IF NOT EXISTS</span> custom_settings jsonb,
   <span class="kw">ADD COLUMN IF NOT EXISTS</span> is_owner boolean <span class="kw">DEFAULT</span> false,
   <span class="kw">ADD COLUMN IF NOT EXISTS</span> is_developer boolean <span class="kw">DEFAULT</span> false,
-  <span class="kw">ADD COLUMN IF NOT EXISTS</span> unlocked_badges jsonb <span class="kw">DEFAULT</span> <span class="str">'[]'</span>;
-            </div>
-            <button class="copy-sql-btn" onclick="copyInnerText(this.previousElementSibling)"><i class="fas fa-copy" style="font-size:9px"></i> copy</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="admin-stats-row">
-        <div class="admin-stat"><div class="admin-stat-val" id="aTotalUsers">--</div><div class="admin-stat-label">total users</div></div>
-        <div class="admin-stat"><div class="admin-stat-val" id="aTotalViews">--</div><div class="admin-stat-label">total views</div></div>
-        <div class="admin-stat"><div class="admin-stat-val gold" id="aEarlyCount">--</div><div class="admin-stat-label">early badge users</div></div>
-        <div class="admin-stat"><div class="admin-stat-val" id="aNewToday">--</div><div class="admin-stat-label">joined today</div></div>
-      </div>
-      <div class="dash-section">
-        <div class="dash-section-title">user management</div>
-        <div class="dash-section-sub">grant / revoke badges, manage admins, set owner / developer roles</div>
-        <input class="admin-search" type="text" id="adminSearch" placeholder="search by handle..." oninput="filterUsers()">
-        <div class="card-edit" style="padding:0;overflow:hidden">
-          <table class="admin-table">
-            <thead><tr><th>user</th><th>unlocked badges</th><th>views</th><th>joined</th><th>actions</th></tr></thead>
-            <tbody id="adminUserTbody">
-              <tr><td colspan="5" style="text-align:center;padding:28px;color:var(--muted)">loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> is_banned boolean <span class="kw">DEFAULT</span> false,
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> ban_reason text,
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> note text,
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> email text,
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> unlocked_badges jsonb <span class="kw">DEFAULT</span> <span class="str">'[]'</span>;</div>
+        <button class="copy-sql-btn" onclick="copySql('sqlColumns')"><i class="fas fa-copy" style="font-size:9px"></i> copy</button>
       </div>
     </div>
+  </div>
 
-  </main>
+  <!-- STATS -->
+  <div class="admin-stats-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="admin-stat"><div class="admin-stat-val" id="aTotalUsers">--</div><div class="admin-stat-label">total users</div></div>
+    <div class="admin-stat"><div class="admin-stat-val" id="aTotalViews">--</div><div class="admin-stat-label">total views</div></div>
+    <div class="admin-stat"><div class="admin-stat-val gold" id="aEarlyCount">--</div><div class="admin-stat-label">early badge</div></div>
+    <div class="admin-stat"><div class="admin-stat-val" id="aNewToday">--</div><div class="admin-stat-label">joined today</div></div>
+    <div class="admin-stat"><div class="admin-stat-val" style="color:var(--red)" id="aBannedCount">--</div><div class="admin-stat-label">banned</div></div>
+  </div>
+
+  <!-- FILTERS + SEARCH -->
+  <div class="dash-section">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+      <input class="admin-search" type="text" id="adminSearch" placeholder="search handle, name, email..." oninput="filterUsers()" style="flex:1;min-width:180px;margin-bottom:0">
+      <select id="adminRoleFilter" onchange="filterUsers()" style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Geist Mono',monospace;font-size:12px;outline:none;cursor:pointer">
+        <option value="all">all roles</option>
+        <option value="owner">owner</option>
+        <option value="admin">admin</option>
+        <option value="developer">developer</option>
+        <option value="banned">banned</option>
+        <option value="normal">normal</option>
+      </select>
+      <select id="adminSortBy" onchange="filterUsers()" style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Geist Mono',monospace;font-size:12px;outline:none;cursor:pointer">
+        <option value="newest">newest first</option>
+        <option value="oldest">oldest first</option>
+        <option value="views">most views</option>
+        <option value="handle">handle a-z</option>
+      </select>
+      <button class="btn btn-ghost" onclick="loadAdminData()" style="font-size:10px"><i class="fas fa-sync"></i> refresh</button>
+    </div>
+
+    <div class="card-edit" style="padding:0;overflow:hidden">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>user</th>
+            <th>email</th>
+            <th>unlocked badges</th>
+            <th>views</th>
+            <th>joined</th>
+            <th>actions</th>
+          </tr>
+        </thead>
+        <tbody id="adminUserTbody">
+          <tr><td colspan="6" style="text-align:center;padding:28px;color:var(--muted)">loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);margin-top:8px" id="adminUserCount"></div>
+  </div>
+
+  <!-- BROADCAST MESSAGE -->
+  <div class="dash-section">
+    <div class="dash-section-title">📢 admin note</div>
+    <div class="dash-section-sub">leave an internal note on a user's account (only visible to admins)</div>
+    <div class="card-edit" style="padding:18px">
+      <div class="field">
+        <div class="field-label">select user</div>
+        <select id="noteUserSelect" class="field-input" style="cursor:pointer"></select>
+      </div>
+      <div class="field">
+        <div class="field-label">note</div>
+        <textarea class="field-input" id="noteText" placeholder="internal admin note..." style="min-height:60px"></textarea>
+      </div>
+      <button class="btn btn-ghost" onclick="saveAdminNote()"><i class="fas fa-save"></i> save note</button>
+      <div class="alert" id="noteAlert" style="margin-top:8px"></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- SAVE BAR -->
