@@ -1911,6 +1911,10 @@ newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
     console.log('[swaqq] update payload:', updates);
 
     // Try full update first
+delete updates.is_admin;
+delete updates.is_owner;
+delete updates.is_developer;
+delete updates.unlocked_badges;
     let { data: saveData, error } = await sb.from('profiles').update(updates).eq('id', currentUser.id).select();
     console.log('[swaqq] save result:', saveData, error);
 
