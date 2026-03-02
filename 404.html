@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600;700&family=Syne:wght@400;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Raleway:wght@400;600;700;800&family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     :root {
@@ -102,8 +101,32 @@
     .views { position:fixed; bottom:22px; left:22px; z-index:102; display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.6); }
     .views.visible { display:flex; }
     .views i { font-size:12px; color:rgba(255,255,255,0.35); }
-    <button class="qr-btn" id="qrBtn" onclick="openQR()" title="share profile QR code"><i class="fas fa-qrcode"></i></button>
-<a class="watermark" href="/" style="bottom:22px;right:66px">swaqq.xyz</a>
+    .qr-btn { position:fixed; bottom:22px; right:22px; z-index:103; width:38px; height:38px; border-radius:100px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; font-size:13px; color:rgba(255,255,255,0.5); }
+    .qr-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+    .follow-btn { display:inline-flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:7px 16px; border-radius:100px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.7); cursor:pointer; transition:all 0.2s; margin-top:8px; }
+    .follow-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+    .follow-btn.following { background:rgba(255,255,255,0.1); color:#fff; }
+    .follow-btn.following:hover { background:rgba(240,71,71,0.1); color:#f04747; border-color:rgba(240,71,71,0.3); }
+    .follow-counts { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.3); margin-top:4px; }
+    .follow-count-val { color:rgba(255,255,255,0.7); font-weight:700; margin-right:2px; }
+    .card-wrap { perspective:1200px; }
+    .card-flip-inner { position:relative; transform-style:preserve-3d; transition:transform 0.7s cubic-bezier(0.4,0,0.2,1); }
+    .card-flip-inner.flipped { transform:rotateY(180deg); }
+    .card-front, .card-back { backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+    .card-back { position:absolute; inset:0; transform:rotateY(180deg); border-radius:inherit; padding:28px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px; text-align:center; backdrop-filter:inherit; background:inherit; }
+    .flip-tap-hint { position:absolute; bottom:10px; right:14px; font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.18); letter-spacing:0.1em; pointer-events:none; }
+    .music-widget { position:fixed; bottom:22px; right:80px; z-index:103; background:rgba(10,10,10,0.88); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:10px 14px; max-width:220px; cursor:pointer; transition:all 0.3s; display:none; align-items:center; gap:10px; }
+    .music-widget.visible { display:flex; }
+    .music-widget:hover { border-color:rgba(255,255,255,0.2); }
+    .music-bars { display:flex; align-items:flex-end; gap:2px; height:16px; flex-shrink:0; }
+    .music-bar { width:3px; border-radius:2px; background:rgba(255,255,255,0.6); animation:musicBounce 0.8s ease-in-out infinite; }
+    .music-bar:nth-child(2) { animation-delay:0.15s; }
+    .music-bar:nth-child(3) { animation-delay:0.3s; }
+    .music-bar:nth-child(4) { animation-delay:0.1s; }
+    @keyframes musicBounce { 0%,100%{height:4px}50%{height:14px} }
+    .music-info { flex:1; min-width:0; }
+    .music-title-text { font-size:11px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .music-artist-text { font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .nav-overlay { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.65); backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
     .nav-overlay.active { opacity:1; pointer-events:all; }
     .nav-box { background:rgba(10,10,10,0.92); border:1px solid var(--border2); border-radius:18px; padding:28px 32px; width:100%; max-width:340px; display:flex; flex-direction:column; align-items:center; gap:12px; transform:translateY(16px) scale(0.97); transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
@@ -117,49 +140,14 @@
     .nav-yes { flex:1; padding:10px; border-radius:10px; border:none; cursor:pointer; background:linear-gradient(110deg,#333,#777,#bbb,#777,#333); background-size:200%; animation:shimmer 3s ease infinite; color:#fff; font-family:'Geist Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; transition:filter 0.2s; }
     .nav-yes:hover { filter:brightness(1.3); }
     @media(max-width:480px){ .card{padding:22px 20px 50px} .socials{flex-wrap:wrap} }
-    /* Music widget (profile page) */
-.music-widget { position:fixed; bottom:22px; right:80px; z-index:103; background:rgba(10,10,10,0.88); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:10px 14px; max-width:220px; cursor:pointer; transition:all 0.3s; display:none; align-items:center; gap:10px; }
-.music-widget.visible { display:flex; }
-.music-widget:hover { border-color:rgba(255,255,255,0.2); }
-.music-bars { display:flex; align-items:flex-end; gap:2px; height:16px; flex-shrink:0; }
-.music-bar { width:3px; border-radius:2px; background:rgba(255,255,255,0.6); animation:musicBounce 0.8s ease-in-out infinite; }
-.music-bar:nth-child(2) { animation-delay:0.15s; }
-.music-bar:nth-child(3) { animation-delay:0.3s; }
-.music-bar:nth-child(4) { animation-delay:0.1s; }
-@keyframes musicBounce { 0%,100%{height:4px}50%{height:14px} }
-.music-info { flex:1; min-width:0; }
-.music-title-text { font-size:11px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.music-artist-text { font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-/* QR button */
-.qr-btn { position:fixed; bottom:22px; right:22px; z-index:103; width:38px; height:38px; border-radius:100px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; font-size:13px; color:rgba(255,255,255,0.5); }
-.qr-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
-
-/* Follow button */
-.follow-btn { display:inline-flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:7px 16px; border-radius:100px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.7); cursor:pointer; transition:all 0.2s; margin-top:8px; }
-.follow-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
-.follow-btn.following { background:rgba(255,255,255,0.1); color:#fff; }
-.follow-btn.following:hover { background:rgba(240,71,71,0.1); color:#f04747; border-color:rgba(240,71,71,0.3); }
-.follow-counts { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.3); margin-top:4px; }
-.follow-count-val { color:rgba(255,255,255,0.7); font-weight:700; margin-right:2px; }
-
-/* Card flip */
-.card-wrap { perspective:1200px; }
-.card-flip-inner { position:relative; transform-style:preserve-3d; transition:transform 0.7s cubic-bezier(0.4,0,0.2,1); }
-.card-flip-inner.flipped { transform:rotateY(180deg); }
-.card-front, .card-back { backface-visibility:hidden; -webkit-backface-visibility:hidden; }
-.card-back { position:absolute; inset:0; transform:rotateY(180deg); border-radius:inherit; padding:28px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px; text-align:center; backdrop-filter:inherit; background:inherit; }
-.flip-tap-hint { position:absolute; bottom:10px; right:14px; font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.18); letter-spacing:0.1em; pointer-events:none; }
   </style>
 </head>
 <body>
-
   <div id="loading">
     <div class="load-logo">swaqq.xyz</div>
     <div class="load-handle" id="loadHandle"></div>
     <div class="load-bar"><div class="load-fill"></div></div>
   </div>
-
   <div id="notFound">
     <div class="nf-code">404</div>
     <div class="nf-title">profile not found</div>
@@ -167,89 +155,76 @@
     <a class="nf-btn" href="/"><i class="fas fa-arrow-left" style="font-size:10px"></i> back to swaqq.xyz</a>
     <a class="nf-btn" href="/" onclick="localStorage.setItem('claimHandle', window._handle || '')"><i class="fas fa-plus" style="font-size:10px"></i> claim this handle</a>
   </div>
-
   <div id="splash">
     <a class="splash-site" href="/">swaqq.xyz</a>
     <div class="splash-name" id="splashName"></div>
     <div class="splash-hint">click anywhere to enter</div>
   </div>
-
   <div id="imgBg"></div>
   <div id="ytBg"></div>
   <div id="topBarTrigger"></div>
-
   <div class="top-bar" id="topBar">
     <a class="top-bar-logo" href="/">swaqq.xyz</a>
     <span class="top-bar-handle" id="topBarHandle"></span>
   </div>
-
- <div class="page" id="profilePage">
-  <div class="card-wrap">
-    <div class="card-flip-inner" id="cardFlipInner">
-
-      <!-- FRONT -->
-      <div class="card card-front" id="card">
-        <div class="card-header">
-          <div class="avatar" id="cardAvatar"></div>
-          <div class="user-info">
-            <div class="uid-row">uid <span class="uid-val" id="uidVal">...</span></div>
-            <div class="name-row">
-              <span class="username" id="cardName">...</span>
-              <div class="badges" id="cardBadges"></div>
-            </div>
-            <div class="handle" id="cardHandle">@...</div>
-            <div class="status" id="discordStatus">
-              <div class="status-dot offline" id="statusDot"></div>
-              <span id="statusText">offline</span>
+  <div class="page" id="profilePage">
+    <div class="card-wrap">
+      <div class="card-flip-inner" id="cardFlipInner">
+        <div class="card card-front" id="card">
+          <div class="card-header">
+            <div class="avatar" id="cardAvatar"></div>
+            <div class="user-info">
+              <div class="uid-row">uid <span class="uid-val" id="uidVal">...</span></div>
+              <div class="name-row">
+                <span class="username" id="cardName">...</span>
+                <div class="badges" id="cardBadges"></div>
+              </div>
+              <div class="handle" id="cardHandle">@...</div>
+              <div class="status" id="discordStatus">
+                <div class="status-dot offline" id="statusDot"></div>
+                <span id="statusText">offline</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="bio" id="cardBio"><span class="bio-cursor"></span></div>
-        <div class="socials" id="cardSocials"></div>
-        <div class="card-footer">
-          <span class="footer-text" id="footerVersion">swaqq.xyz</span>
-          <div style="display:flex;align-items:center;gap:12px">
-            <button id="likeBtn" onclick="handleReaction('like')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
-              <i class="fas fa-thumbs-up"></i>
-              <span id="likeCount">0</span>
-            </button>
-            <button id="dislikeBtn" onclick="handleReaction('dislike')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
-              <i class="fas fa-thumbs-down"></i>
-              <span id="dislikeCount">0</span>
-            </button>
-            <span class="footer-text" id="footerClock">--:-- --</span>
+          <div class="bio" id="cardBio"><span class="bio-cursor"></span></div>
+          <div class="socials" id="cardSocials"></div>
+          <div class="card-footer">
+            <span class="footer-text" id="footerVersion">swaqq.xyz</span>
+            <div style="display:flex;align-items:center;gap:12px">
+              <button id="likeBtn" onclick="handleReaction('like')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
+                <i class="fas fa-thumbs-up"></i>
+                <span id="likeCount">0</span>
+              </button>
+              <button id="dislikeBtn" onclick="handleReaction('dislike')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
+                <i class="fas fa-thumbs-down"></i>
+                <span id="dislikeCount">0</span>
+              </button>
+              <span class="footer-text" id="footerClock">--:-- --</span>
+            </div>
           </div>
+          <span class="flip-tap-hint" id="flipTapHint" style="display:none">tap to flip ↺</span>
         </div>
-        <span class="flip-tap-hint" id="flipTapHint" style="display:none">tap to flip ↺</span>
-      </div>
-      <!-- END FRONT -->
-
-      <!-- BACK -->
-      <div class="card card-back" id="cardBack" style="display:none">
-        <div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:4px">joined</div>
-        <div style="font-size:22px;font-weight:800" id="backJoinDate">—</div>
-        <div style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35)">uid <span id="backUid"></span></div>
-        <div style="width:40px;height:1px;background:rgba(255,255,255,0.1);margin:4px 0"></div>
-        <div id="backCustomText" style="font-family:'Geist Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7;max-width:300px"></div>
-        <div style="margin-top:8px">
-          <div class="follow-counts">
-            <span><span class="follow-count-val" id="backFollowers">0</span> followers</span>
-            <span style="margin:0 6px;opacity:0.3">·</span>
-            <span><span class="follow-count-val" id="backFollowing">0</span> following</span>
+        <div class="card card-back" id="cardBack" style="display:none">
+          <div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:4px">joined</div>
+          <div style="font-size:22px;font-weight:800" id="backJoinDate">—</div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35)">uid <span id="backUid"></span></div>
+          <div style="width:40px;height:1px;background:rgba(255,255,255,0.1);margin:4px 0"></div>
+          <div id="backCustomText" style="font-family:'Geist Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7;max-width:300px"></div>
+          <div style="margin-top:8px">
+            <div class="follow-counts">
+              <span><span class="follow-count-val" id="backFollowers">0</span> followers</span>
+              <span style="margin:0 6px;opacity:0.3">·</span>
+              <span><span class="follow-count-val" id="backFollowing">0</span> following</span>
+            </div>
           </div>
+          <div id="backFollowWrap"></div>
+          <button onclick="document.getElementById('cardFlipInner').classList.remove('flipped')" style="margin-top:8px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:5px 14px;font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.35);cursor:pointer;letter-spacing:0.1em">↺ flip back</button>
         </div>
-        <div id="backFollowWrap"></div>
-        <button onclick="document.getElementById('cardFlipInner').classList.remove('flipped')" style="margin-top:8px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:5px 14px;font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.35);cursor:pointer;letter-spacing:0.1em">↺ flip back</button>
       </div>
-      <!-- END BACK -->
-
-    </div><!-- end card-flip-inner -->
-  </div><!-- end card-wrap -->
-</div><!-- end page -->
-
+    </div>
+  </div>
   <div class="views" id="views"><i class="fas fa-eye"></i><span id="viewCount">0</span></div>
   <a class="watermark" href="/">swaqq.xyz</a>
-
   <div class="nav-overlay" id="navOverlay">
     <div class="nav-box">
       <div class="nav-title">leave this page?</div>
@@ -261,22 +236,53 @@
       </div>
     </div>
   </div>
+  <button class="qr-btn" id="qrBtn" onclick="openQR()" title="share profile QR code" style="display:none"><i class="fas fa-qrcode"></i></button>
+
+  <div id="volumeWidget" style="position:fixed;bottom:22px;left:22px;z-index:103;display:none;align-items:center">
+    <div id="volumeBtn" onclick="toggleMuteVolume()" style="width:38px;height:38px;border-radius:100px;background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0;position:relative;z-index:1">
+      <i class="fas fa-volume-up" id="volumeIcon" style="font-size:12px;color:rgba(255,255,255,0.6)"></i>
+    </div>
+    <div id="volumeSliderWrap" style="width:0;overflow:hidden;transition:width 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.25s ease;opacity:0;display:flex;align-items:center;background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-left:none;border-radius:0 100px 100px 0;height:38px;margin-left:-6px;padding-left:10px;box-sizing:border-box">
+      <input type="range" id="volumeSlider" min="0" max="100" value="60" oninput="setVolume(this.value)" style="width:80px;accent-color:#fff;cursor:pointer;background:transparent;outline:none;border:none;flex-shrink:0">
+      <span id="volumeVal" style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);margin:0 10px;min-width:28px;text-align:right">60%</span>
+    </div>
+  </div>
+
+  <div class="qr-modal-bg" id="qrModalBg" onclick="if(event.target===this)closeQR()">
+    <div class="qr-modal-box">
+      <div style="font-size:15px;font-weight:800;margin-bottom:4px" id="qrModalName"></div>
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:18px" id="qrModalHandle"></div>
+      <div id="qrCodeImg" style="background:#fff;border-radius:10px;padding:12px;display:inline-block;margin-bottom:14px"></div>
+      <div style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.35);margin-bottom:16px" id="qrModalUrl"></div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="nav-no" onclick="closeQR()">close</button>
+        <button class="nav-yes" onclick="downloadQR()">download →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="profileMusicWidget" class="music-widget">
+    <div class="music-bars">
+      <div class="music-bar"></div><div class="music-bar"></div>
+      <div class="music-bar"></div><div class="music-bar"></div>
+    </div>
+    <div class="music-info">
+      <div class="music-title-text" id="profileMusicTitle"></div>
+      <div class="music-artist-text" id="profileMusicArtist"></div>
+    </div>
+  </div>
 
   <script>
-    // ── SANITIZE ─────────────────────────────────────────────────────────────────
     function sanitize(str) {
       if (typeof str !== 'string') return '';
       return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
         .replace(/"/g,'&quot;').replace(/'/g,'&#x27;').replace(/\//g,'&#x2F;').replace(/`/g,'&#x60;').trim();
     }
 
-    // FIX 1 — allow data:image URLs so base64 avatars (dashboard upload fallback) work
     function sanitizeUrl(url) {
       if (!url || typeof url !== 'string') return '';
       url = url.trim();
-      // Allow data:image/* for avatars and custom icons
       if (/^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,/i.test(url)) return url;
-      // Block all other dangerous schemes
       if (/^(javascript|data|vbscript|blob|file):/i.test(url)) return '';
       if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) return '';
       return url;
@@ -288,22 +294,21 @@
       return div.innerHTML;
     }
 
-    // ── SUPABASE ─────────────────────────────────────────────────────────────────
-    const SUPABASE_URL  = 'https://cwaifnbgkqqecatggvrx.supabase.co';
+    const SUPABASE_URL = 'https://cwaifnbgkqqecatggvrx.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YWlmbmJna3FxZWNhdGdndnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzgzNzUsImV4cCI6MjA4NzcxNDM3NX0.5o3aI40Z8orNW1yOVWt7uAsP4TJ6MvVPqFidaTOf0cE';
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
     const BADGE_DEFS = [
-      { id:'early',       label:'Early',       icon:'fas fa-seedling'    },
-      { id:'owner',       label:'Owner',       icon:'fas fa-crown'       },
-      { id:'supporter',   label:'Supporter',   icon:'fas fa-heart'       },
+      { id:'early', label:'Early', icon:'fas fa-seedling' },
+      { id:'owner', label:'Owner', icon:'fas fa-crown' },
+      { id:'supporter', label:'Supporter', icon:'fas fa-heart' },
       { id:'contributor', label:'Contributor', icon:'fas fa-code-branch' },
-      { id:'developer',   label:'Developer',   icon:'fas fa-code'        },
-      { id:'staff',       label:'Staff',       icon:'fas fa-shield-alt'  },
-      { id:'vip',         label:'VIP',         icon:'fas fa-star'        },
-      { id:'verified',    label:'Verified',    icon:'fas fa-check-circle'},
-      { id:'og',          label:'OG',          icon:'fas fa-fire'        },
+      { id:'developer', label:'Developer', icon:'fas fa-code' },
+      { id:'staff', label:'Staff', icon:'fas fa-shield-alt' },
+      { id:'vip', label:'VIP', icon:'fas fa-star' },
+      { id:'verified', label:'Verified', icon:'fas fa-check-circle'},
+      { id:'og', label:'OG', icon:'fas fa-fire' },
     ];
 
     const CS_DEF = {
@@ -322,62 +327,57 @@
         if (typeof v === 'object') return v;
         try { return JSON.parse(v); } catch { return {}; }
       })();
-      const get = (key) => {
-        if (blob[key] !== undefined && blob[key] !== null) return blob[key];
-        if (profile[key] !== undefined && profile[key] !== null) return profile[key];
-        return CS_DEF[key];
+      const get = (key) => blob[key] ?? profile[key] ?? CS_DEF[key];
+      return {
+        bg_type: get('bg_type'),
+        bg_image_url: get('bg_image_url'),
+        bg_opacity: get('bg_opacity'),
+        bg_color: get('bg_color'),
+        bg_grad1: get('bg_grad1'),
+        bg_grad2: get('bg_grad2'),
+        bg_grad_dir: get('bg_grad_dir'),
+        show_video_bg: get('show_video_bg'),
+        mute_video: get('mute_video'),
+        audio_only_id: blob.audio_only_id || '',
+        mute_audio: blob.mute_audio ?? true,
+        card_font: get('card_font'),
+        accent_color: get('accent_color'),
+        card_blur: get('card_blur'),
+        card_opacity: get('card_opacity'),
+        card_glow: get('card_glow'),
+        card_rounded: get('card_rounded'),
+        show_uid_scramble: get('show_uid_scramble'),
+        youtube_video_id: get('youtube_video_id') || profile.youtube_video_id || '',
+        custom_font_name: blob.custom_font_name || null,
+        custom_font_family: blob.custom_font_family || null,
+        custom_font_data: blob.custom_font_data || null,
+        custom_icons: blob.custom_icons || [],
+        show_volume_widget: blob.show_volume_widget ?? true,
+        border_style: get('border_style') || 'shimmer',
+        name_style: get('name_style') || 'solid',
+        name_grad1: get('name_grad1') || '#ffffff',
+        name_grad2: get('name_grad2') || '#888888',
+        card_layout: get('card_layout') || 'default',
+        avatar_shape: get('avatar_shape') || 'circle',
+        avatar_border: get('avatar_border') ?? 2,
+        avatar_glow: get('avatar_glow') || false,
+        avatar_spin: get('avatar_spin') || false,
+        card_texture: get('card_texture') || 'none',
+        cursor_style: get('cursor_style') || 'default',
+        social_style: get('social_style') || 'default',
+        card_width: get('card_width') || 420,
+        card_glass: get('card_glass') || false,
+        card_shadow: get('card_shadow') !== false,
+        particles: get('particles') || false,
+        page_anim: get('page_anim') !== false,
+        snow: get('snow') || false,
+        scanlines: get('scanlines') || false,
+        particle_color: get('particle_color') || '#ffffff',
+        bio_size: get('bio_size') || 13,
+        bio_color: get('bio_color') || '#ffffff',
+        bio_italic: get('bio_italic') || false,
+        typewriter: get('typewriter') !== false,
       };
-    return {
-  bg_type:            get('bg_type'),
-  bg_image_url:       get('bg_image_url'),
-  bg_opacity:         get('bg_opacity'),
-  bg_color:           get('bg_color'),
-  bg_grad1:           get('bg_grad1'),
-  bg_grad2:           get('bg_grad2'),
-  bg_grad_dir:        get('bg_grad_dir'),
-  show_video_bg:      get('show_video_bg'),
-  mute_video:         get('mute_video'),
-  audio_only_id:      blob.audio_only_id || '',
-  mute_audio:         blob.mute_audio !== undefined ? blob.mute_audio : true,
-  card_font:          get('card_font'),
-  accent_color:       get('accent_color'),
-  card_blur:          get('card_blur'),
-  card_opacity:       get('card_opacity'),
-  card_glow:          get('card_glow'),
-  card_rounded:       get('card_rounded'),
-  show_uid_scramble:  get('show_uid_scramble'),
-  youtube_video_id:   get('youtube_video_id') || profile.youtube_video_id || '',
-  custom_font_name:   blob.custom_font_name   || null,
-  custom_font_family: blob.custom_font_family || null,
-  custom_font_data:   blob.custom_font_data   || null,
-  custom_icons:       blob.custom_icons       || [],
-  show_volume_widget: blob.show_volume_widget !== undefined ? blob.show_volume_widget : true,
-  // new settings
-  border_style:   get('border_style')  || 'shimmer',
-  name_style:     get('name_style')    || 'solid',
-  name_grad1:     get('name_grad1')    || '#ffffff',
-  name_grad2:     get('name_grad2')    || '#888888',
-  card_layout:    get('card_layout')   || 'default',
-  avatar_shape:   get('avatar_shape')  || 'circle',
-  avatar_border:  get('avatar_border') ?? 2,
-  avatar_glow:    get('avatar_glow')   || false,
-  avatar_spin:    get('avatar_spin')   || false,
-  card_texture:   get('card_texture')  || 'none',
-  cursor_style:   get('cursor_style')  || 'default',
-  social_style:   get('social_style')  || 'default',
-  card_width:     get('card_width')    || 420,
-  card_glass:     get('card_glass')    || false,
-  card_shadow:    get('card_shadow')   !== false,
-  particles:      get('particles')     || false,
-  page_anim:      get('page_anim')     !== false,
-  snow:           get('snow')          || false,
-  scanlines:      get('scanlines')     || false,
-  particle_color: get('particle_color') || '#ffffff',
-  bio_size:       get('bio_size')      || 13,
-  bio_color:      get('bio_color')     || '#ffffff',
-  bio_italic:     get('bio_italic')    || false,
-  typewriter:     get('typewriter')    !== false,
-};
     }
 
     function guessIcon(label) {
@@ -392,13 +392,11 @@
       return map[(label||'').toLowerCase()] || 'fas fa-link';
     }
 
-    // ── HANDLE FROM PATH ─────────────────────────────────────────────────────────
     const handle = window.location.pathname.replace(/^\//, '').replace(/^@/, '').split('/')[0].toLowerCase();
     window._handle = handle;
-    if (!handle) { window.location.href = '/'; }
+    if (!handle) window.location.href = '/';
     document.getElementById('loadHandle').textContent = '@' + handle;
 
-    // ── TOP BAR ──────────────────────────────────────────────────────────────────
     (function() {
       const bar = document.getElementById('topBar');
       const trigger = document.getElementById('topBarTrigger');
@@ -414,29 +412,26 @@
       window._showTopBarBriefly = showBar;
     })();
 
-    // ── YOUTUBE ──────────────────────────────────────────────────────────────────
     let ytPlayer = null, ytApiReady = false;
-
     function loadYouTubeIframeAPI() {
       if (window.YT && window.YT.Player) { ytApiReady = true; return; }
       const tag = document.createElement('script');
       tag.src = 'https://www.youtube.com/iframe_api';
-      document.getElementsByTagName('script')[0].parentNode.insertBefore(tag, document.getElementsByTagName('script')[0]);
+      document.head.appendChild(tag);
     }
-    window.onYouTubeIframeAPIReady = function() { ytApiReady = true; };
-
+    window.onYouTubeIframeAPIReady = () => { ytApiReady = true; };
     function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
       if (!videoId) return;
       const container = document.getElementById('ytBg');
       if (!container) return;
       if (audioOnly) { container.style.opacity = '0'; container.style.pointerEvents = 'none'; }
-      if (ytPlayer) { try { ytPlayer.destroy(); } catch(e) {} ytPlayer = null; }
+      if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
       const old = document.getElementById('yt-player'); if (old) old.remove();
       const playerDiv = document.createElement('div');
       playerDiv.id = 'yt-player';
       container.appendChild(playerDiv);
       function initWhenReady() {
-        if (!ytApiReady || !window.YT || !window.YT.Player) { setTimeout(initWhenReady, 120); return; }
+        if (!ytApiReady || !window.YT) { setTimeout(initWhenReady, 120); return; }
         ytPlayer = new YT.Player('yt-player', {
           height:'100%', width:'100%', videoId,
           playerVars: { autoplay:1, controls:0, mute:1, loop:1, playlist:videoId, modestbranding:1, playsinline:1, disablekb:1, fs:0, iv_load_policy:3, cc_load_policy:0, rel:0, showinfo:0, autohide:1, start:0, origin:window.location.origin },
@@ -454,167 +449,142 @@
     }
     loadYouTubeIframeAPI();
 
-    // ── LOAD PROFILE ─────────────────────────────────────────────────────────────
-    // ── QR CODE ──────────────────────────────────────────────────────────────────
-function openQR() {
-  const url  = window.location.href;
-  const name = document.getElementById('cardName')?.textContent || handle;
-  document.getElementById('qrModalName').textContent   = name;
-  document.getElementById('qrModalHandle').textContent = '@' + handle;
-  document.getElementById('qrModalUrl').textContent    = url;
-  document.getElementById('qrCodeImg').innerHTML =
-    `<img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}" style="width:200px;height:200px;border-radius:6px">`;
-  document.getElementById('qrModalBg').classList.add('open');
-}
-function closeQR() { document.getElementById('qrModalBg').classList.remove('open'); }
-function downloadQR() {
-  const img = document.getElementById('qrImg'); if (!img) return;
-  const a   = document.createElement('a');
-  a.href    = img.src;
-  a.download = `swaqq-${handle}-qr.png`;
-  a.click();
-}
+    function openQR() {
+      const url = window.location.href;
+      const name = document.getElementById('cardName')?.textContent || handle;
+      document.getElementById('qrModalName').textContent = name;
+      document.getElementById('qrModalHandle').textContent = '@' + handle;
+      document.getElementById('qrModalUrl').textContent = url;
+      document.getElementById('qrCodeImg').innerHTML =
+        `<img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}" style="width:200px;height:200px;border-radius:6px">`;
+      document.getElementById('qrModalBg').classList.add('open');
+    }
+    function closeQR() { document.getElementById('qrModalBg').classList.remove('open'); }
+    function downloadQR() {
+      const img = document.getElementById('qrImg'); if (!img) return;
+      const a = document.createElement('a');
+      a.href = img.src;
+      a.download = `swaqq-${handle}-qr.png`;
+      a.click();
+    }
 
-// ── FOLLOWS ──────────────────────────────────────────────────────────────────
-let _isFollowing = false;
+    let _isFollowing = false;
+    async function initFollows(profile) {
+      const followerEl = document.getElementById('backFollowers');
+      const followingEl = document.getElementById('backFollowing');
+      if (followerEl) followerEl.textContent = (profile.follower_count || 0).toLocaleString();
+      if (followingEl) followingEl.textContent = (profile.following_count || 0).toLocaleString();
+      const { data:{ session } } = await sb.auth.getSession();
+      if (!session || session.user.id === profile.id) return;
+      const { data: existing } = await sb.from('profile_follows')
+        .select('id').eq('follower_id', session.user.id).eq('following_id', profile.id).maybeSingle();
+      _isFollowing = !!existing;
+      const followWrap = document.getElementById('backFollowWrap');
+      if (followWrap) {
+        followWrap.innerHTML = `
+          <button class="follow-btn ${_isFollowing ? 'following' : ''}" id="followBtn" onclick="toggleFollow('${profile.id}')">
+            <i class="fas fa-${_isFollowing ? 'user-check' : 'user-plus'}"></i>
+            ${_isFollowing ? 'following' : 'follow'}
+          </button>`;
+      }
+    }
+    async function toggleFollow(profileId) {
+      const { data:{ session } } = await sb.auth.getSession();
+      if (!session) { window.location.href = '/'; return; }
+      const btn = document.getElementById('followBtn');
+      if (_isFollowing) {
+        await sb.rpc('unfollow_profile', { follower: session.user.id, target: profileId });
+        _isFollowing = false;
+        btn.className = 'follow-btn';
+        btn.innerHTML = '<i class="fas fa-user-plus"></i> follow';
+        const el = document.getElementById('backFollowers');
+        if (el) el.textContent = Math.max(0, parseInt(el.textContent.replace(/,/g,'') || 0) - 1).toLocaleString();
+      } else {
+        await sb.rpc('follow_profile', { follower: session.user.id, target: profileId });
+        _isFollowing = true;
+        btn.className = 'follow-btn following';
+        btn.innerHTML = '<i class="fas fa-user-check"></i> following';
+        const el = document.getElementById('backFollowers');
+        if (el) el.textContent = (parseInt(el.textContent.replace(/,/g,'') || 0) + 1).toLocaleString();
+      }
+    }
 
-async function initFollows(profile) {
-  const followerEl  = document.getElementById('backFollowers');
-  const followingEl = document.getElementById('backFollowing');
-  if (followerEl)  followerEl.textContent  = (profile.follower_count  || 0).toLocaleString();
-  if (followingEl) followingEl.textContent = (profile.following_count || 0).toLocaleString();
+    function initCardFlip(profile, CS) {
+      if (!CS.card_flip) return;
+      const inner = document.getElementById('cardFlipInner');
+      const back = document.getElementById('cardBack');
+      const hint = document.getElementById('flipTapHint');
+      const backUid = document.getElementById('backUid');
+      if (back) back.style.display = 'flex';
+      if (hint) hint.style.display = 'block';
+      if (back) {
+        back.style.background = document.getElementById('card')?.style.background || '';
+        back.style.backdropFilter = document.getElementById('card')?.style.backdropFilter || '';
+        back.style.borderRadius = document.getElementById('card')?.style.borderRadius || '';
+        back.style.border = document.getElementById('card')?.style.border || '';
+      }
+      const joined = new Date(profile.created_at);
+      document.getElementById('backJoinDate').textContent =
+        joined.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+      const uidEl = document.getElementById('uidVal');
+      if (backUid) backUid.textContent = uidEl?.textContent || '?';
+      const customText = document.getElementById('backCustomText');
+      if (customText && profile.card_back_text) customText.textContent = profile.card_back_text;
+      const followWrap = document.createElement('div');
+      followWrap.id = 'backFollowWrap';
+      if (back) back.insertBefore(followWrap, back.lastElementChild);
+      document.getElementById('card')?.addEventListener('click', e => {
+        if (e.target.closest('button, a, input')) return;
+        inner.classList.toggle('flipped');
+      });
+    }
 
-  const { data:{ session } } = await sb.auth.getSession();
-  if (!session || session.user.id === profile.id) return;
+    function initMusicWidget(profile) {
+      if (!profile.music_title && !profile.music_artist) return;
+      const widget = document.getElementById('profileMusicWidget');
+      document.getElementById('profileMusicTitle').textContent = profile.music_title || '';
+      document.getElementById('profileMusicArtist').textContent = profile.music_artist || '';
+      widget.classList.add('visible');
+      if (profile.music_url) widget.onclick = () => window.open(profile.music_url, '_blank');
+    }
 
-  // Check if already following
-  const { data: existing } = await sb.from('profile_follows')
-    .select('id').eq('follower_id', session.user.id).eq('following_id', profile.id).maybeSingle();
-  _isFollowing = !!existing;
+    function trackLinkClick(profileId, label, url) {
+      sb.from('link_clicks').insert({ profile_id: profileId, label, url }).then(() => {});
+    }
 
-  // Inject follow button into card back
-  const followWrap = document.getElementById('backFollowWrap');
-  if (followWrap) {
-    followWrap.innerHTML = `
-      <button class="follow-btn ${_isFollowing ? 'following' : ''}" id="followBtn" onclick="toggleFollow('${profile.id}')">
-        <i class="fas fa-${_isFollowing ? 'user-check' : 'user-plus'}"></i>
-        ${_isFollowing ? 'following' : 'follow'}
-      </button>`;
-  }
-}
+    function applyScheduledBio(profile) {
+      if (!profile.scheduled_bio || !profile.scheduled_bio_at) return;
+      if (new Date() >= new Date(profile.scheduled_bio_at)) {
+        profile.bio = profile.scheduled_bio;
+        sb.from('profiles').update({
+          bio: profile.scheduled_bio,
+          scheduled_bio: null,
+          scheduled_bio_at: null,
+          updated_at: new Date().toISOString(),
+        }).eq('id', profile.id).then(() => {});
+      }
+    }
 
-async function toggleFollow(profileId) {
-  const { data:{ session } } = await sb.auth.getSession();
-  if (!session) { window.location.href = '/'; return; }
-  const btn = document.getElementById('followBtn');
-  if (_isFollowing) {
-    await sb.rpc('unfollow_profile', { follower: session.user.id, target: profileId });
-    _isFollowing = false;
-    btn.className = 'follow-btn';
-    btn.innerHTML = '<i class="fas fa-user-plus"></i> follow';
-    const el = document.getElementById('backFollowers');
-    if (el) el.textContent = Math.max(0, parseInt(el.textContent.replace(/,/g,'') || 0) - 1).toLocaleString();
-  } else {
-    await sb.rpc('follow_profile', { follower: session.user.id, target: profileId });
-    _isFollowing = true;
-    btn.className = 'follow-btn following';
-    btn.innerHTML = '<i class="fas fa-user-check"></i> following';
-    const el = document.getElementById('backFollowers');
-    if (el) el.textContent = (parseInt(el.textContent.replace(/,/g,'') || 0) + 1).toLocaleString();
-  }
-}
+    function createVideoBackground(url, loop, muted) {
+      const existing = document.getElementById('customVideoBg');
+      if (existing) existing.remove();
+      const video = document.createElement('video');
+      video.id = 'customVideoBg';
+      video.src = url;
+      video.autoplay = true;
+      video.muted = muted !== false;
+      video.loop = loop !== false;
+      video.playsInline = true;
+      video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none';
+      document.body.insertBefore(video, document.body.firstChild);
+      video.play().catch(() => {});
+    }
 
-// ── CARD FLIP ─────────────────────────────────────────────────────────────────
-function initCardFlip(profile, CS) {
-  if (!CS.card_flip) return;
+    function safeAddClass(id, cls) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add(cls);
+    }
 
-  const inner   = document.getElementById('cardFlipInner');
-  const back    = document.getElementById('cardBack');
-  const hint    = document.getElementById('flipTapHint');
-  const backUid = document.getElementById('backUid');
-
-  back.style.display = 'flex';
-  if (hint) hint.style.display = 'block';
-
-  // Match back card styles to front
-  back.style.background      = document.getElementById('card').style.background;
-  back.style.backdropFilter  = document.getElementById('card').style.backdropFilter;
-  back.style.borderRadius    = document.getElementById('card').style.borderRadius;
-  back.style.border          = document.getElementById('card').style.border;
-
-  // Fill back content
-  const joined = new Date(profile.created_at);
-  document.getElementById('backJoinDate').textContent =
-    joined.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
-
-  const uidEl = document.getElementById('uidVal');
-  if (backUid) backUid.textContent = uidEl?.textContent || '?';
-
-  const customText = document.getElementById('backCustomText');
-  if (customText && profile.card_back_text) {
-    customText.textContent = profile.card_back_text;
-  }
-
-  // Add follow button wrap
-  const followWrap = document.createElement('div');
-  followWrap.id = 'backFollowWrap';
-  back.insertBefore(followWrap, back.lastElementChild);
-
-  // Flip on card click (front only)
-  document.getElementById('card').addEventListener('click', e => {
-    if (e.target.closest('button, a, input')) return;
-    inner.classList.toggle('flipped');
-  });
-}
-
-// ── MUSIC WIDGET ─────────────────────────────────────────────────────────────
-function initMusicWidget(profile) {
-  if (!profile.music_title && !profile.music_artist) return;
-  const widget = document.getElementById('profileMusicWidget');
-  document.getElementById('profileMusicTitle').textContent  = profile.music_title  || '';
-  document.getElementById('profileMusicArtist').textContent = profile.music_artist || '';
-  widget.classList.add('visible');
-  if (profile.music_url) {
-    widget.onclick = () => window.open(profile.music_url, '_blank');
-  }
-}
-
-// ── LINK CLICK TRACKING ───────────────────────────────────────────────────────
-function trackLinkClick(profileId, label, url) {
-  // Fire-and-forget, don't await
-  sb.from('link_clicks').insert({ profile_id: profileId, label, url }).then(() => {});
-}
-
-// ── SCHEDULED BIO ─────────────────────────────────────────────────────────────
-function applyScheduledBio(profile) {
-  if (!profile.scheduled_bio || !profile.scheduled_bio_at) return;
-  if (new Date() >= new Date(profile.scheduled_bio_at)) {
-    // Time has passed — swap bio and persist the change
-    profile.bio = profile.scheduled_bio;
-    sb.from('profiles').update({
-      bio:              profile.scheduled_bio,
-      scheduled_bio:    null,
-      scheduled_bio_at: null,
-      updated_at:       new Date().toISOString(),
-    }).eq('id', profile.id).then(() => {});
-  }
-}
-
-// ── CUSTOM VIDEO BACKGROUND ───────────────────────────────────────────────────
-function createVideoBackground(url, loop, muted) {
-  const existing = document.getElementById('customVideoBg');
-  if (existing) existing.remove();
-  const video = document.createElement('video');
-  video.id     = 'customVideoBg';
-  video.src    = url;
-  video.autoplay = true;
-  video.muted    = muted !== false;
-  video.loop     = loop !== false;
-  video.playsInline = true;
-  video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none';
-  document.body.insertBefore(video, document.body.firstChild);
-  video.play().catch(() => {});
-}
     async function loadProfile() {
       const { data: profile, error } = await sb.from('profiles').select('*').eq('handle', handle).single();
       if (error || !profile) {
@@ -633,22 +603,17 @@ function createVideoBackground(url, loop, muted) {
         document.getElementById('nfSub').textContent = 'this profile has been suspended.';
         return;
       }
- window._profileId = profile.id;
+      window._profileId = profile.id;
       const CS = buildCS(profile);
-
       if (CS.custom_font_data && CS.custom_font_family) {
         const style = document.createElement('style');
         style.textContent = `@font-face { font-family: '${CS.custom_font_family}'; src: url('${CS.custom_font_data}'); }`;
         document.head.appendChild(style);
       }
-
       applyCardStyles(CS);
-
-      // FIX 1 — Avatar: sanitizeUrl now passes data:image URLs through
       const avatarEl = document.getElementById('cardAvatar');
       if (profile.avatar_url) {
         let avatarUrl = profile.avatar_url;
-        // Resolve relative Supabase storage paths
         if (avatarUrl.startsWith('/') || avatarUrl.startsWith('storage/')) {
           avatarUrl = SUPABASE_URL + '/' + avatarUrl.replace(/^\//, '');
         }
@@ -657,53 +622,47 @@ function createVideoBackground(url, loop, muted) {
           avatarEl.innerHTML = `<img src="${safeAvatar}" alt="" onerror="this.parentElement.innerHTML=''">`;
         }
       }
-
       const nameEl = document.getElementById('cardName');
       nameEl.textContent = profile.display_name || profile.handle;
       nameEl.style.background = 'none';
       nameEl.style.webkitTextFillColor = CS.accent_color;
       nameEl.style.color = CS.accent_color;
-
-      document.getElementById('cardHandle').textContent    = '@' + profile.handle;
-      document.getElementById('topBarHandle').textContent  = '@' + profile.handle;
+      document.getElementById('cardHandle').textContent = '@' + profile.handle;
+      document.getElementById('topBarHandle').textContent = '@' + profile.handle;
       document.getElementById('footerVersion').textContent = `swaqq.xyz/@${profile.handle}`;
       document.title = `${profile.display_name || profile.handle} — swaqq.xyz`;
-
       sb.from('profiles').select('id').order('created_at', { ascending: true }).then(({ data: allIds }) => {
         if (!allIds) return;
         const pos = allIds.findIndex(r => r.id === profile.id);
         const num = pos !== -1 ? pos + 1 : '?';
         CS.show_uid_scramble ? startUidScramble(num) : (document.getElementById('uidVal').textContent = num);
       });
-
-      const badgesEl  = document.getElementById('cardBadges');
-      const rawBadges = Array.isArray(profile.badges) ? profile.badges : (() => { try { return JSON.parse(profile.badges || '[]'); } catch { return []; } })();
-      if (rawBadges.length > 0) {
+      const badgesEl = document.getElementById('cardBadges');
+      const rawBadges = Array.isArray(profile.badges) ? profile.badges : JSON.parse(profile.badges || '[]');
+      if (rawBadges.length) {
         badgesEl.style.display = 'inline-flex';
         rawBadges.forEach(badgeId => {
-          const def = BADGE_DEFS.find(b => b.id === badgeId); if (!def) return;
+          const def = BADGE_DEFS.find(b => b.id === badgeId);
+          if (!def) return;
           const div = document.createElement('div');
           div.className = 'badge';
           div.innerHTML = `<i class="${def.icon}"></i><div class="badge-tip">${def.label}</div>`;
           badgesEl.appendChild(div);
         });
       }
-// Load custom badges
-const { data: customBadges } = await sb.from('custom_badges')
-  .select('*').eq('profile_id', profile.id);
-if (customBadges?.length) {
-  badgesEl.style.display = 'inline-flex';
-  customBadges.forEach(cb => {
-    const div = document.createElement('div');
-    div.className = 'badge';
-    div.innerHTML = `<img src="${cb.image_url}" alt="${sanitize(cb.name)}"><div class="badge-tip">${sanitize(cb.name)}</div>`;
-    badgesEl.appendChild(div);
-  });
-}
-      const socialsEl  = document.getElementById('cardSocials');
-      const rawSocials = Array.isArray(profile.socials) ? profile.socials : (() => { try { return JSON.parse(profile.socials || '[]'); } catch { return []; } })();
+      const { data: customBadges } = await sb.from('custom_badges').select('*').eq('profile_id', profile.id);
+      if (customBadges?.length) {
+        badgesEl.style.display = 'inline-flex';
+        customBadges.forEach(cb => {
+          const div = document.createElement('div');
+          div.className = 'badge';
+          div.innerHTML = `<img src="${cb.image_url}" alt="${sanitize(cb.name)}"><div class="badge-tip">${sanitize(cb.name)}</div>`;
+          badgesEl.appendChild(div);
+        });
+      }
+      const socialsEl = document.getElementById('cardSocials');
+      const rawSocials = Array.isArray(profile.socials) ? profile.socials : JSON.parse(profile.socials || '[]');
       rawSocials.forEach(s => {
-        // Apply social style after buttons are rendered
         if (!s.url) return;
         const safeUrl = sanitizeUrl(s.url); if (!safeUrl) return;
         const a = document.createElement('a');
@@ -725,405 +684,323 @@ if (customBadges?.length) {
         a.appendChild(labelSpan);
         socialsEl.appendChild(a);
       });
-if (window._pendingSocialStyle) {
+      if (window._pendingSocialStyle) {
         applySocialStyle(window._pendingSocialStyle, window._pendingAccent || '#ffffff');
       }
       if (profile.discord_id) {
         document.getElementById('discordStatus').classList.add('visible');
         fetchDiscordStatus(profile.discord_id);
       }
-
       if (profile.show_splash !== false) {
         renderSplash(profile, CS);
       } else {
         revealProfile(profile, CS);
       }
-
-      // FIX 2 — Views: count once on load, then poll every 5 min (display only, no re-increment)
       if (profile.show_views !== false) {
         countView(profile.id, profile.handle);
         setInterval(() => refreshViewDisplay(profile.id), 5 * 60 * 1000);
       }
     }
 
-    // ── CARD STYLES ──────────────────────────────────────────────────────────────
-  function applyCardStyles(CS) {
-  const card   = document.getElementById('card');
-  const accent = CS.accent_color || '#ffffff';
-  const blur   = CS.card_blur    ?? 12;
-  const op     = CS.card_opacity ?? 85;
-  const alpha  = Math.round(op * 2.55).toString(16).padStart(2, '0');
-
-  // Base card styles
-  card.style.background           = '#111111' + alpha;
-  card.style.backdropFilter       = `blur(${blur}px)`;
-  card.style.webkitBackdropFilter = `blur(${blur}px)`;
-  card.style.borderRadius         = (CS.card_rounded !== false) ? '20px' : '4px';
-  card.style.fontFamily           = `'${CS.card_font || 'Syne'}', sans-serif`;
-  card.style.width                = (CS.card_width || 420) + 'px';
-
-  // Glow / shadow
-  const glowStr   = CS.card_glow !== false ? `0 0 40px ${accent}22, 0 0 80px ${accent}0a` : '';
-  const shadowStr = CS.card_shadow !== false ? '0 24px 60px rgba(0,0,0,0.6)' : '';
-  card.style.boxShadow = [glowStr, shadowStr].filter(Boolean).join(', ');
-
-  // Glass overlay
-  if (CS.card_glass) {
-    card.style.backgroundImage = 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)';
-  }
-
-  // Border style
-  applyBorderStyle(card, CS.border_style || 'shimmer', accent);
-
-  // Bio styles
-  const bioEl = document.getElementById('cardBio');
-  bioEl.style.fontFamily  = `'${CS.card_font || 'Syne'}', monospace`;
-  bioEl.style.fontSize    = (CS.bio_size || 13) + 'px';
-  bioEl.style.color       = CS.bio_color || 'rgba(255,255,255,0.75)';
-  bioEl.style.fontStyle   = CS.bio_italic ? 'italic' : 'normal';
-
-  document.getElementById('cardHandle').style.fontFamily = `'${CS.card_font || 'Syne'}', monospace`;
-
-  // Name style
-  applyNameStyle(CS);
-
-  // Avatar shape
-  applyAvatarShape(CS);
-
-  // Social button style
-  // (applied after socials are rendered — called from loadProfile)
-  window._pendingSocialStyle = CS.social_style || 'default';
-  window._pendingAccent      = accent;
-
-  // Cursor
-  applyCursor(CS.cursor_style || 'default', accent);
-
-  // Card layout
-  applyLayout(CS.card_layout || 'default');
-
-  // Card texture
-    
-  applyTexture(CS.card_texture || 'none');
-
-  // Scanlines
-  if (CS.scanlines) {
-    const sl = document.createElement('div');
-    sl.id = 'scanlineOverlay';
-    sl.style.cssText = 'position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px)';
-    document.body.appendChild(sl);
-  }
-
-  // Particles
-  if (CS.particles) initParticles(CS.particle_color || '#ffffff');
-
-  // Snow
-  if (CS.snow) initSnow(CS.particle_color || '#ffffff');
-
-  // Background
-  const bgType = CS.bg_type || 'video';
-  if (bgType === 'image' && CS.bg_image_url) {
-    const imgBg = document.getElementById('imgBg');
-    imgBg.style.backgroundImage = `url(${CS.bg_image_url})`;
-    imgBg.style.opacity         = (CS.bg_opacity ?? 70) / 100;
-    imgBg.classList.add('visible');
-  } else if (bgType === 'color' && CS.bg_color) {
-    document.body.style.background = CS.bg_color;
-  } else if (bgType === 'gradient') {
-    document.body.style.background = `linear-gradient(${CS.bg_grad_dir || 'to bottom right'}, ${CS.bg_grad1 || '#0a0a1a'}, ${CS.bg_grad2 || '#1a0a0a'})`;
-  }
-}
-
-function applyBorderStyle(card, style, accent) {
-  // Remove existing before pseudo — we use a wrapper div instead since ::before can't be JS controlled
-  const existing = document.getElementById('cardBorderEl');
-  if (existing) existing.remove();
-
-  if (style === 'none') {
-    card.style.border = 'none';
-    return;
-  }
-  if (style === 'solid') {
-    card.style.border = `1px solid ${accent}66`;
-    return;
-  }
-  if (style === 'dashed') {
-    card.style.border = `1px dashed ${accent}55`;
-    return;
-  }
-  if (style === 'double') {
-    card.style.border = `3px double ${accent}55`;
-    return;
-  }
-  if (style === 'glow-pulse') {
-    card.style.border = `1px solid ${accent}44`;
-    const styleEl = document.createElement('style');
-    styleEl.textContent = `
-      @keyframes glowPulse {
-        0%,100% { box-shadow: 0 0 20px ${accent}33, 0 0 60px ${accent}11; }
-        50%      { box-shadow: 0 0 40px ${accent}66, 0 0 80px ${accent}33; }
+    function applyCardStyles(CS) {
+      const card = document.getElementById('card');
+      if (!card) return;
+      const accent = CS.accent_color || '#ffffff';
+      const blur = CS.card_blur ?? 12;
+      const op = CS.card_opacity ?? 85;
+      const alpha = Math.round(op * 2.55).toString(16).padStart(2, '0');
+      card.style.background = '#111111' + alpha;
+      card.style.backdropFilter = `blur(${blur}px)`;
+      card.style.webkitBackdropFilter = `blur(${blur}px)`;
+      card.style.borderRadius = (CS.card_rounded !== false) ? '20px' : '4px';
+      card.style.fontFamily = `'${CS.card_font || 'Syne'}', sans-serif`;
+      card.style.width = (CS.card_width || 420) + 'px';
+      const glowStr = CS.card_glow !== false ? `0 0 40px ${accent}22, 0 0 80px ${accent}0a` : '';
+      const shadowStr = CS.card_shadow !== false ? '0 24px 60px rgba(0,0,0,0.6)' : '';
+      card.style.boxShadow = [glowStr, shadowStr].filter(Boolean).join(', ');
+      if (CS.card_glass) {
+        card.style.backgroundImage = 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)';
       }
-      #card { animation: glowPulse 2.5s ease-in-out infinite !important; }
-    `;
-    document.head.appendChild(styleEl);
-    return;
-  }
-  // shimmer = default (handled by existing ::before CSS)
-}
-
-function applyNameStyle(CS) {
-  const nameEl = document.getElementById('cardName');
-  if (!nameEl) return;
-  const accent = CS.accent_color || '#ffffff';
-
-  // Reset first
-  nameEl.style.cssText = '';
-  nameEl.style.fontSize      = '26px';
-  nameEl.style.fontWeight    = '800';
-  nameEl.style.letterSpacing = '-0.02em';
-
-  const style = CS.name_style || 'solid';
-
-  if (style === 'solid') {
-    nameEl.style.color = accent;
-    nameEl.style.webkitTextFillColor = accent;
-  } else if (style === 'gradient') {
-    const g1 = CS.name_grad1 || '#ffffff';
-    const g2 = CS.name_grad2 || '#888888';
-    nameEl.style.background              = `linear-gradient(90deg, ${g1}, ${g2})`;
-    nameEl.style.webkitBackgroundClip    = 'text';
-    nameEl.style.backgroundClip         = 'text';
-    nameEl.style.webkitTextFillColor     = 'transparent';
-  } else if (style === 'shimmer') {
-    nameEl.style.background              = `linear-gradient(110deg,#555,${accent},#fff,${accent},#555)`;
-    nameEl.style.backgroundSize          = '200%';
-    nameEl.style.webkitBackgroundClip    = 'text';
-    nameEl.style.backgroundClip         = 'text';
-    nameEl.style.webkitTextFillColor     = 'transparent';
-    nameEl.style.animation               = 'shimmer 2s ease infinite';
-  } else if (style === 'outline') {
-    nameEl.style.webkitTextStroke        = `1px ${accent}`;
-    nameEl.style.color                   = 'transparent';
-    nameEl.style.webkitTextFillColor     = 'transparent';
-  } else if (style === 'shadow') {
-    nameEl.style.color                   = accent;
-    nameEl.style.webkitTextFillColor     = accent;
-    nameEl.style.textShadow              = `0 0 20px ${accent}99, 0 0 40px ${accent}44`;
-  } else if (style === 'uppercase') {
-    nameEl.style.color                   = accent;
-    nameEl.style.webkitTextFillColor     = accent;
-    nameEl.style.textTransform           = 'uppercase';
-    nameEl.style.letterSpacing           = '0.15em';
-    nameEl.style.fontSize                = '20px';
-  }
-}
-
-function applyAvatarShape(CS) {
-  const av = document.getElementById('cardAvatar');
-  if (!av) return;
-  const shape  = CS.avatar_shape  || 'circle';
-  const border = CS.avatar_border ?? 2;
-  const accent = CS.accent_color  || '#ffffff';
-
-  av.style.borderWidth = border + 'px';
-  av.style.borderStyle = 'solid';
-  av.style.borderColor = `rgba(255,255,255,0.15)`;
-
-  if (CS.avatar_glow) {
-    av.style.boxShadow = `0 0 16px ${accent}66, 0 0 32px ${accent}33`;
-  }
-
-  if (CS.avatar_spin) {
-    const styleEl = document.createElement('style');
-    styleEl.textContent = `.avatar:hover { animation: avatarSpin 0.8s linear infinite !important; } @keyframes avatarSpin { to { transform: rotate(360deg); } }`;
-    document.head.appendChild(styleEl);
-  }
-
-  // Reset clip-path and border-radius
-  av.style.clipPath    = '';
-  av.style.borderRadius = '50%';
-
-  if (shape === 'square')    { av.style.borderRadius = '8px'; }
-  if (shape === 'squircle')  { av.style.borderRadius = '30%'; }
-  if (shape === 'hexagon')   { av.style.clipPath = 'polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)'; av.style.borderRadius = '0'; }
-  if (shape === 'diamond')   { av.style.clipPath = 'polygon(50% 0%,100% 50%,50% 100%,0% 50%)'; av.style.borderRadius = '0'; }
-}
-
-function applyLayout(layout) {
-  const header = document.querySelector('.card-header');
-  const av     = document.getElementById('cardAvatar');
-  if (!header || !av) return;
-
-  if (layout === 'centered') {
-    header.style.flexDirection  = 'column';
-    header.style.textAlign      = 'center';
-    header.style.alignItems     = 'center';
-    document.querySelector('.name-row').style.justifyContent = 'center';
-  } else if (layout === 'minimal') {
-    av.style.display = 'none';
-  } else if (layout === 'banner') {
-    av.style.width        = '100%';
-    av.style.height       = '80px';
-    av.style.borderRadius = '10px';
-    header.style.flexDirection = 'column';
-  }
-  // default = no changes needed
-}
-
-function applyTexture(texture) {
-  if (texture === 'none') return;
-  const card = document.getElementById('card');
-  const textures = {
-    noise:  'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.04\'/%3E%3C/svg%3E")',
-    grid:   'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)',
-    dots:   'radial-gradient(rgba(255,255,255,0.08) 1px,transparent 1px)',
-    lines:  'repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,0.02) 4px,rgba(255,255,255,0.02) 5px)',
-    carbon: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 1px,transparent 0,transparent 50%),repeating-linear-gradient(-45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 1px,transparent 0,transparent 50%)',
-  };
-  const sizes = {
-    grid: '44px 44px', dots: '16px 16px', carbon: '4px 4px'
-  };
-  if (textures[texture]) {
-    card.style.backgroundImage = textures[texture];
-    if (sizes[texture]) card.style.backgroundSize = sizes[texture];
-  }
-}
-
-function applyCursor(style, accent) {
-  if (style === 'default') return;
-  if (style === 'none')       { document.body.style.cursor = 'none'; return; }
-  if (style === 'crosshair')  { document.body.style.cursor = 'crosshair'; return; }
-
-  if (style === 'dot') {
-    const styleEl = document.createElement('style');
-    styleEl.textContent = `* { cursor: none !important; } body::after { content:''; position:fixed; width:8px; height:8px; background:${accent}; border-radius:50%; pointer-events:none; z-index:99999; transform:translate(-50%,-50%); transition:transform 0.1s; top:var(--my,0px); left:var(--mx,0px); }`;
-    document.head.appendChild(styleEl);
-    document.addEventListener('mousemove', e => {
-      document.documentElement.style.setProperty('--mx', e.clientX + 'px');
-      document.documentElement.style.setProperty('--my', e.clientY + 'px');
-    });
-    return;
-  }
-
-  if (style === 'glow') {
-    const cursor = document.createElement('div');
-    cursor.style.cssText = `position:fixed;width:24px;height:24px;border-radius:50%;background:${accent}33;border:1px solid ${accent}88;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform 0.15s,width 0.2s,height 0.2s;box-shadow:0 0 12px ${accent}66`;
-    document.body.appendChild(cursor);
-    document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top  = e.clientY + 'px';
-    });
-    document.body.style.cursor = 'none';
-    return;
-  }
-}
-
-function applySocialStyle(style, accent) {
-  const btns = document.querySelectorAll('.social-btn');
-  btns.forEach(btn => {
-    // Reset
-    btn.style.cssText = '';
-    btn.classList.add('social-btn');
-
-    if (style === 'icon-only') {
-      btn.querySelectorAll('span').forEach(s => s.style.display = 'none');
-      btn.style.width   = '44px';
-      btn.style.padding = '0';
-      btn.style.justifyContent = 'center';
-    } else if (style === 'filled') {
-      btn.style.background   = accent + '22';
-      btn.style.borderColor  = accent + '44';
-      btn.style.color        = accent;
-    } else if (style === 'outlined') {
-      btn.style.background   = 'transparent';
-      btn.style.borderColor  = accent + '55';
-      btn.style.color        = accent;
-    } else if (style === 'minimal') {
-      btn.style.background   = 'transparent';
-      btn.style.border       = 'none';
-      btn.style.color        = 'rgba(255,255,255,0.5)';
-      btn.style.padding      = '0 8px';
-      btn.style.textDecoration = 'underline';
-      btn.style.textUnderlineOffset = '3px';
-    } else if (style === 'rounded') {
-      btn.style.borderRadius = '100px';
-      btn.style.width        = '44px';
-      btn.style.padding      = '0';
-      btn.style.justifyContent = 'center';
-      btn.querySelectorAll('span').forEach(s => s.style.display = 'none');
+      applyBorderStyle(card, CS.border_style || 'shimmer', accent);
+      const bioEl = document.getElementById('cardBio');
+      if (bioEl) {
+        bioEl.style.fontFamily = `'${CS.card_font || 'Syne'}', monospace`;
+        bioEl.style.fontSize = (CS.bio_size || 13) + 'px';
+        bioEl.style.color = CS.bio_color || 'rgba(255,255,255,0.75)';
+        bioEl.style.fontStyle = CS.bio_italic ? 'italic' : 'normal';
+      }
+      const handleEl = document.getElementById('cardHandle');
+      if (handleEl) handleEl.style.fontFamily = `'${CS.card_font || 'Syne'}', monospace`;
+      applyNameStyle(CS);
+      applyAvatarShape(CS);
+      window._pendingSocialStyle = CS.social_style || 'default';
+      window._pendingAccent = accent;
+      applyCursor(CS.cursor_style || 'default', accent);
+      applyLayout(CS.card_layout || 'default');
+      applyTexture(CS.card_texture || 'none');
+      if (CS.scanlines) {
+        const sl = document.createElement('div');
+        sl.id = 'scanlineOverlay';
+        sl.style.cssText = 'position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px)';
+        document.body.appendChild(sl);
+      }
+      if (CS.particles) initParticles(CS.particle_color || '#ffffff');
+      if (CS.snow) initSnow(CS.particle_color || '#ffffff');
+      const bgType = CS.bg_type || 'video';
+      if (bgType === 'image' && CS.bg_image_url) {
+        const imgBg = document.getElementById('imgBg');
+        imgBg.style.backgroundImage = `url(${CS.bg_image_url})`;
+        imgBg.style.opacity = (CS.bg_opacity ?? 70) / 100;
+        imgBg.classList.add('visible');
+      } else if (bgType === 'color' && CS.bg_color) {
+        document.body.style.background = CS.bg_color;
+      } else if (bgType === 'gradient') {
+        document.body.style.background = `linear-gradient(${CS.bg_grad_dir || 'to bottom right'}, ${CS.bg_grad1 || '#0a0a1a'}, ${CS.bg_grad2 || '#1a0a0a'})`;
+      }
     }
-  });
-}
 
-function initParticles(color) {
-  const canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none';
-  document.body.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+    function applyBorderStyle(card, style, accent) {
+      if (style === 'none') { card.style.border = 'none'; return; }
+      if (style === 'solid') { card.style.border = `1px solid ${accent}66`; return; }
+      if (style === 'dashed') { card.style.border = `1px dashed ${accent}55`; return; }
+      if (style === 'double') { card.style.border = `3px double ${accent}55`; return; }
+      if (style === 'glow-pulse') {
+        card.style.border = `1px solid ${accent}44`;
+        const styleEl = document.createElement('style');
+        styleEl.textContent = `
+          @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px ${accent}33, 0 0 60px ${accent}11; } 50% { box-shadow: 0 0 40px ${accent}66, 0 0 80px ${accent}33; } }
+          #card { animation: glowPulse 2.5s ease-in-out infinite !important; }
+        `;
+        document.head.appendChild(styleEl);
+      }
+    }
 
-  const particles = Array.from({ length: 60 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 2 + 0.5,
-    dx: (Math.random() - 0.5) * 0.4,
-    dy: (Math.random() - 0.5) * 0.4,
-    o: Math.random() * 0.4 + 0.1,
-  }));
+    function applyNameStyle(CS) {
+      const nameEl = document.getElementById('cardName');
+      if (!nameEl) return;
+      const accent = CS.accent_color || '#ffffff';
+      nameEl.style.cssText = '';
+      nameEl.style.fontSize = '26px';
+      nameEl.style.fontWeight = '800';
+      nameEl.style.letterSpacing = '-0.02em';
+      const style = CS.name_style || 'solid';
+      if (style === 'solid') {
+        nameEl.style.color = accent;
+        nameEl.style.webkitTextFillColor = accent;
+      } else if (style === 'gradient') {
+        nameEl.style.background = `linear-gradient(90deg, ${CS.name_grad1 || '#ffffff'}, ${CS.name_grad2 || '#888888'})`;
+        nameEl.style.webkitBackgroundClip = 'text';
+        nameEl.style.backgroundClip = 'text';
+        nameEl.style.webkitTextFillColor = 'transparent';
+      } else if (style === 'shimmer') {
+        nameEl.style.background = `linear-gradient(110deg,#555,${accent},#fff,${accent},#555)`;
+        nameEl.style.backgroundSize = '200%';
+        nameEl.style.webkitBackgroundClip = 'text';
+        nameEl.style.backgroundClip = 'text';
+        nameEl.style.webkitTextFillColor = 'transparent';
+        nameEl.style.animation = 'shimmer 2s ease infinite';
+      } else if (style === 'outline') {
+        nameEl.style.webkitTextStroke = `1px ${accent}`;
+        nameEl.style.color = 'transparent';
+        nameEl.style.webkitTextFillColor = 'transparent';
+      } else if (style === 'shadow') {
+        nameEl.style.color = accent;
+        nameEl.style.webkitTextFillColor = accent;
+        nameEl.style.textShadow = `0 0 20px ${accent}99, 0 0 40px ${accent}44`;
+      } else if (style === 'uppercase') {
+        nameEl.style.color = accent;
+        nameEl.style.webkitTextFillColor = accent;
+        nameEl.style.textTransform = 'uppercase';
+        nameEl.style.letterSpacing = '0.15em';
+        nameEl.style.fontSize = '20px';
+      }
+    }
 
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = color + Math.floor(p.o * 255).toString(16).padStart(2,'0');
-      ctx.fill();
-      p.x += p.dx; p.y += p.dy;
-      if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
+    function applyAvatarShape(CS) {
+      const av = document.getElementById('cardAvatar');
+      if (!av) return;
+      const shape = CS.avatar_shape || 'circle';
+      const border = CS.avatar_border ?? 2;
+      const accent = CS.accent_color || '#ffffff';
+      av.style.borderWidth = border + 'px';
+      av.style.borderStyle = 'solid';
+      av.style.borderColor = `rgba(255,255,255,0.15)`;
+      if (CS.avatar_glow) av.style.boxShadow = `0 0 16px ${accent}66, 0 0 32px ${accent}33`;
+      if (CS.avatar_spin) {
+        const styleEl = document.createElement('style');
+        styleEl.textContent = `.avatar:hover { animation: avatarSpin 0.8s linear infinite !important; } @keyframes avatarSpin { to { transform: rotate(360deg); } }`;
+        document.head.appendChild(styleEl);
+      }
+      av.style.clipPath = '';
+      av.style.borderRadius = '50%';
+      if (shape === 'square') av.style.borderRadius = '8px';
+      if (shape === 'squircle') av.style.borderRadius = '30%';
+      if (shape === 'hexagon') { av.style.clipPath = 'polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)'; av.style.borderRadius = '0'; }
+      if (shape === 'diamond') { av.style.clipPath = 'polygon(50% 0%,100% 50%,50% 100%,0% 50%)'; av.style.borderRadius = '0'; }
+    }
 
-function initSnow(color) {
-  const canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none';
-  document.body.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+    function applyLayout(layout) {
+      const header = document.querySelector('.card-header');
+      const av = document.getElementById('cardAvatar');
+      if (!header || !av) return;
+      if (layout === 'centered') {
+        header.style.flexDirection = 'column';
+        header.style.textAlign = 'center';
+        header.style.alignItems = 'center';
+        document.querySelector('.name-row').style.justifyContent = 'center';
+      } else if (layout === 'minimal') {
+        av.style.display = 'none';
+      } else if (layout === 'banner') {
+        av.style.width = '100%';
+        av.style.height = '80px';
+        av.style.borderRadius = '10px';
+        header.style.flexDirection = 'column';
+      }
+    }
 
-  const flakes = Array.from({ length: 80 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 3 + 1,
-    speed: Math.random() * 1 + 0.3,
-    drift: (Math.random() - 0.5) * 0.5,
-    o: Math.random() * 0.5 + 0.2,
-  }));
+    function applyTexture(texture) {
+      if (texture === 'none') return;
+      const card = document.getElementById('card');
+      if (!card) return;
+      const textures = {
+        noise: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.04\'/%3E%3C/svg%3E")',
+        grid: 'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)',
+        dots: 'radial-gradient(rgba(255,255,255,0.08) 1px,transparent 1px)',
+        lines: 'repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,0.02) 4px,rgba(255,255,255,0.02) 5px)',
+        carbon: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 1px,transparent 0,transparent 50%),repeating-linear-gradient(-45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 1px,transparent 0,transparent 50%)',
+      };
+      const sizes = { grid: '44px 44px', dots: '16px 16px', carbon: '4px 4px' };
+      if (textures[texture]) {
+        card.style.backgroundImage = textures[texture];
+        if (sizes[texture]) card.style.backgroundSize = sizes[texture];
+      }
+    }
 
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    flakes.forEach(f => {
-      ctx.beginPath();
-      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-      ctx.fillStyle = color + Math.floor(f.o * 255).toString(16).padStart(2,'0');
-      ctx.fill();
-      f.y += f.speed;
-      f.x += f.drift;
-      if (f.y > canvas.height) { f.y = -f.r; f.x = Math.random() * canvas.width; }
-      if (f.x > canvas.width)  f.x = 0;
-      if (f.x < 0)             f.x = canvas.width;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-// ── SPLASH ───────────────────────────────────────────────────────────────────
+    function applyCursor(style, accent) {
+      if (style === 'default') return;
+      if (style === 'none') { document.body.style.cursor = 'none'; return; }
+      if (style === 'crosshair') { document.body.style.cursor = 'crosshair'; return; }
+      if (style === 'dot') {
+        const styleEl = document.createElement('style');
+        styleEl.textContent = `* { cursor: none !important; } body::after { content:''; position:fixed; width:8px; height:8px; background:${accent}; border-radius:50%; pointer-events:none; z-index:99999; transform:translate(-50%,-50%); transition:transform 0.1s; top:var(--my,0px); left:var(--mx,0px); }`;
+        document.head.appendChild(styleEl);
+        document.addEventListener('mousemove', e => {
+          document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+          document.documentElement.style.setProperty('--my', e.clientY + 'px');
+        });
+        return;
+      }
+      if (style === 'glow') {
+        const cursor = document.createElement('div');
+        cursor.style.cssText = `position:fixed;width:24px;height:24px;border-radius:50%;background:${accent}33;border:1px solid ${accent}88;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform 0.15s,width 0.2s,height 0.2s;box-shadow:0 0 12px ${accent}66`;
+        document.body.appendChild(cursor);
+        document.addEventListener('mousemove', e => {
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+        document.body.style.cursor = 'none';
+      }
+    }
+
+    function applySocialStyle(style, accent) {
+      document.querySelectorAll('.social-btn').forEach(btn => {
+        btn.style.cssText = '';
+        btn.classList.add('social-btn');
+        if (style === 'icon-only') {
+          btn.querySelectorAll('span').forEach(s => s.style.display = 'none');
+          btn.style.width = '44px';
+          btn.style.padding = '0';
+          btn.style.justifyContent = 'center';
+        } else if (style === 'filled') {
+          btn.style.background = accent + '22';
+          btn.style.borderColor = accent + '44';
+          btn.style.color = accent;
+        } else if (style === 'outlined') {
+          btn.style.background = 'transparent';
+          btn.style.borderColor = accent + '55';
+          btn.style.color = accent;
+        } else if (style === 'minimal') {
+          btn.style.background = 'transparent';
+          btn.style.border = 'none';
+          btn.style.color = 'rgba(255,255,255,0.5)';
+          btn.style.padding = '0 8px';
+          btn.style.textDecoration = 'underline';
+          btn.style.textUnderlineOffset = '3px';
+        } else if (style === 'rounded') {
+          btn.style.borderRadius = '100px';
+          btn.style.width = '44px';
+          btn.style.padding = '0';
+          btn.querySelectorAll('span').forEach(s => s.style.display = 'none');
+        }
+      });
+    }
+
+    function initParticles(color) {
+      const canvas = document.createElement('canvas');
+      canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none';
+      document.body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+      const particles = Array.from({ length: 60 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 0.5,
+        dx: (Math.random() - 0.5) * 0.4,
+        dy: (Math.random() - 0.5) * 0.4,
+        o: Math.random() * 0.4 + 0.1,
+      }));
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = color + Math.floor(p.o * 255).toString(16).padStart(2,'0');
+          ctx.fill();
+          p.x += p.dx; p.y += p.dy;
+          if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    function initSnow(color) {
+      const canvas = document.createElement('canvas');
+      canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none';
+      document.body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+      const flakes = Array.from({ length: 80 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 3 + 1,
+        speed: Math.random() * 1 + 0.3,
+        drift: (Math.random() - 0.5) * 0.5,
+        o: Math.random() * 0.5 + 0.2,
+      }));
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        flakes.forEach(f => {
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+          ctx.fillStyle = color + Math.floor(f.o * 255).toString(16).padStart(2,'0');
+          ctx.fill();
+          f.y += f.speed;
+          f.x += f.drift;
+          if (f.y > canvas.height) { f.y = -f.r; f.x = Math.random() * canvas.width; }
+          if (f.x > canvas.width) f.x = 0;
+          if (f.x < 0) f.x = canvas.width;
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
     function renderSplash(profile, CS) {
       const splashEl = document.getElementById('splash');
       splashEl.classList.add('active');
@@ -1139,64 +1016,54 @@ function initSnow(color) {
       }, { once: true });
     }
 
-    // ── REVEAL ───────────────────────────────────────────────────────────────────
     function revealProfile(profile, CS) {
-      document.getElementById('loading').classList.add('out');
-      setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
-      document.getElementById('profilePage').classList.add('visible');
-      document.getElementById('card').classList.add('loaded');
-
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.classList.add('out');
+        setTimeout(() => { loading.style.display = 'none'; }, 600);
+      }
+      safeAddClass('profilePage', 'visible');
+      safeAddClass('card', 'loaded');
       const showVolume = CS.show_volume_widget !== false;
       if (profile.show_views !== false && !showVolume) {
-        document.getElementById('views').classList.add('visible');
+        safeAddClass('views', 'visible');
       } else if (profile.show_views !== false && showVolume) {
         const viewsEl = document.getElementById('views');
-        viewsEl.style.bottom = '72px';
-        viewsEl.classList.add('visible');
+        if (viewsEl) viewsEl.style.bottom = '72px';
+        safeAddClass('views', 'visible');
       }
-
-      window._showTopBarBriefly && window._showTopBarBriefly();
-
-     // Replace the existing video bg block with:
-const videoId  = CS.youtube_video_id || profile.youtube_video_id || '';
-const audioId  = CS.audio_only_id || '';
-const customVid = CS.bg_video_url || profile.bg_video_url || '';
-
-if (CS.bg_type === 'custom-video' && customVid) {
-  createVideoBackground(customVid, CS.bg_video_loop !== false, CS.bg_video_mute !== false);
-} else if (CS.bg_type === 'audio' && audioId) {
-  createYouTubeBackground(audioId, CS.mute_audio !== false, true);
-} else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
-  createYouTubeBackground(videoId, CS.mute_video !== false, false);
-}
+      window._showTopBarBriefly?.();
+      const videoId = CS.youtube_video_id || profile.youtube_video_id || '';
+      const audioId = CS.audio_only_id || '';
+      const customVid = CS.bg_video_url || profile.bg_video_url || '';
+      if (CS.bg_type === 'custom-video' && customVid) {
+        createVideoBackground(customVid, CS.bg_video_loop !== false, CS.bg_video_mute !== false);
+      } else if (CS.bg_type === 'audio' && audioId) {
+        createYouTubeBackground(audioId, CS.mute_audio !== false, true);
+      } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
+        createYouTubeBackground(videoId, CS.mute_video !== false, false);
+      }
       const hasAudio = (CS.bg_type === 'video' && videoId) || (CS.bg_type === 'audio' && audioId);
       if (showVolume && hasAudio) initVolumeWidget();
-
       if (CS.typewriter !== false) {
         typeBio(profile.bio || '');
       } else {
         const bioEl = document.getElementById('cardBio');
-        bioEl.innerHTML = sanitizeHtml(profile.bio || '');
+        if (bioEl) bioEl.innerHTML = sanitizeHtml(profile.bio || '');
       }
-
       _profileIdForReactions = profile.id;
       initReactions(profile.id);
-      // Inside revealProfile(profile, CS):
-applyScheduledBio(profile);
-initCardFlip(profile, CS);
-initMusicWidget(profile);
-initFollows(profile);
-
-// Show QR button
-document.getElementById('qrBtn').style.display = 'flex';
+      applyScheduledBio(profile);
+      initCardFlip(profile, CS);
+      initMusicWidget(profile);
+      initFollows(profile);
+      document.getElementById('qrBtn')?.style.display = 'flex';
       if (profile.show_tilt !== false) initTilt();
       initNavLinks();
       updateClock();
       setInterval(updateClock, 1000);
     }
 
- 
-    // ── CLOCK ────────────────────────────────────────────────────────────────────
     function updateClock() {
       const now = new Date();
       let h = now.getHours();
@@ -1207,7 +1074,6 @@ document.getElementById('qrBtn').style.display = 'flex';
       document.getElementById('footerClock').textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
     }
 
-    // ── DISCORD ──────────────────────────────────────────────────────────────────
     async function fetchDiscordStatus(discordId) {
       try {
         const r = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
@@ -1221,7 +1087,6 @@ document.getElementById('qrBtn').style.display = 'flex';
       } catch(_) {}
     }
 
-    // ── UID SCRAMBLE ─────────────────────────────────────────────────────────────
     const scrambleChars = '0123456789ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛟ⚡☠✦✧⚔◊◈△▽';
     function startUidScramble(realNum) {
       const el = document.getElementById('uidVal');
@@ -1235,10 +1100,9 @@ document.getElementById('qrBtn').style.display = 'flex';
       }, 55);
     }
 
-    // ── BIO TYPEWRITER ───────────────────────────────────────────────────────────
     function typeBio(text) {
       const bioEl = document.getElementById('cardBio');
-      if (!text) { bioEl.innerHTML = ''; return; }
+      if (!text || !bioEl) { if (bioEl) bioEl.innerHTML = ''; return; }
       let idx = 0, deleting = false;
       function tick() {
         bioEl.innerHTML = sanitizeHtml(text.slice(0, idx)) + '<span class="bio-cursor"></span>';
@@ -1253,9 +1117,9 @@ document.getElementById('qrBtn').style.display = 'flex';
       setTimeout(tick, 400);
     }
 
-    // ── TILT ─────────────────────────────────────────────────────────────────────
     function initTilt() {
       const card = document.getElementById('card');
+      if (!card) return;
       let tx = 0, ty = 0, cx = 0, cy = 0, hovering = false;
       card.addEventListener('mouseenter', () => hovering = true);
       card.addEventListener('mouseleave', () => { hovering = false; tx = ty = 0; });
@@ -1271,15 +1135,15 @@ document.getElementById('qrBtn').style.display = 'flex';
         requestAnimationFrame(anim);
       }
       anim();
-      document.getElementById('cardAvatar').addEventListener('click', () => {
+      document.getElementById('cardAvatar')?.addEventListener('click', () => {
         const av = document.getElementById('cardAvatar');
+        if (!av) return;
         av.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
         av.style.transform = 'scale(1.15) rotate(360deg)';
         setTimeout(() => { av.style.transform = ''; }, 620);
       });
     }
 
-    // ── NAV LINKS ────────────────────────────────────────────────────────────────
     function initNavLinks() {
       const overlay = document.getElementById('navOverlay');
       let pending = '';
@@ -1291,297 +1155,221 @@ document.getElementById('qrBtn').style.display = 'flex';
           overlay.classList.add('active');
         });
       });
-     // Inside initNavLinks(), replace the navYes click handler:
-document.getElementById('navYes').addEventListener('click', () => {
-  overlay.classList.remove('active');
-  if (pending) {
-    // Track the click
-    if (window._profileId) {
-      const clickedSocial = document.querySelector(`.nav-link[data-href="${pending}"]`);
-      const label = clickedSocial?.querySelector('span')?.textContent || '';
-      trackLinkClick(window._profileId, label, pending);
-    }
-    window.open(pending, '_blank');
-  }
-  pending = '';
-});
-      document.getElementById('navNo').addEventListener('click',  () => { overlay.classList.remove('active'); pending = ''; });
+      document.getElementById('navYes').addEventListener('click', () => {
+        overlay.classList.remove('active');
+        if (pending) {
+          if (window._profileId) {
+            const clicked = document.querySelector(`.nav-link[data-href="${pending}"]`);
+            const label = clicked?.querySelector('span')?.textContent || '';
+            trackLinkClick(window._profileId, label, pending);
+          }
+          window.open(pending, '_blank');
+        }
+        pending = '';
+      });
+      document.getElementById('navNo').addEventListener('click', () => { overlay.classList.remove('active'); pending = ''; });
       overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.classList.remove('active'); pending = ''; } });
     }
 
-    // ── VIEWS ────────────────────────────────────────────────────────────────────
-    // FIX 2a — only fetches the latest count and updates the display, never increments
     async function refreshViewDisplay(profileId) {
       const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
       if (data) document.getElementById('viewCount').textContent = (data.view_count || 0).toLocaleString();
     }
 
-    // FIX 2b — countView increments once (with dedup), then calls refreshViewDisplay
     async function countView(profileId, profileHandle) {
-      // Never count views on your own profile
       const { data: { session } } = await sb.auth.getSession();
       const isSelf = session?.user?.id === profileId;
-
-      if (!isSelf) {
-        // Canvas fingerprint dedup — max 2 views per visitor per day
-        const canvas = document.createElement('canvas');
-        canvas.getContext('2d').fillText('fp', 0, 0);
-        const fp = { ua: navigator.userAgent, lang: navigator.language, res: `${screen.width}x${screen.height}`, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, cv: canvas.toDataURL() };
-        let hash = 0;
-        const str = JSON.stringify(fp);
-        for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
-        const key    = `sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
-        const today  = new Date().toDateString();
-        const stored = JSON.parse(localStorage.getItem(key) || '{"c":0,"d":""}');
-        if (stored.d !== today) stored.c = 0;
-        if (stored.c < 2) {
-          stored.c++;
-          stored.d = today;
-          localStorage.setItem(key, JSON.stringify(stored));
-          const { error } = await sb.rpc('increment_views', { profile_id: profileId });
-          if (error) console.error('[swaqq] increment_views rpc error:', error.message);
-        }
+      if (isSelf) {
+        await refreshViewDisplay(profileId);
+        return;
       }
-
-      // Always show the real current count after any action
+      const canvas = document.createElement('canvas');
+      canvas.getContext('2d').fillText('fp', 0, 0);
+      const fp = { ua: navigator.userAgent, lang: navigator.language, res: `${screen.width}x${screen.height}`, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, cv: canvas.toDataURL() };
+      let hash = 0;
+      const str = JSON.stringify(fp);
+      for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
+      const key = `sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
+      const today = new Date().toDateString();
+      const stored = JSON.parse(localStorage.getItem(key) || '{"c":0,"d":""}');
+      if (stored.d !== today) stored.c = 0;
+      if (stored.c < 2) {
+        stored.c++;
+        stored.d = today;
+        localStorage.setItem(key, JSON.stringify(stored));
+        await sb.rpc('increment_views', { profile_id: profileId }).catch(console.error);
+      }
       await refreshViewDisplay(profileId);
     }
 
-    // ── REACTIONS ────────────────────────────────────────────────────────────────
     let _profileIdForReactions = null;
-
-    // FIX 3 — initReactions: handles missing like_count/dislike_count columns gracefully
-   async function initReactions(profileId) {
-  try {
-    const { data, error } = await sb.from('profiles')
-      .select('like_count, dislike_count')
-      .eq('id', profileId)
-      .single();
-
-    if (error) {
-      console.warn('[swaqq] reactions unavailable:', error.message);
-      document.getElementById('likeBtn').style.display    = 'none';
-      document.getElementById('dislikeBtn').style.display = 'none';
-      return;
+    async function initReactions(profileId) {
+      try {
+        const { data, error } = await sb.from('profiles')
+          .select('like_count, dislike_count')
+          .eq('id', profileId)
+          .single();
+        if (error) {
+          console.warn('[swaqq] reactions unavailable:', error.message);
+          document.getElementById('likeBtn')?.style.display = 'none';
+          document.getElementById('dislikeBtn')?.style.display = 'none';
+          return;
+        }
+        document.getElementById('likeCount').textContent = data?.like_count || 0;
+        document.getElementById('dislikeCount').textContent = data?.dislike_count || 0;
+        const reacted = localStorage.getItem(`swaqq_react_${profileId}`);
+        highlightReaction(reacted);
+      } catch(e) {
+        console.warn('[swaqq] initReactions error:', e);
+      }
     }
-
-    document.getElementById('likeCount').textContent    = data?.like_count    || 0;
-    document.getElementById('dislikeCount').textContent = data?.dislike_count || 0;
-
-    // Restore prior reaction highlight
-    const reacted = localStorage.getItem(`swaqq_react_${profileId}`);
-    highlightReaction(reacted);
-  } catch(e) {
-    console.warn('[swaqq] initReactions error:', e);
-  }
-}
 
     function highlightReaction(type) {
-  const likeBtn    = document.getElementById('likeBtn');
-  const dislikeBtn = document.getElementById('dislikeBtn');
-
-  // Reset both first
-  likeBtn.style.color       = 'rgba(255,255,255,0.35)';
-  likeBtn.style.borderColor = 'transparent';
-  dislikeBtn.style.color       = 'rgba(255,255,255,0.35)';
-  dislikeBtn.style.borderColor = 'transparent';
-
-  if (type === 'like') {
-    likeBtn.style.color       = '#43b581';
-    likeBtn.style.borderColor = 'rgba(67,181,129,0.3)';
-  } else if (type === 'dislike') {
-    dislikeBtn.style.color       = '#f04747';
-    dislikeBtn.style.borderColor = 'rgba(240,71,71,0.3)';
-  }
-}
-
-   async function handleReaction(type) {
-  if (!_profileIdForReactions) return;
-
-  const { data: { session } } = await sb.auth.getSession();
-  if (session?.user?.id === _profileIdForReactions) return;
-
-  const key     = `swaqq_react_${_profileIdForReactions}`;
-  const current = localStorage.getItem(key);
-
-  const likeEl    = document.getElementById('likeCount');
-  const dislikeEl = document.getElementById('dislikeCount');
-
-  let likeDelta    = 0;
-  let dislikeDelta = 0;
-  let newReaction  = null;
-
-  if (current === type) {
-    // Same button — undo
-    if (type === 'like')    likeDelta    = -1;
-    if (type === 'dislike') dislikeDelta = -1;
-    newReaction = null;
-  } else {
-    // Switch or new reaction
-    if (current === 'like')    likeDelta    = -1;
-    if (current === 'dislike') dislikeDelta = -1;
-    if (type === 'like')    likeDelta    += 1;
-    if (type === 'dislike') dislikeDelta += 1;
-    newReaction = type;
-  }
-
-  // Update localStorage
-  if (newReaction) {
-    localStorage.setItem(key, newReaction);
-  } else {
-    localStorage.removeItem(key);
-  }
-
-  // Update display immediately
-  likeEl.textContent    = Math.max(0, (parseInt(likeEl.textContent)    || 0) + likeDelta);
-  dislikeEl.textContent = Math.max(0, (parseInt(dislikeEl.textContent) || 0) + dislikeDelta);
-  highlightReaction(newReaction);
-
-  const btn = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
-  btn.style.transform = 'scale(1.2)';
-  setTimeout(() => btn.style.transform = '', 300);
-
-  // Persist to DB
-  try {
-    if (current) {
-      await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: 'remove_' + current });
+      const likeBtn = document.getElementById('likeBtn');
+      const dislikeBtn = document.getElementById('dislikeBtn');
+      if (!likeBtn || !dislikeBtn) return;
+      likeBtn.style.color = 'rgba(255,255,255,0.35)';
+      likeBtn.style.borderColor = 'transparent';
+      dislikeBtn.style.color = 'rgba(255,255,255,0.35)';
+      dislikeBtn.style.borderColor = 'transparent';
+      if (type === 'like') {
+        likeBtn.style.color = '#43b581';
+        likeBtn.style.borderColor = 'rgba(67,181,129,0.3)';
+      } else if (type === 'dislike') {
+        dislikeBtn.style.color = '#f04747';
+        dislikeBtn.style.borderColor = 'rgba(240,71,71,0.3)';
+      }
     }
-    if (newReaction) {
-      await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: newReaction });
+
+    async function handleReaction(type) {
+      if (!_profileIdForReactions) return;
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user?.id === _profileIdForReactions) return;
+      const key = `swaqq_react_${_profileIdForReactions}`;
+      const current = localStorage.getItem(key);
+      const likeEl = document.getElementById('likeCount');
+      const dislikeEl = document.getElementById('dislikeCount');
+      let likeDelta = 0;
+      let dislikeDelta = 0;
+      let newReaction = null;
+      if (current === type) {
+        if (type === 'like') likeDelta = -1;
+        if (type === 'dislike') dislikeDelta = -1;
+        newReaction = null;
+      } else {
+        if (current === 'like') likeDelta = -1;
+        if (current === 'dislike') dislikeDelta = -1;
+        if (type === 'like') likeDelta += 1;
+        if (type === 'dislike') dislikeDelta += 1;
+        newReaction = type;
+      }
+      if (newReaction) localStorage.setItem(key, newReaction);
+      else localStorage.removeItem(key);
+      likeEl.textContent = Math.max(0, (parseInt(likeEl.textContent) || 0) + likeDelta);
+      dislikeEl.textContent = Math.max(0, (parseInt(dislikeEl.textContent) || 0) + dislikeDelta);
+      highlightReaction(newReaction);
+      const btn = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
+      if (btn) {
+        btn.style.transform = 'scale(1.2)';
+        setTimeout(() => btn.style.transform = '', 300);
+      }
+      try {
+        if (current) await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: 'remove_' + current });
+        if (newReaction) await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: newReaction });
+      } catch(_) {
+        const { data: cur } = await sb.from('profiles')
+          .select('like_count, dislike_count')
+          .eq('id', _profileIdForReactions)
+          .single();
+        if (cur) {
+          await sb.from('profiles').update({
+            like_count: Math.max(0, (cur.like_count || 0) + likeDelta),
+            dislike_count: Math.max(0, (cur.dislike_count || 0) + dislikeDelta),
+          }).eq('id', _profileIdForReactions);
+        }
+      }
     }
-  } catch(_) {
-    const { data: cur } = await sb.from('profiles')
-      .select('like_count, dislike_count')
-      .eq('id', _profileIdForReactions)
-      .single();
-    if (cur) {
-      await sb.from('profiles').update({
-        like_count:    Math.max(0, (cur.like_count    || 0) + likeDelta),
-        dislike_count: Math.max(0, (cur.dislike_count || 0) + dislikeDelta),
-      }).eq('id', _profileIdForReactions);
+
+    let _volumeHideTimer = null;
+    let _volumeOpen = false;
+    let _isMuted = false;
+    let _lastVolume = 60;
+    function initVolumeWidget() {
+      const widget = document.getElementById('volumeWidget');
+      if (!widget) return;
+      widget.style.display = 'flex';
+      widget.addEventListener('mouseenter', () => {
+        clearTimeout(_volumeHideTimer);
+        openVolumeSlider();
+      });
+      widget.addEventListener('mouseleave', () => {
+        _volumeHideTimer = setTimeout(closeVolumeSlider, 800);
+      });
+      const slider = document.getElementById('volumeSlider');
+      slider?.addEventListener('mousedown', () => clearTimeout(_volumeHideTimer));
+      slider?.addEventListener('mouseup', () => {
+        _volumeHideTimer = setTimeout(closeVolumeSlider, 1200);
+      });
     }
-  }
-}
-    // ── INIT ─────────────────────────────────────────────────────────────────────
-    // ── VOLUME WIDGET ─────────────────────────────────────────────────────────────
-let _volumeHideTimer = null;
-let _volumeOpen      = false;
-let _isMuted         = false;
-let _lastVolume      = 60;
+    function openVolumeSlider() {
+      if (_volumeOpen) return;
+      _volumeOpen = true;
+      const wrap = document.getElementById('volumeSliderWrap');
+      if (wrap) {
+        wrap.style.width = '130px';
+        wrap.style.opacity = '1';
+      }
+    }
+    function closeVolumeSlider() {
+      _volumeOpen = false;
+      const wrap = document.getElementById('volumeSliderWrap');
+      if (wrap) {
+        wrap.style.width = '0';
+        wrap.style.opacity = '0';
+      }
+    }
+    function setVolume(val) {
+      val = parseInt(val);
+      _lastVolume = val > 0 ? val : _lastVolume;
+      _isMuted = val === 0;
+      document.getElementById('volumeVal').textContent = val + '%';
+      updateVolumeIcon(val);
+      if (ytPlayer) {
+        try {
+          if (val === 0) ytPlayer.mute();
+          else { ytPlayer.unMute(); ytPlayer.setVolume(val); }
+        } catch(_) {}
+      }
+    }
+    function toggleMuteVolume() {
+      const slider = document.getElementById('volumeSlider');
+      if (!slider) return;
+      if (_isMuted) {
+        const restore = _lastVolume > 0 ? _lastVolume : 60;
+        slider.value = restore;
+        setVolume(restore);
+      } else {
+        _lastVolume = parseInt(slider.value) || 60;
+        slider.value = 0;
+        setVolume(0);
+      }
+    }
+    function updateVolumeIcon(val) {
+      const icon = document.getElementById('volumeIcon');
+      if (!icon) return;
+      if (val === 0) {
+        icon.className = 'fas fa-volume-mute';
+        icon.style.color = 'rgba(255,255,255,0.3)';
+      } else if (val < 40) {
+        icon.className = 'fas fa-volume-down';
+        icon.style.color = 'rgba(255,255,255,0.6)';
+      } else {
+        icon.className = 'fas fa-volume-up';
+        icon.style.color = 'rgba(255,255,255,0.6)';
+      }
+    }
 
-function initVolumeWidget() {
-  const widget = document.getElementById('volumeWidget');
-  if (!widget) return;
-  widget.style.display = 'flex';
-
-  widget.addEventListener('mouseenter', () => {
-    clearTimeout(_volumeHideTimer);
-    openVolumeSlider();
-  });
-  widget.addEventListener('mouseleave', () => {
-    _volumeHideTimer = setTimeout(closeVolumeSlider, 800);
-  });
-
-  const slider = document.getElementById('volumeSlider');
-  slider.addEventListener('mousedown', () => clearTimeout(_volumeHideTimer));
-  slider.addEventListener('mouseup',   () => {
-    _volumeHideTimer = setTimeout(closeVolumeSlider, 1200);
-  });
-}
-
-function openVolumeSlider() {
-  if (_volumeOpen) return;
-  _volumeOpen = true;
-  const wrap = document.getElementById('volumeSliderWrap');
-  wrap.style.width   = '130px';
-  wrap.style.opacity = '1';
-}
-
-function closeVolumeSlider() {
-  _volumeOpen = false;
-  const wrap = document.getElementById('volumeSliderWrap');
-  wrap.style.width   = '0';
-  wrap.style.opacity = '0';
-}
-
-function setVolume(val) {
-  val = parseInt(val);
-  _lastVolume = val > 0 ? val : _lastVolume;
-  _isMuted    = val === 0;
-  document.getElementById('volumeVal').textContent = val + '%';
-  updateVolumeIcon(val);
-  if (window.ytPlayer) {
-    try {
-      if (val === 0) { ytPlayer.mute(); }
-      else { ytPlayer.unMute(); ytPlayer.setVolume(val); }
-    } catch(_) {}
-  }
-}
-
-function toggleMuteVolume() {
-  const slider = document.getElementById('volumeSlider');
-  if (_isMuted) {
-    const restore = _lastVolume > 0 ? _lastVolume : 60;
-    slider.value = restore;
-    setVolume(restore);
-  } else {
-    _lastVolume  = parseInt(slider.value) || 60;
-    slider.value = 0;
-    setVolume(0);
-  }
-}
-
-function updateVolumeIcon(val) {
-  const icon = document.getElementById('volumeIcon');
-  if (!icon) return;
-  if (val === 0) {
-    icon.className      = 'fas fa-volume-mute';
-    icon.style.color    = 'rgba(255,255,255,0.3)';
-  } else if (val < 40) {
-    icon.className      = 'fas fa-volume-down';
-    icon.style.color    = 'rgba(255,255,255,0.6)';
-  } else {
-    icon.className      = 'fas fa-volume-up';
-    icon.style.color    = 'rgba(255,255,255,0.6)';
-  }
-}
-    
     loadProfile();
   </script>
-  <!-- VOLUME WIDGET -->
-<div id="volumeWidget" style="position:fixed;bottom:22px;left:22px;z-index:103;display:none;align-items:center">
-  <div id="volumeBtn" onclick="toggleMuteVolume()" onmouseenter="openVolumeSlider()" style="width:38px;height:38px;border-radius:100px;background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0;position:relative;z-index:1">
-    <i class="fas fa-volume-up" id="volumeIcon" style="font-size:12px;color:rgba(255,255,255,0.6)"></i>
-  </div>
-  <div id="volumeSliderWrap" style="width:0;overflow:hidden;transition:width 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.25s ease;opacity:0;display:flex;align-items:center;background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-left:none;border-radius:0 100px 100px 0;height:38px;margin-left:-6px;padding-left:10px;box-sizing:border-box">
-    <input type="range" id="volumeSlider" min="0" max="100" value="60" oninput="setVolume(this.value)" style="width:80px;accent-color:#fff;cursor:pointer;background:transparent;outline:none;border:none;flex-shrink:0">
-    <span id="volumeVal" style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);margin:0 10px;min-width:28px;text-align:right">60%</span>
-  </div>
-</div>
-  <!-- QR CODE MODAL -->
-<div class="qr-modal-bg" id="qrModalBg" onclick="if(event.target===this)closeQR()">
-  <div class="qr-modal-box">
-    <div style="font-size:15px;font-weight:800;margin-bottom:4px" id="qrModalName"></div>
-    <div style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:18px" id="qrModalHandle"></div>
-    <div id="qrCodeImg" style="background:#fff;border-radius:10px;padding:12px;display:inline-block;margin-bottom:14px"></div>
-    <div style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.35);margin-bottom:16px" id="qrModalUrl"></div>
-    <div style="display:flex;gap:8px;justify-content:center">
-      <button class="nav-no" onclick="closeQR()">close</button>
-      <button class="nav-yes" onclick="downloadQR()">download →</button>
-    </div>
-  </div>
-</div>
-
-<!-- MUSIC WIDGET (profile page) -->
-<div id="profileMusicWidget" class="music-widget">
-  <div class="music-bars">
-    <div class="music-bar"></div><div class="music-bar"></div>
-    <div class="music-bar"></div><div class="music-bar"></div>
-  </div>
-  <div class="music-info">
-    <div class="music-title-text" id="profileMusicTitle"></div>
-    <div class="music-artist-text" id="profileMusicArtist"></div>
-  </div>
-</div>
 </body>
 </html>
