@@ -268,32 +268,57 @@
         if (profile[key] !== undefined && profile[key] !== null) return profile[key];
         return CS_DEF[key];
       };
-      return {
-        bg_type:            get('bg_type'),
-        bg_image_url:       get('bg_image_url'),
-        bg_opacity:         get('bg_opacity'),
-        bg_color:           get('bg_color'),
-        bg_grad1:           get('bg_grad1'),
-        bg_grad2:           get('bg_grad2'),
-        bg_grad_dir:        get('bg_grad_dir'),
-        show_video_bg:      get('show_video_bg'),
-        mute_video:         get('mute_video'),
-        audio_only_id:      blob.audio_only_id || '',
-        mute_audio:         blob.mute_audio !== undefined ? blob.mute_audio : true,
-        card_font:          get('card_font'),
-        accent_color:       get('accent_color'),
-        card_blur:          get('card_blur'),
-        card_opacity:       get('card_opacity'),
-        card_glow:          get('card_glow'),
-        card_rounded:       get('card_rounded'),
-        show_uid_scramble:  get('show_uid_scramble'),
-        youtube_video_id:   get('youtube_video_id') || profile.youtube_video_id || '',
-        custom_font_name:   blob.custom_font_name   || null,
-        custom_font_family: blob.custom_font_family || null,
-        custom_font_data:   blob.custom_font_data   || null,
-        custom_icons:       blob.custom_icons       || [],
-        show_volume_widget: blob.show_volume_widget !== undefined ? blob.show_volume_widget : true,
-      };
+    return {
+  bg_type:            get('bg_type'),
+  bg_image_url:       get('bg_image_url'),
+  bg_opacity:         get('bg_opacity'),
+  bg_color:           get('bg_color'),
+  bg_grad1:           get('bg_grad1'),
+  bg_grad2:           get('bg_grad2'),
+  bg_grad_dir:        get('bg_grad_dir'),
+  show_video_bg:      get('show_video_bg'),
+  mute_video:         get('mute_video'),
+  audio_only_id:      blob.audio_only_id || '',
+  mute_audio:         blob.mute_audio !== undefined ? blob.mute_audio : true,
+  card_font:          get('card_font'),
+  accent_color:       get('accent_color'),
+  card_blur:          get('card_blur'),
+  card_opacity:       get('card_opacity'),
+  card_glow:          get('card_glow'),
+  card_rounded:       get('card_rounded'),
+  show_uid_scramble:  get('show_uid_scramble'),
+  youtube_video_id:   get('youtube_video_id') || profile.youtube_video_id || '',
+  custom_font_name:   blob.custom_font_name   || null,
+  custom_font_family: blob.custom_font_family || null,
+  custom_font_data:   blob.custom_font_data   || null,
+  custom_icons:       blob.custom_icons       || [],
+  show_volume_widget: blob.show_volume_widget !== undefined ? blob.show_volume_widget : true,
+  // new settings
+  border_style:   get('border_style')  || 'shimmer',
+  name_style:     get('name_style')    || 'solid',
+  name_grad1:     get('name_grad1')    || '#ffffff',
+  name_grad2:     get('name_grad2')    || '#888888',
+  card_layout:    get('card_layout')   || 'default',
+  avatar_shape:   get('avatar_shape')  || 'circle',
+  avatar_border:  get('avatar_border') ?? 2,
+  avatar_glow:    get('avatar_glow')   || false,
+  avatar_spin:    get('avatar_spin')   || false,
+  card_texture:   get('card_texture')  || 'none',
+  cursor_style:   get('cursor_style')  || 'default',
+  social_style:   get('social_style')  || 'default',
+  card_width:     get('card_width')    || 420,
+  card_glass:     get('card_glass')    || false,
+  card_shadow:    get('card_shadow')   !== false,
+  particles:      get('particles')     || false,
+  page_anim:      get('page_anim')     !== false,
+  snow:           get('snow')          || false,
+  scanlines:      get('scanlines')     || false,
+  particle_color: get('particle_color') || '#ffffff',
+  bio_size:       get('bio_size')      || 13,
+  bio_color:      get('bio_color')     || '#ffffff',
+  bio_italic:     get('bio_italic')    || false,
+  typewriter:     get('typewriter')    !== false,
+};
     }
 
     function guessIcon(label) {
@@ -448,6 +473,7 @@
       const socialsEl  = document.getElementById('cardSocials');
       const rawSocials = Array.isArray(profile.socials) ? profile.socials : (() => { try { return JSON.parse(profile.socials || '[]'); } catch { return []; } })();
       rawSocials.forEach(s => {
+        // Apply social style after buttons are rendered
         if (!s.url) return;
         const safeUrl = sanitizeUrl(s.url); if (!safeUrl) return;
         const a = document.createElement('a');
@@ -469,7 +495,9 @@
         a.appendChild(labelSpan);
         socialsEl.appendChild(a);
       });
-
+if (window._pendingSocialStyle) {
+        applySocialStyle(window._pendingSocialStyle, window._pendingAccent || '#ffffff');
+      }
       if (profile.discord_id) {
         document.getElementById('discordStatus').classList.add('visible');
         fetchDiscordStatus(profile.discord_id);
@@ -489,34 +517,383 @@
     }
 
     // ── CARD STYLES ──────────────────────────────────────────────────────────────
-    function applyCardStyles(CS) {
-      const card   = document.getElementById('card');
-      const accent = CS.accent_color || '#ffffff';
-      const blur   = CS.card_blur    ?? 12;
-      const op     = CS.card_opacity ?? 85;
-      const alpha  = Math.round(op * 2.55).toString(16).padStart(2, '0');
-      card.style.background           = '#111111' + alpha;
-      card.style.backdropFilter       = `blur(${blur}px)`;
-      card.style.webkitBackdropFilter = `blur(${blur}px)`;
-      card.style.borderRadius         = (CS.card_rounded !== false) ? '20px' : '4px';
-      card.style.fontFamily           = `'${CS.card_font || 'Syne'}', sans-serif`;
-      if (CS.card_glow !== false) card.style.boxShadow = `0 0 40px ${accent}22, 0 0 80px ${accent}0a`;
-      document.getElementById('cardBio').style.fontFamily    = `'${CS.card_font || 'Syne'}', monospace`;
-      document.getElementById('cardHandle').style.fontFamily = `'${CS.card_font || 'Syne'}', monospace`;
-      const bgType = CS.bg_type || 'video';
-      if (bgType === 'image' && CS.bg_image_url) {
-        const imgBg = document.getElementById('imgBg');
-        imgBg.style.backgroundImage = `url(${CS.bg_image_url})`;
-        imgBg.style.opacity         = (CS.bg_opacity ?? 70) / 100;
-        imgBg.classList.add('visible');
-      } else if (bgType === 'color' && CS.bg_color) {
-        document.body.style.background = CS.bg_color;
-      } else if (bgType === 'gradient') {
-        document.body.style.background = `linear-gradient(${CS.bg_grad_dir || 'to bottom right'}, ${CS.bg_grad1 || '#0a0a1a'}, ${CS.bg_grad2 || '#1a0a0a'})`;
-      }
-    }
+  function applyCardStyles(CS) {
+  const card   = document.getElementById('card');
+  const accent = CS.accent_color || '#ffffff';
+  const blur   = CS.card_blur    ?? 12;
+  const op     = CS.card_opacity ?? 85;
+  const alpha  = Math.round(op * 2.55).toString(16).padStart(2, '0');
 
-    // ── SPLASH ───────────────────────────────────────────────────────────────────
+  // Base card styles
+  card.style.background           = '#111111' + alpha;
+  card.style.backdropFilter       = `blur(${blur}px)`;
+  card.style.webkitBackdropFilter = `blur(${blur}px)`;
+  card.style.borderRadius         = (CS.card_rounded !== false) ? '20px' : '4px';
+  card.style.fontFamily           = `'${CS.card_font || 'Syne'}', sans-serif`;
+  card.style.width                = (CS.card_width || 420) + 'px';
+
+  // Glow / shadow
+  const glowStr   = CS.card_glow !== false ? `0 0 40px ${accent}22, 0 0 80px ${accent}0a` : '';
+  const shadowStr = CS.card_shadow !== false ? '0 24px 60px rgba(0,0,0,0.6)' : '';
+  card.style.boxShadow = [glowStr, shadowStr].filter(Boolean).join(', ');
+
+  // Glass overlay
+  if (CS.card_glass) {
+    card.style.backgroundImage = 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)';
+  }
+
+  // Border style
+  applyBorderStyle(card, CS.border_style || 'shimmer', accent);
+
+  // Bio styles
+  const bioEl = document.getElementById('cardBio');
+  bioEl.style.fontFamily  = `'${CS.card_font || 'Syne'}', monospace`;
+  bioEl.style.fontSize    = (CS.bio_size || 13) + 'px';
+  bioEl.style.color       = CS.bio_color || 'rgba(255,255,255,0.75)';
+  bioEl.style.fontStyle   = CS.bio_italic ? 'italic' : 'normal';
+
+  document.getElementById('cardHandle').style.fontFamily = `'${CS.card_font || 'Syne'}', monospace`;
+
+  // Name style
+  applyNameStyle(CS);
+
+  // Avatar shape
+  applyAvatarShape(CS);
+
+  // Social button style
+  // (applied after socials are rendered — called from loadProfile)
+  window._pendingSocialStyle = CS.social_style || 'default';
+  window._pendingAccent      = accent;
+
+  // Cursor
+  applyCursor(CS.cursor_style || 'default', accent);
+
+  // Card layout
+  applyLayout(CS.card_layout || 'default');
+
+  // Card texture
+    
+  applyTexture(CS.card_texture || 'none');
+
+  // Scanlines
+  if (CS.scanlines) {
+    const sl = document.createElement('div');
+    sl.id = 'scanlineOverlay';
+    sl.style.cssText = 'position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px)';
+    document.body.appendChild(sl);
+  }
+
+  // Particles
+  if (CS.particles) initParticles(CS.particle_color || '#ffffff');
+
+  // Snow
+  if (CS.snow) initSnow(CS.particle_color || '#ffffff');
+
+  // Background
+  const bgType = CS.bg_type || 'video';
+  if (bgType === 'image' && CS.bg_image_url) {
+    const imgBg = document.getElementById('imgBg');
+    imgBg.style.backgroundImage = `url(${CS.bg_image_url})`;
+    imgBg.style.opacity         = (CS.bg_opacity ?? 70) / 100;
+    imgBg.classList.add('visible');
+  } else if (bgType === 'color' && CS.bg_color) {
+    document.body.style.background = CS.bg_color;
+  } else if (bgType === 'gradient') {
+    document.body.style.background = `linear-gradient(${CS.bg_grad_dir || 'to bottom right'}, ${CS.bg_grad1 || '#0a0a1a'}, ${CS.bg_grad2 || '#1a0a0a'})`;
+  }
+}
+
+function applyBorderStyle(card, style, accent) {
+  // Remove existing before pseudo — we use a wrapper div instead since ::before can't be JS controlled
+  const existing = document.getElementById('cardBorderEl');
+  if (existing) existing.remove();
+
+  if (style === 'none') {
+    card.style.border = 'none';
+    return;
+  }
+  if (style === 'solid') {
+    card.style.border = `1px solid ${accent}66`;
+    return;
+  }
+  if (style === 'dashed') {
+    card.style.border = `1px dashed ${accent}55`;
+    return;
+  }
+  if (style === 'double') {
+    card.style.border = `3px double ${accent}55`;
+    return;
+  }
+  if (style === 'glow-pulse') {
+    card.style.border = `1px solid ${accent}44`;
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+      @keyframes glowPulse {
+        0%,100% { box-shadow: 0 0 20px ${accent}33, 0 0 60px ${accent}11; }
+        50%      { box-shadow: 0 0 40px ${accent}66, 0 0 80px ${accent}33; }
+      }
+      #card { animation: glowPulse 2.5s ease-in-out infinite !important; }
+    `;
+    document.head.appendChild(styleEl);
+    return;
+  }
+  // shimmer = default (handled by existing ::before CSS)
+}
+
+function applyNameStyle(CS) {
+  const nameEl = document.getElementById('cardName');
+  if (!nameEl) return;
+  const accent = CS.accent_color || '#ffffff';
+
+  // Reset first
+  nameEl.style.cssText = '';
+  nameEl.style.fontSize      = '26px';
+  nameEl.style.fontWeight    = '800';
+  nameEl.style.letterSpacing = '-0.02em';
+
+  const style = CS.name_style || 'solid';
+
+  if (style === 'solid') {
+    nameEl.style.color = accent;
+    nameEl.style.webkitTextFillColor = accent;
+  } else if (style === 'gradient') {
+    const g1 = CS.name_grad1 || '#ffffff';
+    const g2 = CS.name_grad2 || '#888888';
+    nameEl.style.background              = `linear-gradient(90deg, ${g1}, ${g2})`;
+    nameEl.style.webkitBackgroundClip    = 'text';
+    nameEl.style.backgroundClip         = 'text';
+    nameEl.style.webkitTextFillColor     = 'transparent';
+  } else if (style === 'shimmer') {
+    nameEl.style.background              = `linear-gradient(110deg,#555,${accent},#fff,${accent},#555)`;
+    nameEl.style.backgroundSize          = '200%';
+    nameEl.style.webkitBackgroundClip    = 'text';
+    nameEl.style.backgroundClip         = 'text';
+    nameEl.style.webkitTextFillColor     = 'transparent';
+    nameEl.style.animation               = 'shimmer 2s ease infinite';
+  } else if (style === 'outline') {
+    nameEl.style.webkitTextStroke        = `1px ${accent}`;
+    nameEl.style.color                   = 'transparent';
+    nameEl.style.webkitTextFillColor     = 'transparent';
+  } else if (style === 'shadow') {
+    nameEl.style.color                   = accent;
+    nameEl.style.webkitTextFillColor     = accent;
+    nameEl.style.textShadow              = `0 0 20px ${accent}99, 0 0 40px ${accent}44`;
+  } else if (style === 'uppercase') {
+    nameEl.style.color                   = accent;
+    nameEl.style.webkitTextFillColor     = accent;
+    nameEl.style.textTransform           = 'uppercase';
+    nameEl.style.letterSpacing           = '0.15em';
+    nameEl.style.fontSize                = '20px';
+  }
+}
+
+function applyAvatarShape(CS) {
+  const av = document.getElementById('cardAvatar');
+  if (!av) return;
+  const shape  = CS.avatar_shape  || 'circle';
+  const border = CS.avatar_border ?? 2;
+  const accent = CS.accent_color  || '#ffffff';
+
+  av.style.borderWidth = border + 'px';
+  av.style.borderStyle = 'solid';
+  av.style.borderColor = `rgba(255,255,255,0.15)`;
+
+  if (CS.avatar_glow) {
+    av.style.boxShadow = `0 0 16px ${accent}66, 0 0 32px ${accent}33`;
+  }
+
+  if (CS.avatar_spin) {
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `.avatar:hover { animation: avatarSpin 0.8s linear infinite !important; } @keyframes avatarSpin { to { transform: rotate(360deg); } }`;
+    document.head.appendChild(styleEl);
+  }
+
+  // Reset clip-path and border-radius
+  av.style.clipPath    = '';
+  av.style.borderRadius = '50%';
+
+  if (shape === 'square')    { av.style.borderRadius = '8px'; }
+  if (shape === 'squircle')  { av.style.borderRadius = '30%'; }
+  if (shape === 'hexagon')   { av.style.clipPath = 'polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)'; av.style.borderRadius = '0'; }
+  if (shape === 'diamond')   { av.style.clipPath = 'polygon(50% 0%,100% 50%,50% 100%,0% 50%)'; av.style.borderRadius = '0'; }
+}
+
+function applyLayout(layout) {
+  const header = document.querySelector('.card-header');
+  const av     = document.getElementById('cardAvatar');
+  if (!header || !av) return;
+
+  if (layout === 'centered') {
+    header.style.flexDirection  = 'column';
+    header.style.textAlign      = 'center';
+    header.style.alignItems     = 'center';
+    document.querySelector('.name-row').style.justifyContent = 'center';
+  } else if (layout === 'minimal') {
+    av.style.display = 'none';
+  } else if (layout === 'banner') {
+    av.style.width        = '100%';
+    av.style.height       = '80px';
+    av.style.borderRadius = '10px';
+    header.style.flexDirection = 'column';
+  }
+  // default = no changes needed
+}
+
+function applyTexture(texture) {
+  if (texture === 'none') return;
+  const card = document.getElementById('card');
+  const textures = {
+    noise:  'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.04\'/%3E%3C/svg%3E")',
+    grid:   'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)',
+    dots:   'radial-gradient(rgba(255,255,255,0.08) 1px,transparent 1px)',
+    lines:  'repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,0.02) 4px,rgba(255,255,255,0.02) 5px)',
+    carbon: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 1px,transparent 0,transparent 50%),repeating-linear-gradient(-45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 1px,transparent 0,transparent 50%)',
+  };
+  const sizes = {
+    grid: '44px 44px', dots: '16px 16px', carbon: '4px 4px'
+  };
+  if (textures[texture]) {
+    card.style.backgroundImage = textures[texture];
+    if (sizes[texture]) card.style.backgroundSize = sizes[texture];
+  }
+}
+
+function applyCursor(style, accent) {
+  if (style === 'default') return;
+  if (style === 'none')       { document.body.style.cursor = 'none'; return; }
+  if (style === 'crosshair')  { document.body.style.cursor = 'crosshair'; return; }
+
+  if (style === 'dot') {
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `* { cursor: none !important; } body::after { content:''; position:fixed; width:8px; height:8px; background:${accent}; border-radius:50%; pointer-events:none; z-index:99999; transform:translate(-50%,-50%); transition:transform 0.1s; top:var(--my,0px); left:var(--mx,0px); }`;
+    document.head.appendChild(styleEl);
+    document.addEventListener('mousemove', e => {
+      document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+      document.documentElement.style.setProperty('--my', e.clientY + 'px');
+    });
+    return;
+  }
+
+  if (style === 'glow') {
+    const cursor = document.createElement('div');
+    cursor.style.cssText = `position:fixed;width:24px;height:24px;border-radius:50%;background:${accent}33;border:1px solid ${accent}88;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform 0.15s,width 0.2s,height 0.2s;box-shadow:0 0 12px ${accent}66`;
+    document.body.appendChild(cursor);
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+    document.body.style.cursor = 'none';
+    return;
+  }
+}
+
+function applySocialStyle(style, accent) {
+  const btns = document.querySelectorAll('.social-btn');
+  btns.forEach(btn => {
+    // Reset
+    btn.style.cssText = '';
+    btn.classList.add('social-btn');
+
+    if (style === 'icon-only') {
+      btn.querySelectorAll('span').forEach(s => s.style.display = 'none');
+      btn.style.width   = '44px';
+      btn.style.padding = '0';
+      btn.style.justifyContent = 'center';
+    } else if (style === 'filled') {
+      btn.style.background   = accent + '22';
+      btn.style.borderColor  = accent + '44';
+      btn.style.color        = accent;
+    } else if (style === 'outlined') {
+      btn.style.background   = 'transparent';
+      btn.style.borderColor  = accent + '55';
+      btn.style.color        = accent;
+    } else if (style === 'minimal') {
+      btn.style.background   = 'transparent';
+      btn.style.border       = 'none';
+      btn.style.color        = 'rgba(255,255,255,0.5)';
+      btn.style.padding      = '0 8px';
+      btn.style.textDecoration = 'underline';
+      btn.style.textUnderlineOffset = '3px';
+    } else if (style === 'rounded') {
+      btn.style.borderRadius = '100px';
+      btn.style.width        = '44px';
+      btn.style.padding      = '0';
+      btn.style.justifyContent = 'center';
+      btn.querySelectorAll('span').forEach(s => s.style.display = 'none');
+    }
+  });
+}
+
+function initParticles(color) {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+  const particles = Array.from({ length: 60 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 0.5,
+    dx: (Math.random() - 0.5) * 0.4,
+    dy: (Math.random() - 0.5) * 0.4,
+    o: Math.random() * 0.4 + 0.1,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = color + Math.floor(p.o * 255).toString(16).padStart(2,'0');
+      ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function initSnow(color) {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+  const flakes = Array.from({ length: 80 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 3 + 1,
+    speed: Math.random() * 1 + 0.3,
+    drift: (Math.random() - 0.5) * 0.5,
+    o: Math.random() * 0.5 + 0.2,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    flakes.forEach(f => {
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+      ctx.fillStyle = color + Math.floor(f.o * 255).toString(16).padStart(2,'0');
+      ctx.fill();
+      f.y += f.speed;
+      f.x += f.drift;
+      if (f.y > canvas.height) { f.y = -f.r; f.x = Math.random() * canvas.width; }
+      if (f.x > canvas.width)  f.x = 0;
+      if (f.x < 0)             f.x = canvas.width;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+// ── SPLASH ───────────────────────────────────────────────────────────────────
     function renderSplash(profile, CS) {
       const splashEl = document.getElementById('splash');
       splashEl.classList.add('active');
@@ -534,47 +911,49 @@
 
     // ── REVEAL ───────────────────────────────────────────────────────────────────
     function revealProfile(profile, CS) {
-  document.getElementById('loading').classList.add('out');
-  setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
-  document.getElementById('profilePage').classList.add('visible');
-  document.getElementById('card').classList.add('loaded');
+      document.getElementById('loading').classList.add('out');
+      setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
+      document.getElementById('profilePage').classList.add('visible');
+      document.getElementById('card').classList.add('loaded');
 
-  // Only show views if volume widget is hidden (they share bottom-left)
-  const showVolume = CS.show_volume_widget !== false;
-  if (profile.show_views !== false && !showVolume) {
-    document.getElementById('views').classList.add('visible');
-  } else if (profile.show_views !== false && showVolume) {
-    // Move views up so they don't overlap the volume widget
-    const viewsEl = document.getElementById('views');
-    viewsEl.style.bottom = '72px';
-    viewsEl.classList.add('visible');
-  }
+      const showVolume = CS.show_volume_widget !== false;
+      if (profile.show_views !== false && !showVolume) {
+        document.getElementById('views').classList.add('visible');
+      } else if (profile.show_views !== false && showVolume) {
+        const viewsEl = document.getElementById('views');
+        viewsEl.style.bottom = '72px';
+        viewsEl.classList.add('visible');
+      }
 
-  window._showTopBarBriefly && window._showTopBarBriefly();
+      window._showTopBarBriefly && window._showTopBarBriefly();
 
-  const videoId = CS.youtube_video_id || profile.youtube_video_id || '';
-  const audioId = CS.audio_only_id || '';
-  if (CS.bg_type === 'audio' && audioId) {
-    createYouTubeBackground(audioId, CS.mute_audio !== false, true);
-  } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
-    createYouTubeBackground(videoId, CS.mute_video !== false, false);
-  }
+      const videoId = CS.youtube_video_id || profile.youtube_video_id || '';
+      const audioId = CS.audio_only_id || '';
+      if (CS.bg_type === 'audio' && audioId) {
+        createYouTubeBackground(audioId, CS.mute_audio !== false, true);
+      } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
+        createYouTubeBackground(videoId, CS.mute_video !== false, false);
+      }
 
-  // Init volume widget only if there's audio/video
-  const hasAudio = (CS.bg_type === 'video' && videoId) || (CS.bg_type === 'audio' && audioId);
-  if (showVolume && hasAudio) {
-    initVolumeWidget();
-  }
+      const hasAudio = (CS.bg_type === 'video' && videoId) || (CS.bg_type === 'audio' && audioId);
+      if (showVolume && hasAudio) initVolumeWidget();
 
-  typeBio(profile.bio || '');
-  _profileIdForReactions = profile.id;
-  initReactions(profile.id);
-  if (profile.show_tilt !== false) initTilt();
-  initNavLinks();
-  updateClock();
-  setInterval(updateClock, 1000);
-}
+      if (CS.typewriter !== false) {
+        typeBio(profile.bio || '');
+      } else {
+        const bioEl = document.getElementById('cardBio');
+        bioEl.innerHTML = sanitizeHtml(profile.bio || '');
+      }
 
+      _profileIdForReactions = profile.id;
+      initReactions(profile.id);
+      if (profile.show_tilt !== false) initTilt();
+      initNavLinks();
+      updateClock();
+      setInterval(updateClock, 1000);
+    }
+
+ 
     // ── CLOCK ────────────────────────────────────────────────────────────────────
     function updateClock() {
       const now = new Date();
