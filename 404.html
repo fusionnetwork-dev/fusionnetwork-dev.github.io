@@ -69,7 +69,7 @@
     /* ── Page & Card ── */
     .page { display:none; position:relative; z-index:2; min-height:100vh; align-items:center; justify-content:center; padding:80px 20px 60px; }
     .page.visible { display:flex; }
-    .card-wrap { perspective:1200px; }
+.card-wrap { perspective:1200px; transform-style:preserve-3d; }
     .card { width:420px; max-width:calc(100vw - 40px); background:var(--card); backdrop-filter:blur(12px); border-radius:20px; padding:28px 28px 54px; position:relative; opacity:0; transition:transform 0.1s ease-out; }
     .card.loaded { animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
     @keyframes fadeUp{from{opacity:0}to{opacity:1}}
@@ -85,12 +85,12 @@
     .user-info { flex:1; min-width:0; }
     .uid-row { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.2em; color:rgba(255,255,255,0.22); margin-bottom:4px; text-transform:uppercase; }
     .uid-val { display:inline-block; background:linear-gradient(90deg,#444,#aaa,#fff,#aaa,#444); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 2s linear infinite; }
-    .name-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.name-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; overflow:visible; }
     .username { font-size:26px; font-weight:800; letter-spacing:-0.02em; }
 
     /* ── Badges ── */
-    .badges { display:none; align-items:center; gap:2px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:100px; padding:3px 8px; }
-    .badge { position:relative; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; cursor:default; }
+    .badges { display:none; align-items:center; gap:2px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:100px; padding:3px 8px; flex-shrink:0; overflow:visible; }
+   .badge { position:relative; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; cursor:default; overflow:visible; }
     .badge i { font-size:10px; background:linear-gradient(110deg,#666,#ccc,#fff,#ccc,#666); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
     .badge img { width:14px; height:14px; object-fit:contain; border-radius:2px; filter:brightness(0.7); }
     .badge:hover img { filter:brightness(1); }
@@ -617,47 +617,50 @@
     }
 
     /* ── Card Flip ── */
-    function initCardFlip(profile, CS) {
-      if (!CS.card_flip) return;
-      const inner = document.getElementById('cardFlipInner');
-      const back  = document.getElementById('cardBack');
-      const hint  = document.getElementById('flipTapHint');
-      const card  = document.getElementById('card');
+  function initCardFlip(profile, CS) {
+  if (!CS.card_flip) return;
+  const inner = document.getElementById('cardFlipInner');
+  const back  = document.getElementById('cardBack');
+  const hint  = document.getElementById('flipTapHint');
+  const card  = document.getElementById('card');
 
-      if (back) {
-        back.style.display = 'flex';
-        // Match front card appearance on back
-        if (card) {
-          back.style.background      = card.style.background;
-          back.style.backdropFilter  = card.style.backdropFilter;
-          back.style.borderRadius    = card.style.borderRadius;
-          back.style.border          = card.style.border;
-        }
-        // Ensure flip-inner has height so back is positioned correctly
-        inner.style.minHeight = card ? card.offsetHeight + 'px' : '400px';
-      }
-      if (hint) hint.style.display = 'block';
+  if (!inner || !card) return;
 
-      const joined = new Date(profile.created_at);
-      document.getElementById('backJoinDate').textContent =
-        joined.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
-      const uidEl = document.getElementById('uidVal');
-      const backUid = document.getElementById('backUid');
-      if (backUid) backUid.textContent = uidEl?.textContent || '?';
-      const customText = document.getElementById('backCustomText');
-      if (customText && profile.card_back_text) customText.textContent = profile.card_back_text;
+  // Show back and match front styles
+  if (back) {
+    back.style.display      = 'flex';
+    back.style.background   = card.style.background || 'rgba(10,10,10,0.85)';
+    back.style.backdropFilter = card.style.backdropFilter || 'blur(12px)';
+    back.style.borderRadius = card.style.borderRadius || '20px';
+  }
 
-      card?.addEventListener('click', e => {
-        if (e.target.closest('button, a, input')) return;
-        inner.classList.toggle('flipped');
-        // Sync height after flip
-        if (inner.classList.contains('flipped') && back) {
-          inner.style.minHeight = back.scrollHeight + 'px';
-        } else if (card) {
-          inner.style.minHeight = card.offsetHeight + 'px';
-        }
-      });
-    }
+  // Sync height so absolute-positioned back fills correctly
+  function syncHeight() {
+    const h = card.offsetHeight;
+    if (h > 0) inner.style.height = h + 'px';
+  }
+  syncHeight();
+  // Re-sync after fonts/images load
+  setTimeout(syncHeight, 300);
+  window.addEventListener('resize', syncHeight);
+
+  if (hint) hint.style.display = 'block';
+
+  const joined = new Date(profile.created_at);
+  const joinEl = document.getElementById('backJoinDate');
+  if (joinEl) joinEl.textContent = joined.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+  const uidEl  = document.getElementById('uidVal');
+  const backUid = document.getElementById('backUid');
+  if (backUid) backUid.textContent = uidEl?.textContent || '?';
+  const customText = document.getElementById('backCustomText');
+  if (customText && profile.card_back_text) customText.textContent = profile.card_back_text;
+
+  // Flip on front card click only (not back, not buttons/links)
+  card.addEventListener('click', e => {
+    if (e.target.closest('button, a, input, .badge')) return;
+    inner.classList.add('flipped');
+  });
+}
 
     /* ── Music Widget ── */
     function initMusicWidget(profile) {
@@ -1293,33 +1296,36 @@
     }
 
     /* ── 3D Tilt ── */
-    function initTilt() {
-      const card = document.getElementById('card');
-      if (!card) return;
-      let tx = 0, ty = 0, cx = 0, cy = 0, hovering = false;
-      card.addEventListener('mouseenter', () => hovering = true);
-      card.addEventListener('mouseleave', () => { hovering = false; tx = ty = 0; });
-      card.addEventListener('mousemove', e => {
-        if (!hovering) return;
-        const r = card.getBoundingClientRect();
-        tx = (e.clientX - r.left - r.width / 2) / 12;
-        ty = (e.clientY - r.top  - r.height / 2) / 12;
-      });
-      (function anim() {
-        cx += (tx - cx) * 0.18;
-        cy += (ty - cy) * 0.18;
-        card.style.transform = `perspective(1200px) rotateY(${cx}deg) rotateX(${-cy}deg)`;
-        requestAnimationFrame(anim);
-      })();
-      document.getElementById('cardAvatar')?.addEventListener('click', () => {
-        const av = document.getElementById('cardAvatar');
-        if (!av) return;
-        av.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-        av.style.transform  = 'scale(1.15) rotate(360deg)';
-        setTimeout(() => { av.style.transform = ''; }, 620);
-      });
-    }
+   function initTilt() {
+  const cardWrap = document.querySelector('.card-wrap');
+  const card = document.getElementById('card');
+  if (!cardWrap || !card) return;
+  let tx = 0, ty = 0, cx = 0, cy = 0, hovering = false;
 
+  card.addEventListener('mouseenter', () => hovering = true);
+  card.addEventListener('mouseleave', () => { hovering = false; tx = ty = 0; });
+  card.addEventListener('mousemove', e => {
+    if (!hovering) return;
+    const r = card.getBoundingClientRect();
+    tx = (e.clientX - r.left - r.width / 2) / 12;
+    ty = (e.clientY - r.top  - r.height / 2) / 12;
+  });
+  (function anim() {
+    cx += (tx - cx) * 0.18;
+    cy += (ty - cy) * 0.18;
+    // Apply tilt to cardWrap, NOT #card — so flip transform on card-flip-inner is unaffected
+    cardWrap.style.transform = `perspective(1200px) rotateY(${cx}deg) rotateX(${-cy}deg)`;
+    requestAnimationFrame(anim);
+  })();
+
+  document.getElementById('cardAvatar')?.addEventListener('click', () => {
+    const av = document.getElementById('cardAvatar');
+    if (!av) return;
+    av.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+    av.style.transform  = 'scale(1.15) rotate(360deg)';
+    setTimeout(() => { av.style.transform = ''; }, 620);
+  });
+}
     /* ── Nav Link Interceptor ── */
     function initNavLinks() {
       const overlay = document.getElementById('navOverlay');
