@@ -752,7 +752,9 @@ setTimeout(() => openModal('login'), 3000);
     }
   }
 
-  // ── LOG IN ──
+// ── LOG IN ──
+let _mfaFactorId2fa = null;
+
 async function logIn() {
   const emailOrHandle = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
@@ -788,8 +790,60 @@ async function logIn() {
       ? 'invalid email/username or password.'
       : error.message, 'error');
   }
+
+  // Check if account has 2FA enrolled
+  const { data: factorsData } = await sb.auth.mfa.listFactors();
+  const totp = factorsData?.totp?.find(f => f.status === 'verified');
+
+  if (totp) {
+    // Need to step up to AAL2
+    const { data: aalData } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aalData?.nextLevel === 'aal2' && aalData?.currentLevel !== 'aal2') {
+      setLoading('loginBtn', false);
+      _mfaFactorId2fa = totp.id;
+      // Close login modal, open 2FA modal
+      document.getElementById('loginModal').classList.remove('active');
+      document.getElementById('mfaCodeInput').value = '';
+      document.getElementById('mfaModal').classList.add('active');
+      setTimeout(() => document.getElementById('mfaCodeInput').focus(), 100);
+      return;
+    }
+  }
+
   showAlert('loginAlert', '✓ logged in! redirecting...', 'success');
   setTimeout(() => window.location.href = '/dashboard', 900);
+}
+
+async function verify2FA() {
+  const code = document.getElementById('mfaCodeInput').value.trim();
+  if (code.length !== 6) return showAlert('mfaAlert', 'enter the full 6-digit code.', 'error');
+  if (!_mfaFactorId2fa) return showAlert('mfaAlert', 'session error — please log in again.', 'error');
+
+  const mfaBtn = document.getElementById('mfaBtn');
+  mfaBtn.disabled = true;
+  mfaBtn.innerHTML = '<span class="spinner"></span>';
+
+  const { data: ch, error: chErr } = await sb.auth.mfa.challenge({ factorId: _mfaFactorId2fa });
+  if (chErr) {
+    mfaBtn.disabled = false; mfaBtn.textContent = 'verify →';
+    return showAlert('mfaAlert', chErr.message, 'error');
+  }
+
+  const { error } = await sb.auth.mfa.verify({
+    factorId:    _mfaFactorId2fa,
+    challengeId: ch.id,
+    code,
+  });
+
+  if (error) {
+    mfaBtn.disabled = false; mfaBtn.textContent = 'verify →';
+    document.getElementById('mfaCodeInput').value = '';
+    document.getElementById('mfaCodeInput').focus();
+    return showAlert('mfaAlert', 'invalid code — try again.', 'error');
+  }
+
+  showAlert('mfaAlert', '✓ verified! redirecting...', 'success');
+  setTimeout(() => window.location.href = '/dashboard', 800);
 }
   // ── LOG OUT ──
   async function logout() { await sb.auth.signOut(); window.location.reload(); }
@@ -809,5 +863,26 @@ if (new URLSearchParams(window.location.search).get('banned') === '1') {
   }, 500);
 }
 </script>
+
+<!-- 2FA MODAL -->
+<div class="modal-overlay" id="mfaModal">
+  <div class="modal">
+    <div class="modal-title">two-factor auth</div>
+    <div class="modal-sub">enter the 6-digit code from your authenticator app.</div>
+    <div class="alert" id="mfaAlert"></div>
+    <div class="modal-field">
+      <label class="modal-label">verification code</label>
+      <input class="modal-input" type="text" id="mfaCodeInput"
+        placeholder="000000" maxlength="6"
+        style="letter-spacing:0.25em;font-size:22px;text-align:center"
+        oninput="this.value=this.value.replace(/\D/g,'')"
+        onkeydown="if(event.key==='Enter')verify2FA()">
+    </div>
+    <div class="modal-row">
+      <button class="modal-submit" id="mfaBtn" onclick="verify2FA()">verify →</button>
+      <button class="modal-cancel" onclick="closeModals()">cancel</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
