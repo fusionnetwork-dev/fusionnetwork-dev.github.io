@@ -69,7 +69,10 @@
     /* ── Page & Card ── */
     .page { display:none; position:relative; z-index:2; min-height:100vh; align-items:center; justify-content:center; padding:80px 20px 60px; }
     .page.visible { display:flex; }
-.card-wrap { perspective:1200px; transform-style:preserve-3d; }
+.card-wrap {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
     .card { width:420px; max-width:calc(100vw - 40px); background:var(--card); backdrop-filter:blur(12px); border-radius:20px; padding:28px 28px 54px; position:relative; opacity:0; transition:transform 0.1s ease-out; }
     .card.loaded { animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
     @keyframes fadeUp{from{opacity:0}to{opacity:1}}
@@ -82,19 +85,65 @@
     .avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; display:block; }
     .avatar:hover { transform:scale(1.1) rotate(6deg)!important; }
     @keyframes yinYang{0%,100%{box-shadow:-4px -4px 14px rgba(255,255,255,0.5),4px 4px 14px rgba(0,0,0,0.9)}50%{box-shadow:4px 4px 14px rgba(255,255,255,0.5),-4px -4px 14px rgba(0,0,0,0.9)}}
-    .user-info { flex:1; min-width:0; }
+    .user-info {
+  flex: 1;
+  min-width: 0;
+  overflow: visible;
+}
     .uid-row { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.2em; color:rgba(255,255,255,0.22); margin-bottom:4px; text-transform:uppercase; }
     .uid-val { display:inline-block; background:linear-gradient(90deg,#444,#aaa,#fff,#aaa,#444); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 2s linear infinite; }
-.name-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; overflow:visible; }
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  overflow: visible;
+}
     .username { font-size:26px; font-weight:800; letter-spacing:-0.02em; }
 
     /* ── Badges ── */
-    .badges { display:none; align-items:center; gap:2px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:100px; padding:3px 8px; flex-shrink:0; overflow:visible; }
-   .badge { position:relative; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; cursor:default; overflow:visible; }
+   .badges {
+  display: none;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 100px;
+  padding: 3px 8px;
+  flex-shrink: 0;
+  overflow: visible;
+}
+  .badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  cursor: default;
+  overflow: visible;
+}
     .badge i { font-size:10px; background:linear-gradient(110deg,#666,#ccc,#fff,#ccc,#666); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
     .badge img { width:14px; height:14px; object-fit:contain; border-radius:2px; filter:brightness(0.7); }
     .badge:hover img { filter:brightness(1); }
-    .badge-tip { position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%) translateY(6px); background:rgba(8,8,8,0.92); backdrop-filter:blur(8px); border:1px solid var(--border2); border-radius:7px; padding:3px 8px; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity 0.15s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1); z-index:10; color:rgba(255,255,255,0.7); }
+  .badge-tip {
+  position: fixed;  /* fixed instead of absolute — escapes all overflow:hidden ancestors */
+  background: rgba(8,8,8,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 7px;
+  padding: 3px 8px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 9999;
+  color: rgba(255,255,255,0.7);
+}
     .badge:hover .badge-tip { opacity:1; transform:translateX(-50%) translateY(0); }
 
     /* ── Handle & Status ── */
@@ -142,38 +191,37 @@
 
     /* ── Card Flip ── */
 .card-flip-inner {
-  position:relative;
-  transform-style:preserve-3d;
-  transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);
-  display:block;
-  width:100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  width: 100%;
 }
-    .card-flip-inner.flipped { transform:rotateY(180deg); }
-    .card-front {
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-  position:relative;
-  display:block;
+ .card-flip-inner.flipped {
+  transform: rotateY(180deg);
+}
+   .card-front {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
     .card-back {
-  position:absolute;
-  inset:0;
-  transform:rotateY(180deg);
-  border-radius:inherit;
-  padding:28px;
-  display:none;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  gap:14px;
-  text-align:center;
-  background:rgba(10,10,10,0.92);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-  box-sizing:border-box;
-  overflow:hidden;
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 20px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  background: rgba(12,12,12,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-sizing: border-box;
+  overflow: hidden;
 }
     .flip-tap-hint { position:absolute; bottom:10px; right:14px; font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.18); letter-spacing:0.1em; pointer-events:none; }
 
@@ -299,7 +347,7 @@
           <span class="flip-tap-hint" id="flipTapHint" style="display:none">tap to flip ↺</span>
         </div>
 
-        <div class="card card-back" id="cardBack" style="display:none">
+    <div class="card card-back" id="cardBack">
           <div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:4px">joined</div>
           <div style="font-size:22px;font-weight:800" id="backJoinDate">—</div>
           <div style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35)">uid <span id="backUid"></span></div>
@@ -1335,10 +1383,11 @@
     }
 
     /* ── 3D Tilt ── */
-   function initTilt() {
-  const cardWrap = document.querySelector('.card-wrap');
+function initTilt() {
+  const wrap = document.querySelector('.card-wrap');
   const card = document.getElementById('card');
-  if (!cardWrap || !card) return;
+  if (!wrap || !card) return;
+
   let tx = 0, ty = 0, cx = 0, cy = 0, hovering = false;
 
   card.addEventListener('mouseenter', () => hovering = true);
@@ -1346,14 +1395,15 @@
   card.addEventListener('mousemove', e => {
     if (!hovering) return;
     const r = card.getBoundingClientRect();
-    tx = (e.clientX - r.left - r.width / 2) / 12;
-    ty = (e.clientY - r.top  - r.height / 2) / 12;
+    tx = (e.clientX - r.left  - r.width  / 2) / 12;
+    ty = (e.clientY - r.top   - r.height / 2) / 12;
   });
+
   (function anim() {
     cx += (tx - cx) * 0.18;
     cy += (ty - cy) * 0.18;
-    // Apply tilt to cardWrap, NOT #card — so flip transform on card-flip-inner is unaffected
-    cardWrap.style.transform = `perspective(1200px) rotateY(${cx}deg) rotateX(${-cy}deg)`;
+    // Tilt goes on wrap — flip transform stays isolated on card-flip-inner
+    wrap.style.transform = `perspective(1200px) rotateY(${cx}deg) rotateX(${-cy}deg)`;
     requestAnimationFrame(anim);
   })();
 
