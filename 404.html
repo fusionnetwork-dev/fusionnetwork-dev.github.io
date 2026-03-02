@@ -144,7 +144,9 @@
   z-index: 9999;
   color: rgba(255,255,255,0.7);
 }
-    .badge:hover .badge-tip { opacity:1; transform:translateX(-50%) translateY(0); }
+.badge:hover .badge-tip {
+  opacity: 1;
+}
 
     /* ── Handle & Status ── */
     .handle { font-family:'Geist Mono',monospace; font-size:12px; color:var(--sub); margin-top:2px; }
@@ -1638,7 +1640,17 @@ function initTilt() {
       else if (val < 40)  { icon.className = 'fas fa-volume-down'; icon.style.color = 'rgba(255,255,255,0.6)'; }
       else                { icon.className = 'fas fa-volume-up';   icon.style.color = 'rgba(255,255,255,0.6)'; }
     }
-
+// Position fixed badge tooltips via JS so they appear above the badge
+document.addEventListener('mouseover', e => {
+  const badge = e.target.closest('.badge');
+  if (!badge) return;
+  const tip = badge.querySelector('.badge-tip');
+  if (!tip) return;
+  const r = badge.getBoundingClientRect();
+  tip.style.left = (r.left + r.width / 2) + 'px';
+  tip.style.top  = (r.top - 8) + 'px';
+  tip.style.transform = 'translateX(-50%) translateY(-100%)';
+});
     /* ── Boot ── */
     loadProfile();
   </script>
