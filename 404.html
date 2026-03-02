@@ -1096,67 +1096,120 @@ function initSnow(color) {
     let _profileIdForReactions = null;
 
     // FIX 3 — initReactions: handles missing like_count/dislike_count columns gracefully
-    async function initReactions(profileId) {
-      try {
-        const { data, error } = await sb.from('profiles')
-          .select('like_count, dislike_count')
-          .eq('id', profileId)
-          .single();
+   async function initReactions(profileId) {
+  try {
+    const { data, error } = await sb.from('profiles')
+      .select('like_count, dislike_count')
+      .eq('id', profileId)
+      .single();
 
-        if (error) {
-          // Columns don't exist yet — hide buttons rather than breaking
-          console.warn('[swaqq] reactions unavailable:', error.message);
-          document.getElementById('likeBtn').style.display    = 'none';
-          document.getElementById('dislikeBtn').style.display = 'none';
-          return;
-        }
-
-        document.getElementById('likeCount').textContent    = data?.like_count    || 0;
-        document.getElementById('dislikeCount').textContent = data?.dislike_count || 0;
-
-        // Restore prior reaction highlight from localStorage
-        const reacted = localStorage.getItem(`swaqq_react_${profileId}`);
-        if (reacted === 'like') {
-          document.getElementById('likeBtn').style.color       = '#43b581';
-          document.getElementById('likeBtn').style.borderColor = 'rgba(67,181,129,0.3)';
-        } else if (reacted === 'dislike') {
-          document.getElementById('dislikeBtn').style.color       = '#f04747';
-          document.getElementById('dislikeBtn').style.borderColor = 'rgba(240,71,71,0.3)';
-        }
-      } catch(e) {
-        console.warn('[swaqq] initReactions error:', e);
-      }
+    if (error) {
+      console.warn('[swaqq] reactions unavailable:', error.message);
+      document.getElementById('likeBtn').style.display    = 'none';
+      document.getElementById('dislikeBtn').style.display = 'none';
+      return;
     }
+
+    document.getElementById('likeCount').textContent    = data?.like_count    || 0;
+    document.getElementById('dislikeCount').textContent = data?.dislike_count || 0;
+
+    // Restore prior reaction highlight
+    const reacted = localStorage.getItem(`swaqq_react_${profileId}`);
+    highlightReaction(reacted);
+  } catch(e) {
+    console.warn('[swaqq] initReactions error:', e);
+  }
+}
+
+    function highlightReaction(type) {
+  const likeBtn    = document.getElementById('likeBtn');
+  const dislikeBtn = document.getElementById('dislikeBtn');
+
+  // Reset both first
+  likeBtn.style.color       = 'rgba(255,255,255,0.35)';
+  likeBtn.style.borderColor = 'transparent';
+  dislikeBtn.style.color       = 'rgba(255,255,255,0.35)';
+  dislikeBtn.style.borderColor = 'transparent';
+
+  if (type === 'like') {
+    likeBtn.style.color       = '#43b581';
+    likeBtn.style.borderColor = 'rgba(67,181,129,0.3)';
+  } else if (type === 'dislike') {
+    dislikeBtn.style.color       = '#f04747';
+    dislikeBtn.style.borderColor = 'rgba(240,71,71,0.3)';
+  }
+}
 
     async function handleReaction(type) {
-      if (!_profileIdForReactions) return;
-      // No reacting to your own profile
-      const { data: { session } } = await sb.auth.getSession();
-      if (session?.user?.id === _profileIdForReactions) return;
-      // One reaction per visitor
-      const key = `swaqq_react_${_profileIdForReactions}`;
-      if (localStorage.getItem(key)) return;
-      localStorage.setItem(key, type);
+  if (!_profileIdForReactions) return;
 
-      // Try RPC first, fall back to direct update
-      const { error } = await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: type });
-      if (error) {
-        const col      = type === 'like' ? 'like_count' : 'dislike_count';
-        const countEl  = document.getElementById(type === 'like' ? 'likeCount' : 'dislikeCount');
-        const newCount = (parseInt(countEl.textContent) || 0) + 1;
-        await sb.from('profiles').update({ [col]: newCount }).eq('id', _profileIdForReactions);
-      }
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user?.id === _profileIdForReactions) return;
 
-      // Update UI immediately
-      const btn     = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
-      const countEl = document.getElementById(type === 'like' ? 'likeCount' : 'dislikeCount');
-      countEl.textContent   = (parseInt(countEl.textContent) || 0) + 1;
-      btn.style.color       = type === 'like' ? '#43b581' : '#f04747';
-      btn.style.borderColor = type === 'like' ? 'rgba(67,181,129,0.3)' : 'rgba(240,71,71,0.3)';
-      btn.style.transform   = 'scale(1.2)';
-      setTimeout(() => btn.style.transform = '', 300);
+  const key     = `swaqq_react_${_profileIdForReactions}`;
+  const current = localStorage.getItem(key); // 'like', 'dislike', or null
+
+  const likeEl    = document.getElementById('likeCount');
+  const dislikeEl = document.getElementById('dislikeCount');
+
+  let likeDelta    = 0;
+  let dislikeDelta = 0;
+  let newReaction  = null;
+
+  if (current === type) {
+    // Same button clicked — undo the reaction
+    if (type === 'like')    likeДelta    = -1;
+    if (type === 'dislike') dislikeDelta = -1;
+    newReaction = null;
+  } else {
+    // Different or no reaction — switch/set
+    if (current === 'like')    likeДelta    = -1; // remove old like
+    if (current === 'dislike') dislikeDelta = -1; // remove old dislike
+    if (type === 'like')    likeДelta    += 1;
+    if (type === 'dislike') dislikeDelta += 1;
+    newReaction = type;
+  }
+
+  // Update localStorage
+  if (newReaction) {
+    localStorage.setItem(key, newReaction);
+  } else {
+    localStorage.removeItem(key);
+  }
+
+  // Update display immediately
+  likeEl.textContent    = Math.max(0, (parseInt(likeEl.textContent)    || 0) + likeДelta);
+  dislikeEl.textContent = Math.max(0, (parseInt(dislikeEl.textContent) || 0) + dislikeDelta);
+  highlightReaction(newReaction);
+
+  // Animate the clicked button
+  const btn = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
+  btn.style.transform = 'scale(1.2)';
+  setTimeout(() => btn.style.transform = '', 300);
+
+  // Persist to DB
+  try {
+    if (current) {
+      // Remove old reaction first
+      await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: 'remove_' + current });
     }
-
+    if (newReaction) {
+      await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: newReaction });
+    }
+  } catch(_) {
+    // Fallback: direct update
+    const { data: cur } = await sb.from('profiles')
+      .select('like_count, dislike_count')
+      .eq('id', _profileIdForReactions)
+      .single();
+    if (cur) {
+      await sb.from('profiles').update({
+        like_count:    Math.max(0, (cur.like_count    || 0) + likeДelta),
+        dislike_count: Math.max(0, (cur.dislike_count || 0) + dislikeDelta),
+      }).eq('id', _profileIdForReactions);
+    }
+  }
+}
     // ── INIT ─────────────────────────────────────────────────────────────────────
     // ── VOLUME WIDGET ─────────────────────────────────────────────────────────────
 let _volumeHideTimer = null;
