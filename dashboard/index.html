@@ -2251,6 +2251,9 @@ function renderAdminTable(users) {
             ? `<button class="btn-sm btn-sm-ghost" onclick="unbanUser('${u.id}','${u.handle}')"><i class="fas fa-user-check"></i> unban</button>`
             : `<button class="btn-sm btn-sm-danger" onclick="banUser('${u.id}','${u.handle}')"><i class="fas fa-ban"></i> ban</button>`
           }
+          const banRecord = u.is_banned
+  ? `<button class="btn-sm btn-sm-ghost" title="view ban record" onclick="viewBanRecord('${u.id}')"><i class="fas fa-info-circle"></i></button>`
+  : '';
           <a class="btn-sm btn-sm-ghost" href="/@${u.handle}" target="_blank"><i class="fas fa-eye"></i></a>
         </div>
       </td>
@@ -2258,6 +2261,18 @@ function renderAdminTable(users) {
   }).join('');
 }
 
+  async function viewBanRecord(uid) {
+  const { data } = await sb.from('bans').select('*').eq('profile_id', uid).maybeSingle();
+  if (!data) { alert('no ban record found in bans table.'); return; }
+  alert(
+    `ban record for profile ${uid}\n\n` +
+    `reason: ${data.reason || '—'}\n` +
+    `fingerprint: ${data.fingerprint || 'not yet captured'}\n` +
+    `ip hint: ${data.ip_hint || 'not yet captured'}\n` +
+    `banned at: ${new Date(data.banned_at).toLocaleString()}`
+  );
+}
+  
 function populateNoteUserSelect(users) {
   const sel = document.getElementById('noteUserSelect');
   if (!sel) return;
@@ -2363,26 +2378,52 @@ async function saveRoleGrant() {
 async function banUser(uid, handle) {
   const reason = prompt(`ban reason for @${handle} (shown in records):`);
   if (reason === null) return; // cancelled
+
+  // 1. Mark profile as banned
   const { error } = await sb.from('profiles')
-    .update({ is_banned: true, ban_reason: reason || 'no reason given', updated_at: new Date().toISOString() })
+    .update({
+      is_banned: true,
+      ban_reason: reason || 'no reason given',
+      updated_at: new Date().toISOString()
+    })
     .eq('id', uid);
+
   if (error) { alert('failed: ' + error.message); return; }
-  Object.assign(allUsers.find(u => u.id === uid), { is_banned: true, ban_reason: reason });
+
+  // 2. Insert into bans table to block fingerprint/IP on future visits
+  await sb.from('bans').upsert(
+    {
+      profile_id: uid,
+      reason: reason || 'no reason given',
+    },
+    { onConflict: 'profile_id', ignoreDuplicates: false }
+  );
+
+  // Update local cache + re-render
+  Object.assign(allUsers.find(u => u.id === uid), {
+    is_banned: true,
+    ban_reason: reason
+  });
   filterUsers();
   renderAdminStats(allUsers);
 }
 
 async function unbanUser(uid, handle) {
-  if (!confirm(`unban @${handle}?`)) return;
+  if (!confirm(`unban @${handle}? this will also remove their IP/fingerprint block.`)) return;
+
   const { error } = await sb.from('profiles')
     .update({ is_banned: false, ban_reason: null, updated_at: new Date().toISOString() })
     .eq('id', uid);
+
   if (error) { alert('failed: ' + error.message); return; }
+
+  // Remove from bans table so they can access the site again
+  await sb.from('bans').delete().eq('profile_id', uid);
+
   Object.assign(allUsers.find(u => u.id === uid), { is_banned: false, ban_reason: null });
   filterUsers();
   renderAdminStats(allUsers);
 }
-
   // ─── BADGE MODAL ─────────────────────────────────────────────────────────────
   let _modalUid = null;
   let _modalRoles = {};
