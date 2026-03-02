@@ -1767,28 +1767,62 @@ const BADGE_DEFS = [
     // Parse custom_settings blob, then layer in flat columns as fallback
     // so even if custom_settings is empty, the saved flat columns apply
     const csBlob = pj(data.custom_settings, {});
-    CS = {
-      bg_type:           csBlob.bg_type           ?? data.bg_type          ?? 'video',
-      bg_image_url:      csBlob.bg_image_url       ?? data.bg_image_url     ?? '',
-      bg_opacity:        csBlob.bg_opacity          ?? data.bg_opacity       ?? 70,
-      bg_color:          csBlob.bg_color            ?? data.bg_color         ?? '#070707',
-      bg_grad1:          csBlob.bg_grad1            ?? data.bg_grad1         ?? '#0a0a1a',
-      bg_grad2:          csBlob.bg_grad2            ?? data.bg_grad2         ?? '#1a0a0a',
-      bg_grad_dir:       csBlob.bg_grad_dir         ?? data.bg_grad_dir      ?? 'to bottom right',
-      show_video_bg:     csBlob.show_video_bg       ?? data.show_video_bg    ?? true,
-      mute_video:        csBlob.mute_video           ?? data.mute_video       ?? false,
-      card_font:         csBlob.card_font            ?? data.card_font        ?? 'Syne',
-      accent_color:      csBlob.accent_color         ?? data.accent_color     ?? '#ffffff',
-      card_blur:         csBlob.card_blur            ?? data.card_blur        ?? 12,
-      card_opacity:      csBlob.card_opacity         ?? data.card_opacity     ?? 85,
-      card_glow:         csBlob.card_glow            ?? data.card_glow        ?? true,
-      card_rounded:      csBlob.card_rounded         ?? data.card_rounded     ?? true,
-      show_uid_scramble: csBlob.show_uid_scramble    ?? data.show_uid_scramble ?? false,
-      custom_font_name:  csBlob.custom_font_name  ?? null,
-      custom_font_family:csBlob.custom_font_family ?? null,
-      custom_font_data:  csBlob.custom_font_data   ?? null,
-      custom_icons:      csBlob.custom_icons       ?? [],
-    };
+const get = (key, fallback) => csBlob[key] ?? data[key] ?? fallback;
+CS = {
+  bg_type:            get('bg_type',           'video'),
+  bg_image_url:       get('bg_image_url',       ''),
+  bg_opacity:         get('bg_opacity',         70),
+  bg_color:           get('bg_color',           '#070707'),
+  bg_grad1:           get('bg_grad1',           '#0a0a1a'),
+  bg_grad2:           get('bg_grad2',           '#1a0a0a'),
+  bg_grad_dir:        get('bg_grad_dir',        'to bottom right'),
+  show_video_bg:      get('show_video_bg',      true),
+  mute_video:         get('mute_video',         false),
+  card_font:          get('card_font',          'Syne'),
+  accent_color:       get('accent_color',       '#ffffff'),
+  card_blur:          get('card_blur',          12),
+  card_opacity:       get('card_opacity',       85),
+  card_glow:          get('card_glow',          true),
+  card_rounded:       get('card_rounded',       true),
+  show_uid_scramble:  get('show_uid_scramble',  false),
+  custom_font_name:   csBlob.custom_font_name   ?? null,
+  custom_font_family: csBlob.custom_font_family ?? null,
+  custom_font_data:   csBlob.custom_font_data   ?? null,
+  custom_icons:       csBlob.custom_icons       ?? [],
+  border_style:       get('border_style',       'shimmer'),
+  name_style:         get('name_style',         'solid'),
+  name_grad1:         get('name_grad1',         '#ffffff'),
+  name_grad2:         get('name_grad2',         '#888888'),
+  card_layout:        get('card_layout',        'default'),
+  avatar_shape:       get('avatar_shape',       'circle'),
+  avatar_border:      get('avatar_border',      2),
+  avatar_glow:        get('avatar_glow',        false),
+  avatar_spin:        get('avatar_spin',        false),
+  card_texture:       get('card_texture',       'none'),
+  cursor_style:       get('cursor_style',       'default'),
+  social_style:       get('social_style',       'default'),
+  card_width:         get('card_width',         420),
+  card_glass:         get('card_glass',         false),
+  card_shadow:        get('card_shadow',        true),
+  particles:          get('particles',          false),
+  page_anim:          get('page_anim',          true),
+  snow:               get('snow',               false),
+  scanlines:          get('scanlines',          false),
+  particle_color:     get('particle_color',     '#ffffff'),
+  bio_size:           get('bio_size',           13),
+  bio_color:          get('bio_color',          '#ffffff'),
+  bio_italic:         get('bio_italic',         false),
+  typewriter:         get('typewriter',         true),
+  show_volume_widget: get('show_volume_widget', true),
+  card_flip:          get('card_flip',          false),
+  card_back_text:     get('card_back_text',     ''),
+  audio_only_id:      csBlob.audio_only_id      ?? '',
+  mute_audio:         csBlob.mute_audio         ?? true,
+  bg_video_url:       get('bg_video_url',       ''),
+  bg_video_loop:      get('bg_video_loop',      true),
+  bg_video_mute:      get('bg_video_mute',      true),
+  youtube_video_id:   get('youtube_video_id',   ''),
+};
     console.log('[swaqq] loaded CS:', CS);
 
     // Owners auto-unlock all badges
@@ -1985,6 +2019,13 @@ function restoreCustomizeSelections() {
   tog('tTypewriter',  cs('typewriter')   !== false);
   tog('tBioItalic',   cs('bio_italic')   === true);
   tog('tVolumeWidget', cs('show_volume_widget') !== false);
+  tog('tCardFlip', cs('card_flip') === true);
+document.getElementById('fCardBackText').value = cs('card_back_text') || '';
+document.getElementById('fAudioId').value      = cs('audio_only_id') || '';
+tog('tMuteAudio',  cs('mute_audio') !== false);
+document.getElementById('fBgVideoUrl').value   = cs('bg_video_url') || '';
+tog('tBgVideoLoop', cs('bg_video_loop') !== false);
+tog('tBgVideoMute', cs('bg_video_mute') !== false);
 }
     currentBgTab = cs('bg_type') || 'video';
     activateBgTab(currentBgTab);
