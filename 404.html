@@ -22,6 +22,8 @@
       background-size:44px 44px; }
     body::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
       background:radial-gradient(ellipse 70% 55% at 50% -5%,rgba(255,255,255,0.03) 0%,transparent 70%); }
+
+    /* ── Loading ── */
     #loading { position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:99999; gap:16px; transition:opacity 0.6s ease; }
     #loading.out { opacity:0; pointer-events:none; }
     .load-logo { font-family:'Geist Mono',monospace; font-size:14px; font-weight:700; letter-spacing:0.15em; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 2s ease infinite; }
@@ -30,6 +32,8 @@
     .load-bar { width:160px; height:2px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
     .load-fill { height:100%; background:linear-gradient(90deg,#444,#aaa,#fff,#aaa,#444); background-size:200%; animation:loadSlide 1.2s ease-in-out infinite; border-radius:2px; }
     @keyframes loadSlide{0%{background-position:0%;width:0%}50%{background-position:100%;width:70%}100%{background-position:200%;width:100%}}
+
+    /* ── 404 ── */
     #notFound { display:none; position:fixed; inset:0; align-items:center; justify-content:center; flex-direction:column; gap:16px; text-align:center; padding:20px; z-index:1; }
     #notFound.visible { display:flex; }
     .nf-code { font-family:'Geist Mono',monospace; font-size:80px; font-weight:700; opacity:0.08; line-height:1; }
@@ -37,11 +41,15 @@
     .nf-sub { font-family:'Geist Mono',monospace; font-size:12px; color:var(--sub); }
     .nf-btn { display:inline-flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:10px 22px; border:1px solid var(--border2); border-radius:8px; color:var(--sub); text-decoration:none; transition:all 0.2s; margin-top:8px; }
     .nf-btn:hover { color:var(--text); background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.25); }
+
+    /* ── Backgrounds ── */
     #imgBg { position:fixed; inset:0; z-index:-1; background:center/cover no-repeat; opacity:0; transition:opacity 1s ease; pointer-events:none; }
     #imgBg.visible { opacity:1; }
     #ytBg { position:fixed; inset:0; width:100%; height:100%; overflow:hidden; z-index:0; pointer-events:none; background:#000; opacity:0; transition:opacity 1s ease; }
     #ytBg.active { opacity:1; }
     #ytBg iframe, #yt-player { position:absolute; top:50%; left:50%; width:177.78vh; height:56.25vw; min-width:100%; min-height:100%; transform:translate(-50%,-50%); border:none; pointer-events:none; }
+
+    /* ── Splash ── */
     #splash { position:fixed; inset:0; background:#000; display:none; flex-direction:column; align-items:center; justify-content:center; z-index:99998; cursor:pointer; gap:14px; transition:opacity 0.9s ease; }
     #splash.active { display:flex; }
     #splash.out { opacity:0; pointer-events:none; }
@@ -50,11 +58,15 @@
     @keyframes splashShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
     .splash-hint { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.3em; color:rgba(255,255,255,0.18); text-transform:uppercase; animation:pulse 2s ease-in-out infinite; }
     @keyframes pulse{0%,100%{opacity:0.18}50%{opacity:0.5}}
+
+    /* ── Top Bar ── */
     #topBarTrigger { position:fixed; top:0; left:0; right:0; height:14px; z-index:101; pointer-events:all; }
     .top-bar { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 28px; height:52px; border-bottom:1px solid var(--border); background:rgba(8,8,8,0.8); backdrop-filter:blur(16px); transform:translateY(-100%); transition:transform 0.35s cubic-bezier(0.4,0,0.2,1); }
     .top-bar.visible { transform:translateY(0); }
     .top-bar-logo { font-family:'Geist Mono',monospace; font-size:13px; font-weight:700; letter-spacing:0.05em; text-decoration:none; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
     .top-bar-handle { font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:0.1em; }
+
+    /* ── Page & Card ── */
     .page { display:none; position:relative; z-index:2; min-height:100vh; align-items:center; justify-content:center; padding:80px 20px 60px; }
     .page.visible { display:flex; }
     .card-wrap { perspective:1200px; }
@@ -63,6 +75,8 @@
     @keyframes fadeUp{from{opacity:0}to{opacity:1}}
     .card::before { content:''; position:absolute; inset:0; border-radius:inherit; padding:1px; background:linear-gradient(90deg,#222,#777,#fff,#777,#222,#777,#fff); background-size:300%; -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:borderScroll 4s linear infinite; pointer-events:none; }
     @keyframes borderScroll{0%{background-position:0%}100%{background-position:300%}}
+
+    /* ── Card Header ── */
     .card-header { display:flex; align-items:center; gap:18px; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--border); }
     .avatar { width:80px; height:80px; border-radius:50%; flex-shrink:0; cursor:pointer; overflow:hidden; border:2px solid rgba(255,255,255,0.15); transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1); animation:yinYang 3.5s ease-in-out infinite; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; color:rgba(255,255,255,0.4); background:#1a1a1a; }
     .avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; display:block; }
@@ -73,6 +87,8 @@
     .uid-val { display:inline-block; background:linear-gradient(90deg,#444,#aaa,#fff,#aaa,#444); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 2s linear infinite; }
     .name-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
     .username { font-size:26px; font-weight:800; letter-spacing:-0.02em; }
+
+    /* ── Badges ── */
     .badges { display:none; align-items:center; gap:2px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:100px; padding:3px 8px; }
     .badge { position:relative; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; cursor:default; }
     .badge i { font-size:10px; background:linear-gradient(110deg,#666,#ccc,#fff,#ccc,#666); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
@@ -80,6 +96,8 @@
     .badge:hover img { filter:brightness(1); }
     .badge-tip { position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%) translateY(6px); background:rgba(8,8,8,0.92); backdrop-filter:blur(8px); border:1px solid var(--border2); border-radius:7px; padding:3px 8px; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity 0.15s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1); z-index:10; color:rgba(255,255,255,0.7); }
     .badge:hover .badge-tip { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* ── Handle & Status ── */
     .handle { font-family:'Geist Mono',monospace; font-size:12px; color:var(--sub); margin-top:2px; }
     .status { display:none; align-items:center; gap:7px; margin-top:8px; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:8px; padding:5px 11px; }
     .status.visible { display:inline-flex; }
@@ -88,33 +106,48 @@
     .status-dot.idle { background:#faa61a; box-shadow:0 0 6px #faa61a; }
     .status-dot.dnd { background:#f04747; box-shadow:0 0 6px #f04747; }
     .status-dot.offline { background:#4f545c; }
+
+    /* ── Bio ── */
     .bio { font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.75); line-height:1.65; margin-bottom:18px; min-height:22px; }
     .bio-cursor { display:inline-block; width:2px; height:13px; background:rgba(255,255,255,0.5); animation:blink 1s step-end infinite; vertical-align:middle; margin-left:1px; }
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+    /* ── Socials ── */
     .socials { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
     .social-btn { height:44px; border-radius:11px; padding:0 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); display:flex; align-items:center; gap:8px; cursor:pointer; transition:all 0.22s; text-decoration:none; color:var(--sub); font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.05em; white-space:nowrap; }
     .social-btn:hover { background:rgba(255,255,255,0.09); border-color:var(--border2); color:var(--text); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.4); }
     .social-btn i { font-size:13px; }
     .social-btn img { width:16px; height:16px; object-fit:contain; border-radius:3px; }
+
+    /* ── Card Footer ── */
     .card-footer { position:absolute; bottom:16px; left:28px; right:28px; display:flex; align-items:center; justify-content:space-between; }
     .footer-text { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:0.1em; }
+
+    /* ── Views ── */
     .views { position:fixed; bottom:22px; left:22px; z-index:102; display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.6); }
     .views.visible { display:flex; }
     .views i { font-size:12px; color:rgba(255,255,255,0.35); }
+
+    /* ── QR Button ── */
     .qr-btn { position:fixed; bottom:22px; right:22px; z-index:103; width:38px; height:38px; border-radius:100px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; font-size:13px; color:rgba(255,255,255,0.5); }
     .qr-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+
+    /* ── Follow ── */
     .follow-btn { display:inline-flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:7px 16px; border-radius:100px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.7); cursor:pointer; transition:all 0.2s; margin-top:8px; }
     .follow-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
     .follow-btn.following { background:rgba(255,255,255,0.1); color:#fff; }
     .follow-btn.following:hover { background:rgba(240,71,71,0.1); color:#f04747; border-color:rgba(240,71,71,0.3); }
     .follow-counts { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.3); margin-top:4px; }
     .follow-count-val { color:rgba(255,255,255,0.7); font-weight:700; margin-right:2px; }
-    .card-wrap { perspective:1200px; }
+
+    /* ── Card Flip ── */
     .card-flip-inner { position:relative; transform-style:preserve-3d; transition:transform 0.7s cubic-bezier(0.4,0,0.2,1); }
     .card-flip-inner.flipped { transform:rotateY(180deg); }
     .card-front, .card-back { backface-visibility:hidden; -webkit-backface-visibility:hidden; }
     .card-back { position:absolute; inset:0; transform:rotateY(180deg); border-radius:inherit; padding:28px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px; text-align:center; backdrop-filter:inherit; background:inherit; }
     .flip-tap-hint { position:absolute; bottom:10px; right:14px; font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.18); letter-spacing:0.1em; pointer-events:none; }
+
+    /* ── Music Widget ── */
     .music-widget { position:fixed; bottom:22px; right:80px; z-index:103; background:rgba(10,10,10,0.88); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:10px 14px; max-width:220px; cursor:pointer; transition:all 0.3s; display:none; align-items:center; gap:10px; }
     .music-widget.visible { display:flex; }
     .music-widget:hover { border-color:rgba(255,255,255,0.2); }
@@ -127,6 +160,8 @@
     .music-info { flex:1; min-width:0; }
     .music-title-text { font-size:11px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .music-artist-text { font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    /* ── Nav Overlay ── */
     .nav-overlay { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.65); backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
     .nav-overlay.active { opacity:1; pointer-events:all; }
     .nav-box { background:rgba(10,10,10,0.92); border:1px solid var(--border2); border-radius:18px; padding:28px 32px; width:100%; max-width:340px; display:flex; flex-direction:column; align-items:center; gap:12px; transform:translateY(16px) scale(0.97); transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
@@ -139,7 +174,31 @@
     .nav-no:hover { background:rgba(255,255,255,0.04); color:var(--text); }
     .nav-yes { flex:1; padding:10px; border-radius:10px; border:none; cursor:pointer; background:linear-gradient(110deg,#333,#777,#bbb,#777,#333); background-size:200%; animation:shimmer 3s ease infinite; color:#fff; font-family:'Geist Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; transition:filter 0.2s; }
     .nav-yes:hover { filter:brightness(1.3); }
-    @media(max-width:480px){ .card{padding:22px 20px 50px} .socials{flex-wrap:wrap} }
+
+    /* ── Watermark ── */
+    .watermark { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:102; font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.15em; color:rgba(255,255,255,0.15); text-decoration:none; text-transform:uppercase; pointer-events:none; transition:color 0.2s; }
+    .watermark:hover { color:rgba(255,255,255,0.4); pointer-events:all; }
+
+    /* ── QR Modal ── */
+    .qr-modal-bg { position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.75); backdrop-filter:blur(24px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.25s ease; }
+    .qr-modal-bg.open { opacity:1; pointer-events:all; }
+    .qr-modal-box { background:rgba(12,12,12,0.95); border:1px solid var(--border2); border-radius:20px; padding:32px 28px 24px; display:flex; flex-direction:column; align-items:center; text-align:center; max-width:320px; width:100%; transform:translateY(16px) scale(0.96); transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+    .qr-modal-bg.open .qr-modal-box { transform:none; }
+
+    /* ── Volume Widget ── */
+    #volumeWidget { position:fixed; bottom:22px; left:22px; z-index:104; display:none; align-items:center; }
+    #volumeBtn { width:38px; height:38px; border-radius:100px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; flex-shrink:0; position:relative; z-index:1; }
+    #volumeBtn:hover { background:rgba(255,255,255,0.12); }
+    #volumeSliderWrap { width:0; overflow:hidden; transition:width 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.25s ease; opacity:0; display:flex; align-items:center; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.1); border-left:none; border-radius:0 100px 100px 0; height:38px; margin-left:-6px; padding-left:10px; box-sizing:border-box; }
+    #volumeSlider { width:80px; accent-color:#fff; cursor:pointer; background:transparent; outline:none; border:none; flex-shrink:0; }
+    #volumeVal { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.4); margin:0 10px; min-width:28px; text-align:right; }
+
+    /* ── Responsive ── */
+    @media(max-width:480px){
+      .card { padding:22px 20px 50px; }
+      .socials { flex-wrap:wrap; }
+      .music-widget { right:22px; bottom:72px; max-width:calc(100vw - 44px); }
+    }
   </style>
 </head>
 <body>
@@ -148,6 +207,7 @@
     <div class="load-handle" id="loadHandle"></div>
     <div class="load-bar"><div class="load-fill"></div></div>
   </div>
+
   <div id="notFound">
     <div class="nf-code">404</div>
     <div class="nf-title">profile not found</div>
@@ -155,18 +215,22 @@
     <a class="nf-btn" href="/"><i class="fas fa-arrow-left" style="font-size:10px"></i> back to swaqq.xyz</a>
     <a class="nf-btn" href="/" onclick="localStorage.setItem('claimHandle', window._handle || '')"><i class="fas fa-plus" style="font-size:10px"></i> claim this handle</a>
   </div>
+
   <div id="splash">
     <a class="splash-site" href="/">swaqq.xyz</a>
     <div class="splash-name" id="splashName"></div>
     <div class="splash-hint">click anywhere to enter</div>
   </div>
+
   <div id="imgBg"></div>
   <div id="ytBg"></div>
+
   <div id="topBarTrigger"></div>
   <div class="top-bar" id="topBar">
     <a class="top-bar-logo" href="/">swaqq.xyz</a>
     <span class="top-bar-handle" id="topBarHandle"></span>
   </div>
+
   <div class="page" id="profilePage">
     <div class="card-wrap">
       <div class="card-flip-inner" id="cardFlipInner">
@@ -204,6 +268,7 @@
           </div>
           <span class="flip-tap-hint" id="flipTapHint" style="display:none">tap to flip ↺</span>
         </div>
+
         <div class="card card-back" id="cardBack" style="display:none">
           <div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:4px">joined</div>
           <div style="font-size:22px;font-weight:800" id="backJoinDate">—</div>
@@ -223,8 +288,11 @@
       </div>
     </div>
   </div>
+
   <div class="views" id="views"><i class="fas fa-eye"></i><span id="viewCount">0</span></div>
   <a class="watermark" href="/">swaqq.xyz</a>
+
+  <!-- Nav Overlay -->
   <div class="nav-overlay" id="navOverlay">
     <div class="nav-box">
       <div class="nav-title">leave this page?</div>
@@ -236,18 +304,24 @@
       </div>
     </div>
   </div>
-  <button class="qr-btn" id="qrBtn" onclick="openQR()" title="share profile QR code" style="display:none"><i class="fas fa-qrcode"></i></button>
 
-  <div id="volumeWidget" style="position:fixed;bottom:22px;left:22px;z-index:103;display:none;align-items:center">
-    <div id="volumeBtn" onclick="toggleMuteVolume()" style="width:38px;height:38px;border-radius:100px;background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0;position:relative;z-index:1">
+  <!-- QR Button -->
+  <button class="qr-btn" id="qrBtn" onclick="openQR()" title="share profile QR code" style="display:none">
+    <i class="fas fa-qrcode"></i>
+  </button>
+
+  <!-- Volume Widget -->
+  <div id="volumeWidget">
+    <div id="volumeBtn" onclick="toggleMuteVolume()">
       <i class="fas fa-volume-up" id="volumeIcon" style="font-size:12px;color:rgba(255,255,255,0.6)"></i>
     </div>
-    <div id="volumeSliderWrap" style="width:0;overflow:hidden;transition:width 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.25s ease;opacity:0;display:flex;align-items:center;background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-left:none;border-radius:0 100px 100px 0;height:38px;margin-left:-6px;padding-left:10px;box-sizing:border-box">
-      <input type="range" id="volumeSlider" min="0" max="100" value="60" oninput="setVolume(this.value)" style="width:80px;accent-color:#fff;cursor:pointer;background:transparent;outline:none;border:none;flex-shrink:0">
-      <span id="volumeVal" style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);margin:0 10px;min-width:28px;text-align:right">60%</span>
+    <div id="volumeSliderWrap">
+      <input type="range" id="volumeSlider" min="0" max="100" value="60" oninput="setVolume(this.value)">
+      <span id="volumeVal">60%</span>
     </div>
   </div>
 
+  <!-- QR Modal -->
   <div class="qr-modal-bg" id="qrModalBg" onclick="if(event.target===this)closeQR()">
     <div class="qr-modal-box">
       <div style="font-size:15px;font-weight:800;margin-bottom:4px" id="qrModalName"></div>
@@ -261,6 +335,7 @@
     </div>
   </div>
 
+  <!-- Music Widget -->
   <div id="profileMusicWidget" class="music-widget">
     <div class="music-bars">
       <div class="music-bar"></div><div class="music-bar"></div>
@@ -273,12 +348,12 @@
   </div>
 
   <script>
+    /* ── Sanitizers ── */
     function sanitize(str) {
       if (typeof str !== 'string') return '';
       return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
         .replace(/"/g,'&quot;').replace(/'/g,'&#x27;').replace(/\//g,'&#x2F;').replace(/`/g,'&#x60;').trim();
     }
-
     function sanitizeUrl(url) {
       if (!url || typeof url !== 'string') return '';
       url = url.trim();
@@ -287,30 +362,32 @@
       if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) return '';
       return url;
     }
-
     function sanitizeHtml(html) {
       const div = document.createElement('div');
       div.textContent = html;
       return div.innerHTML;
     }
 
+    /* ── Supabase ── */
     const SUPABASE_URL = 'https://cwaifnbgkqqecatggvrx.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YWlmbmJna3FxZWNhdGdndnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzgzNzUsImV4cCI6MjA4NzcxNDM3NX0.5o3aI40Z8orNW1yOVWt7uAsP4TJ6MvVPqFidaTOf0cE';
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
+    /* ── Badge Definitions ── */
     const BADGE_DEFS = [
-      { id:'early', label:'Early', icon:'fas fa-seedling' },
-      { id:'owner', label:'Owner', icon:'fas fa-crown' },
-      { id:'supporter', label:'Supporter', icon:'fas fa-heart' },
+      { id:'early',       label:'Early',       icon:'fas fa-seedling' },
+      { id:'owner',       label:'Owner',       icon:'fas fa-crown' },
+      { id:'supporter',   label:'Supporter',   icon:'fas fa-heart' },
       { id:'contributor', label:'Contributor', icon:'fas fa-code-branch' },
-      { id:'developer', label:'Developer', icon:'fas fa-code' },
-      { id:'staff', label:'Staff', icon:'fas fa-shield-alt' },
-      { id:'vip', label:'VIP', icon:'fas fa-star' },
-      { id:'verified', label:'Verified', icon:'fas fa-check-circle'},
-      { id:'og', label:'OG', icon:'fas fa-fire' },
+      { id:'developer',   label:'Developer',   icon:'fas fa-code' },
+      { id:'staff',       label:'Staff',       icon:'fas fa-shield-alt' },
+      { id:'vip',         label:'VIP',         icon:'fas fa-star' },
+      { id:'verified',    label:'Verified',    icon:'fas fa-check-circle' },
+      { id:'og',          label:'OG',          icon:'fas fa-fire' },
     ];
 
+    /* ── Custom Settings Defaults & Builder ── */
     const CS_DEF = {
       bg_type:'video', bg_image_url:'', bg_opacity:70,
       bg_color:'#070707', bg_grad1:'#0a0a1a', bg_grad2:'#1a0a0a', bg_grad_dir:'to bottom right',
@@ -329,54 +406,58 @@
       })();
       const get = (key) => blob[key] ?? profile[key] ?? CS_DEF[key];
       return {
-        bg_type: get('bg_type'),
-        bg_image_url: get('bg_image_url'),
-        bg_opacity: get('bg_opacity'),
-        bg_color: get('bg_color'),
-        bg_grad1: get('bg_grad1'),
-        bg_grad2: get('bg_grad2'),
-        bg_grad_dir: get('bg_grad_dir'),
-        show_video_bg: get('show_video_bg'),
-        mute_video: get('mute_video'),
-        audio_only_id: blob.audio_only_id || '',
-        mute_audio: blob.mute_audio ?? true,
-        card_font: get('card_font'),
-        accent_color: get('accent_color'),
-        card_blur: get('card_blur'),
-        card_opacity: get('card_opacity'),
-        card_glow: get('card_glow'),
-        card_rounded: get('card_rounded'),
+        bg_type:           get('bg_type'),
+        bg_image_url:      get('bg_image_url'),
+        bg_opacity:        get('bg_opacity'),
+        bg_color:          get('bg_color'),
+        bg_grad1:          get('bg_grad1'),
+        bg_grad2:          get('bg_grad2'),
+        bg_grad_dir:       get('bg_grad_dir'),
+        show_video_bg:     get('show_video_bg'),
+        mute_video:        get('mute_video'),
+        audio_only_id:     blob.audio_only_id || '',
+        mute_audio:        blob.mute_audio ?? true,
+        card_font:         get('card_font'),
+        accent_color:      get('accent_color'),
+        card_blur:         get('card_blur'),
+        card_opacity:      get('card_opacity'),
+        card_glow:         get('card_glow'),
+        card_rounded:      get('card_rounded'),
         show_uid_scramble: get('show_uid_scramble'),
-        youtube_video_id: get('youtube_video_id') || profile.youtube_video_id || '',
-        custom_font_name: blob.custom_font_name || null,
-        custom_font_family: blob.custom_font_family || null,
-        custom_font_data: blob.custom_font_data || null,
-        custom_icons: blob.custom_icons || [],
-        show_volume_widget: blob.show_volume_widget ?? true,
-        border_style: get('border_style') || 'shimmer',
-        name_style: get('name_style') || 'solid',
-        name_grad1: get('name_grad1') || '#ffffff',
-        name_grad2: get('name_grad2') || '#888888',
-        card_layout: get('card_layout') || 'default',
-        avatar_shape: get('avatar_shape') || 'circle',
-        avatar_border: get('avatar_border') ?? 2,
-        avatar_glow: get('avatar_glow') || false,
-        avatar_spin: get('avatar_spin') || false,
-        card_texture: get('card_texture') || 'none',
-        cursor_style: get('cursor_style') || 'default',
-        social_style: get('social_style') || 'default',
-        card_width: get('card_width') || 420,
-        card_glass: get('card_glass') || false,
-        card_shadow: get('card_shadow') !== false,
-        particles: get('particles') || false,
-        page_anim: get('page_anim') !== false,
-        snow: get('snow') || false,
-        scanlines: get('scanlines') || false,
-        particle_color: get('particle_color') || '#ffffff',
-        bio_size: get('bio_size') || 13,
-        bio_color: get('bio_color') || '#ffffff',
-        bio_italic: get('bio_italic') || false,
-        typewriter: get('typewriter') !== false,
+        youtube_video_id:  get('youtube_video_id') || profile.youtube_video_id || '',
+        custom_font_name:  blob.custom_font_name  || null,
+        custom_font_family:blob.custom_font_family || null,
+        custom_font_data:  blob.custom_font_data  || null,
+        custom_icons:      blob.custom_icons || [],
+        show_volume_widget:blob.show_volume_widget ?? true,
+        border_style:      get('border_style')  || 'shimmer',
+        name_style:        get('name_style')    || 'solid',
+        name_grad1:        get('name_grad1')    || '#ffffff',
+        name_grad2:        get('name_grad2')    || '#888888',
+        card_layout:       get('card_layout')   || 'default',
+        avatar_shape:      get('avatar_shape')  || 'circle',
+        avatar_border:     get('avatar_border') ?? 2,
+        avatar_glow:       get('avatar_glow')   || false,
+        avatar_spin:       get('avatar_spin')   || false,
+        card_texture:      get('card_texture')  || 'none',
+        cursor_style:      get('cursor_style')  || 'default',
+        social_style:      get('social_style')  || 'default',
+        card_width:        get('card_width')    || 420,
+        card_glass:        get('card_glass')    || false,
+        card_shadow:       get('card_shadow')   !== false,
+        particles:         get('particles')     || false,
+        page_anim:         get('page_anim')     !== false,
+        snow:              get('snow')          || false,
+        scanlines:         get('scanlines')     || false,
+        particle_color:    get('particle_color') || '#ffffff',
+        bio_size:          get('bio_size')      || 13,
+        bio_color:         get('bio_color')     || '#ffffff',
+        bio_italic:        get('bio_italic')    || false,
+        typewriter:        get('typewriter')    !== false,
+        card_flip:         get('card_flip')     || false,
+        bg_video_url:      get('bg_video_url')  || '',
+        bg_video_loop:     get('bg_video_loop') !== false,
+        bg_video_mute:     get('bg_video_mute') !== false,
       };
     }
 
@@ -387,16 +468,18 @@
         roblox:'fas fa-gamepad', twitch:'fab fa-twitch', github:'fab fa-github',
         spotify:'fab fa-spotify', 'guns.lol':'fas fa-crosshairs', steam:'fab fa-steam',
         reddit:'fab fa-reddit', telegram:'fab fa-telegram', music:'fas fa-music',
-        website:'fas fa-globe', link:'fas fa-link', email:'fas fa-envelope'
+        website:'fas fa-globe', link:'fas fa-link', email:'fas fa-envelope',
       };
       return map[(label||'').toLowerCase()] || 'fas fa-link';
     }
 
+    /* ── Routing ── */
     const handle = window.location.pathname.replace(/^\//, '').replace(/^@/, '').split('/')[0].toLowerCase();
     window._handle = handle;
     if (!handle) window.location.href = '/';
     document.getElementById('loadHandle').textContent = '@' + handle;
 
+    /* ── Top Bar hover-reveal ── */
     (function() {
       const bar = document.getElementById('topBar');
       const trigger = document.getElementById('topBarTrigger');
@@ -408,10 +491,13 @@
       }
       trigger.addEventListener('mouseenter', showBar);
       bar.addEventListener('mouseenter', () => clearTimeout(hideTimer));
-      bar.addEventListener('mouseleave', () => { hideTimer = setTimeout(() => bar.classList.remove('visible'), 700); });
+      bar.addEventListener('mouseleave', () => {
+        hideTimer = setTimeout(() => bar.classList.remove('visible'), 700);
+      });
       window._showTopBarBriefly = showBar;
     })();
 
+    /* ── YouTube IFrame API ── */
     let ytPlayer = null, ytApiReady = false;
     function loadYouTubeIframeAPI() {
       if (window.YT && window.YT.Player) { ytApiReady = true; return; }
@@ -420,13 +506,15 @@
       document.head.appendChild(tag);
     }
     window.onYouTubeIframeAPIReady = () => { ytApiReady = true; };
+
     function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
       if (!videoId) return;
       const container = document.getElementById('ytBg');
       if (!container) return;
       if (audioOnly) { container.style.opacity = '0'; container.style.pointerEvents = 'none'; }
-      if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
-      const old = document.getElementById('yt-player'); if (old) old.remove();
+      if (ytPlayer) { try { ytPlayer.destroy(); } catch(_) {} ytPlayer = null; }
+      const old = document.getElementById('yt-player');
+      if (old) old.remove();
       const playerDiv = document.createElement('div');
       playerDiv.id = 'yt-player';
       container.appendChild(playerDiv);
@@ -434,21 +522,35 @@
         if (!ytApiReady || !window.YT) { setTimeout(initWhenReady, 120); return; }
         ytPlayer = new YT.Player('yt-player', {
           height:'100%', width:'100%', videoId,
-          playerVars: { autoplay:1, controls:0, mute:1, loop:1, playlist:videoId, modestbranding:1, playsinline:1, disablekb:1, fs:0, iv_load_policy:3, cc_load_policy:0, rel:0, showinfo:0, autohide:1, start:0, origin:window.location.origin },
+          playerVars: {
+            autoplay:1, controls:0, mute:1, loop:1, playlist:videoId,
+            modestbranding:1, playsinline:1, disablekb:1, fs:0,
+            iv_load_policy:3, cc_load_policy:0, rel:0, showinfo:0,
+            autohide:1, start:0, origin:window.location.origin,
+          },
           events: {
-            onReady: (e) => { e.target.mute(); e.target.playVideo(); if (!audioOnly) container.classList.add('active'); },
+            onReady: (e) => {
+              e.target.mute();
+              e.target.playVideo();
+              if (!audioOnly) container.classList.add('active');
+            },
             onStateChange: (e) => {
-              if (e.data === YT.PlayerState.PLAYING && !shouldMute) { try { e.target.unMute(); e.target.setVolume(60); } catch(_) {} }
-              if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.UNSTARTED) { try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {} }
+              if (e.data === YT.PlayerState.PLAYING && !shouldMute) {
+                try { e.target.unMute(); e.target.setVolume(60); } catch(_) {}
+              }
+              if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.UNSTARTED) {
+                try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {}
+              }
             },
             onError: () => container.classList.remove('active'),
-          }
+          },
         });
       }
       initWhenReady();
     }
     loadYouTubeIframeAPI();
 
+    /* ── QR Modal ── */
     function openQR() {
       const url = window.location.href;
       const name = document.getElementById('cardName')?.textContent || handle;
@@ -459,22 +561,26 @@
         `<img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}" style="width:200px;height:200px;border-radius:6px">`;
       document.getElementById('qrModalBg').classList.add('open');
     }
-    function closeQR() { document.getElementById('qrModalBg').classList.remove('open'); }
+    function closeQR() {
+      document.getElementById('qrModalBg').classList.remove('open');
+    }
     function downloadQR() {
-      const img = document.getElementById('qrImg'); if (!img) return;
+      const img = document.getElementById('qrImg');
+      if (!img) return;
       const a = document.createElement('a');
       a.href = img.src;
       a.download = `swaqq-${handle}-qr.png`;
       a.click();
     }
 
+    /* ── Follow System ── */
     let _isFollowing = false;
     async function initFollows(profile) {
       const followerEl = document.getElementById('backFollowers');
       const followingEl = document.getElementById('backFollowing');
       if (followerEl) followerEl.textContent = (profile.follower_count || 0).toLocaleString();
       if (followingEl) followingEl.textContent = (profile.following_count || 0).toLocaleString();
-      const { data:{ session } } = await sb.auth.getSession();
+      const { data: { session } } = await sb.auth.getSession();
       if (!session || session.user.id === profile.id) return;
       const { data: existing } = await sb.from('profile_follows')
         .select('id').eq('follower_id', session.user.id).eq('following_id', profile.id).maybeSingle();
@@ -488,8 +594,9 @@
           </button>`;
       }
     }
+
     async function toggleFollow(profileId) {
-      const { data:{ session } } = await sb.auth.getSession();
+      const { data: { session } } = await sb.auth.getSession();
       if (!session) { window.location.href = '/'; return; }
       const btn = document.getElementById('followBtn');
       if (_isFollowing) {
@@ -509,36 +616,50 @@
       }
     }
 
+    /* ── Card Flip ── */
     function initCardFlip(profile, CS) {
       if (!CS.card_flip) return;
       const inner = document.getElementById('cardFlipInner');
-      const back = document.getElementById('cardBack');
-      const hint = document.getElementById('flipTapHint');
-      const backUid = document.getElementById('backUid');
-      if (back) back.style.display = 'flex';
-      if (hint) hint.style.display = 'block';
+      const back  = document.getElementById('cardBack');
+      const hint  = document.getElementById('flipTapHint');
+      const card  = document.getElementById('card');
+
       if (back) {
-        back.style.background = document.getElementById('card')?.style.background || '';
-        back.style.backdropFilter = document.getElementById('card')?.style.backdropFilter || '';
-        back.style.borderRadius = document.getElementById('card')?.style.borderRadius || '';
-        back.style.border = document.getElementById('card')?.style.border || '';
+        back.style.display = 'flex';
+        // Match front card appearance on back
+        if (card) {
+          back.style.background      = card.style.background;
+          back.style.backdropFilter  = card.style.backdropFilter;
+          back.style.borderRadius    = card.style.borderRadius;
+          back.style.border          = card.style.border;
+        }
+        // Ensure flip-inner has height so back is positioned correctly
+        inner.style.minHeight = card ? card.offsetHeight + 'px' : '400px';
       }
+      if (hint) hint.style.display = 'block';
+
       const joined = new Date(profile.created_at);
       document.getElementById('backJoinDate').textContent =
         joined.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
       const uidEl = document.getElementById('uidVal');
+      const backUid = document.getElementById('backUid');
       if (backUid) backUid.textContent = uidEl?.textContent || '?';
       const customText = document.getElementById('backCustomText');
       if (customText && profile.card_back_text) customText.textContent = profile.card_back_text;
-      const followWrap = document.createElement('div');
-      followWrap.id = 'backFollowWrap';
-      if (back) back.insertBefore(followWrap, back.lastElementChild);
-      document.getElementById('card')?.addEventListener('click', e => {
+
+      card?.addEventListener('click', e => {
         if (e.target.closest('button, a, input')) return;
         inner.classList.toggle('flipped');
+        // Sync height after flip
+        if (inner.classList.contains('flipped') && back) {
+          inner.style.minHeight = back.scrollHeight + 'px';
+        } else if (card) {
+          inner.style.minHeight = card.offsetHeight + 'px';
+        }
       });
     }
 
+    /* ── Music Widget ── */
     function initMusicWidget(profile) {
       if (!profile.music_title && !profile.music_artist) return;
       const widget = document.getElementById('profileMusicWidget');
@@ -585,6 +706,7 @@
       if (el) el.classList.add(cls);
     }
 
+    /* ── Main Profile Load ── */
     async function loadProfile() {
       const { data: profile, error } = await sb.from('profiles').select('*').eq('handle', handle).single();
       if (error || !profile) {
@@ -603,14 +725,20 @@
         document.getElementById('nfSub').textContent = 'this profile has been suspended.';
         return;
       }
+
       window._profileId = profile.id;
       const CS = buildCS(profile);
+
+      // Inject custom font
       if (CS.custom_font_data && CS.custom_font_family) {
         const style = document.createElement('style');
         style.textContent = `@font-face { font-family: '${CS.custom_font_family}'; src: url('${CS.custom_font_data}'); }`;
         document.head.appendChild(style);
       }
+
       applyCardStyles(CS);
+
+      // Avatar
       const avatarEl = document.getElementById('cardAvatar');
       if (profile.avatar_url) {
         let avatarUrl = profile.avatar_url;
@@ -622,23 +750,26 @@
           avatarEl.innerHTML = `<img src="${safeAvatar}" alt="" onerror="this.parentElement.innerHTML=''">`;
         }
       }
+
+      // Name & handle
       const nameEl = document.getElementById('cardName');
       nameEl.textContent = profile.display_name || profile.handle;
-      nameEl.style.background = 'none';
-      nameEl.style.webkitTextFillColor = CS.accent_color;
-      nameEl.style.color = CS.accent_color;
       document.getElementById('cardHandle').textContent = '@' + profile.handle;
       document.getElementById('topBarHandle').textContent = '@' + profile.handle;
       document.getElementById('footerVersion').textContent = `swaqq.xyz/@${profile.handle}`;
       document.title = `${profile.display_name || profile.handle} — swaqq.xyz`;
+
+      // UID
       sb.from('profiles').select('id').order('created_at', { ascending: true }).then(({ data: allIds }) => {
         if (!allIds) return;
         const pos = allIds.findIndex(r => r.id === profile.id);
         const num = pos !== -1 ? pos + 1 : '?';
         CS.show_uid_scramble ? startUidScramble(num) : (document.getElementById('uidVal').textContent = num);
       });
+
+      // Badges
       const badgesEl = document.getElementById('cardBadges');
-      const rawBadges = Array.isArray(profile.badges) ? profile.badges : JSON.parse(profile.badges || '[]');
+      const rawBadges = Array.isArray(profile.badges) ? profile.badges : (() => { try { return JSON.parse(profile.badges || '[]'); } catch { return []; } })();
       if (rawBadges.length) {
         badgesEl.style.display = 'inline-flex';
         rawBadges.forEach(badgeId => {
@@ -650,21 +781,26 @@
           badgesEl.appendChild(div);
         });
       }
+
+      // Custom badges
       const { data: customBadges } = await sb.from('custom_badges').select('*').eq('profile_id', profile.id);
       if (customBadges?.length) {
         badgesEl.style.display = 'inline-flex';
         customBadges.forEach(cb => {
           const div = document.createElement('div');
           div.className = 'badge';
-          div.innerHTML = `<img src="${cb.image_url}" alt="${sanitize(cb.name)}"><div class="badge-tip">${sanitize(cb.name)}</div>`;
+          div.innerHTML = `<img src="${sanitize(cb.image_url)}" alt="${sanitize(cb.name)}"><div class="badge-tip">${sanitize(cb.name)}</div>`;
           badgesEl.appendChild(div);
         });
       }
+
+      // Socials
       const socialsEl = document.getElementById('cardSocials');
-      const rawSocials = Array.isArray(profile.socials) ? profile.socials : JSON.parse(profile.socials || '[]');
+      const rawSocials = Array.isArray(profile.socials) ? profile.socials : (() => { try { return JSON.parse(profile.socials || '[]'); } catch { return []; } })();
       rawSocials.forEach(s => {
         if (!s.url) return;
-        const safeUrl = sanitizeUrl(s.url); if (!safeUrl) return;
+        const safeUrl = sanitizeUrl(s.url);
+        if (!safeUrl) return;
         const a = document.createElement('a');
         a.className = 'social-btn nav-link';
         a.dataset.href = safeUrl;
@@ -684,60 +820,72 @@
         a.appendChild(labelSpan);
         socialsEl.appendChild(a);
       });
+
       if (window._pendingSocialStyle) {
         applySocialStyle(window._pendingSocialStyle, window._pendingAccent || '#ffffff');
       }
+
+      // Discord status
       if (profile.discord_id) {
         document.getElementById('discordStatus').classList.add('visible');
         fetchDiscordStatus(profile.discord_id);
       }
+
+      // Splash or direct reveal
       if (profile.show_splash !== false) {
         renderSplash(profile, CS);
       } else {
         revealProfile(profile, CS);
       }
+
+      // View counting
       if (profile.show_views !== false) {
         countView(profile.id, profile.handle);
         setInterval(() => refreshViewDisplay(profile.id), 5 * 60 * 1000);
       }
     }
 
+    /* ── Apply Card Styles ── */
     function applyCardStyles(CS) {
       const card = document.getElementById('card');
       if (!card) return;
       const accent = CS.accent_color || '#ffffff';
-      const blur = CS.card_blur ?? 12;
-      const op = CS.card_opacity ?? 85;
-      const alpha = Math.round(op * 2.55).toString(16).padStart(2, '0');
-      card.style.background = '#111111' + alpha;
-      card.style.backdropFilter = `blur(${blur}px)`;
+      const blur   = CS.card_blur ?? 12;
+      const op     = CS.card_opacity ?? 85;
+      const alpha  = Math.round(op * 2.55).toString(16).padStart(2, '0');
+      card.style.background       = '#111111' + alpha;
+      card.style.backdropFilter   = `blur(${blur}px)`;
       card.style.webkitBackdropFilter = `blur(${blur}px)`;
-      card.style.borderRadius = (CS.card_rounded !== false) ? '20px' : '4px';
-      card.style.fontFamily = `'${CS.card_font || 'Syne'}', sans-serif`;
-      card.style.width = (CS.card_width || 420) + 'px';
-      const glowStr = CS.card_glow !== false ? `0 0 40px ${accent}22, 0 0 80px ${accent}0a` : '';
+      card.style.borderRadius     = (CS.card_rounded !== false) ? '20px' : '4px';
+      card.style.fontFamily       = `'${CS.card_font || 'Syne'}', sans-serif`;
+      card.style.width            = (CS.card_width || 420) + 'px';
+      const glowStr   = CS.card_glow   !== false ? `0 0 40px ${accent}22, 0 0 80px ${accent}0a` : '';
       const shadowStr = CS.card_shadow !== false ? '0 24px 60px rgba(0,0,0,0.6)' : '';
       card.style.boxShadow = [glowStr, shadowStr].filter(Boolean).join(', ');
       if (CS.card_glass) {
         card.style.backgroundImage = 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%)';
       }
       applyBorderStyle(card, CS.border_style || 'shimmer', accent);
+
       const bioEl = document.getElementById('cardBio');
       if (bioEl) {
-        bioEl.style.fontFamily = `'${CS.card_font || 'Syne'}', monospace`;
-        bioEl.style.fontSize = (CS.bio_size || 13) + 'px';
-        bioEl.style.color = CS.bio_color || 'rgba(255,255,255,0.75)';
-        bioEl.style.fontStyle = CS.bio_italic ? 'italic' : 'normal';
+        bioEl.style.fontFamily  = `'${CS.card_font || 'Syne'}', monospace`;
+        bioEl.style.fontSize    = (CS.bio_size || 13) + 'px';
+        bioEl.style.color       = CS.bio_color || 'rgba(255,255,255,0.75)';
+        bioEl.style.fontStyle   = CS.bio_italic ? 'italic' : 'normal';
       }
       const handleEl = document.getElementById('cardHandle');
       if (handleEl) handleEl.style.fontFamily = `'${CS.card_font || 'Syne'}', monospace`;
+
       applyNameStyle(CS);
       applyAvatarShape(CS);
+
       window._pendingSocialStyle = CS.social_style || 'default';
-      window._pendingAccent = accent;
+      window._pendingAccent      = accent;
       applyCursor(CS.cursor_style || 'default', accent);
       applyLayout(CS.card_layout || 'default');
       applyTexture(CS.card_texture || 'none');
+
       if (CS.scanlines) {
         const sl = document.createElement('div');
         sl.id = 'scanlineOverlay';
@@ -746,6 +894,7 @@
       }
       if (CS.particles) initParticles(CS.particle_color || '#ffffff');
       if (CS.snow) initSnow(CS.particle_color || '#ffffff');
+
       const bgType = CS.bg_type || 'video';
       if (bgType === 'image' && CS.bg_image_url) {
         const imgBg = document.getElementById('imgBg');
@@ -759,28 +908,33 @@
       }
     }
 
+    /* ── Border Styles ── */
     function applyBorderStyle(card, style, accent) {
-      if (style === 'none') { card.style.border = 'none'; return; }
-      if (style === 'solid') { card.style.border = `1px solid ${accent}66`; return; }
+      if (style === 'none')   { card.style.border = 'none'; return; }
+      if (style === 'solid')  { card.style.border = `1px solid ${accent}66`; return; }
       if (style === 'dashed') { card.style.border = `1px dashed ${accent}55`; return; }
       if (style === 'double') { card.style.border = `3px double ${accent}55`; return; }
       if (style === 'glow-pulse') {
         card.style.border = `1px solid ${accent}44`;
         const styleEl = document.createElement('style');
         styleEl.textContent = `
-          @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px ${accent}33, 0 0 60px ${accent}11; } 50% { box-shadow: 0 0 40px ${accent}66, 0 0 80px ${accent}33; } }
+          @keyframes glowPulse {
+            0%,100% { box-shadow: 0 0 20px ${accent}33, 0 0 60px ${accent}11; }
+            50%      { box-shadow: 0 0 40px ${accent}66, 0 0 80px ${accent}33; }
+          }
           #card { animation: glowPulse 2.5s ease-in-out infinite !important; }
         `;
         document.head.appendChild(styleEl);
       }
     }
 
+    /* ── Name Styles ── */
     function applyNameStyle(CS) {
       const nameEl = document.getElementById('cardName');
       if (!nameEl) return;
       const accent = CS.accent_color || '#ffffff';
-      nameEl.style.cssText = '';
-      nameEl.style.fontSize = '26px';
+      nameEl.style.cssText   = '';
+      nameEl.style.fontSize  = '26px';
       nameEl.style.fontWeight = '800';
       nameEl.style.letterSpacing = '-0.02em';
       const style = CS.name_style || 'solid';
@@ -793,7 +947,7 @@
         nameEl.style.backgroundClip = 'text';
         nameEl.style.webkitTextFillColor = 'transparent';
       } else if (style === 'shimmer') {
-        nameEl.style.background = `linear-gradient(110deg,#555,${accent},#fff,${accent},#555)`;
+        nameEl.style.background    = `linear-gradient(110deg,#555,${accent},#fff,${accent},#555)`;
         nameEl.style.backgroundSize = '200%';
         nameEl.style.webkitBackgroundClip = 'text';
         nameEl.style.backgroundClip = 'text';
@@ -816,69 +970,74 @@
       }
     }
 
+    /* ── Avatar Shapes ── */
     function applyAvatarShape(CS) {
       const av = document.getElementById('cardAvatar');
       if (!av) return;
-      const shape = CS.avatar_shape || 'circle';
+      const shape  = CS.avatar_shape || 'circle';
       const border = CS.avatar_border ?? 2;
       const accent = CS.accent_color || '#ffffff';
       av.style.borderWidth = border + 'px';
       av.style.borderStyle = 'solid';
-      av.style.borderColor = `rgba(255,255,255,0.15)`;
+      av.style.borderColor = 'rgba(255,255,255,0.15)';
       if (CS.avatar_glow) av.style.boxShadow = `0 0 16px ${accent}66, 0 0 32px ${accent}33`;
       if (CS.avatar_spin) {
         const styleEl = document.createElement('style');
         styleEl.textContent = `.avatar:hover { animation: avatarSpin 0.8s linear infinite !important; } @keyframes avatarSpin { to { transform: rotate(360deg); } }`;
         document.head.appendChild(styleEl);
       }
-      av.style.clipPath = '';
+      av.style.clipPath    = '';
       av.style.borderRadius = '50%';
-      if (shape === 'square') av.style.borderRadius = '8px';
+      if (shape === 'square')   av.style.borderRadius = '8px';
       if (shape === 'squircle') av.style.borderRadius = '30%';
-      if (shape === 'hexagon') { av.style.clipPath = 'polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)'; av.style.borderRadius = '0'; }
-      if (shape === 'diamond') { av.style.clipPath = 'polygon(50% 0%,100% 50%,50% 100%,0% 50%)'; av.style.borderRadius = '0'; }
+      if (shape === 'hexagon')  { av.style.clipPath = 'polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)'; av.style.borderRadius = '0'; }
+      if (shape === 'diamond')  { av.style.clipPath = 'polygon(50% 0%,100% 50%,50% 100%,0% 50%)'; av.style.borderRadius = '0'; }
     }
 
+    /* ── Layouts ── */
     function applyLayout(layout) {
       const header = document.querySelector('.card-header');
-      const av = document.getElementById('cardAvatar');
+      const av     = document.getElementById('cardAvatar');
       if (!header || !av) return;
       if (layout === 'centered') {
         header.style.flexDirection = 'column';
-        header.style.textAlign = 'center';
-        header.style.alignItems = 'center';
-        document.querySelector('.name-row').style.justifyContent = 'center';
+        header.style.textAlign     = 'center';
+        header.style.alignItems    = 'center';
+        const nameRow = document.querySelector('.name-row');
+        if (nameRow) nameRow.style.justifyContent = 'center';
       } else if (layout === 'minimal') {
         av.style.display = 'none';
       } else if (layout === 'banner') {
-        av.style.width = '100%';
-        av.style.height = '80px';
+        av.style.width        = '100%';
+        av.style.height       = '80px';
         av.style.borderRadius = '10px';
         header.style.flexDirection = 'column';
       }
     }
 
+    /* ── Card Texture ── */
     function applyTexture(texture) {
       if (texture === 'none') return;
       const card = document.getElementById('card');
       if (!card) return;
       const textures = {
-        noise: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.04\'/%3E%3C/svg%3E")',
-        grid: 'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)',
-        dots: 'radial-gradient(rgba(255,255,255,0.08) 1px,transparent 1px)',
-        lines: 'repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,0.02) 4px,rgba(255,255,255,0.02) 5px)',
+        noise:  'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.04\'/%3E%3C/svg%3E")',
+        grid:   'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)',
+        dots:   'radial-gradient(rgba(255,255,255,0.08) 1px,transparent 1px)',
+        lines:  'repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,0.02) 4px,rgba(255,255,255,0.02) 5px)',
         carbon: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 1px,transparent 0,transparent 50%),repeating-linear-gradient(-45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 1px,transparent 0,transparent 50%)',
       };
-      const sizes = { grid: '44px 44px', dots: '16px 16px', carbon: '4px 4px' };
+      const sizes = { grid:'44px 44px', dots:'16px 16px', carbon:'4px 4px' };
       if (textures[texture]) {
         card.style.backgroundImage = textures[texture];
         if (sizes[texture]) card.style.backgroundSize = sizes[texture];
       }
     }
 
+    /* ── Custom Cursor ── */
     function applyCursor(style, accent) {
       if (style === 'default') return;
-      if (style === 'none') { document.body.style.cursor = 'none'; return; }
+      if (style === 'none')      { document.body.style.cursor = 'none'; return; }
       if (style === 'crosshair') { document.body.style.cursor = 'crosshair'; return; }
       if (style === 'dot') {
         const styleEl = document.createElement('style');
@@ -896,51 +1055,52 @@
         document.body.appendChild(cursor);
         document.addEventListener('mousemove', e => {
           cursor.style.left = e.clientX + 'px';
-          cursor.style.top = e.clientY + 'px';
+          cursor.style.top  = e.clientY + 'px';
         });
         document.body.style.cursor = 'none';
       }
     }
 
+    /* ── Social Styles ── */
     function applySocialStyle(style, accent) {
       document.querySelectorAll('.social-btn').forEach(btn => {
-        btn.style.cssText = '';
-        btn.classList.add('social-btn');
+        btn.removeAttribute('style');
         if (style === 'icon-only') {
           btn.querySelectorAll('span').forEach(s => s.style.display = 'none');
-          btn.style.width = '44px';
+          btn.style.width   = '44px';
           btn.style.padding = '0';
           btn.style.justifyContent = 'center';
         } else if (style === 'filled') {
-          btn.style.background = accent + '22';
-          btn.style.borderColor = accent + '44';
-          btn.style.color = accent;
+          btn.style.background   = accent + '22';
+          btn.style.borderColor  = accent + '44';
+          btn.style.color        = accent;
         } else if (style === 'outlined') {
-          btn.style.background = 'transparent';
+          btn.style.background  = 'transparent';
           btn.style.borderColor = accent + '55';
-          btn.style.color = accent;
+          btn.style.color       = accent;
         } else if (style === 'minimal') {
-          btn.style.background = 'transparent';
-          btn.style.border = 'none';
-          btn.style.color = 'rgba(255,255,255,0.5)';
-          btn.style.padding = '0 8px';
-          btn.style.textDecoration = 'underline';
+          btn.style.background      = 'transparent';
+          btn.style.border          = 'none';
+          btn.style.color           = 'rgba(255,255,255,0.5)';
+          btn.style.padding         = '0 8px';
+          btn.style.textDecoration  = 'underline';
           btn.style.textUnderlineOffset = '3px';
         } else if (style === 'rounded') {
           btn.style.borderRadius = '100px';
-          btn.style.width = '44px';
+          btn.style.width   = '44px';
           btn.style.padding = '0';
           btn.querySelectorAll('span').forEach(s => s.style.display = 'none');
         }
       });
     }
 
+    /* ── Particles ── */
     function initParticles(color) {
       const canvas = document.createElement('canvas');
       canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none';
       document.body.appendChild(canvas);
       const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
+      canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
       window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
       const particles = Array.from({ length: 60 }, () => ({
@@ -951,7 +1111,7 @@
         dy: (Math.random() - 0.5) * 0.4,
         o: Math.random() * 0.4 + 0.1,
       }));
-      function draw() {
+      (function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => {
           ctx.beginPath();
@@ -959,20 +1119,20 @@
           ctx.fillStyle = color + Math.floor(p.o * 255).toString(16).padStart(2,'0');
           ctx.fill();
           p.x += p.dx; p.y += p.dy;
-          if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+          if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
           if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
         });
         requestAnimationFrame(draw);
-      }
-      draw();
+      })();
     }
 
+    /* ── Snow ── */
     function initSnow(color) {
       const canvas = document.createElement('canvas');
       canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none';
       document.body.appendChild(canvas);
       const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
+      canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
       window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
       const flakes = Array.from({ length: 80 }, () => ({
@@ -983,7 +1143,7 @@
         drift: (Math.random() - 0.5) * 0.5,
         o: Math.random() * 0.5 + 0.2,
       }));
-      function draw() {
+      (function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         flakes.forEach(f => {
           ctx.beginPath();
@@ -997,10 +1157,10 @@
           if (f.x < 0) f.x = canvas.width;
         });
         requestAnimationFrame(draw);
-      }
-      draw();
+      })();
     }
 
+    /* ── Splash Screen ── */
     function renderSplash(profile, CS) {
       const splashEl = document.getElementById('splash');
       splashEl.classList.add('active');
@@ -1016,26 +1176,28 @@
       }, { once: true });
     }
 
+    /* ── Reveal Profile ── */
     function revealProfile(profile, CS) {
       const loading = document.getElementById('loading');
-      if (loading) {
-        loading.classList.add('out');
-        setTimeout(() => { loading.style.display = 'none'; }, 600);
-      }
+      if (loading) { loading.classList.add('out'); setTimeout(() => loading.style.display = 'none', 600); }
       safeAddClass('profilePage', 'visible');
       safeAddClass('card', 'loaded');
+
       const showVolume = CS.show_volume_widget !== false;
-      if (profile.show_views !== false && !showVolume) {
-        safeAddClass('views', 'visible');
-      } else if (profile.show_views !== false && showVolume) {
+      if (profile.show_views !== false) {
         const viewsEl = document.getElementById('views');
-        if (viewsEl) viewsEl.style.bottom = '72px';
-        safeAddClass('views', 'visible');
+        if (viewsEl) {
+          if (showVolume) viewsEl.style.bottom = '72px';
+          viewsEl.classList.add('visible');
+        }
       }
+
       window._showTopBarBriefly?.();
-      const videoId = CS.youtube_video_id || profile.youtube_video_id || '';
-      const audioId = CS.audio_only_id || '';
+
+      const videoId   = CS.youtube_video_id || profile.youtube_video_id || '';
+      const audioId   = CS.audio_only_id || '';
       const customVid = CS.bg_video_url || profile.bg_video_url || '';
+
       if (CS.bg_type === 'custom-video' && customVid) {
         createVideoBackground(customVid, CS.bg_video_loop !== false, CS.bg_video_mute !== false);
       } else if (CS.bg_type === 'audio' && audioId) {
@@ -1043,53 +1205,65 @@
       } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
         createYouTubeBackground(videoId, CS.mute_video !== false, false);
       }
+
       const hasAudio = (CS.bg_type === 'video' && videoId) || (CS.bg_type === 'audio' && audioId);
       if (showVolume && hasAudio) initVolumeWidget();
+
       if (CS.typewriter !== false) {
         typeBio(profile.bio || '');
       } else {
         const bioEl = document.getElementById('cardBio');
         if (bioEl) bioEl.innerHTML = sanitizeHtml(profile.bio || '');
       }
+
       _profileIdForReactions = profile.id;
       initReactions(profile.id);
       applyScheduledBio(profile);
       initCardFlip(profile, CS);
       initMusicWidget(profile);
       initFollows(profile);
-      document.getElementById('qrBtn')?.style.display = 'flex';
+
+      const qrBtn = document.getElementById('qrBtn');
+      if (qrBtn) qrBtn.style.display = 'flex';
+
       if (profile.show_tilt !== false) initTilt();
       initNavLinks();
       updateClock();
       setInterval(updateClock, 1000);
     }
 
+    /* ── Clock ── */
     function updateClock() {
       const now = new Date();
-      let h = now.getHours();
-      const m = String(now.getMinutes()).padStart(2,'0');
-      const s = String(now.getSeconds()).padStart(2,'0');
+      let h  = now.getHours();
+      const m  = String(now.getMinutes()).padStart(2,'0');
+      const s  = String(now.getSeconds()).padStart(2,'0');
       const ap = h >= 12 ? 'PM' : 'AM';
       h = h % 12 || 12;
-      document.getElementById('footerClock').textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
+      const el = document.getElementById('footerClock');
+      if (el) el.textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
     }
 
+    /* ── Discord / Lanyard Status ── */
     async function fetchDiscordStatus(discordId) {
       try {
         const r = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
         const d = await r.json();
         if (d.success && d.data) {
           const { discord_status: st, activities } = d.data;
-          document.getElementById('statusDot').className = 'status-dot ' + (st || 'offline');
+          const dotEl  = document.getElementById('statusDot');
+          const textEl = document.getElementById('statusText');
+          if (dotEl)  dotEl.className  = 'status-dot ' + (st || 'offline');
           const custom = activities?.find(a => a.type === 4);
-          document.getElementById('statusText').textContent = (st && st !== 'offline' && custom?.state) ? custom.state : (st || 'offline');
+          if (textEl) textEl.textContent = (st && st !== 'offline' && custom?.state) ? custom.state : (st || 'offline');
         }
       } catch(_) {}
     }
 
+    /* ── UID Scramble ── */
     const scrambleChars = '0123456789ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛟ⚡☠✦✧⚔◊◈△▽';
     function startUidScramble(realNum) {
-      const el = document.getElementById('uidVal');
+      const el  = document.getElementById('uidVal');
       const len = String(realNum).length;
       let count = 0;
       const iv = setInterval(() => {
@@ -1100,6 +1274,7 @@
       }, 55);
     }
 
+    /* ── Typewriter Bio ── */
     function typeBio(text) {
       const bioEl = document.getElementById('cardBio');
       if (!text || !bioEl) { if (bioEl) bioEl.innerHTML = ''; return; }
@@ -1117,6 +1292,7 @@
       setTimeout(tick, 400);
     }
 
+    /* ── 3D Tilt ── */
     function initTilt() {
       const card = document.getElementById('card');
       if (!card) return;
@@ -1127,23 +1303,24 @@
         if (!hovering) return;
         const r = card.getBoundingClientRect();
         tx = (e.clientX - r.left - r.width / 2) / 12;
-        ty = (e.clientY - r.top - r.height / 2) / 12;
+        ty = (e.clientY - r.top  - r.height / 2) / 12;
       });
-      function anim() {
-        cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
+      (function anim() {
+        cx += (tx - cx) * 0.18;
+        cy += (ty - cy) * 0.18;
         card.style.transform = `perspective(1200px) rotateY(${cx}deg) rotateX(${-cy}deg)`;
         requestAnimationFrame(anim);
-      }
-      anim();
+      })();
       document.getElementById('cardAvatar')?.addEventListener('click', () => {
         const av = document.getElementById('cardAvatar');
         if (!av) return;
         av.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-        av.style.transform = 'scale(1.15) rotate(360deg)';
+        av.style.transform  = 'scale(1.15) rotate(360deg)';
         setTimeout(() => { av.style.transform = ''; }, 620);
       });
     }
 
+    /* ── Nav Link Interceptor ── */
     function initNavLinks() {
       const overlay = document.getElementById('navOverlay');
       let pending = '';
@@ -1159,7 +1336,7 @@
         overlay.classList.remove('active');
         if (pending) {
           if (window._profileId) {
-            const clicked = document.querySelector(`.nav-link[data-href="${pending}"]`);
+            const clicked = document.querySelector(`.nav-link[data-href="${CSS.escape(pending)}"]`);
             const label = clicked?.querySelector('span')?.textContent || '';
             trackLinkClick(window._profileId, label, pending);
           }
@@ -1167,29 +1344,42 @@
         }
         pending = '';
       });
-      document.getElementById('navNo').addEventListener('click', () => { overlay.classList.remove('active'); pending = ''; });
-      overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.classList.remove('active'); pending = ''; } });
+      document.getElementById('navNo').addEventListener('click', () => {
+        overlay.classList.remove('active');
+        pending = '';
+      });
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) { overlay.classList.remove('active'); pending = ''; }
+      });
     }
 
+    /* ── View Counter ── */
     async function refreshViewDisplay(profileId) {
       const { data } = await sb.from('profiles').select('view_count').eq('id', profileId).single();
-      if (data) document.getElementById('viewCount').textContent = (data.view_count || 0).toLocaleString();
+      if (data) {
+        const el = document.getElementById('viewCount');
+        if (el) el.textContent = (data.view_count || 0).toLocaleString();
+      }
     }
 
     async function countView(profileId, profileHandle) {
       const { data: { session } } = await sb.auth.getSession();
-      const isSelf = session?.user?.id === profileId;
-      if (isSelf) {
-        await refreshViewDisplay(profileId);
-        return;
-      }
+      if (session?.user?.id === profileId) { await refreshViewDisplay(profileId); return; }
+
+      // Canvas fingerprint
       const canvas = document.createElement('canvas');
       canvas.getContext('2d').fillText('fp', 0, 0);
-      const fp = { ua: navigator.userAgent, lang: navigator.language, res: `${screen.width}x${screen.height}`, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, cv: canvas.toDataURL() };
+      const fp = {
+        ua:  navigator.userAgent,
+        lang: navigator.language,
+        res:  `${screen.width}x${screen.height}`,
+        tz:   Intl.DateTimeFormat().resolvedOptions().timeZone,
+        cv:   canvas.toDataURL(),
+      };
       let hash = 0;
       const str = JSON.stringify(fp);
       for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
-      const key = `sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
+      const key   = `sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
       const today = new Date().toDateString();
       const stored = JSON.parse(localStorage.getItem(key) || '{"c":0,"d":""}');
       if (stored.d !== today) stored.c = 0;
@@ -1202,41 +1392,41 @@
       await refreshViewDisplay(profileId);
     }
 
+    /* ── Reactions ── */
     let _profileIdForReactions = null;
+
     async function initReactions(profileId) {
       try {
         const { data, error } = await sb.from('profiles')
           .select('like_count, dislike_count')
-          .eq('id', profileId)
-          .single();
+          .eq('id', profileId).single();
         if (error) {
           console.warn('[swaqq] reactions unavailable:', error.message);
-          document.getElementById('likeBtn')?.style.display = 'none';
-          document.getElementById('dislikeBtn')?.style.display = 'none';
+          document.getElementById('likeBtn')?.style.setProperty('display','none');
+          document.getElementById('dislikeBtn')?.style.setProperty('display','none');
           return;
         }
-        document.getElementById('likeCount').textContent = data?.like_count || 0;
+        document.getElementById('likeCount').textContent    = data?.like_count    || 0;
         document.getElementById('dislikeCount').textContent = data?.dislike_count || 0;
-        const reacted = localStorage.getItem(`swaqq_react_${profileId}`);
-        highlightReaction(reacted);
+        highlightReaction(localStorage.getItem(`swaqq_react_${profileId}`));
       } catch(e) {
         console.warn('[swaqq] initReactions error:', e);
       }
     }
 
     function highlightReaction(type) {
-      const likeBtn = document.getElementById('likeBtn');
+      const likeBtn    = document.getElementById('likeBtn');
       const dislikeBtn = document.getElementById('dislikeBtn');
       if (!likeBtn || !dislikeBtn) return;
-      likeBtn.style.color = 'rgba(255,255,255,0.35)';
+      likeBtn.style.color       = 'rgba(255,255,255,0.35)';
       likeBtn.style.borderColor = 'transparent';
-      dislikeBtn.style.color = 'rgba(255,255,255,0.35)';
+      dislikeBtn.style.color       = 'rgba(255,255,255,0.35)';
       dislikeBtn.style.borderColor = 'transparent';
       if (type === 'like') {
-        likeBtn.style.color = '#43b581';
+        likeBtn.style.color       = '#43b581';
         likeBtn.style.borderColor = 'rgba(67,181,129,0.3)';
       } else if (type === 'dislike') {
-        dislikeBtn.style.color = '#f04747';
+        dislikeBtn.style.color       = '#f04747';
         dislikeBtn.style.borderColor = 'rgba(240,71,71,0.3)';
       }
     }
@@ -1245,55 +1435,49 @@
       if (!_profileIdForReactions) return;
       const { data: { session } } = await sb.auth.getSession();
       if (session?.user?.id === _profileIdForReactions) return;
-      const key = `swaqq_react_${_profileIdForReactions}`;
+      const key     = `swaqq_react_${_profileIdForReactions}`;
       const current = localStorage.getItem(key);
-      const likeEl = document.getElementById('likeCount');
+      const likeEl    = document.getElementById('likeCount');
       const dislikeEl = document.getElementById('dislikeCount');
-      let likeDelta = 0;
-      let dislikeDelta = 0;
-      let newReaction = null;
+      let likeDelta = 0, dislikeDelta = 0, newReaction = null;
       if (current === type) {
-        if (type === 'like') likeDelta = -1;
+        if (type === 'like')    likeDelta    = -1;
         if (type === 'dislike') dislikeDelta = -1;
-        newReaction = null;
       } else {
-        if (current === 'like') likeDelta = -1;
+        if (current === 'like')    likeDelta    = -1;
         if (current === 'dislike') dislikeDelta = -1;
-        if (type === 'like') likeDelta += 1;
+        if (type === 'like')    likeDelta    += 1;
         if (type === 'dislike') dislikeDelta += 1;
         newReaction = type;
       }
       if (newReaction) localStorage.setItem(key, newReaction);
       else localStorage.removeItem(key);
-      likeEl.textContent = Math.max(0, (parseInt(likeEl.textContent) || 0) + likeDelta);
+      likeEl.textContent    = Math.max(0, (parseInt(likeEl.textContent)    || 0) + likeDelta);
       dislikeEl.textContent = Math.max(0, (parseInt(dislikeEl.textContent) || 0) + dislikeDelta);
       highlightReaction(newReaction);
       const btn = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
-      if (btn) {
-        btn.style.transform = 'scale(1.2)';
-        setTimeout(() => btn.style.transform = '', 300);
-      }
+      if (btn) { btn.style.transform = 'scale(1.2)'; setTimeout(() => btn.style.transform = '', 300); }
       try {
         if (current) await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: 'remove_' + current });
         if (newReaction) await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: newReaction });
       } catch(_) {
         const { data: cur } = await sb.from('profiles')
-          .select('like_count, dislike_count')
-          .eq('id', _profileIdForReactions)
-          .single();
+          .select('like_count, dislike_count').eq('id', _profileIdForReactions).single();
         if (cur) {
           await sb.from('profiles').update({
-            like_count: Math.max(0, (cur.like_count || 0) + likeDelta),
+            like_count:    Math.max(0, (cur.like_count    || 0) + likeDelta),
             dislike_count: Math.max(0, (cur.dislike_count || 0) + dislikeDelta),
           }).eq('id', _profileIdForReactions);
         }
       }
     }
 
+    /* ── Volume Widget ── */
     let _volumeHideTimer = null;
-    let _volumeOpen = false;
-    let _isMuted = false;
-    let _lastVolume = 60;
+    let _volumeOpen  = false;
+    let _isMuted     = false;
+    let _lastVolume  = 60;
+
     function initVolumeWidget() {
       const widget = document.getElementById('volumeWidget');
       if (!widget) return;
@@ -1307,32 +1491,28 @@
       });
       const slider = document.getElementById('volumeSlider');
       slider?.addEventListener('mousedown', () => clearTimeout(_volumeHideTimer));
-      slider?.addEventListener('mouseup', () => {
-        _volumeHideTimer = setTimeout(closeVolumeSlider, 1200);
-      });
+      slider?.addEventListener('mouseup',   () => { _volumeHideTimer = setTimeout(closeVolumeSlider, 1200); });
     }
+
     function openVolumeSlider() {
       if (_volumeOpen) return;
       _volumeOpen = true;
       const wrap = document.getElementById('volumeSliderWrap');
-      if (wrap) {
-        wrap.style.width = '130px';
-        wrap.style.opacity = '1';
-      }
+      if (wrap) { wrap.style.width = '130px'; wrap.style.opacity = '1'; }
     }
+
     function closeVolumeSlider() {
       _volumeOpen = false;
       const wrap = document.getElementById('volumeSliderWrap');
-      if (wrap) {
-        wrap.style.width = '0';
-        wrap.style.opacity = '0';
-      }
+      if (wrap) { wrap.style.width = '0'; wrap.style.opacity = '0'; }
     }
+
     function setVolume(val) {
       val = parseInt(val);
       _lastVolume = val > 0 ? val : _lastVolume;
-      _isMuted = val === 0;
-      document.getElementById('volumeVal').textContent = val + '%';
+      _isMuted    = val === 0;
+      const volVal = document.getElementById('volumeVal');
+      if (volVal) volVal.textContent = val + '%';
       updateVolumeIcon(val);
       if (ytPlayer) {
         try {
@@ -1341,6 +1521,7 @@
         } catch(_) {}
       }
     }
+
     function toggleMuteVolume() {
       const slider = document.getElementById('volumeSlider');
       if (!slider) return;
@@ -1349,26 +1530,21 @@
         slider.value = restore;
         setVolume(restore);
       } else {
-        _lastVolume = parseInt(slider.value) || 60;
+        _lastVolume  = parseInt(slider.value) || 60;
         slider.value = 0;
         setVolume(0);
       }
     }
+
     function updateVolumeIcon(val) {
       const icon = document.getElementById('volumeIcon');
       if (!icon) return;
-      if (val === 0) {
-        icon.className = 'fas fa-volume-mute';
-        icon.style.color = 'rgba(255,255,255,0.3)';
-      } else if (val < 40) {
-        icon.className = 'fas fa-volume-down';
-        icon.style.color = 'rgba(255,255,255,0.6)';
-      } else {
-        icon.className = 'fas fa-volume-up';
-        icon.style.color = 'rgba(255,255,255,0.6)';
-      }
+      if (val === 0)      { icon.className = 'fas fa-volume-mute'; icon.style.color = 'rgba(255,255,255,0.3)'; }
+      else if (val < 40)  { icon.className = 'fas fa-volume-down'; icon.style.color = 'rgba(255,255,255,0.6)'; }
+      else                { icon.className = 'fas fa-volume-up';   icon.style.color = 'rgba(255,255,255,0.6)'; }
     }
 
+    /* ── Boot ── */
     loadProfile();
   </script>
 </body>
