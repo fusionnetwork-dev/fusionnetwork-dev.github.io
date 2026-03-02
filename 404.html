@@ -102,8 +102,8 @@
     .views { position:fixed; bottom:22px; left:22px; z-index:102; display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.6); }
     .views.visible { display:flex; }
     .views i { font-size:12px; color:rgba(255,255,255,0.35); }
-    .watermark { position:fixed; bottom:22px; right:22px; z-index:102; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.15); letter-spacing:0.1em; text-decoration:none; transition:color 0.2s; }
-    .watermark:hover { color:rgba(255,255,255,0.4); }
+    <button class="qr-btn" id="qrBtn" onclick="openQR()" title="share profile QR code"><i class="fas fa-qrcode"></i></button>
+<a class="watermark" href="/" style="bottom:22px;right:66px">swaqq.xyz</a>
     .nav-overlay { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.65); backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
     .nav-overlay.active { opacity:1; pointer-events:all; }
     .nav-box { background:rgba(10,10,10,0.92); border:1px solid var(--border2); border-radius:18px; padding:28px 32px; width:100%; max-width:340px; display:flex; flex-direction:column; align-items:center; gap:12px; transform:translateY(16px) scale(0.97); transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
@@ -117,6 +117,39 @@
     .nav-yes { flex:1; padding:10px; border-radius:10px; border:none; cursor:pointer; background:linear-gradient(110deg,#333,#777,#bbb,#777,#333); background-size:200%; animation:shimmer 3s ease infinite; color:#fff; font-family:'Geist Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; transition:filter 0.2s; }
     .nav-yes:hover { filter:brightness(1.3); }
     @media(max-width:480px){ .card{padding:22px 20px 50px} .socials{flex-wrap:wrap} }
+    /* Music widget (profile page) */
+.music-widget { position:fixed; bottom:22px; right:80px; z-index:103; background:rgba(10,10,10,0.88); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:10px 14px; max-width:220px; cursor:pointer; transition:all 0.3s; display:none; align-items:center; gap:10px; }
+.music-widget.visible { display:flex; }
+.music-widget:hover { border-color:rgba(255,255,255,0.2); }
+.music-bars { display:flex; align-items:flex-end; gap:2px; height:16px; flex-shrink:0; }
+.music-bar { width:3px; border-radius:2px; background:rgba(255,255,255,0.6); animation:musicBounce 0.8s ease-in-out infinite; }
+.music-bar:nth-child(2) { animation-delay:0.15s; }
+.music-bar:nth-child(3) { animation-delay:0.3s; }
+.music-bar:nth-child(4) { animation-delay:0.1s; }
+@keyframes musicBounce { 0%,100%{height:4px}50%{height:14px} }
+.music-info { flex:1; min-width:0; }
+.music-title-text { font-size:11px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.music-artist-text { font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* QR button */
+.qr-btn { position:fixed; bottom:22px; right:22px; z-index:103; width:38px; height:38px; border-radius:100px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; font-size:13px; color:rgba(255,255,255,0.5); }
+.qr-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+
+/* Follow button */
+.follow-btn { display:inline-flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:7px 16px; border-radius:100px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.7); cursor:pointer; transition:all 0.2s; margin-top:8px; }
+.follow-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+.follow-btn.following { background:rgba(255,255,255,0.1); color:#fff; }
+.follow-btn.following:hover { background:rgba(240,71,71,0.1); color:#f04747; border-color:rgba(240,71,71,0.3); }
+.follow-counts { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.3); margin-top:4px; }
+.follow-count-val { color:rgba(255,255,255,0.7); font-weight:700; margin-right:2px; }
+
+/* Card flip */
+.card-wrap { perspective:1200px; }
+.card-flip-inner { position:relative; transform-style:preserve-3d; transition:transform 0.7s cubic-bezier(0.4,0,0.2,1); }
+.card-flip-inner.flipped { transform:rotateY(180deg); }
+.card-front, .card-back { backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+.card-back { position:absolute; inset:0; transform:rotateY(180deg); border-radius:inherit; padding:28px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px; text-align:center; backdrop-filter:inherit; background:inherit; }
+.flip-tap-hint { position:absolute; bottom:10px; right:14px; font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.18); letter-spacing:0.1em; pointer-events:none; }
   </style>
 </head>
 <body>
@@ -150,9 +183,12 @@
     <span class="top-bar-handle" id="topBarHandle"></span>
   </div>
 
-  <div class="page" id="profilePage">
-    <div class="card-wrap">
-      <div class="card" id="card">
+ <div class="page" id="profilePage">
+  <div class="card-wrap">
+    <div class="card-flip-inner" id="cardFlipInner">
+
+      <!-- FRONT -->
+      <div class="card card-front" id="card">
         <div class="card-header">
           <div class="avatar" id="cardAvatar"></div>
           <div class="user-info">
@@ -184,9 +220,32 @@
             <span class="footer-text" id="footerClock">--:-- --</span>
           </div>
         </div>
+        <span class="flip-tap-hint" id="flipTapHint" style="display:none">tap to flip ↺</span>
       </div>
-    </div>
-  </div>
+      <!-- END FRONT -->
+
+      <!-- BACK -->
+      <div class="card card-back" id="cardBack" style="display:none">
+        <div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:4px">joined</div>
+        <div style="font-size:22px;font-weight:800" id="backJoinDate">—</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35)">uid <span id="backUid"></span></div>
+        <div style="width:40px;height:1px;background:rgba(255,255,255,0.1);margin:4px 0"></div>
+        <div id="backCustomText" style="font-family:'Geist Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7;max-width:300px"></div>
+        <div style="margin-top:8px">
+          <div class="follow-counts">
+            <span><span class="follow-count-val" id="backFollowers">0</span> followers</span>
+            <span style="margin:0 6px;opacity:0.3">·</span>
+            <span><span class="follow-count-val" id="backFollowing">0</span> following</span>
+          </div>
+        </div>
+        <div id="backFollowWrap"></div>
+        <button onclick="document.getElementById('cardFlipInner').classList.remove('flipped')" style="margin-top:8px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:5px 14px;font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.35);cursor:pointer;letter-spacing:0.1em">↺ flip back</button>
+      </div>
+      <!-- END BACK -->
+
+    </div><!-- end card-flip-inner -->
+  </div><!-- end card-wrap -->
+</div><!-- end page -->
 
   <div class="views" id="views"><i class="fas fa-eye"></i><span id="viewCount">0</span></div>
   <a class="watermark" href="/">swaqq.xyz</a>
@@ -396,6 +455,166 @@
     loadYouTubeIframeAPI();
 
     // ── LOAD PROFILE ─────────────────────────────────────────────────────────────
+    // ── QR CODE ──────────────────────────────────────────────────────────────────
+function openQR() {
+  const url  = window.location.href;
+  const name = document.getElementById('cardName')?.textContent || handle;
+  document.getElementById('qrModalName').textContent   = name;
+  document.getElementById('qrModalHandle').textContent = '@' + handle;
+  document.getElementById('qrModalUrl').textContent    = url;
+  document.getElementById('qrCodeImg').innerHTML =
+    `<img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}" style="width:200px;height:200px;border-radius:6px">`;
+  document.getElementById('qrModalBg').classList.add('open');
+}
+function closeQR() { document.getElementById('qrModalBg').classList.remove('open'); }
+function downloadQR() {
+  const img = document.getElementById('qrImg'); if (!img) return;
+  const a   = document.createElement('a');
+  a.href    = img.src;
+  a.download = `swaqq-${handle}-qr.png`;
+  a.click();
+}
+
+// ── FOLLOWS ──────────────────────────────────────────────────────────────────
+let _isFollowing = false;
+
+async function initFollows(profile) {
+  const followerEl  = document.getElementById('backFollowers');
+  const followingEl = document.getElementById('backFollowing');
+  if (followerEl)  followerEl.textContent  = (profile.follower_count  || 0).toLocaleString();
+  if (followingEl) followingEl.textContent = (profile.following_count || 0).toLocaleString();
+
+  const { data:{ session } } = await sb.auth.getSession();
+  if (!session || session.user.id === profile.id) return;
+
+  // Check if already following
+  const { data: existing } = await sb.from('profile_follows')
+    .select('id').eq('follower_id', session.user.id).eq('following_id', profile.id).maybeSingle();
+  _isFollowing = !!existing;
+
+  // Inject follow button into card back
+  const followWrap = document.getElementById('backFollowWrap');
+  if (followWrap) {
+    followWrap.innerHTML = `
+      <button class="follow-btn ${_isFollowing ? 'following' : ''}" id="followBtn" onclick="toggleFollow('${profile.id}')">
+        <i class="fas fa-${_isFollowing ? 'user-check' : 'user-plus'}"></i>
+        ${_isFollowing ? 'following' : 'follow'}
+      </button>`;
+  }
+}
+
+async function toggleFollow(profileId) {
+  const { data:{ session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/'; return; }
+  const btn = document.getElementById('followBtn');
+  if (_isFollowing) {
+    await sb.rpc('unfollow_profile', { follower: session.user.id, target: profileId });
+    _isFollowing = false;
+    btn.className = 'follow-btn';
+    btn.innerHTML = '<i class="fas fa-user-plus"></i> follow';
+    const el = document.getElementById('backFollowers');
+    if (el) el.textContent = Math.max(0, parseInt(el.textContent.replace(/,/g,'') || 0) - 1).toLocaleString();
+  } else {
+    await sb.rpc('follow_profile', { follower: session.user.id, target: profileId });
+    _isFollowing = true;
+    btn.className = 'follow-btn following';
+    btn.innerHTML = '<i class="fas fa-user-check"></i> following';
+    const el = document.getElementById('backFollowers');
+    if (el) el.textContent = (parseInt(el.textContent.replace(/,/g,'') || 0) + 1).toLocaleString();
+  }
+}
+
+// ── CARD FLIP ─────────────────────────────────────────────────────────────────
+function initCardFlip(profile, CS) {
+  if (!CS.card_flip) return;
+
+  const inner   = document.getElementById('cardFlipInner');
+  const back    = document.getElementById('cardBack');
+  const hint    = document.getElementById('flipTapHint');
+  const backUid = document.getElementById('backUid');
+
+  back.style.display = 'flex';
+  if (hint) hint.style.display = 'block';
+
+  // Match back card styles to front
+  back.style.background      = document.getElementById('card').style.background;
+  back.style.backdropFilter  = document.getElementById('card').style.backdropFilter;
+  back.style.borderRadius    = document.getElementById('card').style.borderRadius;
+  back.style.border          = document.getElementById('card').style.border;
+
+  // Fill back content
+  const joined = new Date(profile.created_at);
+  document.getElementById('backJoinDate').textContent =
+    joined.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+
+  const uidEl = document.getElementById('uidVal');
+  if (backUid) backUid.textContent = uidEl?.textContent || '?';
+
+  const customText = document.getElementById('backCustomText');
+  if (customText && profile.card_back_text) {
+    customText.textContent = profile.card_back_text;
+  }
+
+  // Add follow button wrap
+  const followWrap = document.createElement('div');
+  followWrap.id = 'backFollowWrap';
+  back.insertBefore(followWrap, back.lastElementChild);
+
+  // Flip on card click (front only)
+  document.getElementById('card').addEventListener('click', e => {
+    if (e.target.closest('button, a, input')) return;
+    inner.classList.toggle('flipped');
+  });
+}
+
+// ── MUSIC WIDGET ─────────────────────────────────────────────────────────────
+function initMusicWidget(profile) {
+  if (!profile.music_title && !profile.music_artist) return;
+  const widget = document.getElementById('profileMusicWidget');
+  document.getElementById('profileMusicTitle').textContent  = profile.music_title  || '';
+  document.getElementById('profileMusicArtist').textContent = profile.music_artist || '';
+  widget.classList.add('visible');
+  if (profile.music_url) {
+    widget.onclick = () => window.open(profile.music_url, '_blank');
+  }
+}
+
+// ── LINK CLICK TRACKING ───────────────────────────────────────────────────────
+function trackLinkClick(profileId, label, url) {
+  // Fire-and-forget, don't await
+  sb.from('link_clicks').insert({ profile_id: profileId, label, url }).then(() => {});
+}
+
+// ── SCHEDULED BIO ─────────────────────────────────────────────────────────────
+function applyScheduledBio(profile) {
+  if (!profile.scheduled_bio || !profile.scheduled_bio_at) return;
+  if (new Date() >= new Date(profile.scheduled_bio_at)) {
+    // Time has passed — swap bio and persist the change
+    profile.bio = profile.scheduled_bio;
+    sb.from('profiles').update({
+      bio:              profile.scheduled_bio,
+      scheduled_bio:    null,
+      scheduled_bio_at: null,
+      updated_at:       new Date().toISOString(),
+    }).eq('id', profile.id).then(() => {});
+  }
+}
+
+// ── CUSTOM VIDEO BACKGROUND ───────────────────────────────────────────────────
+function createVideoBackground(url, loop, muted) {
+  const existing = document.getElementById('customVideoBg');
+  if (existing) existing.remove();
+  const video = document.createElement('video');
+  video.id     = 'customVideoBg';
+  video.src    = url;
+  video.autoplay = true;
+  video.muted    = muted !== false;
+  video.loop     = loop !== false;
+  video.playsInline = true;
+  video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none';
+  document.body.insertBefore(video, document.body.firstChild);
+  video.play().catch(() => {});
+}
     async function loadProfile() {
       const { data: profile, error } = await sb.from('profiles').select('*').eq('handle', handle).single();
       if (error || !profile) {
@@ -414,7 +633,7 @@
         document.getElementById('nfSub').textContent = 'this profile has been suspended.';
         return;
       }
-
+ window._profileId = profile.id;
       const CS = buildCS(profile);
 
       if (CS.custom_font_data && CS.custom_font_family) {
@@ -938,14 +1157,18 @@ function initSnow(color) {
 
       window._showTopBarBriefly && window._showTopBarBriefly();
 
-      const videoId = CS.youtube_video_id || profile.youtube_video_id || '';
-      const audioId = CS.audio_only_id || '';
-      if (CS.bg_type === 'audio' && audioId) {
-        createYouTubeBackground(audioId, CS.mute_audio !== false, true);
-      } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
-        createYouTubeBackground(videoId, CS.mute_video !== false, false);
-      }
+     // Replace the existing video bg block with:
+const videoId  = CS.youtube_video_id || profile.youtube_video_id || '';
+const audioId  = CS.audio_only_id || '';
+const customVid = CS.bg_video_url || profile.bg_video_url || '';
 
+if (CS.bg_type === 'custom-video' && customVid) {
+  createVideoBackground(customVid, CS.bg_video_loop !== false, CS.bg_video_mute !== false);
+} else if (CS.bg_type === 'audio' && audioId) {
+  createYouTubeBackground(audioId, CS.mute_audio !== false, true);
+} else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
+  createYouTubeBackground(videoId, CS.mute_video !== false, false);
+}
       const hasAudio = (CS.bg_type === 'video' && videoId) || (CS.bg_type === 'audio' && audioId);
       if (showVolume && hasAudio) initVolumeWidget();
 
@@ -958,6 +1181,14 @@ function initSnow(color) {
 
       _profileIdForReactions = profile.id;
       initReactions(profile.id);
+      // Inside revealProfile(profile, CS):
+applyScheduledBio(profile);
+initCardFlip(profile, CS);
+initMusicWidget(profile);
+initFollows(profile);
+
+// Show QR button
+document.getElementById('qrBtn').style.display = 'flex';
       if (profile.show_tilt !== false) initTilt();
       initNavLinks();
       updateClock();
@@ -1060,7 +1291,20 @@ function initSnow(color) {
           overlay.classList.add('active');
         });
       });
-      document.getElementById('navYes').addEventListener('click', () => { overlay.classList.remove('active'); if (pending) window.open(pending, '_blank'); pending = ''; });
+     // Inside initNavLinks(), replace the navYes click handler:
+document.getElementById('navYes').addEventListener('click', () => {
+  overlay.classList.remove('active');
+  if (pending) {
+    // Track the click
+    if (window._profileId) {
+      const clickedSocial = document.querySelector(`.nav-link[data-href="${pending}"]`);
+      const label = clickedSocial?.querySelector('span')?.textContent || '';
+      trackLinkClick(window._profileId, label, pending);
+    }
+    window.open(pending, '_blank');
+  }
+  pending = '';
+});
       document.getElementById('navNo').addEventListener('click',  () => { overlay.classList.remove('active'); pending = ''; });
       overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.classList.remove('active'); pending = ''; } });
     }
@@ -1312,6 +1556,31 @@ function updateVolumeIcon(val) {
   <div id="volumeSliderWrap" style="width:0;overflow:hidden;transition:width 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.25s ease;opacity:0;display:flex;align-items:center;background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-left:none;border-radius:0 100px 100px 0;height:38px;margin-left:-6px;padding-left:10px;box-sizing:border-box">
     <input type="range" id="volumeSlider" min="0" max="100" value="60" oninput="setVolume(this.value)" style="width:80px;accent-color:#fff;cursor:pointer;background:transparent;outline:none;border:none;flex-shrink:0">
     <span id="volumeVal" style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);margin:0 10px;min-width:28px;text-align:right">60%</span>
+  </div>
+</div>
+  <!-- QR CODE MODAL -->
+<div class="qr-modal-bg" id="qrModalBg" onclick="if(event.target===this)closeQR()">
+  <div class="qr-modal-box">
+    <div style="font-size:15px;font-weight:800;margin-bottom:4px" id="qrModalName"></div>
+    <div style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:18px" id="qrModalHandle"></div>
+    <div id="qrCodeImg" style="background:#fff;border-radius:10px;padding:12px;display:inline-block;margin-bottom:14px"></div>
+    <div style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,0.35);margin-bottom:16px" id="qrModalUrl"></div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="nav-no" onclick="closeQR()">close</button>
+      <button class="nav-yes" onclick="downloadQR()">download →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MUSIC WIDGET (profile page) -->
+<div id="profileMusicWidget" class="music-widget">
+  <div class="music-bars">
+    <div class="music-bar"></div><div class="music-bar"></div>
+    <div class="music-bar"></div><div class="music-bar"></div>
+  </div>
+  <div class="music-info">
+    <div class="music-title-text" id="profileMusicTitle"></div>
+    <div class="music-artist-text" id="profileMusicArtist"></div>
   </div>
 </div>
 </body>
