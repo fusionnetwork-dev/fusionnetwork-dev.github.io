@@ -2228,36 +2228,56 @@ function renderAdminTable(users) {
       ? `<span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted)">${u.email}</span>`
       : `<span style="color:var(--muted);font-size:10px">—</span>`;
 
-    return `<tr>
-      <td>
-        <div class="user-cell">
-          ${av}
-          <div>
-            <div class="user-handle">@${u.handle} ${roleTags}</div>
-            <div style="font-size:10px;color:var(--muted)">${u.display_name||''}</div>
-            ${noteTag}
-          </div>
-        </div>
-      </td>
-      <td>${emailDisplay}</td>
-      <td><div class="badges-cell">${pills}</div></td>
-      <td style="font-family:'Geist Mono',monospace">${(u.view_count||0).toLocaleString()}</td>
-      <td style="font-family:'Geist Mono',monospace;font-size:11px">${joined}</td>
-      <td>
-        <div class="admin-actions">
-          <button class="btn-sm btn-sm-gold" onclick="openBadgeModal('${u.id}','${u.handle}')"><i class="fas fa-star"></i> badges</button>
-          <button class="btn-sm btn-sm-ghost" onclick="openRoleModal('${u.id}','${u.handle}')"><i class="fas fa-shield-alt"></i> role</button>
-          ${u.is_banned
-            ? `<button class="btn-sm btn-sm-ghost" onclick="unbanUser('${u.id}','${u.handle}')"><i class="fas fa-user-check"></i> unban</button>`
-            : `<button class="btn-sm btn-sm-danger" onclick="banUser('${u.id}','${u.handle}')"><i class="fas fa-ban"></i> ban</button>`
-          }
-          const banRecord = u.is_banned
-  ? `<button class="btn-sm btn-sm-ghost" title="view ban record" onclick="viewBanRecord('${u.id}')"><i class="fas fa-info-circle"></i></button>`
-  : '';
-          <a class="btn-sm btn-sm-ghost" href="/@${u.handle}" target="_blank"><i class="fas fa-eye"></i></a>
-        </div>
-      </td>
-    </tr>`;
+  const isSelf = u.id === currentUser.id;
+const isProtected = u.is_owner || u.is_developer;
+const canModify = !isProtected && !isSelf;
+
+return `<tr>
+  <td>
+    <div class="user-cell">
+      ${av}
+      <div>
+        <div class="user-handle">@${u.handle} ${roleTags}</div>
+        <div style="font-size:10px;color:var(--muted)">${u.display_name||''}</div>
+        ${noteTag}
+      </div>
+    </div>
+  </td>
+  <td>${emailDisplay}</td>
+  <td><div class="badges-cell">${pills}</div></td>
+  <td style="font-family:'Geist Mono',monospace">${(u.view_count||0).toLocaleString()}</td>
+  <td style="font-family:'Geist Mono',monospace;font-size:11px">${joined}</td>
+  <td>
+    <div class="admin-actions">
+      <button class="btn-sm btn-sm-gold"
+        onclick="${canModify ? `openBadgeModal('${u.id}','${u.handle}')` : ''}"
+        ${!canModify ? 'disabled title="cannot modify owners or developers"' : ''}
+        style="${!canModify ? 'opacity:0.3;cursor:not-allowed' : ''}">
+        <i class="fas fa-star"></i> badges
+      </button>
+      <button class="btn-sm btn-sm-ghost"
+        onclick="${canModify ? `openRoleModal('${u.id}','${u.handle}')` : ''}"
+        ${!canModify ? 'disabled title="cannot modify owners or developers"' : ''}
+        style="${!canModify ? 'opacity:0.3;cursor:not-allowed' : ''}">
+        <i class="fas fa-shield-alt"></i> role
+      </button>
+      ${u.is_banned
+        ? `<button class="btn-sm btn-sm-ghost" onclick="unbanUser('${u.id}','${u.handle}')"><i class="fas fa-user-check"></i> unban</button>`
+        : `<button class="btn-sm btn-sm-danger"
+            onclick="${canModify ? `banUser('${u.id}','${u.handle}')` : ''}"
+            ${!canModify ? 'disabled title="cannot ban owners or developers"' : ''}
+            style="${!canModify ? 'opacity:0.3;cursor:not-allowed' : ''}">
+            <i class="fas fa-ban"></i> ban
+          </button>`
+      }
+      ${u.is_banned
+        ? `<button class="btn-sm btn-sm-ghost" title="view ban record" onclick="viewBanRecord('${u.id}')"><i class="fas fa-info-circle"></i></button>`
+        : ''
+      }
+      <a class="btn-sm btn-sm-ghost" href="/@${u.handle}" target="_blank"><i class="fas fa-eye"></i></a>
+    </div>
+  </td>
+</tr>`;
   }).join('');
 }
 
@@ -2351,6 +2371,18 @@ function openRoleModal(uid, handle) {
 
 async function saveRoleGrant() {
   if (!_roleModalUid) return;
+  const target = allUsers.find(u => u.id === _roleModalUid);
+  if (target?.is_owner || target?.is_developer) {
+    alert('cannot modify role of owners or developers.');
+    closeBadgeModal();
+    return;
+  }
+  if (_roleModalUid === currentUser.id) {
+    alert('cannot modify your own role.');
+    closeBadgeModal();
+    return;
+  }
+
   const selected = document.querySelector('#badgeModalList .modal-badge-row.checked');
   if (!selected) return;
   const role = selected.dataset.role;
@@ -2370,16 +2402,22 @@ async function saveRoleGrant() {
   filterUsers();
   renderAdminStats(allUsers);
 
-  // Reset save button back to badge modal behavior
   document.querySelector('.modal-save').onclick = saveBadgeGrant;
   document.querySelector('.modal-save').textContent = 'save →';
 }
-
 async function banUser(uid, handle) {
+  const target = allUsers.find(u => u.id === uid);
+  if (target?.is_owner || target?.is_developer) {
+    showAlert('profileAlert', 'cannot ban owners or developers.', 'error');
+    return;
+  }
+  if (uid === currentUser.id) {
+    showAlert('profileAlert', 'you cannot ban yourself.', 'error');
+    return;
+  }
   const reason = prompt(`ban reason for @${handle} (shown in records):`);
-  if (reason === null) return; // cancelled
+  if (reason === null) return;
 
-  // 1. Mark profile as banned
   const { error } = await sb.from('profiles')
     .update({
       is_banned: true,
@@ -2387,10 +2425,8 @@ async function banUser(uid, handle) {
       updated_at: new Date().toISOString()
     })
     .eq('id', uid);
-
   if (error) { alert('failed: ' + error.message); return; }
 
-  // 2. Insert into bans table to block fingerprint/IP on future visits
   await sb.from('bans').upsert(
     {
       profile_id: uid,
@@ -2399,7 +2435,6 @@ async function banUser(uid, handle) {
     { onConflict: 'profile_id', ignoreDuplicates: false }
   );
 
-  // Update local cache + re-render
   Object.assign(allUsers.find(u => u.id === uid), {
     is_banned: true,
     ban_reason: reason
@@ -2467,8 +2502,19 @@ async function unbanUser(uid, handle) {
 
   function closeBadgeModal() { document.getElementById('badgeModal').classList.remove('open'); _modalUid = null; }
 
-  async function saveBadgeGrant() {
+ async function saveBadgeGrant() {
   if (!_modalUid) return;
+  const target = allUsers.find(u => u.id === _modalUid);
+  if (target?.is_owner || target?.is_developer) {
+    alert('cannot modify badges of owners or developers.');
+    closeBadgeModal();
+    return;
+  }
+  if (_modalUid === currentUser.id) {
+    alert('cannot modify your own badges from the admin panel — use the badges tab instead.');
+    closeBadgeModal();
+    return;
+  }
 
   const checked = Array.from(
     document.querySelectorAll('#badgeModalList .modal-badge-row.checked')
@@ -2481,13 +2527,10 @@ async function unbanUser(uid, handle) {
   };
   if (_modalRoles.is_owner) roleUpd.is_admin = true;
 
-  // KEY FIX: also update the active badges array to include newly granted badges
-  // so they show on the profile immediately without the user needing to toggle them
   const targetUser = allUsers.find(u => u.id === _modalUid);
   const currentActive = pj(targetUser?.badges, []);
-
-  // Auto-add newly granted badges to active badges (but don't exceed 5)
   const wasUnlocked = pj(targetUser?.unlocked_badges, []);
+
   const newlyGranted = checked.filter(id => !wasUnlocked.includes(id));
   let newActive = [...currentActive];
   newlyGranted.forEach(id => {
@@ -2495,19 +2538,17 @@ async function unbanUser(uid, handle) {
       newActive.push(id);
     }
   });
-  // Remove from active if badge was revoked
   const revoked = wasUnlocked.filter(id => !checked.includes(id));
   newActive = newActive.filter(id => !revoked.includes(id));
 
   const { error } = await sb.from('profiles').update({
     unlocked_badges: JSON.stringify(checked),
-    badges:          JSON.stringify(newActive), // ← auto-applies to profile
+    badges:          JSON.stringify(newActive),
     ...roleUpd,
   }).eq('id', _modalUid);
 
   if (error) { alert('save failed: ' + error.message); return; }
 
-  // Update local cache
   const idx = allUsers.findIndex(u => u.id === _modalUid);
   if (idx !== -1) {
     allUsers[idx].unlocked_badges = JSON.stringify(checked);
