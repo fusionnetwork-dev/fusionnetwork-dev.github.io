@@ -698,7 +698,14 @@
       </div>
     </div>
   </div>
-
+  
+<div class="toggle-row">
+  <div>
+    <div class="toggle-title">volume widget</div>
+    <div class="toggle-sub">show a volume slider in the bottom left — only appears when audio/video bg is set</div>
+  </div>
+  <div class="toggle on" id="tVolumeWidget" onclick="this.classList.toggle('on')"></div>
+</div>
   <!-- ACCENT COLOR -->
   <div class="dash-section">
     <div class="dash-section-title">accent color</div>
@@ -1370,6 +1377,7 @@ const CS_DEF = {
   particles:false, page_anim:true, snow:false, scanlines:false,
   particle_color:'#ffffff',
   bio_size:13, bio_color:'#ffffff', bio_italic:false, typewriter:true,
+  show_volume_widget: true,
 };
   function cs(k){ return (CS[k] !== undefined && CS[k] !== null) ? CS[k] : CS_DEF[k]; }
 
@@ -1729,6 +1737,7 @@ function restoreCustomizeSelections() {
   tog('tScanlines',   cs('scanlines')    === true);
   tog('tTypewriter',  cs('typewriter')   !== false);
   tog('tBioItalic',   cs('bio_italic')   === true);
+  tog('tVolumeWidget', cs('show_volume_widget') !== false);
 }
     currentBgTab = cs('bg_type') || 'video';
     activateBgTab(currentBgTab);
@@ -2478,6 +2487,7 @@ mute_audio: gtog('tMuteAudio'),
   bio_color:      document.getElementById('fBioColor')?.value               || cs('bio_color'),
   bio_italic:     gtog('tBioItalic'),
   typewriter:     gtog('tTypewriter'),
+    show_volume_widget: gtog('tVolumeWidget'),
     };
 newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
     console.log('[swaqq] saving newCS:', newCS);
