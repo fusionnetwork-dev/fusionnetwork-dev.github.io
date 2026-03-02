@@ -1140,14 +1140,14 @@ function initSnow(color) {
   }
 }
 
-    async function handleReaction(type) {
+   async function handleReaction(type) {
   if (!_profileIdForReactions) return;
 
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user?.id === _profileIdForReactions) return;
 
   const key     = `swaqq_react_${_profileIdForReactions}`;
-  const current = localStorage.getItem(key); // 'like', 'dislike', or null
+  const current = localStorage.getItem(key);
 
   const likeEl    = document.getElementById('likeCount');
   const dislikeEl = document.getElementById('dislikeCount');
@@ -1157,15 +1157,15 @@ function initSnow(color) {
   let newReaction  = null;
 
   if (current === type) {
-    // Same button clicked — undo the reaction
-    if (type === 'like')    likeДelta    = -1;
+    // Same button — undo
+    if (type === 'like')    likeDelta    = -1;
     if (type === 'dislike') dislikeDelta = -1;
     newReaction = null;
   } else {
-    // Different or no reaction — switch/set
-    if (current === 'like')    likeДelta    = -1; // remove old like
-    if (current === 'dislike') dislikeDelta = -1; // remove old dislike
-    if (type === 'like')    likeДelta    += 1;
+    // Switch or new reaction
+    if (current === 'like')    likeDelta    = -1;
+    if (current === 'dislike') dislikeDelta = -1;
+    if (type === 'like')    likeDelta    += 1;
     if (type === 'dislike') dislikeDelta += 1;
     newReaction = type;
   }
@@ -1178,11 +1178,10 @@ function initSnow(color) {
   }
 
   // Update display immediately
-  likeEl.textContent    = Math.max(0, (parseInt(likeEl.textContent)    || 0) + likeДelta);
+  likeEl.textContent    = Math.max(0, (parseInt(likeEl.textContent)    || 0) + likeDelta);
   dislikeEl.textContent = Math.max(0, (parseInt(dislikeEl.textContent) || 0) + dislikeDelta);
   highlightReaction(newReaction);
 
-  // Animate the clicked button
   const btn = document.getElementById(type === 'like' ? 'likeBtn' : 'dislikeBtn');
   btn.style.transform = 'scale(1.2)';
   setTimeout(() => btn.style.transform = '', 300);
@@ -1190,21 +1189,19 @@ function initSnow(color) {
   // Persist to DB
   try {
     if (current) {
-      // Remove old reaction first
       await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: 'remove_' + current });
     }
     if (newReaction) {
       await sb.rpc('toggle_like', { profile_id: _profileIdForReactions, action: newReaction });
     }
   } catch(_) {
-    // Fallback: direct update
     const { data: cur } = await sb.from('profiles')
       .select('like_count, dislike_count')
       .eq('id', _profileIdForReactions)
       .single();
     if (cur) {
       await sb.from('profiles').update({
-        like_count:    Math.max(0, (cur.like_count    || 0) + likeДelta),
+        like_count:    Math.max(0, (cur.like_count    || 0) + likeDelta),
         dislike_count: Math.max(0, (cur.dislike_count || 0) + dislikeDelta),
       }).eq('id', _profileIdForReactions);
     }
