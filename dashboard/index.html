@@ -336,7 +336,53 @@
     .btn-sm-danger:hover { background:rgba(255,80,80,0.07); color:rgba(255,80,80,0.85); }
     .btn-sm-gold { background:rgba(245,166,35,0.08); color:rgba(245,166,35,0.7); border:1px solid rgba(245,166,35,0.2); }
     .btn-sm-gold:hover { background:rgba(245,166,35,0.15); color:var(--gold); }
+/* Card flip */
+.card-flip-wrap { perspective: 1200px; }
+.card-flip-inner { position:relative; transform-style:preserve-3d; transition:transform 0.7s cubic-bezier(0.4,0,0.2,1); cursor:pointer; }
+.card-flip-inner.flipped { transform:rotateY(180deg); }
+.card-flip-front, .card-flip-back { backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+.card-flip-back { position:absolute; inset:0; transform:rotateY(180deg); border-radius:inherit; padding:28px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:16px; text-align:center; }
+.flip-hint { position:absolute; bottom:10px; right:14px; font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.2); letter-spacing:0.1em; pointer-events:none; }
 
+/* Follows */
+.follow-btn { display:inline-flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:8px 18px; border-radius:100px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.7); cursor:pointer; transition:all 0.2s; }
+.follow-btn:hover { background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.3); }
+.follow-btn.following { background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.25); }
+.follow-btn.following:hover { background:rgba(240,71,71,0.12); color:#f04747; border-color:rgba(240,71,71,0.3); }
+.follow-counts { display:flex; gap:16px; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.4); }
+.follow-count-val { color:#fff; font-weight:700; margin-right:3px; }
+
+/* Music widget */
+.music-widget { display:none; position:fixed; bottom:22px; right:22px; z-index:103; background:rgba(10,10,10,0.88); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:10px 14px; max-width:220px; cursor:pointer; transition:all 0.3s; }
+.music-widget.visible { display:flex; align-items:center; gap:10px; }
+.music-widget:hover { border-color:rgba(255,255,255,0.2); background:rgba(20,20,20,0.92); }
+.music-bars { display:flex; align-items:flex-end; gap:2px; height:16px; flex-shrink:0; }
+.music-bar { width:3px; border-radius:2px; background:rgba(255,255,255,0.6); animation:musicBounce 0.8s ease-in-out infinite; }
+.music-bar:nth-child(2) { animation-delay:0.15s; }
+.music-bar:nth-child(3) { animation-delay:0.3s; }
+.music-bar:nth-child(4) { animation-delay:0.1s; }
+@keyframes musicBounce { 0%,100%{height:4px}50%{height:14px} }
+.music-info { flex:1; min-width:0; }
+.music-title-text { font-size:11px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.music-artist-text { font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* QR modal */
+.qr-modal-bg { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.75); backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+.qr-modal-bg.open { opacity:1; pointer-events:all; }
+.qr-modal-box { background:var(--surface); border:1px solid var(--border2); border-radius:18px; padding:28px 32px; text-align:center; }
+
+/* Audit log */
+.audit-row { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); font-family:'Geist Mono',monospace; font-size:11px; }
+.audit-row:last-child { border-bottom:none; }
+.audit-time { color:var(--muted); flex-shrink:0; width:90px; }
+.audit-actor { color:var(--sub); flex-shrink:0; width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.audit-action { flex:1; }
+.audit-action .hl { color:var(--text); font-weight:600; }
+
+/* IP table */
+.ip-table { width:100%; border-collapse:collapse; }
+.ip-table th { text-align:left; padding:6px 12px; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--border); }
+.ip-table td { padding:8px 12px; font-family:'Geist Mono',monospace; font-size:11px; color:var(--sub); border-bottom:1px solid rgba(255,255,255,0.03); }
 .theme-row { display:flex; align-items:center; gap:10px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 14px; transition:border-color 0.2s; }
 .theme-row:hover { border-color:var(--border2); }
 .theme-name { font-family:'Geist Mono',monospace; font-size:12px; color:var(--text); flex:1; }
@@ -427,7 +473,9 @@
     <button class="nav-item" onclick="showTab('customize')"><i class="fas fa-palette"></i> customize</button>
     <button class="nav-item" onclick="showTab('socials')"><i class="fas fa-link"></i> social links</button>
     <button class="nav-item" onclick="showTab('badges')"><i class="fas fa-certificate"></i> badges</button>
-    <button class="nav-item" onclick="showTab('analytics')"><i class="fas fa-chart-line"></i> analytics</button>
+   <button class="nav-item" onclick="showTab('analytics')"><i class="fas fa-chart-line"></i> analytics</button>
+<button class="nav-item" onclick="showTab('music')"><i class="fas fa-music"></i> music</button>
+<button class="nav-item" onclick="showTab('schedule')"><i class="fas fa-clock"></i> scheduled bio</button>
     <button class="nav-item" onclick="showTab('settings')"><i class="fas fa-cog"></i> settings</button>
     <div class="nav-section-label" style="margin-top:8px">view</div>
     <a class="nav-item" id="viewProfileLink" href="#" target="_blank"><i class="fas fa-eye"></i> view profile</a>
@@ -501,6 +549,16 @@
             <div class="toggle locked" id="tUid"></div>
           </div>
           <div class="toggle-row"><div><div class="toggle-title">view counter</div><div class="toggle-sub">show total visits at the bottom of your page</div></div><div class="toggle on" id="tViews" onclick="this.classList.toggle('on')"></div></div>
+          <div class="toggle-row">
+  <div><div class="toggle-title">card flip on click</div><div class="toggle-sub">clicking the card flips it to reveal back side info</div></div>
+  <div class="toggle" id="tCardFlip" onclick="this.classList.toggle('on')"></div>
+</div>
+<div id="cardBackTextWrap" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+  <div class="field">
+    <div class="field-label">card back text</div>
+    <textarea class="field-input" id="fCardBackText" placeholder="text shown on the back of the card when flipped..." maxlength="200" style="min-height:60px"></textarea>
+  </div>
+</div>
         </div>
       </div>
     </div>
@@ -649,7 +707,35 @@
               </select>
             </div>
           </div>
+<!-- add to tab pills -->
+<button class="tab-pill" data-bgtab="custom-video" onclick="switchBgTab('custom-video',this)"><i class="fas fa-film" style="font-size:9px"></i> custom video</button>
 
+<!-- add as new bg-panel -->
+<div class="bg-panel" id="bgPanel-custom-video">
+  <div class="field">
+    <div class="field-label">upload video <span class="tag">mp4 · webm — max 50mb</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <label style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);background:var(--surface2);border:1px dashed var(--border2);border-radius:8px;padding:9px 14px;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.11)';this.style.color='var(--sub)'">
+        <i class="fas fa-upload" style="font-size:10px"></i> choose video file
+        <input type="file" id="bgVideoFileInput" accept="video/mp4,video/webm" style="display:none" onchange="handleBgVideoUpload(this)">
+      </label>
+      <span id="bgVideoFileName" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)"></span>
+    </div>
+    <div class="field-hint">or paste a direct video URL below</div>
+  </div>
+  <div class="field">
+    <div class="field-label">or direct video url</div>
+    <input class="field-input" type="url" id="fBgVideoUrl" placeholder="https://..." oninput="updateBgPreview()">
+  </div>
+  <div class="toggle-row">
+    <div><div class="toggle-title">loop video</div><div class="toggle-sub">video restarts when it ends</div></div>
+    <div class="toggle on" id="tBgVideoLoop" onclick="this.classList.toggle('on')"></div>
+  </div>
+  <div class="toggle-row">
+    <div><div class="toggle-title">mute video</div><div class="toggle-sub">play video silently</div></div>
+    <div class="toggle on" id="tBgVideoMute" onclick="this.classList.toggle('on')"></div>
+  </div>
+</div>
           <!-- BG PREVIEW -->
           <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
             <div class="field-label" style="margin-bottom:8px">preview</div>
@@ -1176,6 +1262,42 @@
           </div>
         </div>
       </div>
+      <div class="dash-section">
+  <div class="dash-section-title">two-factor authentication</div>
+  <div class="card-edit">
+    <div id="mfaStatusRow" class="toggle-row">
+      <div>
+        <div class="toggle-title">authenticator app <span id="mfaStatusTag" style="font-family:'Geist Mono',monospace;font-size:9px;border-radius:4px;padding:2px 7px;margin-left:6px"></span></div>
+        <div class="toggle-sub">use Google Authenticator, Authy, or any TOTP app</div>
+      </div>
+      <button class="btn btn-ghost" id="mfaToggleBtn" onclick="toggleMFA()" style="font-size:10px">enable 2fa</button>
+    </div>
+    <!-- Enroll flow -->
+    <div id="mfaEnrollSection" style="display:none;padding-top:16px;border-top:1px solid var(--border);margin-top:4px">
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:12px">scan this QR code with your authenticator app</div>
+      <div id="mfaQrCode" style="background:#fff;border-radius:10px;padding:12px;display:inline-block;margin-bottom:14px"></div>
+      <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:14px">or enter this code manually: <span id="mfaSecret" style="color:var(--text);letter-spacing:0.1em"></span></div>
+      <div class="field-row">
+        <div class="field">
+          <div class="field-label">verify — enter the 6-digit code</div>
+          <div style="display:flex;gap:8px">
+            <input class="field-input" type="text" id="mfaVerifyInput" placeholder="000000" maxlength="6" style="width:140px;letter-spacing:0.2em;font-size:18px;text-align:center" oninput="this.value=this.value.replace(/\D/g,'')">
+            <button class="btn btn-ghost" onclick="verifyMFAEnroll()">verify & enable →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Disable flow -->
+    <div id="mfaDisableSection" style="display:none;padding-top:16px;border-top:1px solid var(--border);margin-top:4px">
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:12px">enter your authenticator code to disable 2FA</div>
+      <div style="display:flex;gap:8px">
+        <input class="field-input" type="text" id="mfaDisableInput" placeholder="000000" maxlength="6" style="width:140px;letter-spacing:0.2em;font-size:18px;text-align:center" oninput="this.value=this.value.replace(/\D/g,'')">
+        <button class="btn btn-danger" onclick="disableMFA()">disable 2fa</button>
+      </div>
+    </div>
+    <div class="alert" id="mfaAlert" style="margin-top:8px"></div>
+  </div>
+</div>
     </div>
 <!-- ═══ ANALYTICS TAB ═══ -->
 <div id="tab-analytics" style="display:none">
@@ -1342,7 +1464,44 @@
       <div class="alert" id="noteAlert" style="margin-top:8px"></div>
     </div>
   </div>
+<!-- BULK ACTION BAR -->
+<div id="bulkActionBar" style="display:none;position:sticky;top:48px;z-index:40;background:rgba(7,7,7,0.95);backdrop-filter:blur(16px);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;margin-bottom:12px;align-items:center;gap:10px;flex-wrap:wrap">
+  <span id="bulkCount" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub)">0 selected</span>
+  <button class="btn-sm btn-sm-gold" onclick="bulkGrantBadge('early')"><i class="fas fa-star"></i> grant early</button>
+  <button class="btn-sm btn-sm-ghost" onclick="bulkGrantBadge('supporter')"><i class="fas fa-heart"></i> grant supporter</button>
+  <button class="btn-sm btn-sm-danger" onclick="bulkBan()"><i class="fas fa-ban"></i> ban all</button>
+  <button class="btn-sm btn-sm-ghost" style="margin-left:auto" onclick="_bulkSelected.clear();updateBulkBar();document.querySelectorAll('.bulk-check').forEach(c=>c.checked=false)">clear</button>
+</div>
 
+<!-- AUDIT LOG -->
+<div class="dash-section">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div>
+      <div class="dash-section-title" style="margin-bottom:2px">📋 audit log</div>
+      <div class="dash-section-sub" style="margin-bottom:0">last 100 admin actions</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost" onclick="loadAuditLog()" style="font-size:10px"><i class="fas fa-sync"></i> refresh</button>
+      <button class="btn btn-ghost" onclick="exportUsersCSV()" style="font-size:10px"><i class="fas fa-download"></i> export csv</button>
+    </div>
+  </div>
+  <div class="card-edit" style="padding:16px 20px;max-height:320px;overflow-y:auto" id="auditLogList">
+    <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">click refresh to load</div>
+  </div>
+</div>
+
+<!-- IP / BAN RECORDS -->
+<div class="dash-section">
+  <div class="dash-section-title" style="margin-bottom:4px">🔒 ban records & fingerprints</div>
+  <div class="dash-section-sub">fingerprints and IP hints captured at ban time</div>
+  <div class="card-edit" style="padding:0;overflow-x:auto">
+    <table class="ip-table">
+      <thead><tr><th>ip hint</th><th>fingerprint</th><th>reason</th><th>date</th></tr></thead>
+      <tbody id="ipStatsBody"><tr><td colspan="4" style="text-align:center;padding:16px;color:var(--muted)">click refresh to load</td></tr></tbody>
+    </table>
+  </div>
+  <button class="btn btn-ghost" onclick="loadIpStats()" style="font-size:10px;margin-top:10px"><i class="fas fa-sync"></i> load records</button>
+</div>
 </div>
 
 <!-- SAVE BAR -->
@@ -1841,19 +2000,23 @@ function restoreCustomizeSelections() {
   function gtog(id) { return document.getElementById(id)?.classList.contains('on') ?? false; }
 
   // ─── TABS ─────────────────────────────────────────────────────────────────────
-  const TABS = ['profile','appearance','customize','socials','badges','settings','analytics','admin'];
- function showTab(name) {
+ const TABS = ['profile','appearance','customize','socials','badges','settings','analytics','music','schedule','admin'];
+function showTab(name) {
   TABS.forEach(t => {
-    document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
+    const el = document.getElementById('tab-' + t);
+    if (el) el.style.display = t === name ? 'block' : 'none';
   });
   document.querySelectorAll('.nav-item[onclick]').forEach(el => {
     const m = el.getAttribute('onclick').match(/showTab\('(\w+)'\)/);
     if (m) el.classList.toggle('active', m[1] === name);
   });
   if (name === 'admin')     loadAdminData();
-  if (name === 'analytics') loadAnalytics();   // ADD THIS LINE
-if (name === 'customize') { buildFontGrid(); updateCardPreview(); loadThemes(); }
-   if (name === 'badges') loadCustomBadges();
+  if (name === 'analytics') loadAnalytics();
+  if (name === 'customize') { buildFontGrid(); updateCardPreview(); loadThemes(); }
+  if (name === 'badges')    loadCustomBadges();
+  if (name === 'settings')  loadMFAStatus();
+  if (name === 'music')     loadMusicTab();
+  if (name === 'schedule')  loadScheduleTab();
   window.scrollTo(0, 0);
 }
   // ─── BG TABS ─────────────────────────────────────────────────────────────────
@@ -2601,6 +2764,100 @@ async function deleteCustomBadge(id, btn) {
   if (error) { btn.closest('.badge-card').style.opacity = '1'; showAlert('customBadgeAlert', 'delete failed.', 'error'); return; }
   loadCustomBadges();
 }
+  // ── 2FA / MFA ─────────────────────────────────────────────────────────────────
+let _mfaFactorId  = null;
+let _mfaChallengeId = null;
+
+async function loadMFAStatus() {
+  const { data } = await sb.auth.mfa.listFactors();
+  const totp = data?.totp?.[0];
+  const tag  = document.getElementById('mfaStatusTag');
+  const btn  = document.getElementById('mfaToggleBtn');
+
+  if (totp && totp.status === 'verified') {
+    _mfaFactorId = totp.id;
+    tag.textContent = '2fa on';
+    tag.style.cssText = 'background:rgba(67,181,129,0.15);border:1px solid rgba(67,181,129,0.3);color:#43b581';
+    btn.textContent = 'disable 2fa';
+    document.getElementById('mfaEnrollSection').style.display  = 'none';
+    document.getElementById('mfaDisableSection').style.display = 'none';
+  } else {
+    _mfaFactorId = null;
+    tag.textContent = 'off';
+    tag.style.cssText = 'background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--muted)';
+    btn.textContent = 'enable 2fa';
+    document.getElementById('mfaEnrollSection').style.display  = 'none';
+    document.getElementById('mfaDisableSection').style.display = 'none';
+  }
+}
+
+async function toggleMFA() {
+  if (_mfaFactorId) {
+    // Show disable flow
+    document.getElementById('mfaDisableSection').style.display = 'block';
+    document.getElementById('mfaEnrollSection').style.display  = 'none';
+  } else {
+    // Start enroll
+    const { data, error } = await sb.auth.mfa.enroll({ factorType: 'totp', issuer: 'swaqq.xyz' });
+    if (error) { showAlert('mfaAlert', error.message, 'error'); return; }
+
+    _mfaFactorId = data.id;
+
+    // Render QR with a simple canvas-based approach using the totp_uri
+    const qrEl = document.getElementById('mfaQrCode');
+    qrEl.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(data.totp.uri)}" style="width:160px;height:160px;border-radius:6px">`;
+    document.getElementById('mfaSecret').textContent = data.totp.secret;
+    document.getElementById('mfaEnrollSection').style.display  = 'block';
+    document.getElementById('mfaDisableSection').style.display = 'none';
+  }
+}
+
+async function verifyMFAEnroll() {
+  const code = document.getElementById('mfaVerifyInput').value.trim();
+  if (code.length !== 6) { showAlert('mfaAlert', 'enter the 6-digit code.', 'error'); return; }
+
+  // Challenge then verify
+  const { data: ch, error: chErr } = await sb.auth.mfa.challenge({ factorId: _mfaFactorId });
+  if (chErr) { showAlert('mfaAlert', chErr.message, 'error'); return; }
+
+  const { error } = await sb.auth.mfa.verify({
+    factorId:    _mfaFactorId,
+    challengeId: ch.id,
+    code,
+  });
+
+  if (error) { showAlert('mfaAlert', 'invalid code — try again.', 'error'); return; }
+
+  // Mark in profiles table
+  await sb.from('profiles').update({ mfa_enabled: true }).eq('id', currentUser.id);
+  document.getElementById('mfaVerifyInput').value = '';
+  showAlert('mfaAlert', '✓ 2fa enabled! your account is now protected.', 'success');
+  loadMFAStatus();
+}
+
+async function disableMFA() {
+  const code = document.getElementById('mfaDisableInput').value.trim();
+  if (code.length !== 6) { showAlert('mfaAlert', 'enter the 6-digit code to confirm.', 'error'); return; }
+  if (!_mfaFactorId) { showAlert('mfaAlert', 'no 2fa factor found.', 'error'); return; }
+
+  const { data: ch, error: chErr } = await sb.auth.mfa.challenge({ factorId: _mfaFactorId });
+  if (chErr) { showAlert('mfaAlert', chErr.message, 'error'); return; }
+
+  const { error: verErr } = await sb.auth.mfa.verify({
+    factorId:    _mfaFactorId,
+    challengeId: ch.id,
+    code,
+  });
+  if (verErr) { showAlert('mfaAlert', 'invalid code.', 'error'); return; }
+
+  const { error } = await sb.auth.mfa.unenroll({ factorId: _mfaFactorId });
+  if (error) { showAlert('mfaAlert', error.message, 'error'); return; }
+
+  await sb.from('profiles').update({ mfa_enabled: false }).eq('id', currentUser.id);
+  document.getElementById('mfaDisableInput').value = '';
+  showAlert('mfaAlert', '2fa disabled.', 'success');
+  loadMFAStatus();
+}
   // ─── CUSTOM ICON ─────────────────────────────────────────────────────────────
   function handleCustomIcon(input) {
    const file = input.files[0]; if (!file) return;
@@ -2979,6 +3236,11 @@ mute_audio: gtog('tMuteAudio'),
   bio_italic:     gtog('tBioItalic'),
   typewriter:     gtog('tTypewriter'),
     show_volume_widget: gtog('tVolumeWidget'),
+bg_video_url:    document.getElementById('fBgVideoUrl')?.value?.trim() || '',
+ bg_video_loop:   gtog('tBgVideoLoop'),
+ bg_video_mute:   gtog('tBgVideoMute'),
+ card_flip:       gtog('tCardFlip'),
+ card_back_text:  document.getElementById('fCardBackText')?.value?.trim() || '',
     };
 newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
     console.log('[swaqq] saving newCS:', newCS);
@@ -3015,7 +3277,10 @@ newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
       bg_grad_dir:       newCS.bg_grad_dir,
       // custom_settings blob as backup
       custom_settings:   JSON.stringify(newCS),
-      updated_at:        new Date().toISOString()
+      updated_at:        new Date().toISOString(),
+       bg_video_url:    document.getElementById('fBgVideoUrl')?.value?.trim() || '',
+ card_flip:       gtog('tCardFlip'),
+ card_back_text:  document.getElementById('fCardBackText')?.value?.trim() || '',
     };
 
     console.log('[swaqq] update payload:', updates);
@@ -3102,6 +3367,24 @@ delete updates.unlocked_badges;
 
  // ─── ADMIN ────────────────────────────────────────────────────────────────────
 async function loadAdminData() {
+    const { data: factors } = await sb.auth.mfa.listFactors();
+  const totp = factors?.totp?.[0];
+  if (totp && totp.status === 'verified') {
+    const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal?.currentLevel !== 'aal2') {
+      // Show inline 2FA prompt instead of loading data
+      document.getElementById('adminUserTbody').innerHTML =
+        `<tr><td colspan="6" style="text-align:center;padding:32px">
+          <div style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:14px">verify 2fa to access admin panel</div>
+          <div style="display:flex;gap:8px;justify-content:center">
+            <input id="adminMfaInput" class="field-input" type="text" placeholder="000000" maxlength="6" style="width:140px;text-align:center;letter-spacing:0.2em;font-size:16px" oninput="this.value=this.value.replace(/\D/g,'')">
+            <button class="btn btn-ghost" onclick="verifyAdminMFA()"><i class="fas fa-unlock"></i> verify</button>
+          </div>
+          <div id="adminMfaErr" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--red);margin-top:10px"></div>
+        </td></tr>`;
+      return;
+    }
+  }
   document.getElementById('adminUserTbody').innerHTML =
     '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--muted)"><div class="spinner" style="display:inline-block"></div></td></tr>';
 
@@ -3111,7 +3394,21 @@ async function loadAdminData() {
   renderAdminTable(allUsers);
   populateNoteUserSelect(allUsers);
 }
-
+async function verifyAdminMFA() {
+  const code = document.getElementById('adminMfaInput')?.value?.trim();
+  if (!code || code.length !== 6) return;
+  const { data: factors } = await sb.auth.mfa.listFactors();
+  const factorId = factors?.totp?.[0]?.id;
+  if (!factorId) return;
+  const { data: ch } = await sb.auth.mfa.challenge({ factorId });
+  const { error } = await sb.auth.mfa.verify({ factorId, challengeId: ch.id, code });
+  if (error) {
+    const err = document.getElementById('adminMfaErr');
+    if (err) err.textContent = 'invalid code — try again.';
+    return;
+  }
+  loadAdminData(); // retry now that aal2 is satisfied
+}
 function renderAdminStats(users) {
   document.getElementById('aTotalUsers').textContent  = users.length;
   document.getElementById('aTotalViews').textContent  = users.reduce((a,u) => a+(u.view_count||0), 0).toLocaleString();
@@ -3192,6 +3489,9 @@ const isProtected = u.is_owner || u.is_developer;
 const canModify = !isProtected && !isSelf;
 
 return `<tr>
+<td style="width:36px;padding-left:8px">
+    <input type="checkbox" class="bulk-check" style="accent-color:#fff;cursor:pointer;width:14px;height:14px" onchange="toggleBulkSelect('${u.id}')">
+  </td>
   <td>
     <div class="user-cell">
       ${av}
@@ -3259,7 +3559,16 @@ function populateNoteUserSelect(users) {
     `<option value="${u.id}">@${u.handle}${u.display_name ? ' — '+u.display_name : ''}</option>`
   ).join('');
 }
-
+async function logActivity(action, targetId, details = {}) {
+  try {
+    await sb.from('activity_log').insert({
+      actor_id:  currentUser.id,
+      target_id: targetId,
+      action,
+      details,
+    });
+  } catch(_) {}
+}
 async function saveAdminNote() {
   const uid  = document.getElementById('noteUserSelect').value;
   const note = document.getElementById('noteText').value.trim();
@@ -3360,6 +3669,7 @@ async function saveRoleGrant() {
   closeBadgeModal();
   filterUsers();
   renderAdminStats(allUsers);
+logActivity('role_change', _roleModalUid, { role: selected.dataset.role });
 
   document.querySelector('.modal-save').onclick = saveBadgeGrant;
   document.querySelector('.modal-save').textContent = 'save →';
@@ -3400,6 +3710,7 @@ async function banUser(uid, handle) {
   });
   filterUsers();
   renderAdminStats(allUsers);
+  logActivity('ban',           uid, { reason, handle });
 }
 
 async function unbanUser(uid, handle) {
@@ -3417,6 +3728,7 @@ async function unbanUser(uid, handle) {
   Object.assign(allUsers.find(u => u.id === uid), { is_banned: false, ban_reason: null });
   filterUsers();
   renderAdminStats(allUsers);
+  logActivity('unban',         uid, { handle });
 }
   // ─── BADGE MODAL ─────────────────────────────────────────────────────────────
   let _modalUid = null;
@@ -3518,6 +3830,7 @@ async function unbanUser(uid, handle) {
   closeBadgeModal();
   filterUsers();
   renderAdminStats(allUsers);
+   logActivity('badge_grant', _modalUid, { badges: checked });
   document.querySelector('.modal-save').onclick = saveBadgeGrant;
   document.querySelector('.modal-save').textContent = 'save →';
 }
@@ -3557,7 +3870,445 @@ async function unbanUser(uid, handle) {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', updateCardPreview);
   });
+    // ── CUSTOM VIDEO BG ───────────────────────────────────────────────────────────
+async function handleBgVideoUpload(input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 50 * 1024 * 1024) {
+    showAlert('appearanceAlert', 'video too large — max 50mb.', 'error'); return;
+  }
+  const nameEl = document.getElementById('bgVideoFileName');
+  nameEl.textContent = 'uploading...';
+  const ext  = file.name.split('.').pop();
+  const path = `bgvideos/${currentUser.id}.${ext}`;
+  const { error } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
+  if (error) {
+    // Fallback: blob URL (session only)
+    const url = URL.createObjectURL(file);
+    document.getElementById('fBgVideoUrl').value = url;
+    nameEl.textContent = '✓ ' + file.name + ' (session only — re-upload to persist)';
+    return;
+  }
+  const { data:{ publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+  document.getElementById('fBgVideoUrl').value = publicUrl;
+  nameEl.textContent = '✓ uploaded — hit save to apply';
+  showAlert('appearanceAlert', 'video uploaded!', 'success');
+  input.value = '';
+}
 
-</script>
+// ── MUSIC TAB ─────────────────────────────────────────────────────────────────
+function loadMusicTab() {
+  if (!currentProfile) return;
+  const p = currentProfile;
+  document.getElementById('fMusicTitle').value  = p.music_title  || '';
+  document.getElementById('fMusicArtist').value = p.music_artist || '';
+  document.getElementById('fMusicUrl').value    = p.music_url    || '';
+  tog('tShowMusic', !!(p.music_title || p.music_artist));
+  updateMusicPreview();
+
+  ['fMusicTitle','fMusicArtist'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateMusicPreview);
+  });
+}
+
+function updateMusicPreview() {
+  document.getElementById('previewMusicTitle').textContent  = document.getElementById('fMusicTitle').value  || 'Song Title';
+  document.getElementById('previewMusicArtist').textContent = document.getElementById('fMusicArtist').value || 'Artist';
+}
+
+async function saveMusicSettings() {
+  const updates = {
+    music_title:  document.getElementById('fMusicTitle').value.trim(),
+    music_artist: document.getElementById('fMusicArtist').value.trim(),
+    music_url:    document.getElementById('fMusicUrl').value.trim(),
+    updated_at:   new Date().toISOString(),
+  };
+  const { error } = await sb.from('profiles').update(updates).eq('id', currentUser.id);
+  if (error) { showAlert('musicAlert', 'save failed: ' + error.message, 'error'); return; }
+  Object.assign(currentProfile, updates);
+  showAlert('musicAlert', '✓ music settings saved!', 'success');
+}
+
+// ── SCHEDULED BIO ─────────────────────────────────────────────────────────────
+function loadScheduleTab() {
+  if (!currentProfile) return;
+  document.getElementById('fScheduledBio').value = currentProfile.scheduled_bio || '';
+  if (currentProfile.scheduled_bio_at) {
+    const d = new Date(currentProfile.scheduled_bio_at);
+    // datetime-local format: YYYY-MM-DDTHH:mm
+    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    document.getElementById('fScheduledAt').value = local;
+    showScheduleStatus();
+  }
+}
+
+function showScheduleStatus() {
+  const bio = document.getElementById('fScheduledBio').value;
+  const at  = document.getElementById('fScheduledAt').value;
+  if (!bio || !at) return;
+  const d = new Date(at);
+  const section = document.getElementById('scheduleStatusSection');
+  section.style.display = 'block';
+  document.getElementById('scheduleStatusText').innerHTML =
+    `<i class="fas fa-clock" style="margin-right:6px;color:var(--muted)"></i>` +
+    `"<strong>${sanitize(bio.slice(0, 40))}${bio.length > 40 ? '...' : ''}</strong>" ` +
+    `activates on <strong>${d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' })}</strong>`;
+}
+
+async function saveScheduledBio() {
+  const bio = document.getElementById('fScheduledBio').value.trim();
+  const at  = document.getElementById('fScheduledAt').value;
+  if (!bio) { showAlert('scheduleAlert', 'enter a bio to schedule.', 'error'); return; }
+  if (!at)  { showAlert('scheduleAlert', 'set a date and time.', 'error'); return; }
+  const { error } = await sb.from('profiles').update({
+    scheduled_bio:    bio,
+    scheduled_bio_at: new Date(at).toISOString(),
+    updated_at:       new Date().toISOString(),
+  }).eq('id', currentUser.id);
+  if (error) { showAlert('scheduleAlert', 'save failed: ' + error.message, 'error'); return; }
+  currentProfile.scheduled_bio    = bio;
+  currentProfile.scheduled_bio_at = new Date(at).toISOString();
+  showScheduleStatus();
+  showAlert('scheduleAlert', '✓ bio scheduled!', 'success');
+}
+
+async function clearScheduledBio() {
+  const { error } = await sb.from('profiles').update({
+    scheduled_bio: null, scheduled_bio_at: null, updated_at: new Date().toISOString()
+  }).eq('id', currentUser.id);
+  if (error) return;
+  currentProfile.scheduled_bio = null; currentProfile.scheduled_bio_at = null;
+  document.getElementById('fScheduledBio').value = '';
+  document.getElementById('fScheduledAt').value  = '';
+  document.getElementById('scheduleStatusSection').style.display = 'none';
+  showAlert('scheduleAlert', 'scheduled bio cleared.', 'success');
+}
+
+// ── SAVE — update saveProfile to include new fields ───────────────────────────
+
+
+// ── ADMIN: ACTIVITY LOG ───────────────────────────────────────────────────────
+async function logActivity(action, targetId, details = {}) {
+  try {
+    await sb.from('activity_log').insert({
+      actor_id:  currentUser.id,
+      target_id: targetId,
+      action,
+      details,
+    });
+  } catch(_) {}
+}
+
+async function loadAuditLog() {
+  const { data } = await sb.from('activity_log')
+    .select('*, actor:actor_id(handle), target:target_id(handle)')
+    .order('created_at', { ascending: false })
+    .limit(100);
+
+  const el = document.getElementById('auditLogList');
+  if (!data || !data.length) {
+    el.innerHTML = '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--muted)">no activity yet</div>';
+    return;
+  }
+
+  const actionLabels = {
+    ban:         '<span class="hl" style="color:#f04747">banned</span>',
+    unban:       '<span class="hl" style="color:#43b581">unbanned</span>',
+    badge_grant: '<span class="hl">granted badges to</span>',
+    role_change: '<span class="hl">changed role of</span>',
+  };
+
+  el.innerHTML = data.map(row => {
+    const time   = new Date(row.created_at).toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    const actor  = row.actor?.handle  ? '@' + row.actor.handle  : 'system';
+    const target = row.target?.handle ? '@' + row.target.handle : row.target_id?.slice(0, 8);
+    const label  = actionLabels[row.action] || `<span class="hl">${sanitize(row.action)}</span>`;
+    const detail = row.details?.reason ? ` — "${sanitize(row.details.reason)}"` : (row.details?.role ? ` → ${sanitize(row.details.role)}` : '');
+    return `<div class="audit-row">
+      <div class="audit-time">${time}</div>
+      <div class="audit-actor">${sanitize(actor)}</div>
+      <div class="audit-action">${label} <span class="hl">${sanitize(target)}</span>${detail}</div>
+    </div>`;
+  }).join('');
+}
+async function loadIpStats() {
+  // We derive IP hints from the bans table + view patterns
+  const { data: bans } = await sb.from('bans').select('ip_hint, fingerprint, reason, banned_at, profile_id').order('banned_at', { ascending: false }).limit(50);
+  const el = document.getElementById('ipStatsBody');
+  if (!bans || !bans.length) {
+    el.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:16px;color:var(--muted)">no ban records</td></tr>';
+    return;
+  }
+  el.innerHTML = bans.map(b => `
+    <tr>
+      <td>${sanitize(b.ip_hint || '—')}</td>
+      <td>${sanitize(b.fingerprint?.slice(0,12) || '—')}...</td>
+      <td>${sanitize(b.reason || '—')}</td>
+      <td>${new Date(b.banned_at).toLocaleDateString()}</td>
+    </tr>`).join('');
+}
+    let _bulkSelected = new Set();
+
+function toggleBulkSelect(uid) {
+  if (_bulkSelected.has(uid)) _bulkSelected.delete(uid);
+  else _bulkSelected.add(uid);
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulkActionBar');
+  const cnt = document.getElementById('bulkCount');
+  if (_bulkSelected.size > 0) {
+    bar.style.display = 'flex';
+    cnt.textContent   = _bulkSelected.size + ' selected';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+async function bulkBan() {
+  if (!_bulkSelected.size) return;
+  const reason = prompt(`ban reason for ${_bulkSelected.size} users:`);
+  if (reason === null) return;
+  for (const uid of _bulkSelected) {
+    const target = allUsers.find(u => u.id === uid);
+    if (target?.is_owner || target?.is_developer || uid === currentUser.id) continue;
+    await sb.from('profiles').update({ is_banned:true, ban_reason:reason||'bulk ban', updated_at:new Date().toISOString() }).eq('id', uid);
+    await sb.from('bans').upsert({ profile_id:uid, reason:reason||'bulk ban' }, { onConflict:'profile_id' });
+    logActivity('ban', uid, { reason, handle: target?.handle });
+  }
+  _bulkSelected.clear();
+  updateBulkBar();
+  loadAdminData();
+}
+
+async function bulkGrantBadge(badgeId) {
+  if (!_bulkSelected.size) return;
+  for (const uid of _bulkSelected) {
+    const target = allUsers.find(u => u.id === uid);
+    if (!target || target.is_owner || target.is_developer) continue;
+    const current = JSON.parse(target.unlocked_badges || '[]');
+    if (!current.includes(badgeId)) {
+      const updated = [...current, badgeId];
+      await sb.from('profiles').update({ unlocked_badges: JSON.stringify(updated) }).eq('id', uid);
+      logActivity('badge_grant', uid, { badges:[badgeId], handle:target.handle });
+      target.unlocked_badges = JSON.stringify(updated);
+    }
+  }
+  _bulkSelected.clear();
+  updateBulkBar();
+  filterUsers();
+}
+
+async function exportUsersCSV() {
+  const rows = [['handle','display_name','email','views','badges','joined','banned']];
+  allUsers.forEach(u => {
+    rows.push([
+      u.handle||'', u.display_name||'', u.email||'',
+      u.view_count||0,
+      (JSON.parse(u.unlocked_badges||'[]')).join(';'),
+      new Date(u.created_at).toLocaleDateString(),
+      u.is_banned ? 'yes' : 'no'
+    ]);
+  });
+  const csv  = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type:'text/csv' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `swaqq-users-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+// ── ADMIN: AUDIT LOG VIEWER ───────────────────────────────────────────────────
+async function loadAuditLog() {
+  const { data } = await sb.from('activity_log')
+    .select('*, actor:actor_id(handle), target:target_id(handle)')
+    .order('created_at', { ascending: false })
+    .limit(100);
+
+  const el = document.getElementById('auditLogList');
+  if (!data || !data.length) {
+    el.innerHTML = '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--muted)">no activity yet</div>';
+    return;
+  }
+
+  const actionLabels = {
+    ban:         '<span class="hl" style="color:#f04747">banned</span>',
+    unban:       '<span class="hl" style="color:#43b581">unbanned</span>',
+    badge_grant: '<span class="hl">granted badges to</span>',
+    role_change: '<span class="hl">changed role of</span>',
+  };
+
+  el.innerHTML = data.map(row => {
+    const time   = new Date(row.created_at).toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    const actor  = row.actor?.handle  ? '@' + row.actor.handle  : 'system';
+    const target = row.target?.handle ? '@' + row.target.handle : row.target_id?.slice(0, 8);
+    const label  = actionLabels[row.action] || `<span class="hl">${sanitize(row.action)}</span>`;
+    const detail = row.details?.reason ? ` — "${sanitize(row.details.reason)}"` : (row.details?.role ? ` → ${sanitize(row.details.role)}` : '');
+    return `<div class="audit-row">
+      <div class="audit-time">${time}</div>
+      <div class="audit-actor">${sanitize(actor)}</div>
+      <div class="audit-action">${label} <span class="hl">${sanitize(target)}</span>${detail}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── ADMIN: IP RATE LIMITING ───────────────────────────────────────────────────
+async function loadIpStats() {
+  // We derive IP hints from the bans table + view patterns
+  const { data: bans } = await sb.from('bans').select('ip_hint, fingerprint, reason, banned_at, profile_id').order('banned_at', { ascending: false }).limit(50);
+  const el = document.getElementById('ipStatsBody');
+  if (!bans || !bans.length) {
+    el.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:16px;color:var(--muted)">no ban records</td></tr>';
+    return;
+  }
+  el.innerHTML = bans.map(b => `
+    <tr>
+      <td>${sanitize(b.ip_hint || '—')}</td>
+      <td>${sanitize(b.fingerprint?.slice(0,12) || '—')}...</td>
+      <td>${sanitize(b.reason || '—')}</td>
+      <td>${new Date(b.banned_at).toLocaleDateString()}</td>
+    </tr>`).join('');
+}
+
+// ── ADMIN: BULK ACTIONS ───────────────────────────────────────────────────────
+let _bulkSelected = new Set();
+
+function toggleBulkSelect(uid) {
+  if (_bulkSelected.has(uid)) _bulkSelected.delete(uid);
+  else _bulkSelected.add(uid);
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulkActionBar');
+  const cnt = document.getElementById('bulkCount');
+  if (_bulkSelected.size > 0) {
+    bar.style.display = 'flex';
+    cnt.textContent   = _bulkSelected.size + ' selected';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+async function bulkBan() {
+  if (!_bulkSelected.size) return;
+  const reason = prompt(`ban reason for ${_bulkSelected.size} users:`);
+  if (reason === null) return;
+  for (const uid of _bulkSelected) {
+    const target = allUsers.find(u => u.id === uid);
+    if (target?.is_owner || target?.is_developer || uid === currentUser.id) continue;
+    await sb.from('profiles').update({ is_banned:true, ban_reason:reason||'bulk ban', updated_at:new Date().toISOString() }).eq('id', uid);
+    await sb.from('bans').upsert({ profile_id:uid, reason:reason||'bulk ban' }, { onConflict:'profile_id' });
+    logActivity('ban', uid, { reason, handle: target?.handle });
+  }
+  _bulkSelected.clear();
+  updateBulkBar();
+  loadAdminData();
+}
+
+async function bulkGrantBadge(badgeId) {
+  if (!_bulkSelected.size) return;
+  for (const uid of _bulkSelected) {
+    const target = allUsers.find(u => u.id === uid);
+    if (!target || target.is_owner || target.is_developer) continue;
+    const current = JSON.parse(target.unlocked_badges || '[]');
+    if (!current.includes(badgeId)) {
+      const updated = [...current, badgeId];
+      await sb.from('profiles').update({ unlocked_badges: JSON.stringify(updated) }).eq('id', uid);
+      logActivity('badge_grant', uid, { badges:[badgeId], handle:target.handle });
+      target.unlocked_badges = JSON.stringify(updated);
+    }
+  }
+  _bulkSelected.clear();
+  updateBulkBar();
+  filterUsers();
+}
+
+</script> 
+    <!-- ═══ MUSIC TAB ═══ -->
+<div id="tab-music" style="display:none">
+  <div class="page-header">
+    <h1 class="page-title">now playing</h1>
+    <p class="page-sub">show a music widget on your profile page</p>
+  </div>
+  <div class="alert" id="musicAlert"></div>
+  <div class="dash-section">
+    <div class="dash-section-title">track info</div>
+    <div class="dash-section-sub">shown in a floating widget bottom-right of your profile</div>
+    <div class="card-edit">
+      <div class="toggle-row" style="margin-bottom:16px">
+        <div><div class="toggle-title">show music widget</div><div class="toggle-sub">displays animated bars + track name on your profile</div></div>
+        <div class="toggle" id="tShowMusic" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="field">
+        <div class="field-label">song title</div>
+        <input class="field-input" type="text" id="fMusicTitle" placeholder="e.g. Blinding Lights" maxlength="60">
+      </div>
+      <div class="field">
+        <div class="field-label">artist</div>
+        <input class="field-input" type="text" id="fMusicArtist" placeholder="e.g. The Weeknd" maxlength="40">
+      </div>
+      <div class="field">
+        <div class="field-label">link <span class="tag">optional</span></div>
+        <input class="field-input" type="url" id="fMusicUrl" placeholder="https://open.spotify.com/track/...">
+        <div class="field-hint">clicking the widget on your profile opens this link</div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="btn btn-ghost" onclick="saveMusicSettings()"><i class="fas fa-save"></i> save music settings</button>
+      </div>
+    </div>
+  </div>
+  <!-- Preview -->
+  <div class="dash-section">
+    <div class="dash-section-title">preview</div>
+    <div style="position:relative;height:80px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div id="musicWidgetPreview" style="position:absolute;bottom:12px;right:12px;background:rgba(10,10,10,0.88);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;max-width:200px">
+        <div class="music-bars">
+          <div class="music-bar"></div><div class="music-bar"></div>
+          <div class="music-bar"></div><div class="music-bar"></div>
+        </div>
+        <div class="music-info">
+          <div class="music-title-text" id="previewMusicTitle">Song Title</div>
+          <div class="music-artist-text" id="previewMusicArtist">Artist</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCHEDULED BIO TAB ═══ -->
+<div id="tab-schedule" style="display:none">
+  <div class="page-header">
+    <h1 class="page-title">scheduled bio</h1>
+    <p class="page-sub">set a bio that automatically activates at a specific time</p>
+  </div>
+  <div class="alert" id="scheduleAlert"></div>
+  <div class="dash-section">
+    <div class="dash-section-title">upcoming bio</div>
+    <div class="dash-section-sub">your current bio will be replaced at the scheduled time — refreshes on page load</div>
+    <div class="card-edit">
+      <div class="field">
+        <div class="field-label">scheduled bio text</div>
+        <textarea class="field-input" id="fScheduledBio" placeholder="bio that will activate at the time below..." maxlength="120" style="min-height:70px"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label">activate at <span class="tag">your local time</span></div>
+        <input class="field-input" type="datetime-local" id="fScheduledAt">
+        <div class="field-hint">profile page checks this on every load — bio swaps automatically</div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:8px">
+        <button class="btn btn-ghost" onclick="saveScheduledBio()"><i class="fas fa-clock"></i> schedule bio</button>
+        <button class="btn btn-danger" onclick="clearScheduledBio()"><i class="fas fa-times"></i> clear</button>
+      </div>
+    </div>
+  </div>
+  <div class="dash-section" id="scheduleStatusSection" style="display:none">
+    <div class="dash-section-title">scheduled</div>
+    <div class="card-edit">
+      <div id="scheduleStatusText" style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--sub)"></div>
+    </div>
+  </div>
+</div>
+  </main>
 </body>
+  
 </html>
