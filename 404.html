@@ -141,10 +141,40 @@
     .follow-count-val { color:rgba(255,255,255,0.7); font-weight:700; margin-right:2px; }
 
     /* ── Card Flip ── */
-    .card-flip-inner { position:relative; transform-style:preserve-3d; transition:transform 0.7s cubic-bezier(0.4,0,0.2,1); }
+.card-flip-inner {
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  display:block;
+  width:100%;
+}
     .card-flip-inner.flipped { transform:rotateY(180deg); }
-    .card-front, .card-back { backface-visibility:hidden; -webkit-backface-visibility:hidden; }
-    .card-back { position:absolute; inset:0; transform:rotateY(180deg); border-radius:inherit; padding:28px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px; text-align:center; backdrop-filter:inherit; background:inherit; }
+    .card-front {
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  position:relative;
+  display:block;
+}
+    .card-back {
+  position:absolute;
+  inset:0;
+  transform:rotateY(180deg);
+  border-radius:inherit;
+  padding:28px;
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  text-align:center;
+  background:rgba(10,10,10,0.92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  box-sizing:border-box;
+  overflow:hidden;
+}
     .flip-tap-hint { position:absolute; bottom:10px; right:14px; font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.18); letter-spacing:0.1em; pointer-events:none; }
 
     /* ── Music Widget ── */
@@ -621,47 +651,56 @@
   if (!CS.card_flip) return;
   const inner = document.getElementById('cardFlipInner');
   const back  = document.getElementById('cardBack');
+  const front = document.getElementById('card');
   const hint  = document.getElementById('flipTapHint');
-  const card  = document.getElementById('card');
 
-  if (!inner || !card) return;
+  if (!inner || !front) return;
 
-  // Show back and match front styles
-  if (back) {
-    back.style.display      = 'flex';
-    back.style.background   = card.style.background || 'rgba(10,10,10,0.85)';
-    back.style.backdropFilter = card.style.backdropFilter || 'blur(12px)';
-    back.style.borderRadius = card.style.borderRadius || '20px';
-  }
-
-  // Sync height so absolute-positioned back fills correctly
-  function syncHeight() {
-    const h = card.offsetHeight;
-    if (h > 0) inner.style.height = h + 'px';
-  }
-  syncHeight();
-  // Re-sync after fonts/images load
-  setTimeout(syncHeight, 300);
-  window.addEventListener('resize', syncHeight);
-
+  // Show back panel
+  if (back) back.style.display = 'flex';
   if (hint) hint.style.display = 'block';
 
+  // Give inner a fixed height matching the front card
+  function syncHeight() {
+    const h = front.offsetHeight;
+    if (h > 0) {
+      inner.style.height = h + 'px';
+      if (back) {
+        back.style.height = h + 'px';
+      }
+    }
+  }
+  syncHeight();
+  setTimeout(syncHeight, 400);
+  window.addEventListener('resize', syncHeight);
+
+  // Populate back content
   const joined = new Date(profile.created_at);
   const joinEl = document.getElementById('backJoinDate');
   if (joinEl) joinEl.textContent = joined.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
-  const uidEl  = document.getElementById('uidVal');
   const backUid = document.getElementById('backUid');
-  if (backUid) backUid.textContent = uidEl?.textContent || '?';
+  if (backUid) backUid.textContent = document.getElementById('uidVal')?.textContent || '?';
   const customText = document.getElementById('backCustomText');
   if (customText && profile.card_back_text) customText.textContent = profile.card_back_text;
 
-  // Flip on front card click only (not back, not buttons/links)
-  card.addEventListener('click', e => {
-    if (e.target.closest('button, a, input, .badge')) return;
+  // Flip TO back — only from front card, not buttons/links/badges
+  front.addEventListener('click', e => {
+    if (inner.classList.contains('flipped')) return; // already flipped, ignore
+    if (e.target.closest('button, a, input, .badge, .badges')) return;
     inner.classList.add('flipped');
   });
-}
 
+  // Flip BACK — the button inside .card-back
+  const flipBackBtn = back?.querySelector('button[onclick]');
+  if (flipBackBtn) {
+    // Remove the inline onclick so it doesn't conflict
+    flipBackBtn.removeAttribute('onclick');
+    flipBackBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      inner.classList.remove('flipped');
+    });
+  }
+}
     /* ── Music Widget ── */
     function initMusicWidget(profile) {
       if (!profile.music_title && !profile.music_artist) return;
