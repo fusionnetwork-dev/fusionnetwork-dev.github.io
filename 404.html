@@ -469,7 +469,18 @@
           badgesEl.appendChild(div);
         });
       }
-
+// Load custom badges
+const { data: customBadges } = await sb.from('custom_badges')
+  .select('*').eq('profile_id', profile.id);
+if (customBadges?.length) {
+  badgesEl.style.display = 'inline-flex';
+  customBadges.forEach(cb => {
+    const div = document.createElement('div');
+    div.className = 'badge';
+    div.innerHTML = `<img src="${cb.image_url}" alt="${sanitize(cb.name)}"><div class="badge-tip">${sanitize(cb.name)}</div>`;
+    badgesEl.appendChild(div);
+  });
+}
       const socialsEl  = document.getElementById('cardSocials');
       const rawSocials = Array.isArray(profile.socials) ? profile.socials : (() => { try { return JSON.parse(profile.socials || '[]'); } catch { return []; } })();
       rawSocials.forEach(s => {
