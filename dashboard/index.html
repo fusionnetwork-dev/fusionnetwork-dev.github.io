@@ -656,95 +656,423 @@
     </div>
 
     <!-- ═══ CUSTOMIZE TAB ═══ -->
-    <div id="tab-customize" style="display:none">
-      <div class="page-header">
-        <h1 class="page-title">customize</h1>
-        <p class="page-sub">fonts, card colors, accent colors, and vibes</p>
-      </div>
-      <div class="alert" id="customizeAlert"></div>
+<!-- ═══ CUSTOMIZE TAB ═══ -->
+<div id="tab-customize" style="display:none">
+  <div class="page-header">
+    <h1 class="page-title">customize</h1>
+    <p class="page-sub">fonts, colors, card style, and more</p>
+  </div>
+  <div class="alert" id="customizeAlert"></div>
 
-      <!-- LIVE CARD PREVIEW WITH 3D TILT -->
-      <div class="dash-section">
-        <div class="dash-section-title">live preview <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">hover to tilt</span></div>
-        <div class="card-preview-wrap" id="cardPreviewWrap">
-          <div class="card-preview-mini" id="cardPreviewMini">
-            <div class="card-preview-avatar" id="previewAvatar"></div>
-            <div style="flex:1;min-width:0">
-              <div class="card-preview-name" id="previewName">your name</div>
-              <div class="card-preview-bio" id="previewBio">your bio here...</div>
-            </div>
-          </div>
+  <!-- LIVE CARD PREVIEW -->
+  <div class="dash-section">
+    <div class="dash-section-title">live preview <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">hover to tilt</span></div>
+    <div class="card-preview-wrap" id="cardPreviewWrap">
+      <div class="card-preview-mini" id="cardPreviewMini">
+        <div class="card-preview-avatar" id="previewAvatar"></div>
+        <div style="flex:1;min-width:0">
+          <div class="card-preview-name" id="previewName">your name</div>
+          <div class="card-preview-bio" id="previewBio">your bio here...</div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- FONT PICKER -->
-      <div class="dash-section">
-        <div class="dash-section-title">profile font</div>
-        <div class="dash-section-sub">font used on your card — changes apply live above</div>
-        <div class="card-edit">
-          <div class="font-grid" id="fontGrid"></div>
-          <!-- Custom font upload -->
-          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-            <div class="field-label" style="margin-bottom:8px">custom font <span class="tag">.ttf / .otf</span></div>
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <label style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);background:var(--surface2);border:1px dashed var(--border2);border-radius:8px;padding:9px 14px;transition:all 0.2s" id="fontUploadLabel" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.11)';this.style.color='var(--sub)'">
-                <i class="fas fa-upload" style="font-size:10px"></i>
-                upload custom font
-                <input type="file" id="customFontInput" accept=".ttf,.otf" style="display:none" onchange="handleCustomFont(this)">
-              </label>
-              <span id="customFontName" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)"></span>
-            </div>
-            <div class="field-hint" style="margin-top:6px">upload a .ttf or .otf file — it'll appear as an option in the grid above</div>
-          </div>
+  <!-- FONT PICKER -->
+  <div class="dash-section">
+    <div class="dash-section-title">profile font</div>
+    <div class="dash-section-sub">font used on your card</div>
+    <div class="card-edit">
+      <div class="font-grid" id="fontGrid"></div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <div class="field-label" style="margin-bottom:8px">custom font <span class="tag">.ttf / .otf</span></div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <label style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);background:var(--surface2);border:1px dashed var(--border2);border-radius:8px;padding:9px 14px;transition:all 0.2s" id="fontUploadLabel" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.11)';this.style.color='var(--sub)'">
+            <i class="fas fa-upload" style="font-size:10px"></i>
+            upload custom font
+            <input type="file" id="customFontInput" accept=".ttf,.otf" style="display:none" onchange="handleCustomFont(this)">
+          </label>
+          <span id="customFontName" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)"></span>
+        </div>
+        <div class="field-hint" style="margin-top:6px">upload a .ttf or .otf file — it'll appear as an option in the grid above</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCENT COLOR -->
+  <div class="dash-section">
+    <div class="dash-section-title">accent color</div>
+    <div class="dash-section-sub">used for borders, glow, and your name on your card</div>
+    <div class="card-edit">
+      <div class="color-section">
+        <div class="color-chip selected" style="background:#ffffff" onclick="pickAccent(this,'#ffffff')"></div>
+        <div class="color-chip" style="background:#a78bfa" onclick="pickAccent(this,'#a78bfa')"></div>
+        <div class="color-chip" style="background:#38bdf8" onclick="pickAccent(this,'#38bdf8')"></div>
+        <div class="color-chip" style="background:#34d399" onclick="pickAccent(this,'#34d399')"></div>
+        <div class="color-chip" style="background:#fb923c" onclick="pickAccent(this,'#fb923c')"></div>
+        <div class="color-chip" style="background:#f472b6" onclick="pickAccent(this,'#f472b6')"></div>
+        <div class="color-chip" style="background:#f5a623" onclick="pickAccent(this,'#f5a623')"></div>
+        <div class="color-chip" style="background:#ef4444" onclick="pickAccent(this,'#ef4444')"></div>
+        <div class="color-chip" style="background:#00ffcc" onclick="pickAccent(this,'#00ffcc')"></div>
+        <div class="color-chip" style="background:#ff00ff" onclick="pickAccent(this,'#ff00ff')"></div>
+        <div class="color-chip" style="background:#faff00" onclick="pickAccent(this,'#faff00')"></div>
+        <div class="color-chip" style="background:#ff6b6b" onclick="pickAccent(this,'#ff6b6b')"></div>
+        <div class="color-input-wrap">
+          <input type="color" id="fAccentColor" value="#ffffff" oninput="pickAccentFromInput(this.value)">
+          <input class="field-input" type="text" id="fAccentHex" placeholder="#ffffff" style="width:100px" oninput="syncAccentHex(this.value)">
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- CARD ACCENT COLOR -->
-      <div class="dash-section">
-        <div class="dash-section-title">accent color</div>
-        <div class="dash-section-sub">used for borders, glow, and your name on your card</div>
-        <div class="card-edit">
-          <div class="color-section">
-            <div class="color-chip selected" style="background:#ffffff" onclick="pickAccent(this,'#ffffff')"></div>
-            <div class="color-chip" style="background:#a78bfa" onclick="pickAccent(this,'#a78bfa')"></div>
-            <div class="color-chip" style="background:#38bdf8" onclick="pickAccent(this,'#38bdf8')"></div>
-            <div class="color-chip" style="background:#34d399" onclick="pickAccent(this,'#34d399')"></div>
-            <div class="color-chip" style="background:#fb923c" onclick="pickAccent(this,'#fb923c')"></div>
-            <div class="color-chip" style="background:#f472b6" onclick="pickAccent(this,'#f472b6')"></div>
-            <div class="color-chip" style="background:#f5a623" onclick="pickAccent(this,'#f5a623')"></div>
-            <div class="color-chip" style="background:#ef4444" onclick="pickAccent(this,'#ef4444')"></div>
-            <div class="color-input-wrap">
-              <input type="color" id="fAccentColor" value="#ffffff" oninput="pickAccentFromInput(this.value)">
-              <input class="field-input" type="text" id="fAccentHex" placeholder="#ffffff" style="width:100px" oninput="syncAccentHex(this.value)">
-            </div>
-          </div>
+  <!-- NAME STYLE -->
+  <div class="dash-section">
+    <div class="dash-section-title">name style</div>
+    <div class="dash-section-sub">how your display name looks on the card</div>
+    <div class="card-edit">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="nameStyleGrid">
+        <div class="font-card selected" data-namestyle="solid" onclick="pickNameStyle(this,'solid')">
+          <div style="font-size:15px;font-weight:800;margin-bottom:4px">Name</div>
+          <div class="font-card-label">solid color</div>
+        </div>
+        <div class="font-card" data-namestyle="gradient" onclick="pickNameStyle(this,'gradient')">
+          <div style="font-size:15px;font-weight:800;margin-bottom:4px;background:linear-gradient(90deg,#fff,#888);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Name</div>
+          <div class="font-card-label">gradient</div>
+        </div>
+        <div class="font-card" data-namestyle="shimmer" onclick="pickNameStyle(this,'shimmer')">
+          <div style="font-size:15px;font-weight:800;margin-bottom:4px;background:linear-gradient(110deg,#555,#fff,#555);background-size:200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 2s ease infinite">Name</div>
+          <div class="font-card-label">shimmer</div>
+        </div>
+        <div class="font-card" data-namestyle="outline" onclick="pickNameStyle(this,'outline')">
+          <div style="font-size:15px;font-weight:800;margin-bottom:4px;-webkit-text-stroke:1px #fff;color:transparent">Name</div>
+          <div class="font-card-label">outline</div>
+        </div>
+        <div class="font-card" data-namestyle="shadow" onclick="pickNameStyle(this,'shadow')">
+          <div style="font-size:15px;font-weight:800;margin-bottom:4px;text-shadow:0 0 20px #fff">Name</div>
+          <div class="font-card-label">glow shadow</div>
+        </div>
+        <div class="font-card" data-namestyle="uppercase" onclick="pickNameStyle(this,'uppercase')">
+          <div style="font-size:13px;font-weight:800;margin-bottom:4px;letter-spacing:0.15em;text-transform:uppercase">Name</div>
+          <div class="font-card-label">uppercase</div>
         </div>
       </div>
-
-      <!-- CARD STYLE -->
-      <div class="dash-section">
-        <div class="dash-section-title">card style</div>
-        <div class="dash-section-sub">overall card look — preview updates live above</div>
-        <div class="card-edit">
+      <div id="nameGradientPickers" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div class="field-row">
           <div class="field">
-            <div class="field-label">card blur <span id="blurVal" style="color:var(--text)">12px</span></div>
-            <input type="range" id="fCardBlur" min="0" max="40" value="12" oninput="document.getElementById('blurVal').textContent=this.value+'px';updateCardPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
+            <div class="field-label">gradient color 1</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="color" id="fNameGrad1" value="#ffffff" oninput="document.getElementById('fNameGrad1Hex').value=this.value;updateCardPreview()">
+              <input class="field-input" type="text" id="fNameGrad1Hex" placeholder="#ffffff" style="width:100px" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){document.getElementById('fNameGrad1').value=this.value;updateCardPreview()}">
+            </div>
           </div>
-          <div class="field" style="margin-top:16px">
-            <div class="field-label">card opacity <span id="cardOpacityVal" style="color:var(--text)">85%</span></div>
-            <input type="range" id="fCardOpacity" min="20" max="100" value="85" oninput="document.getElementById('cardOpacityVal').textContent=this.value+'%';updateCardPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
-          </div>
-          <div class="toggle-row" style="margin-top:8px">
-            <div><div class="toggle-title">card border glow</div><div class="toggle-sub">subtle glow using accent color around the card</div></div>
-            <div class="toggle on" id="tCardGlow" onclick="this.classList.toggle('on');updateCardPreview()"></div>
-          </div>
-          <div class="toggle-row">
-            <div><div class="toggle-title">rounded corners</div><div class="toggle-sub">more rounded vs sharper card corners</div></div>
-            <div class="toggle on" id="tRounded" onclick="this.classList.toggle('on');updateCardPreview()"></div>
+          <div class="field">
+            <div class="field-label">gradient color 2</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="color" id="fNameGrad2" value="#888888" oninput="document.getElementById('fNameGrad2Hex').value=this.value;updateCardPreview()">
+              <input class="field-input" type="text" id="fNameGrad2Hex" placeholder="#888888" style="width:100px" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){document.getElementById('fNameGrad2').value=this.value;updateCardPreview()}">
+            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- CARD BORDER STYLE -->
+  <div class="dash-section">
+    <div class="dash-section-title">card border</div>
+    <div class="dash-section-sub">style of the border around your card</div>
+    <div class="card-edit">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="borderStyleGrid">
+        <div class="font-card selected" data-border="shimmer" onclick="pickBorderStyle(this,'shimmer')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Shimmer</div>
+          <div class="font-card-label">animated default</div>
+        </div>
+        <div class="font-card" data-border="solid" onclick="pickBorderStyle(this,'solid')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Solid</div>
+          <div class="font-card-label">accent color</div>
+        </div>
+        <div class="font-card" data-border="none" onclick="pickBorderStyle(this,'none')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">None</div>
+          <div class="font-card-label">no border</div>
+        </div>
+        <div class="font-card" data-border="dashed" onclick="pickBorderStyle(this,'dashed')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Dashed</div>
+          <div class="font-card-label">dashed accent</div>
+        </div>
+        <div class="font-card" data-border="double" onclick="pickBorderStyle(this,'double')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Double</div>
+          <div class="font-card-label">double line</div>
+        </div>
+        <div class="font-card" data-border="glow-pulse" onclick="pickBorderStyle(this,'glow-pulse')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Pulse</div>
+          <div class="font-card-label">glow pulses</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD STYLE -->
+  <div class="dash-section">
+    <div class="dash-section-title">card style</div>
+    <div class="dash-section-sub">overall card look — preview updates live above</div>
+    <div class="card-edit">
+      <div class="field">
+        <div class="field-label">card blur <span id="blurVal" style="color:var(--text)">12px</span></div>
+        <input type="range" id="fCardBlur" min="0" max="40" value="12" oninput="document.getElementById('blurVal').textContent=this.value+'px';updateCardPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
+      </div>
+      <div class="field" style="margin-top:16px">
+        <div class="field-label">card opacity <span id="cardOpacityVal" style="color:var(--text)">85%</span></div>
+        <input type="range" id="fCardOpacity" min="20" max="100" value="85" oninput="document.getElementById('cardOpacityVal').textContent=this.value+'%';updateCardPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
+      </div>
+      <div class="field" style="margin-top:16px">
+        <div class="field-label">card width <span id="cardWidthVal" style="color:var(--text)">420px</span></div>
+        <input type="range" id="fCardWidth" min="320" max="600" value="420" oninput="document.getElementById('cardWidthVal').textContent=this.value+'px';updateCardPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
+      </div>
+      <div class="toggle-row" style="margin-top:8px">
+        <div><div class="toggle-title">card border glow</div><div class="toggle-sub">subtle glow using accent color around the card</div></div>
+        <div class="toggle on" id="tCardGlow" onclick="this.classList.toggle('on');updateCardPreview()"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-title">rounded corners</div><div class="toggle-sub">more rounded vs sharper card corners</div></div>
+        <div class="toggle on" id="tRounded" onclick="this.classList.toggle('on');updateCardPreview()"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-title">frosted glass effect</div><div class="toggle-sub">extra glossy sheen over the card surface</div></div>
+        <div class="toggle" id="tGlass" onclick="this.classList.toggle('on');updateCardPreview()"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-title">card shadow</div><div class="toggle-sub">drop shadow beneath the card</div></div>
+        <div class="toggle on" id="tCardShadow" onclick="this.classList.toggle('on');updateCardPreview()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AVATAR SHAPE -->
+  <div class="dash-section">
+    <div class="dash-section-title">avatar shape</div>
+    <div class="dash-section-sub">shape of your profile picture on the card</div>
+    <div class="card-edit">
+      <div style="display:flex;gap:10px;flex-wrap:wrap" id="avatarShapeGrid">
+        <div class="font-card selected" data-shape="circle" onclick="pickAvatarShape(this,'circle')" style="flex:1;min-width:80px;text-align:center">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);margin:0 auto 6px"></div>
+          <div class="font-card-label">circle</div>
+        </div>
+        <div class="font-card" data-shape="square" onclick="pickAvatarShape(this,'square')" style="flex:1;min-width:80px;text-align:center">
+          <div style="width:36px;height:36px;border-radius:6px;background:rgba(255,255,255,0.15);margin:0 auto 6px"></div>
+          <div class="font-card-label">square</div>
+        </div>
+        <div class="font-card" data-shape="squircle" onclick="pickAvatarShape(this,'squircle')" style="flex:1;min-width:80px;text-align:center">
+          <div style="width:36px;height:36px;border-radius:30%;background:rgba(255,255,255,0.15);margin:0 auto 6px"></div>
+          <div class="font-card-label">squircle</div>
+        </div>
+        <div class="font-card" data-shape="hexagon" onclick="pickAvatarShape(this,'hexagon')" style="flex:1;min-width:80px;text-align:center">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.15);margin:0 auto 6px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)"></div>
+          <div class="font-card-label">hexagon</div>
+        </div>
+        <div class="font-card" data-shape="diamond" onclick="pickAvatarShape(this,'diamond')" style="flex:1;min-width:80px;text-align:center">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.15);margin:0 auto 6px;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%)"></div>
+          <div class="font-card-label">diamond</div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <div class="field-label">avatar border width <span id="avatarBorderVal" style="color:var(--text)">2px</span></div>
+        <input type="range" id="fAvatarBorder" min="0" max="8" value="2" oninput="document.getElementById('avatarBorderVal').textContent=this.value+'px';updateCardPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
+      </div>
+      <div class="toggle-row" style="margin-top:8px">
+        <div><div class="toggle-title">avatar glow</div><div class="toggle-sub">glow ring around your avatar using accent color</div></div>
+        <div class="toggle" id="tAvatarGlow" onclick="this.classList.toggle('on');updateCardPreview()"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-title">avatar spin animation</div><div class="toggle-sub">slow spin on hover</div></div>
+        <div class="toggle" id="tAvatarSpin" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD LAYOUT -->
+  <div class="dash-section">
+    <div class="dash-section-title">card layout</div>
+    <div class="dash-section-sub">arrangement of elements on the card</div>
+    <div class="card-edit">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+        <div class="font-card selected" data-layout="default" onclick="pickLayout(this,'default')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Default</div>
+          <div class="font-card-label">avatar left, info right</div>
+        </div>
+        <div class="font-card" data-layout="centered" onclick="pickLayout(this,'centered')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Centered</div>
+          <div class="font-card-label">avatar top, centered</div>
+        </div>
+        <div class="font-card" data-layout="minimal" onclick="pickLayout(this,'minimal')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Minimal</div>
+          <div class="font-card-label">no avatar shown</div>
+        </div>
+        <div class="font-card" data-layout="banner" onclick="pickLayout(this,'banner')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Banner</div>
+          <div class="font-card-label">wide avatar banner</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD TEXTURE -->
+  <div class="dash-section">
+    <div class="dash-section-title">card texture</div>
+    <div class="dash-section-sub">subtle overlay pattern on the card surface</div>
+    <div class="card-edit">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="textureGrid">
+        <div class="font-card selected" data-texture="none" onclick="pickTexture(this,'none')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">None</div>
+          <div class="font-card-label">clean card</div>
+        </div>
+        <div class="font-card" data-texture="noise" onclick="pickTexture(this,'noise')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Noise</div>
+          <div class="font-card-label">film grain</div>
+        </div>
+        <div class="font-card" data-texture="grid" onclick="pickTexture(this,'grid')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Grid</div>
+          <div class="font-card-label">subtle grid</div>
+        </div>
+        <div class="font-card" data-texture="dots" onclick="pickTexture(this,'dots')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Dots</div>
+          <div class="font-card-label">dot pattern</div>
+        </div>
+        <div class="font-card" data-texture="lines" onclick="pickTexture(this,'lines')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Lines</div>
+          <div class="font-card-label">diagonal lines</div>
+        </div>
+        <div class="font-card" data-texture="carbon" onclick="pickTexture(this,'carbon')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Carbon</div>
+          <div class="font-card-label">carbon fiber</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOCIAL BUTTON STYLE -->
+  <div class="dash-section">
+    <div class="dash-section-title">social button style</div>
+    <div class="dash-section-sub">how your social link buttons look on the card</div>
+    <div class="card-edit">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="socialStyleGrid">
+        <div class="font-card selected" data-socialstyle="default" onclick="pickSocialStyle(this,'default')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Default</div>
+          <div class="font-card-label">pill buttons</div>
+        </div>
+        <div class="font-card" data-socialstyle="icon-only" onclick="pickSocialStyle(this,'icon-only')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Icons Only</div>
+          <div class="font-card-label">no label text</div>
+        </div>
+        <div class="font-card" data-socialstyle="filled" onclick="pickSocialStyle(this,'filled')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Filled</div>
+          <div class="font-card-label">solid background</div>
+        </div>
+        <div class="font-card" data-socialstyle="outlined" onclick="pickSocialStyle(this,'outlined')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Outlined</div>
+          <div class="font-card-label">border only</div>
+        </div>
+        <div class="font-card" data-socialstyle="minimal" onclick="pickSocialStyle(this,'minimal')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Minimal</div>
+          <div class="font-card-label">text links</div>
+        </div>
+        <div class="font-card" data-socialstyle="rounded" onclick="pickSocialStyle(this,'rounded')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Rounded</div>
+          <div class="font-card-label">circle buttons</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURSOR -->
+  <div class="dash-section">
+    <div class="dash-section-title">cursor</div>
+    <div class="dash-section-sub">custom cursor shown on your profile page</div>
+    <div class="card-edit">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="cursorGrid">
+        <div class="font-card selected" data-cursor="default" onclick="pickCursor(this,'default')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Default</div>
+          <div class="font-card-label">normal cursor</div>
+        </div>
+        <div class="font-card" data-cursor="dot" onclick="pickCursor(this,'dot')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Dot</div>
+          <div class="font-card-label">small dot</div>
+        </div>
+        <div class="font-card" data-cursor="crosshair" onclick="pickCursor(this,'crosshair')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Crosshair</div>
+          <div class="font-card-label">crosshair</div>
+        </div>
+        <div class="font-card" data-cursor="glow" onclick="pickCursor(this,'glow')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Glow</div>
+          <div class="font-card-label">glowing trail</div>
+        </div>
+        <div class="font-card" data-cursor="none" onclick="pickCursor(this,'none')">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px">Hidden</div>
+          <div class="font-card-label">no cursor</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE EFFECTS -->
+  <div class="dash-section">
+    <div class="dash-section-title">page effects</div>
+    <div class="dash-section-sub">animations and effects on your profile page</div>
+    <div class="card-edit">
+      <div class="toggle-row">
+        <div><div class="toggle-title">particle effects</div><div class="toggle-sub">floating particles in the background</div></div>
+        <div class="toggle" id="tParticles" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-title">page enter animation</div><div class="toggle-sub">card slides and fades in on load</div></div>
+        <div class="toggle on" id="tPageAnim" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-title">snow effect</div><div class="toggle-sub">falling snow particles on the page</div></div>
+        <div class="toggle" id="tSnow" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-title">scanline overlay</div><div class="toggle-sub">retro crt scanline effect over the page</div></div>
+        <div class="toggle" id="tScanlines" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <div class="field-label">particle color</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" id="fParticleColor" value="#ffffff" oninput="document.getElementById('fParticleColorHex').value=this.value">
+          <input class="field-input" type="text" id="fParticleColorHex" placeholder="#ffffff" style="width:100px" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){document.getElementById('fParticleColor').value=this.value}">
+          <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted)">used for particles & snow</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIO STYLE -->
+  <div class="dash-section">
+    <div class="dash-section-title">bio style</div>
+    <div class="dash-section-sub">how your bio text appears on the card</div>
+    <div class="card-edit">
+      <div class="field">
+        <div class="field-label">bio font size <span id="bioSizeVal" style="color:var(--text)">13px</span></div>
+        <input type="range" id="fBioSize" min="10" max="18" value="13" oninput="document.getElementById('bioSizeVal').textContent=this.value+'px';updateCardPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
+      </div>
+      <div class="field" style="margin-top:16px">
+        <div class="field-label">bio color</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" id="fBioColor" value="#ffffff" oninput="document.getElementById('fBioColorHex').value=this.value;updateCardPreview()">
+          <input class="field-input" type="text" id="fBioColorHex" placeholder="#ffffff" style="width:100px" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)){document.getElementById('fBioColor').value=this.value;updateCardPreview()}">
+        </div>
+      </div>
+      <div class="toggle-row" style="margin-top:8px">
+        <div><div class="toggle-title">typewriter effect</div><div class="toggle-sub">bio types and deletes on a loop</div></div>
+        <div class="toggle on" id="tTypewriter" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-title">bio italic</div><div class="toggle-sub">display bio text in italic style</div></div>
+        <div class="toggle" id="tBioItalic" onclick="this.classList.toggle('on');updateCardPreview()"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
 
     <!-- ═══ SOCIALS TAB ═══ -->
     <div id="tab-socials" style="display:none">
@@ -1023,16 +1351,26 @@ function sanitizeHtml(html) {
   let customIcons = [];
 
   let CS = {};
-  const CS_DEF = {
-    bg_type:'video', bg_image_url:'', bg_opacity:70,
-    bg_color:'#070707', bg_grad1:'#0a0a1a', bg_grad2:'#1a0a0a', bg_grad_dir:'to bottom right',
-    show_video_bg:true, mute_video:false,
-    card_font:'Syne', accent_color:'#ffffff',
-    card_blur:12, card_opacity:85, card_glow:true, card_rounded:true,
-    show_uid_scramble:false,
-    custom_font_name:null, custom_font_family:null, custom_font_data:null,
-    custom_icons:[]
-  };
+const CS_DEF = {
+  bg_type:'video', bg_image_url:'', bg_opacity:70,
+  bg_color:'#070707', bg_grad1:'#0a0a1a', bg_grad2:'#1a0a0a', bg_grad_dir:'to bottom right',
+  show_video_bg:true, mute_video:false, audio_only_id:'', mute_audio:true,
+  card_font:'Syne', accent_color:'#ffffff',
+  card_blur:12, card_opacity:85, card_glow:true, card_rounded:true,
+  show_uid_scramble:false,
+  border_style:'shimmer',
+  name_style:'solid', name_grad1:'#ffffff', name_grad2:'#888888',
+  card_layout:'default',
+  avatar_shape:'circle', avatar_border:2, avatar_glow:false, avatar_spin:false,
+  card_texture:'none',
+  cursor_style:'default',
+  social_style:'default',
+  card_width:420,
+  card_glass:false, card_shadow:true,
+  particles:false, page_anim:true, snow:false, scanlines:false,
+  particle_color:'#ffffff',
+  bio_size:13, bio_color:'#ffffff', bio_italic:false, typewriter:true,
+};
   function cs(k){ return (CS[k] !== undefined && CS[k] !== null) ? CS[k] : CS_DEF[k]; }
 
   // ─── BADGE DEFS ─────────────────────────────────────────────────────────────
@@ -1344,11 +1682,59 @@ if (data.discord_id) {
     const socs = pj(p.socials, []);
     document.getElementById('statSocials').textContent = socs.length;
     renderSocials(socs);
+function restoreCustomizeSelections() {
+  const selectors = [
+    { attr:'data-border',      key:'border_style',  grid:'#borderStyleGrid'  },
+    { attr:'data-namestyle',   key:'name_style',    grid:'#nameStyleGrid'    },
+    { attr:'data-layout',      key:'card_layout',   grid:'[data-layout]'     },
+    { attr:'data-shape',       key:'avatar_shape',  grid:'#avatarShapeGrid'  },
+    { attr:'data-texture',     key:'card_texture',  grid:'#textureGrid'      },
+    { attr:'data-cursor',      key:'cursor_style',  grid:'#cursorGrid'       },
+    { attr:'data-socialstyle', key:'social_style',  grid:'#socialStyleGrid'  },
+  ];
+  selectors.forEach(({ attr, key, grid }) => {
+    const val = cs(key);
+    document.querySelectorAll(`[${attr}]`).forEach(c => c.classList.remove('selected'));
+    const el = document.querySelector(`[${attr}="${val}"]`);
+    if (el) el.classList.add('selected');
+  });
 
+  // Name gradient pickers
+  document.getElementById('nameGradientPickers').style.display = cs('name_style') === 'gradient' ? 'block' : 'none';
+  document.getElementById('fNameGrad1').value    = cs('name_grad1');
+  document.getElementById('fNameGrad1Hex').value = cs('name_grad1');
+  document.getElementById('fNameGrad2').value    = cs('name_grad2');
+  document.getElementById('fNameGrad2Hex').value = cs('name_grad2');
+
+  // Sliders
+  document.getElementById('fCardWidth').value       = cs('card_width');
+  document.getElementById('cardWidthVal').textContent = cs('card_width') + 'px';
+  document.getElementById('fAvatarBorder').value    = cs('avatar_border');
+  document.getElementById('avatarBorderVal').textContent = cs('avatar_border') + 'px';
+  document.getElementById('fBioSize').value         = cs('bio_size');
+  document.getElementById('bioSizeVal').textContent = cs('bio_size') + 'px';
+  document.getElementById('fBioColor').value        = cs('bio_color');
+  document.getElementById('fBioColorHex').value     = cs('bio_color');
+  document.getElementById('fParticleColor').value   = cs('particle_color');
+  document.getElementById('fParticleColorHex').value = cs('particle_color');
+
+  // Toggles
+  tog('tGlass',       cs('card_glass')   === true);
+  tog('tCardShadow',  cs('card_shadow')  !== false);
+  tog('tAvatarGlow',  cs('avatar_glow')  === true);
+  tog('tAvatarSpin',  cs('avatar_spin')  === true);
+  tog('tParticles',   cs('particles')    === true);
+  tog('tPageAnim',    cs('page_anim')    !== false);
+  tog('tSnow',        cs('snow')         === true);
+  tog('tScanlines',   cs('scanlines')    === true);
+  tog('tTypewriter',  cs('typewriter')   !== false);
+  tog('tBioItalic',   cs('bio_italic')   === true);
+}
     currentBgTab = cs('bg_type') || 'video';
     activateBgTab(currentBgTab);
     updateBgPreview();
     updateCardPreview();
+    restoreCustomizeSelections();
   }
 
   function tog(id, on) {
@@ -1526,6 +1912,54 @@ if (data.discord_id) {
   }
 
   // ─── CARD PREVIEW (3D TILT + LIVE FONT/STYLE APPLY) ─────────────────────────
+  function pickBorderStyle(el, val) {
+  document.querySelectorAll('#borderStyleGrid .font-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  CS.border_style = val;
+  updateCardPreview();
+}
+
+function pickNameStyle(el, val) {
+  document.querySelectorAll('#nameStyleGrid .font-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  CS.name_style = val;
+  document.getElementById('nameGradientPickers').style.display = val === 'gradient' ? 'block' : 'none';
+  updateCardPreview();
+}
+
+function pickLayout(el, val) {
+  document.querySelectorAll('[data-layout]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  CS.card_layout = val;
+  updateCardPreview();
+}
+
+function pickAvatarShape(el, val) {
+  document.querySelectorAll('[data-shape]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  CS.avatar_shape = val;
+  updateCardPreview();
+}
+
+function pickTexture(el, val) {
+  document.querySelectorAll('[data-texture]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  CS.card_texture = val;
+  updateCardPreview();
+}
+
+function pickCursor(el, val) {
+  document.querySelectorAll('[data-cursor]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  CS.cursor_style = val;
+}
+
+function pickSocialStyle(el, val) {
+  document.querySelectorAll('[data-socialstyle]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  CS.social_style = val;
+  updateCardPreview();
+}
   function updateCardPreview() {
     const mini = document.getElementById('cardPreviewMini'); if (!mini) return;
     const blur    = parseInt(document.getElementById('fCardBlur')?.value    || cs('card_blur'));
@@ -2020,6 +2454,30 @@ async function syncDiscordRoleBadges(discordId) {
       custom_icons: customIcons,
   audio_only_id: document.getElementById('fAudioId')?.value.trim() || '',
 mute_audio: gtog('tMuteAudio'),
+       border_style:   CS.border_style  || cs('border_style'),
+  name_style:     CS.name_style    || cs('name_style'),
+  name_grad1:     document.getElementById('fNameGrad1')?.value    || cs('name_grad1'),
+  name_grad2:     document.getElementById('fNameGrad2')?.value    || cs('name_grad2'),
+  card_layout:    CS.card_layout   || cs('card_layout'),
+  avatar_shape:   CS.avatar_shape  || cs('avatar_shape'),
+  avatar_border:  parseInt(document.getElementById('fAvatarBorder')?.value) || cs('avatar_border'),
+  avatar_glow:    gtog('tAvatarGlow'),
+  avatar_spin:    gtog('tAvatarSpin'),
+  card_texture:   CS.card_texture  || cs('card_texture'),
+  cursor_style:   CS.cursor_style  || cs('cursor_style'),
+  social_style:   CS.social_style  || cs('social_style'),
+  card_width:     parseInt(document.getElementById('fCardWidth')?.value)    || cs('card_width'),
+  card_glass:     gtog('tGlass'),
+  card_shadow:    gtog('tCardShadow'),
+  particles:      gtog('tParticles'),
+  page_anim:      gtog('tPageAnim'),
+  snow:           gtog('tSnow'),
+  scanlines:      gtog('tScanlines'),
+  particle_color: document.getElementById('fParticleColor')?.value || cs('particle_color'),
+  bio_size:       parseInt(document.getElementById('fBioSize')?.value)      || cs('bio_size'),
+  bio_color:      document.getElementById('fBioColor')?.value               || cs('bio_color'),
+  bio_italic:     gtog('tBioItalic'),
+  typewriter:     gtog('tTypewriter'),
     };
 newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
     console.log('[swaqq] saving newCS:', newCS);
