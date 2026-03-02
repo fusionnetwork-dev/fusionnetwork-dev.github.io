@@ -337,7 +337,10 @@
     .btn-sm-gold { background:rgba(245,166,35,0.08); color:rgba(245,166,35,0.7); border:1px solid rgba(245,166,35,0.2); }
     .btn-sm-gold:hover { background:rgba(245,166,35,0.15); color:var(--gold); }
 
-
+.theme-row { display:flex; align-items:center; gap:10px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 14px; transition:border-color 0.2s; }
+.theme-row:hover { border-color:var(--border2); }
+.theme-name { font-family:'Geist Mono',monospace; font-size:12px; color:var(--text); flex:1; }
+.theme-date { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); }
     .modal-bg { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.75); backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
     .modal-bg.open { opacity:1; pointer-events:all; }
     .modal-box { background:var(--surface); border:1px solid var(--border2); border-radius:18px; padding:28px 32px; width:100%; max-width:420px; transform:translateY(16px) scale(0.97); transition:transform 0.28s cubic-bezier(0.34,1.56,0.64,1); }
@@ -424,6 +427,7 @@
     <button class="nav-item" onclick="showTab('customize')"><i class="fas fa-palette"></i> customize</button>
     <button class="nav-item" onclick="showTab('socials')"><i class="fas fa-link"></i> social links</button>
     <button class="nav-item" onclick="showTab('badges')"><i class="fas fa-certificate"></i> badges</button>
+    <button class="nav-item" onclick="showTab('analytics')"><i class="fas fa-chart-line"></i> analytics</button>
     <button class="nav-item" onclick="showTab('settings')"><i class="fas fa-cog"></i> settings</button>
     <div class="nav-section-label" style="margin-top:8px">view</div>
     <a class="nav-item" id="viewProfileLink" href="#" target="_blank"><i class="fas fa-eye"></i> view profile</a>
@@ -1078,7 +1082,21 @@
       </div>
     </div>
   </div>
-
+<!-- PROFILE THEMES -->
+<div class="dash-section">
+  <div class="dash-section-title">profile themes</div>
+  <div class="dash-section-sub">save your current settings as a named theme — load or delete anytime</div>
+  <div class="card-edit">
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input class="field-input" type="text" id="themeNameInput" placeholder="theme name..." maxlength="30" style="flex:1">
+      <button class="btn btn-ghost" onclick="saveTheme()"><i class="fas fa-save"></i> save theme</button>
+    </div>
+    <div id="themesList" style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)" id="themesEmpty">no saved themes yet</div>
+    </div>
+    <div class="alert" id="themesAlert" style="margin-top:8px"></div>
+  </div>
+</div>
 </div>
 
     <!-- ═══ SOCIALS TAB ═══ -->
@@ -1111,6 +1129,25 @@
         <div class="dash-section-sub">locked badges can only be granted by an admin — the <span style="color:var(--gold)">early</span> badge is available to everyone right now</div>
         <div class="badge-grid" id="badgeGrid"></div>
       </div>
+      <div class="dash-section" style="margin-top:24px">
+  <div class="dash-section-title">custom badges <span id="customBadgeSlotTag" style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px"></span></div>
+  <div class="dash-section-sub">upload your own badge icons — shown alongside standard badges</div>
+  <div class="card-edit">
+    <div id="customBadgeUploadZone" style="border:1.5px dashed rgba(255,255,255,0.1);border-radius:12px;padding:18px;cursor:pointer;transition:all 0.2s;text-align:center;margin-bottom:16px" onclick="document.getElementById('customBadgeFileInput').click()" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+      <i class="fas fa-upload" style="font-size:20px;color:rgba(255,255,255,0.2);margin-bottom:8px;display:block"></i>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">upload badge image</div>
+      <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted)">png · jpg · gif · webp — max 1mb · square images work best</div>
+    </div>
+    <input type="file" id="customBadgeFileInput" accept="image/png,image/jpeg,image/gif,image/webp" style="display:none" onchange="handleCustomBadgeUpload(this)">
+    <div id="customBadgeNameWrap" style="display:none;margin-bottom:12px;display:flex;gap:8px">
+      <input class="field-input" type="text" id="customBadgeNameInput" placeholder="badge name..." maxlength="20" style="flex:1">
+      <button class="btn btn-ghost" onclick="confirmCustomBadgeUpload()"><i class="fas fa-check"></i> add</button>
+      <button class="btn btn-ghost" onclick="cancelCustomBadgeUpload()"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="customBadgeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>
+    <div class="alert" id="customBadgeAlert" style="margin-top:8px"></div>
+  </div>
+</div>
     </div>
 
     <!-- ═══ SETTINGS TAB ═══ -->
@@ -1140,7 +1177,58 @@
         </div>
       </div>
     </div>
+<!-- ═══ ANALYTICS TAB ═══ -->
+<div id="tab-analytics" style="display:none">
+  <div class="page-header">
+    <h1 class="page-title">analytics</h1>
+    <p class="page-sub">profile views over the last 90 days</p>
+  </div>
 
+  <!-- STAT CARDS -->
+  <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
+    <div class="stat-card"><div class="stat-card-val" id="anTotal">--</div><div class="stat-card-label">total views</div></div>
+    <div class="stat-card"><div class="stat-card-val" id="anToday">--</div><div class="stat-card-label">today</div></div>
+    <div class="stat-card"><div class="stat-card-val" id="anWeek">--</div><div class="stat-card-label">last 7 days</div></div>
+    <div class="stat-card"><div class="stat-card-val" id="anPeak">--</div><div class="stat-card-label">peak day</div></div>
+  </div>
+
+  <!-- CHART -->
+  <div class="dash-section">
+    <div class="dash-section-title">views over time <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">last 90 days</span></div>
+    <div class="card-edit" style="padding:24px 20px 16px">
+      <canvas id="analyticsChart" style="width:100%;height:200px;display:block"></canvas>
+      <div id="analyticsEmpty" style="display:none;text-align:center;padding:40px;font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)">
+        no view data yet — share your profile to start tracking
+      </div>
+    </div>
+  </div>
+
+  <!-- REACTIONS BREAKDOWN -->
+  <div class="dash-section">
+    <div class="dash-section-title">reactions</div>
+    <div class="card-edit" style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+      <div style="padding:20px;text-align:center;border-right:1px solid var(--border)">
+        <div style="font-size:32px;font-weight:800;color:#43b581" id="anLikes">--</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:0.1em;text-transform:uppercase">likes</div>
+      </div>
+      <div style="padding:20px;text-align:center">
+        <div style="font-size:32px;font-weight:800;color:#f04747" id="anDislikes">--</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:0.1em;text-transform:uppercase">dislikes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOURLY HEATMAP -->
+  <div class="dash-section">
+    <div class="dash-section-title">peak hours <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">when people visit most</span></div>
+    <div class="card-edit" style="padding:20px">
+      <div id="hourlyHeatmap" style="display:grid;grid-template-columns:repeat(24,1fr);gap:3px;margin-top:4px"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-family:'Geist Mono',monospace;font-size:9px;color:var(--muted)">
+        <span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>11pm</span>
+      </div>
+    </div>
+  </div>
+</div>
    <!-- ═══ ADMIN TAB ═══ -->
 <div id="tab-admin" style="display:none">
   <div class="page-header">
@@ -1753,20 +1841,21 @@ function restoreCustomizeSelections() {
   function gtog(id) { return document.getElementById(id)?.classList.contains('on') ?? false; }
 
   // ─── TABS ─────────────────────────────────────────────────────────────────────
-  const TABS = ['profile','appearance','customize','socials','badges','settings','admin'];
-  function showTab(name) {
-    TABS.forEach(t => {
-      document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
-    });
-    document.querySelectorAll('.nav-item[onclick]').forEach(el => {
-      const m = el.getAttribute('onclick').match(/showTab\('(\w+)'\)/);
-      if (m) el.classList.toggle('active', m[1] === name);
-    });
-    if (name === 'admin' && isAdmin) loadAdminData();
-    if (name === 'customize') { buildFontGrid(); updateCardPreview(); }
-    window.scrollTo(0, 0);
-  }
-
+  const TABS = ['profile','appearance','customize','socials','badges','settings','analytics','admin'];
+ function showTab(name) {
+  TABS.forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.nav-item[onclick]').forEach(el => {
+    const m = el.getAttribute('onclick').match(/showTab\('(\w+)'\)/);
+    if (m) el.classList.toggle('active', m[1] === name);
+  });
+  if (name === 'admin')     loadAdminData();
+  if (name === 'analytics') loadAnalytics();   // ADD THIS LINE
+if (name === 'customize') { buildFontGrid(); updateCardPreview(); loadThemes(); }
+   if (name === 'badges') loadCustomBadges();
+  window.scrollTo(0, 0);
+}
   // ─── BG TABS ─────────────────────────────────────────────────────────────────
   function activateBgTab(tab) {
     currentBgTab = tab || 'video';
@@ -2109,7 +2198,409 @@ function pickSocialStyle(el, val) {
     ov.innerHTML = '<span class="video-thumb-label">preview — muted</span>';
     wrap.appendChild(ov);
   }
+// ── ANALYTICS ────────────────────────────────────────────────────────────────
+async function loadAnalytics() {
+  if (!currentProfile) return;
 
+  // Fetch reactions
+  const { data: prof } = await sb.from('profiles')
+    .select('like_count, dislike_count, view_count')
+    .eq('id', currentUser.id).single();
+  if (prof) {
+    document.getElementById('anLikes').textContent    = (prof.like_count    || 0).toLocaleString();
+    document.getElementById('anDislikes').textContent = (prof.dislike_count || 0).toLocaleString();
+    document.getElementById('anTotal').textContent    = (prof.view_count    || 0).toLocaleString();
+  }
+
+  // Fetch view events for last 90 days
+  const since = new Date();
+  since.setDate(since.getDate() - 90);
+
+  const { data: events } = await sb.from('view_events')
+    .select('viewed_at')
+    .eq('profile_id', currentUser.id)
+    .gte('viewed_at', since.toISOString())
+    .order('viewed_at', { ascending: true });
+
+  if (!events || events.length === 0) {
+    document.getElementById('analyticsEmpty').style.display = 'block';
+    document.getElementById('analyticsChart').style.display = 'none';
+    document.getElementById('anToday').textContent = '0';
+    document.getElementById('anWeek').textContent  = '0';
+    document.getElementById('anPeak').textContent  = '0';
+    renderHourlyHeatmap([]);
+    return;
+  }
+
+  document.getElementById('analyticsEmpty').style.display = 'none';
+  document.getElementById('analyticsChart').style.display = 'block';
+
+  // Build daily buckets for last 90 days
+  const buckets = {};
+  const today = new Date();
+  for (let i = 89; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    buckets[key] = 0;
+  }
+
+  const todayStr = today.toISOString().slice(0, 10);
+  const weekAgo  = new Date(today); weekAgo.setDate(weekAgo.getDate() - 7);
+  let todayCount = 0, weekCount = 0;
+  const hourCounts = new Array(24).fill(0);
+
+  events.forEach(e => {
+    const d   = new Date(e.viewed_at);
+    const key = d.toISOString().slice(0, 10);
+    if (buckets[key] !== undefined) buckets[key]++;
+    if (key === todayStr) todayCount++;
+    if (d >= weekAgo) weekCount++;
+    hourCounts[d.getHours()]++;
+  });
+
+  const vals   = Object.values(buckets);
+  const labels = Object.keys(buckets);
+  const peak   = Math.max(...vals);
+
+  document.getElementById('anToday').textContent = todayCount.toLocaleString();
+  document.getElementById('anWeek').textContent  = weekCount.toLocaleString();
+  document.getElementById('anPeak').textContent  = peak.toLocaleString();
+
+  renderAnalyticsChart(labels, vals, peak);
+  renderHourlyHeatmap(hourCounts);
+}
+
+function renderAnalyticsChart(labels, vals, peak) {
+  const canvas = document.getElementById('analyticsChart');
+  const ctx    = canvas.getContext('2d');
+  const dpr    = window.devicePixelRatio || 1;
+
+  canvas.width  = canvas.offsetWidth  * dpr;
+  canvas.height = canvas.offsetHeight * dpr;
+  ctx.scale(dpr, dpr);
+
+  const W   = canvas.offsetWidth;
+  const H   = canvas.offsetHeight;
+  const pad = { top: 16, right: 16, bottom: 28, left: 32 };
+  const cW  = W - pad.left - pad.right;
+  const cH  = H - pad.top  - pad.bottom;
+  const max = peak || 1;
+  const n   = vals.length;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (cH / 4) * i;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cW, y); ctx.stroke();
+    // Y axis labels
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.font      = '9px Geist Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(Math.round(max - (max / 4) * i), pad.left - 4, y + 3);
+  }
+
+  // X axis labels — show every ~15 days
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
+  ctx.font      = '9px Geist Mono, monospace';
+  ctx.textAlign = 'center';
+  for (let i = 0; i < n; i += 15) {
+    const x = pad.left + (i / (n - 1)) * cW;
+    const d = new Date(labels[i]);
+    ctx.fillText((d.getMonth()+1) + '/' + d.getDate(), x, H - 4);
+  }
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + cH);
+  grad.addColorStop(0,   'rgba(255,255,255,0.15)');
+  grad.addColorStop(1,   'rgba(255,255,255,0)');
+
+  // Draw area
+  ctx.beginPath();
+  vals.forEach((v, i) => {
+    const x = pad.left + (i / (n - 1)) * cW;
+    const y = pad.top  + cH - (v / max) * cH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(pad.left + cW, pad.top + cH);
+  ctx.lineTo(pad.left,       pad.top + cH);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Draw line
+  ctx.beginPath();
+  vals.forEach((v, i) => {
+    const x = pad.left + (i / (n - 1)) * cW;
+    const y = pad.top  + cH - (v / max) * cH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+  ctx.lineWidth   = 1.5;
+  ctx.stroke();
+
+  // Dots on non-zero days
+  vals.forEach((v, i) => {
+    if (!v) return;
+    const x = pad.left + (i / (n - 1)) * cW;
+    const y = pad.top  + cH - (v / max) * cH;
+    ctx.beginPath();
+    ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+  });
+}
+
+function renderHourlyHeatmap(hourCounts) {
+  const el  = document.getElementById('hourlyHeatmap');
+  el.innerHTML = '';
+  const max = Math.max(...hourCounts, 1);
+  for (let h = 0; h < 24; h++) {
+    const count   = hourCounts[h] || 0;
+    const opacity = count ? 0.08 + (count / max) * 0.7 : 0.04;
+    const cell    = document.createElement('div');
+    cell.title    = `${h}:00 — ${count} view${count !== 1 ? 's' : ''}`;
+    cell.style.cssText = `height:32px;border-radius:4px;background:rgba(255,255,255,${opacity.toFixed(2)});transition:opacity 0.2s;cursor:default`;
+    el.appendChild(cell);
+  }
+}
+  // ── PROFILE THEMES ────────────────────────────────────────────────────────────
+async function loadThemes() {
+  const { data } = await sb.from('profile_themes')
+    .select('*')
+    .eq('profile_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  const list  = document.getElementById('themesList');
+  const empty = document.getElementById('themesEmpty');
+  list.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    list.appendChild(empty);
+    empty.style.display = 'block';
+    return;
+  }
+
+  data.forEach(theme => {
+    const row = document.createElement('div');
+    row.className = 'theme-row';
+    const d = new Date(theme.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    row.innerHTML = `
+      <div class="theme-name"><i class="fas fa-palette" style="font-size:10px;margin-right:6px;opacity:0.4"></i>${sanitize(theme.name)}</div>
+      <div class="theme-date">${d}</div>
+      <button class="btn-sm btn-sm-ghost" onclick="loadTheme('${theme.id}')"><i class="fas fa-download"></i> load</button>
+      <button class="btn-sm btn-sm-danger" onclick="deleteTheme('${theme.id}', this)"><i class="fas fa-trash"></i></button>
+    `;
+    list.appendChild(row);
+  });
+}
+
+async function saveTheme() {
+  const name = document.getElementById('themeNameInput').value.trim();
+  if (!name) { showAlert('themesAlert', 'enter a theme name.', 'error'); return; }
+
+  // Check limit — max 20 themes
+  const { count } = await sb.from('profile_themes')
+    .select('id', { count:'exact', head:true })
+    .eq('profile_id', currentUser.id);
+  if (count >= 20) { showAlert('themesAlert', 'max 20 themes. delete one first.', 'error'); return; }
+
+  // Snapshot current CS state from UI
+  const snap = buildCurrentCS();
+
+  const { error } = await sb.from('profile_themes').insert({
+    profile_id: currentUser.id,
+    name,
+    cs_blob: snap,
+  });
+
+  if (error) { showAlert('themesAlert', 'save failed: ' + error.message, 'error'); return; }
+  document.getElementById('themeNameInput').value = '';
+  showAlert('themesAlert', '✓ theme saved!', 'success');
+  loadThemes();
+}
+
+async function loadTheme(id) {
+  const { data, error } = await sb.from('profile_themes')
+    .select('cs_blob, name')
+    .eq('id', id).single();
+  if (error || !data) { showAlert('themesAlert', 'failed to load theme.', 'error'); return; }
+
+  // Apply blob to CS and repopulate UI
+  Object.assign(CS, data.cs_blob);
+  populateForm({ ...currentProfile, custom_settings: data.cs_blob });
+  updateCardPreview();
+  showAlert('themesAlert', `✓ loaded "${sanitize(data.name)}" — hit save to apply.`, 'success');
+}
+
+async function deleteTheme(id, btn) {
+  if (!confirm('delete this theme?')) return;
+  btn.closest('.theme-row').style.opacity = '0.4';
+  const { error } = await sb.from('profile_themes').delete().eq('id', id);
+  if (error) { btn.closest('.theme-row').style.opacity = '1'; showAlert('themesAlert', 'delete failed.', 'error'); return; }
+  loadThemes();
+}
+
+// Build a CS snapshot from current UI — call this instead of duplicating logic
+function buildCurrentCS() {
+  const safeInt = (elId, fallback) => {
+    const v = parseInt(document.getElementById(elId)?.value);
+    return isNaN(v) ? fallback : v;
+  };
+  return {
+    bg_type:           currentBgTab,
+    bg_image_url:      document.getElementById('fBgImageUrl')?.value?.trim() || '',
+    bg_opacity:        safeInt('fBgOpacity', 70),
+    bg_color:          document.getElementById('fBgColor')?.value || '#070707',
+    bg_grad1:          document.getElementById('fGrad1')?.value   || '#0a0a1a',
+    bg_grad2:          document.getElementById('fGrad2')?.value   || '#1a0a0a',
+    bg_grad_dir:       document.getElementById('fGradDir')?.value || 'to bottom right',
+    show_video_bg:     gtog('tShowVideo'),
+    mute_video:        gtog('tMuteDefault'),
+    card_font:         CS.card_font || 'Syne',
+    accent_color:      document.getElementById('fAccentColor')?.value || '#ffffff',
+    card_blur:         safeInt('fCardBlur', 12),
+    card_opacity:      safeInt('fCardOpacity', 85),
+    card_glow:         gtog('tCardGlow'),
+    card_rounded:      gtog('tRounded'),
+    border_style:      CS.border_style  || 'shimmer',
+    name_style:        CS.name_style    || 'solid',
+    name_grad1:        document.getElementById('fNameGrad1')?.value || '#ffffff',
+    name_grad2:        document.getElementById('fNameGrad2')?.value || '#888888',
+    card_layout:       CS.card_layout   || 'default',
+    avatar_shape:      CS.avatar_shape  || 'circle',
+    avatar_border:     safeInt('fAvatarBorder', 2),
+    avatar_glow:       gtog('tAvatarGlow'),
+    avatar_spin:       gtog('tAvatarSpin'),
+    card_texture:      CS.card_texture  || 'none',
+    cursor_style:      CS.cursor_style  || 'default',
+    social_style:      CS.social_style  || 'default',
+    card_width:        safeInt('fCardWidth', 420),
+    card_glass:        gtog('tGlass'),
+    card_shadow:       gtog('tCardShadow'),
+    particles:         gtog('tParticles'),
+    page_anim:         gtog('tPageAnim'),
+    snow:              gtog('tSnow'),
+    scanlines:         gtog('tScanlines'),
+    particle_color:    document.getElementById('fParticleColor')?.value || '#ffffff',
+    bio_size:          safeInt('fBioSize', 13),
+    bio_color:         document.getElementById('fBioColor')?.value || '#ffffff',
+    bio_italic:        gtog('tBioItalic'),
+    typewriter:        gtog('tTypewriter'),
+    show_volume_widget:gtog('tVolumeWidget'),
+  };
+}
+  // ── CUSTOM BADGES ─────────────────────────────────────────────────────────────
+let _pendingBadgeFile = null;
+
+const CUSTOM_BADGE_LIMIT = () => (isAdmin || isOwner) ? 10 : 3;
+
+async function loadCustomBadges() {
+  const { data } = await sb.from('custom_badges')
+    .select('*')
+    .eq('profile_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  const grid  = document.getElementById('customBadgeGrid');
+  const slot  = document.getElementById('customBadgeSlotTag');
+  const limit = CUSTOM_BADGE_LIMIT();
+  const count = data?.length || 0;
+
+  slot.textContent = `${count} / ${limit} slots used`;
+  grid.innerHTML   = '';
+
+  if (!data || data.length === 0) {
+    grid.innerHTML = '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--muted)">no custom badges yet</div>';
+    return;
+  }
+
+  data.forEach(badge => {
+    const card = document.createElement('div');
+    card.className = 'badge-card unlocked';
+    card.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px';
+    card.innerHTML = `
+      <img src="${badge.image_url}" style="width:36px;height:36px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,0.06);padding:4px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sanitize(badge.name)}</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted)">custom badge</div>
+      </div>
+      <button class="btn-sm btn-sm-danger" onclick="deleteCustomBadge('${badge.id}', this)"><i class="fas fa-trash"></i></button>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function handleCustomBadgeUpload(input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 1024 * 1024) { showAlert('customBadgeAlert', 'image too large — max 1mb.', 'error'); return; }
+  _pendingBadgeFile = file;
+  document.getElementById('customBadgeNameInput').value = file.name.replace(/\.[^.]+$/, '').slice(0, 20);
+  document.getElementById('customBadgeNameWrap').style.display = 'flex';
+  input.value = '';
+}
+
+async function confirmCustomBadgeUpload() {
+  if (!_pendingBadgeFile) return;
+  const name  = document.getElementById('customBadgeNameInput').value.trim();
+  if (!name) { showAlert('customBadgeAlert', 'enter a badge name.', 'error'); return; }
+
+  const { count } = await sb.from('custom_badges')
+    .select('id', { count:'exact', head:true })
+    .eq('profile_id', currentUser.id);
+  if (count >= CUSTOM_BADGE_LIMIT()) {
+    showAlert('customBadgeAlert', `max ${CUSTOM_BADGE_LIMIT()} custom badges for your account.`, 'error');
+    return;
+  }
+
+  // Upload to storage
+  const ext  = _pendingBadgeFile.name.split('.').pop();
+  const path = `badges/${currentUser.id}/${Date.now()}.${ext}`;
+  const { error: upErr } = await sb.storage.from('avatars').upload(path, _pendingBadgeFile, {
+    upsert: false, contentType: _pendingBadgeFile.type
+  });
+
+  let imageUrl;
+  if (upErr) {
+    // Fallback: base64
+    imageUrl = await new Promise(res => {
+      const r = new FileReader();
+      r.onload = e => res(e.target.result);
+      r.readAsDataURL(_pendingBadgeFile);
+    });
+  } else {
+    const { data: { publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+    imageUrl = publicUrl;
+  }
+
+  const { error } = await sb.from('custom_badges').insert({
+    profile_id: currentUser.id,
+    name:       sanitize(name),
+    image_url:  imageUrl,
+  });
+
+  if (error) { showAlert('customBadgeAlert', 'upload failed: ' + error.message, 'error'); return; }
+
+  _pendingBadgeFile = null;
+  document.getElementById('customBadgeNameWrap').style.display = 'none';
+  showAlert('customBadgeAlert', '✓ badge uploaded!', 'success');
+  loadCustomBadges();
+}
+
+function cancelCustomBadgeUpload() {
+  _pendingBadgeFile = null;
+  document.getElementById('customBadgeNameWrap').style.display = 'none';
+}
+
+async function deleteCustomBadge(id, btn) {
+  if (!confirm('delete this custom badge?')) return;
+  btn.closest('.badge-card').style.opacity = '0.4';
+  const { error } = await sb.from('custom_badges').delete().eq('id', id);
+  if (error) { btn.closest('.badge-card').style.opacity = '1'; showAlert('customBadgeAlert', 'delete failed.', 'error'); return; }
+  loadCustomBadges();
+}
   // ─── CUSTOM ICON ─────────────────────────────────────────────────────────────
   function handleCustomIcon(input) {
    const file = input.files[0]; if (!file) return;
