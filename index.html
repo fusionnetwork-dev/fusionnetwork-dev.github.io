@@ -692,65 +692,60 @@ function sanitizeHtml(html) {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
 
   // ── SIGN UP ──
-  async function signUp() {
-    const handle   = document.getElementById('signupHandle').value.trim().toLowerCase();
-    const email    = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
+ async function signUp() {
+  const handle   = document.getElementById('signupHandle').value.trim().toLowerCase();
+  const email    = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
 
-    if (!handle) return showAlert('signupAlert', 'please enter a handle.', 'error');
-    if (!/^[a-z0-9_]{2,20}$/.test(handle)) return showAlert('signupAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
-    if (!email) return showAlert('signupAlert', 'please enter your email.', 'error');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAlert('signupAlert', 'please enter a valid email address.', 'error');
-    if (password.length < 6) return showAlert('signupAlert', 'password must be at least 6 characters.', 'error');
+  if (!handle) return showAlert('signupAlert', 'please enter a handle.', 'error');
+  if (!/^[a-z0-9_]{2,20}$/.test(handle)) return showAlert('signupAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
+  if (!email) return showAlert('signupAlert', 'please enter your email.', 'error');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAlert('signupAlert', 'please enter a valid email address.', 'error');
+  if (password.length < 6) return showAlert('signupAlert', 'password must be at least 6 characters.', 'error');
 
-    setLoading('signupBtn', true);
-    const safetyTimer = setTimeout(() => {
-      setLoading('signupBtn', false);
-      showAlert('signupAlert', 'request timed out — check your connection and try again.', 'error');
-    }, 12000);
+  setLoading('signupBtn', true);
 
-    try {
-      const { data: taken } = await sb.from('profiles').select('id').eq('handle', handle).maybeSingle();
-      if (taken) { clearTimeout(safetyTimer); setLoading('signupBtn', false); return showAlert('signupAlert', `@${handle} is already taken. try another.`, 'error'); }
+  const safetyTimer = setTimeout(() => {
+    setLoading('signupBtn', false);
+    showAlert('signupAlert', 'request timed out — check your connection and try again.', 'error');
+  }, 12000);
 
-      const { data: authData, error: authErr } = await sb.auth.signUp({ email, password });
-      if (authErr) { clearTimeout(safetyTimer); setLoading('signupBtn', false); return showAlert('signupAlert', authErr.message, 'error'); }
-
-      const userId = authData?.user?.id;
-if (!userId) {
-  clearTimeout(safetyTimer);
-  setLoading('signupBtn', false);
-  // With email confirmation ON, user exists but isn't confirmed yet
-  // Profile insert still works, they just can't log in until confirmed
-  showAlert('signupAlert', '✓ check your email and click the confirmation link!', 'success');
-  setTimeout(() => openModal('login'), 3000);
-  return;
-}
-
-      const { error: profileErr } = await sb.from('profiles').insert({
-        id: userId, handle, email: email, display_name: handle, bio: '', discord_id: '',
-        youtube_video_id: '', badges: JSON.stringify([]), socials: JSON.stringify([]),
-        show_views: true, show_splash: true, show_tilt: true,
-        show_uid_scramble: true, show_video_bg: true, mute_video: false,
-        view_count: 0, created_at: new Date().toISOString()
-      });
-
+  try {
+    // Check if handle is taken
+    const { data: taken } = await sb.from('profiles').select('id').eq('handle', handle).maybeSingle();
+    if (taken) {
       clearTimeout(safetyTimer);
-      if (profileErr) {
-        setLoading('signupBtn', false);
-        if (profileErr.code === '23505') { showAlert('signupAlert', '✓ account ready! redirecting...', 'success'); setTimeout(() => window.location.href = '/dashboard', 900); return; }
-        return showAlert('signupAlert', 'profile error: ' + profileErr.message + ' (code: ' + profileErr.code + ')', 'error');
-      }
-
-showAlert('signupAlert', '✓ check your email to confirm your account, then log in!', 'success');
-setLoading('signupBtn', false);
-// Switch to login modal after a delay
-setTimeout(() => openModal('login'), 3000);
-    } catch (err) {
-      clearTimeout(safetyTimer); setLoading('signupBtn', false);
-      showAlert('signupAlert', 'unexpected error: ' + err.message, 'error');
+      setLoading('signupBtn', false);
+      return showAlert('signupAlert', `@${handle} is already taken. try another.`, 'error');
     }
+
+    // Sign up — handle is passed in metadata so the DB trigger can use it
+    const { data: authData, error: authErr } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { handle: handle }
+      }
+    });
+
+    clearTimeout(safetyTimer);
+    setLoading('signupBtn', false);
+
+    if (authErr) {
+      return showAlert('signupAlert', authErr.message, 'error');
+    }
+
+    // Profile is created automatically by the DB trigger (handle_new_user)
+    // No manual insert needed — works even before email confirmation
+    showAlert('signupAlert', '✓ check your email to confirm your account, then log in!', 'success');
+    setTimeout(() => openModal('login'), 3000);
+
+  } catch (err) {
+    clearTimeout(safetyTimer);
+    setLoading('signupBtn', false);
+    showAlert('signupAlert', 'unexpected error: ' + err.message, 'error');
   }
+}
 
 // ── LOG IN ──
 let _mfaFactorId2fa = null;
