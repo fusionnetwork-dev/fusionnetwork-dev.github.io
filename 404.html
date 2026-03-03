@@ -245,7 +245,23 @@
     <a class="nf-btn" href="/"><i class="fas fa-arrow-left" style="font-size:10px"></i> back to swaqq.xyz</a>
     <a class="nf-btn" href="/" onclick="localStorage.setItem('claimHandle', window._handle || '')"><i class="fas fa-plus" style="font-size:10px"></i> claim this handle</a>
   </div>
-
+<!-- Add this BEFORE the splash div -->
+<div id="captchaGate" style="position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;gap:20px;padding:20px">
+  <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.2em;color:rgba(255,255,255,0.25)">swaqq.xyz — verify</div>
+  <div id="captchaBox" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:28px 32px;text-align:center;max-width:320px;width:100%">
+    <div style="font-family:'Geist Mono',monospace;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:16px">solve to continue</div>
+    <div id="captchaQuestion" style="font-size:28px;font-weight:800;letter-spacing:-0.02em;margin-bottom:20px"></div>
+    <input id="captchaInput" type="number" placeholder="answer" 
+      style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:12px 16px;color:#fff;font-family:'Geist Mono',monospace;font-size:18px;text-align:center;outline:none;letter-spacing:0.1em"
+      onkeydown="if(event.key==='Enter')checkCaptcha()">
+    <button onclick="checkCaptcha()" 
+      style="margin-top:12px;width:100%;padding:12px;border:none;border-radius:9px;background:linear-gradient(110deg,#333,#777,#bbb,#777,#333);background-size:200%;animation:shimmer 3s ease infinite;color:#fff;font-family:'Geist Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.1em;cursor:pointer">
+      verify →
+    </button>
+    <div id="captchaError" style="font-family:'Geist Mono',monospace;font-size:11px;color:#f04747;margin-top:10px;display:none">wrong answer — try again</div>
+  </div>
+  <div style="font-family:'Geist Mono',monospace;font-size:9px;color:rgba(255,255,255,0.1);letter-spacing:0.15em">human verification</div>
+</div>
   <div id="splash">
     <a class="splash-site" href="/">swaqq.xyz</a>
     <div class="splash-name" id="splashName"></div>
@@ -1590,6 +1606,54 @@
     }
 
     /* ── Boot ── */
+    // ── CAPTCHA ──────────────────────────────────────────────────────────────────
+let _captchaAnswer = 0;
+
+function initCaptcha() {
+  // Check if already passed this session
+  if (sessionStorage.getItem('swaqq_verified') === '1') {
+    document.getElementById('captchaGate').style.display = 'none';
+    return;
+  }
+
+  const types = [
+    () => { const a = Math.ceil(Math.random()*12), b = Math.ceil(Math.random()*12); _captchaAnswer = a+b; return `${a} + ${b} = ?`; },
+    () => { const a = Math.ceil(Math.random()*10)+5, b = Math.ceil(Math.random()*5); _captchaAnswer = a-b; return `${a} − ${b} = ?`; },
+    () => { const a = Math.ceil(Math.random()*9)+2, b = Math.ceil(Math.random()*9)+2; _captchaAnswer = a*b; return `${a} × ${b} = ?`; },
+  ];
+  const chosen = types[Math.floor(Math.random() * types.length)]();
+  document.getElementById('captchaQuestion').textContent = chosen;
+  setTimeout(() => document.getElementById('captchaInput').focus(), 100);
+}
+
+function checkCaptcha() {
+  const val = parseInt(document.getElementById('captchaInput').value);
+  const err = document.getElementById('captchaError');
+  if (val === _captchaAnswer) {
+    sessionStorage.setItem('swaqq_verified', '1');
+    const gate = document.getElementById('captchaGate');
+    gate.style.transition = 'opacity 0.5s ease';
+    gate.style.opacity = '0';
+    setTimeout(() => gate.style.display = 'none', 500);
+  } else {
+    err.style.display = 'block';
+    document.getElementById('captchaInput').value = '';
+    document.getElementById('captchaInput').focus();
+    // Shake animation
+    const box = document.getElementById('captchaBox');
+    box.style.animation = 'shake 0.4s ease';
+    setTimeout(() => box.style.animation = '', 400);
+    // New question after wrong answer
+    setTimeout(initCaptcha, 800);
+  }
+}
+
+// Add shake keyframe
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}`;
+document.head.appendChild(shakeStyle);
+
+initCaptcha();
     loadProfile();
   </script>
 </body>
