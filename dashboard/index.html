@@ -1233,6 +1233,44 @@
     <div id="customBadgeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>
     <div class="alert" id="customBadgeAlert" style="margin-top:8px"></div>
   </div>
+        <!-- SLOT PURCHASE -->
+<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+  <div class="field-label" style="margin-bottom:10px">
+    badge slots 
+    <span id="slotCountTag" style="color:var(--text);font-size:11px"></span>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn-buy-slots" onclick="buySlots('3slot')" style="
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'Geist Mono',monospace;font-size:11px;font-weight:700;
+      letter-spacing:0.06em;text-transform:uppercase;
+      padding:10px 18px;border-radius:9px;cursor:pointer;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.12);
+      color:rgba(255,255,255,0.7);
+      transition:all 0.2s
+    "
+    onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff'"
+    onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='rgba(255,255,255,0.7)'">
+      <span style="font-size:16px;font-weight:900">+</span> 3 slots — $2.99
+    </button>
+    <button class="btn-buy-slots" onclick="buySlots('10slot')" style="
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'Geist Mono',monospace;font-size:11px;font-weight:700;
+      letter-spacing:0.06em;text-transform:uppercase;
+      padding:10px 18px;border-radius:9px;cursor:pointer;
+      background:rgba(245,166,35,0.08);
+      border:1px solid rgba(245,166,35,0.25);
+      color:rgba(245,166,35,0.8);
+      transition:all 0.2s
+    "
+    onmouseover="this.style.background='rgba(245,166,35,0.15)';this.style.color='#f5a623'"
+    onmouseout="this.style.background='rgba(245,166,35,0.08)';this.style.color='rgba(245,166,35,0.8)'">
+      <span style="font-size:16px;font-weight:900">+</span> 10 slots — $6.99 <span style="font-size:9px;opacity:0.7">best value</span>
+    </button>
+  </div>
+  <div class="field-hint" style="margin-top:8px">slots are permanent — added instantly after payment</div>
+</div>
 </div>
     </div>
 
@@ -1580,6 +1618,63 @@ function sanitizeHtml(html) {
   div.textContent = html;
   return div.innerHTML;
 }
+  // ── STRIPE BADGE SLOTS ────────────────────────────────────────────────────────
+const STRIPE_PRICE_IDS = {
+  '3slot':  'price_1T71EWIkWV8zhl3F4IhYadWy',
+  '10slot': 'price_1T71EyIkWV8zhl3FtyZpf7D9',
+};
+
+async function buySlots(pack) {
+  const priceId = STRIPE_PRICE_IDS[pack];
+  if (!priceId || !currentUser) return;
+
+  const btn = event.currentTarget;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-sm"></span> redirecting...';
+  btn.disabled = true;
+
+  try {
+    // Create a Stripe Checkout session via your edge function
+    const res = await fetch(
+      'https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/create-checkout',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (await sb.auth.getSession()).data.session.access_token,
+        },
+        body: JSON.stringify({
+          price_id: priceId,
+          user_id:  currentUser.id,
+          success_url: window.location.origin + '/dashboard?payment=success',
+          cancel_url:  window.location.origin + '/dashboard?payment=cancelled',
+        }),
+      }
+    );
+    const { url, error } = await res.json();
+    if (error) throw new Error(error);
+    window.location.href = url;
+  } catch (err) {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+    showAlert('customBadgeAlert', 'payment error: ' + err.message, 'error');
+  }
+}
+
+// Update slot display
+function updateSlotDisplay() {
+  const slots = currentProfile?.custom_badge_slots ?? 3;
+  const el = document.getElementById('slotCountTag');
+  if (el) el.textContent = `— ${slots} total`;
+}
+
+// Show success message if returning from Stripe
+if (new URLSearchParams(window.location.search).get('payment') === 'success') {
+  setTimeout(() => {
+    showAlert('customBadgeAlert', '✓ slots added! reloading your profile...', 'success');
+    setTimeout(() => window.location.href = '/dashboard', 2000);
+  }, 500);
+}
   const SUPABASE_URL  = 'https://cwaifnbgkqqecatggvrx.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YWlmbmJna3FxZWNhdGdndnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzgzNzUsImV4cCI6MjA4NzcxNDM3NX0.5o3aI40Z8orNW1yOVWt7uAsP4TJ6MvVPqFidaTOf0cE';
   const { createClient } = supabase;
@@ -1884,6 +1979,7 @@ if (data.discord_id) {
         if (uidEl) uidEl.textContent = 'uid ' + (pos + 1);
       }
     });
+    updateSlotDisplay()
   }
 
   function pj(v, fallback) {
@@ -2700,7 +2796,10 @@ function buildCurrentCS() {
   // ── CUSTOM BADGES ─────────────────────────────────────────────────────────────
 let _pendingBadgeFile = null;
 
-const CUSTOM_BADGE_LIMIT = () => (isAdmin || isOwner) ? 10 : 3;
+const CUSTOM_BADGE_LIMIT = () => {
+  if (isAdmin || isOwner) return 999;
+  return currentProfile?.custom_badge_slots ?? 3;
+};
 
 async function loadCustomBadges() {
   const { data } = await sb.from('custom_badges')
