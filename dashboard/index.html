@@ -4508,6 +4508,14 @@ return `<tr>
             <i class="fas fa-ban"></i> ban
           </button>`
       }
+      ${u.badges?.includes('owner') || u.badges?.includes('developer') ? '' : `
+  <button onclick="deleteAccount('${u.id}','${u.handle}')"
+    style="padding:4px 10px;border-radius:6px;border:1px solid rgba(240,71,71,0.3);background:rgba(240,71,71,0.08);color:#f04747;font-family:'Geist Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:0.05em;transition:all 0.2s"
+    onmouseenter="this.style.background='rgba(240,71,71,0.18)'"
+    onmouseleave="this.style.background='rgba(240,71,71,0.08)'">
+    delete
+  </button>
+`}
       ${u.is_banned
         ? `<button class="btn-sm btn-sm-ghost" title="view ban record" onclick="viewBanRecord('${u.id}')"><i class="fas fa-info-circle"></i></button>`
         : ''
@@ -4574,7 +4582,38 @@ async function saveAdminNote() {
     setTimeout(() => { alertEl.className = 'alert'; }, 3000);
   }
 }
+async function deleteAccount(userId, userHandle) {
+  // Block owner and developer
+  const target = allUsers.find(u => u.id === userId);
+  if (target?.badges?.includes('owner') || target?.badges?.includes('developer')) {
+    showAlert('adminAlert', 'cannot delete owner or developer accounts.', 'error');
+    return;
+  }
 
+  // Confirm dialog
+  const confirmed = confirm(`permanently delete @${userHandle}?\n\nthis will:\n• delete their profile\n• remove their handle\n• cannot be undone`);
+  if (!confirmed) return;
+
+  try {
+    // Delete related data first to avoid FK constraint errors
+    await sb.from('profile_follows').delete().or(`follower_id.eq.${userId},following_id.eq.${userId}`);
+    await sb.from('link_clicks').delete().eq('profile_id', userId);
+    await sb.from('custom_badges').delete().eq('profile_id', userId);
+    await sb.from('reports').delete().eq('reported_profile_id', userId);
+
+    // Delete the profile row itself
+    const { error } = await sb.from('profiles').delete().eq('id', userId);
+    if (error) throw error;
+
+    // Remove from local allUsers array and re-render
+    allUsers = allUsers.filter(u => u.id !== userId);
+    renderAdminTable(allUsers);
+    showAlert('adminAlert', `@${userHandle} has been deleted.`, 'success');
+  } catch (err) {
+    console.error('[swaqq] delete error:', err);
+    showAlert('adminAlert', `failed to delete: ${err.message}`, 'error');
+  }
+}
 // ─── ROLE MODAL ───────────────────────────────────────────────────────────────
 let _roleModalUid = null;
 
