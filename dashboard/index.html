@@ -2398,7 +2398,9 @@ CS = {
     });
     updateSlotDisplay()
     // Start autosave after profile loads — add in loadProfile() at the end:
-
+  if (data.discord_id) {
+  syncDiscordRoleBadges(data.discord_id);
+}
   }
 
   function pj(v, fallback) {
@@ -5020,9 +5022,7 @@ document.addEventListener('keydown', e => {
 loadDraft();
 setInterval(saveDraft, 30000);
   checkChangelog()
-  if (data.discord_id) {
-  syncDiscordRoleBadges(data.discord_id);
-}
+
 </script> 
     <!-- ═══ MUSIC TAB ═══ -->
 <div id="tab-music" style="display:none">
