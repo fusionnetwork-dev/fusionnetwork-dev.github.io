@@ -555,7 +555,9 @@
         bg_video_loop:     get('bg_video_loop') !== false,
         bg_video_mute:     get('bg_video_mute') !== false,
         banner_url: profile.banner_url || blob.banner_url || '',
-        
+        splash_text:       blob.splash_text       || '',
+splash_font:       blob.splash_font       || 'Syne',
+splash_typewriter: blob.splash_typewriter ?? true,
       };
     }
 
