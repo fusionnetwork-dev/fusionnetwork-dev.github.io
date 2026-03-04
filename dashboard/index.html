@@ -2260,7 +2260,7 @@ function toggleMobileSidebar() {
       console.error('[swaqq] loadProfile threw:', e);
     }
     console.log('[swaqq] hiding gate');
-    document.getElementById('authGate').style.display   = 'none';
+   document.getElementById('authGate').style.setProperty('display', 'none', 'important');
     document.getElementById('dashLayout').style.display = 'flex';
     if (window.innerWidth <= 768) {
       document.getElementById('sidebar').classList.add('open');
