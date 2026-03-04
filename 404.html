@@ -1387,19 +1387,15 @@ if (profile.banner_url) {
 
     /* ── Splash Screen ── */
     function renderSplash(profile, CS) {
-      const splashEl = document.getElementById('splash');
-      splashEl.classList.add('active');
-      document.getElementById('loading').classList.add('out');
-      setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
-      const name = profile.display_name || profile.handle;
-      let i = 0;
-      function type() { if (i <= name.length) { document.getElementById('splashName').textContent = name.slice(0, i++); setTimeout(type, 110); } }
-      setTimeout(type, 200);
-     splashEl.addEventListener('click', () => {
-  window._userGestureUnlocked = true;
-  splashEl.classList.add('out');
-  setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
-}, { once: true });
+      splashEl.addEventListener('click', () => {
+      window._userGestureUnlocked = true;
+      splashEl.classList.add('out');
+      setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
+    }, { once: true });
+  }  // ← closes renderSplash()
+
+
+
 function injectBanner(url, cardWidth) {
   const safeUrl = sanitizeUrl(url);
   if (!safeUrl) return;
