@@ -580,48 +580,94 @@ if (!handle) window.location.href = '/';
     window.onYouTubeIframeAPIReady = () => { ytApiReady = true; };
 
     function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
-      if (!videoId) return;
-      const container = document.getElementById('ytBg');
-      if (!container) return;
-      if (audioOnly) { container.style.opacity = '0'; container.style.pointerEvents = 'none'; }
-      if (ytPlayer) { try { ytPlayer.destroy(); } catch(_) {} ytPlayer = null; }
-      const old = document.getElementById('yt-player');
-      if (old) old.remove();
-      const playerDiv = document.createElement('div');
-      playerDiv.id = 'yt-player';
-      container.appendChild(playerDiv);
-      function initWhenReady() {
-        if (!ytApiReady || !window.YT) { setTimeout(initWhenReady, 120); return; }
-        ytPlayer = new YT.Player('yt-player', {
-          height:'100%', width:'100%', videoId,
-          playerVars: {
-            autoplay:1, controls:0, mute:1, loop:1, playlist:videoId,
-            modestbranding:1, playsinline:1, disablekb:1, fs:0,
-            iv_load_policy:3, cc_load_policy:0, rel:0, showinfo:0,
-            autohide:1, start:0, origin:window.location.origin,
-          },
-          events: {
-            onReady: (e) => {
-              e.target.mute();
-              e.target.playVideo();
-              if (!audioOnly) container.classList.add('active');
-            },
-            onStateChange: (e) => {
-              if (e.data === YT.PlayerState.PLAYING && !shouldMute) {
-                try { e.target.unMute(); e.target.setVolume(60); } catch(_) {}
-              }
-              if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.UNSTARTED) {
-                try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {}
-              }
-            },
-            onError: () => container.classList.remove('active'),
-          },
-        });
-      }
-      initWhenReady();
-    }
-    loadYouTubeIframeAPI();
+  if (!videoId) return;
+  const container = document.getElementById('ytBg');
+  if (!container) return;
+  if (audioOnly) { container.style.opacity = '0'; container.style.pointerEvents = 'none'; }
+  if (ytPlayer) { try { ytPlayer.destroy(); } catch(_) {} ytPlayer = null; }
+  const old = document.getElementById('yt-player');
+  if (old) old.remove();
 
+  // Mobile: use a plain iframe instead of the API (API is unreliable on mobile)
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    const iframe = document.createElement('iframe');
+    iframe.id = 'yt-player';
+    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1`;
+    iframe.setAttribute('allow', 'autoplay; encrypted-media');
+    iframe.setAttribute('playsinline', '');
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.style.cssText = 'position:absolute;top:50%;left:50%;width:177.78vh;height:56.25vw;min-width:100%;min-height:100%;transform:translate(-50%,-50%);border:none;pointer-events:none';
+    container.appendChild(iframe);
+    if (!audioOnly) {
+      container.classList.add('active');
+      // iOS needs a user gesture — show a tap-to-play overlay
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      if (isSafari) showMobileTapOverlay(container, iframe, videoId, audioOnly);
+    }
+    return;
+  }
+
+  // Desktop: use the full YT API as before
+  const playerDiv = document.createElement('div');
+  playerDiv.id = 'yt-player';
+  container.appendChild(playerDiv);
+  function initWhenReady() {
+    if (!ytApiReady || !window.YT) { setTimeout(initWhenReady, 120); return; }
+    ytPlayer = new YT.Player('yt-player', {
+      height:'100%', width:'100%', videoId,
+      playerVars: {
+        autoplay:1, controls:0, mute:1, loop:1, playlist:videoId,
+        modestbranding:1, playsinline:1, disablekb:1, fs:0,
+        iv_load_policy:3, cc_load_policy:0, rel:0, showinfo:0,
+        autohide:1, start:0, origin:window.location.origin,
+      },
+      events: {
+        onReady: (e) => {
+          e.target.mute();
+          e.target.playVideo();
+          if (!audioOnly) container.classList.add('active');
+        },
+        onStateChange: (e) => {
+          if (e.data === YT.PlayerState.PLAYING && !shouldMute) {
+            try { e.target.unMute(); e.target.setVolume(60); } catch(_) {}
+          }
+          if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.UNSTARTED) {
+            try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {}
+          }
+        },
+        onError: () => container.classList.remove('active'),
+      },
+    });
+  }
+  initWhenReady();
+}
+function showMobileTapOverlay(container, iframe, videoId, audioOnly) {
+  // iOS Safari won't autoplay even muted iframes without a gesture
+  // Show a subtle tap hint that triggers play
+  const overlay = document.createElement('div');
+  overlay.id = 'mobileTapOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:3;cursor:pointer;background:transparent';
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', () => {
+    // Reload iframe src to trigger play after user gesture
+    iframe.src = iframe.src;
+    if (!audioOnly) container.classList.add('active');
+    overlay.remove();
+  }, { once: true });
+
+  // Also remove overlay once splash is dismissed
+  const splash = document.getElementById('splash');
+  if (splash) {
+    splash.addEventListener('click', () => {
+      iframe.src = iframe.src;
+      if (!audioOnly) container.classList.add('active');
+      overlay.remove();
+    }, { once: true });
+  }
+}
     /* ── QR Modal ── */
     function openQR() {
       const url = window.location.href;
@@ -770,20 +816,26 @@ if (!handle) window.location.href = '/';
       }
     }
 
-    function createVideoBackground(url, loop, muted) {
-      const existing = document.getElementById('customVideoBg');
-      if (existing) existing.remove();
-      const video = document.createElement('video');
-      video.id = 'customVideoBg';
-      video.src = url;
-      video.autoplay = true;
-      video.muted = muted !== false;
-      video.loop = loop !== false;
-      video.playsInline = true;
-      video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none';
-      document.body.insertBefore(video, document.body.firstChild);
-      video.play().catch(() => {});
-    }
+  function createVideoBackground(url, loop, muted) {
+  const existing = document.getElementById('customVideoBg');
+  if (existing) existing.remove();
+  const video = document.createElement('video');
+  video.id = 'customVideoBg';
+  video.src = url;
+  video.autoplay = true;
+  video.muted = true; // always start muted — required for mobile autoplay
+  video.loop = loop !== false;
+  video.playsInline = true; // critical for iOS
+  video.setAttribute('playsinline', ''); // belt and suspenders
+  video.setAttribute('webkit-playsinline', ''); // older iOS
+  video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none';
+  document.body.insertBefore(video, document.body.firstChild);
+  video.play().catch(() => {
+    // Autoplay blocked — try again on first user interaction
+    const tryPlay = () => { video.play().catch(() => {}); document.removeEventListener('touchstart', tryPlay); };
+    document.addEventListener('touchstart', tryPlay, { once: true });
+  });
+}
 
     function safeAddClass(id, cls) {
       const el = document.getElementById(id);
