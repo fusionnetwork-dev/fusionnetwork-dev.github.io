@@ -1756,6 +1756,8 @@ body, html {
 </div>
 
 <script>
+  console.log('[swaqq] script start');
+window.addEventListener('DOMContentLoaded', () => console.log('[swaqq] DOM ready'));
   function sanitize(str) {
   if (typeof str !== 'string') return '';
   return str
