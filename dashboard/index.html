@@ -21,18 +21,18 @@
     body::before { content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
       background-image:linear-gradient(rgba(255,255,255,0.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.012) 1px,transparent 1px);
       background-size:44px 44px; }
-<button id="mobileMenuBtn" onclick="toggleMobileSidebar()" aria-label="menu">
-  <i class="fas fa-bars"></i>
-</button>
-<div id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+
 
 #authGate {
   position: fixed !important;
   inset: 0 !important;
   display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
   min-height: 100vh !important;
+  background: var(--bg) !important;
+  z-index: 9999 !important;
 }
     .gate-inner { text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px; }
     .gate-logo { font-family:'Geist Mono',monospace; font-size:15px; font-weight:700; letter-spacing:0.1em; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
@@ -2558,10 +2558,14 @@ renderBioLines();
     on ? el.classList.add('on') : el.classList.remove('on');
   }
   function gtog(id) { return document.getElementById(id)?.classList.contains('on') ?? false; }
-
+[id^="tab-"] { display: none; }
+[id^="tab-"].active { display: block; }
   // ─── TABS ─────────────────────────────────────────────────────────────────────
 const TABS = ['profile','appearance','customize','socials','badges','settings','analytics','music','schedule','pricing','admin'];
 function showTab(name) {
+  document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.remove('active'));
+  const target = document.getElementById('tab-' + name);
+  if (target) target.classList.add('active');
  const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebarOverlay');
   const btn = document.getElementById('mobileMenuBtn');
@@ -5224,6 +5228,11 @@ setInterval(saveDraft, 30000);
     </div>
   </div>
 </div>
+
+    <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" aria-label="menu">
+  <i class="fas fa-bars"></i>
+</button>
+<div id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
   </main>
 </body>
   
