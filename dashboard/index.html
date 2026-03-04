@@ -2247,21 +2247,28 @@ function toggleMobileSidebar() {
   })();
 
   // ─── AUTH ────────────────────────────────────────────────────────────────────
-  async function initAuth() {
+ async function initAuth() {
     const { data:{ session } } = await sb.auth.getSession();
+    console.log('[swaqq] session:', session);
     if (!session) { window.location.href = '/'; return; }
     currentUser = session.user;
-    await loadProfile();
+    console.log('[swaqq] user:', currentUser.id);
+    try {
+      await loadProfile();
+      console.log('[swaqq] loadProfile complete');
+    } catch(e) {
+      console.error('[swaqq] loadProfile threw:', e);
+    }
+    console.log('[swaqq] hiding gate');
     document.getElementById('authGate').style.display   = 'none';
     document.getElementById('dashLayout').style.display = 'flex';
-    // Auto-open sidebar on mobile after login
-if (window.innerWidth <= 768) {
-  document.getElementById('sidebar').classList.add('open');
-  document.getElementById('sidebarOverlay').classList.add('open');
-  document.getElementById('mobileMenuBtn').querySelector('i').className = 'fas fa-times';
-}
- document.getElementById('saveBar').style.display    = 'flex';
-    showTab('profile');  // ← add this
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebarOverlay').classList.add('open');
+      document.getElementById('mobileMenuBtn').querySelector('i').className = 'fas fa-times';
+    }
+    document.getElementById('saveBar').style.display = 'flex';
+    showTab('profile');
   }
 initAuth().catch(err => {
   console.error('initAuth failed:', err);
