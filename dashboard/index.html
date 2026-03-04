@@ -2260,7 +2260,10 @@ if (window.innerWidth <= 768) {
 }
     document.getElementById('saveBar').style.display    = 'flex';
   }
-  initAuth();
+initAuth().catch(err => {
+  console.error('initAuth failed:', err);
+  document.getElementById('authGate').innerHTML = '<div style="color:red">Login failed — check console</div>';
+});
 
   sb.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_OUT' || !session) window.location.href = '/';
