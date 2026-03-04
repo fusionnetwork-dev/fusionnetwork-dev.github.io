@@ -1979,12 +1979,10 @@ function addBioLine() {
 }
 
 // Load existing bio lines when profile loads — in populateForm add:
-bioLines = pj(p.bio_lines, p.bio ? [p.bio] : []);
-renderBioLines();
+
 
 // In saveProfile, add to updates object:
-bio_lines: JSON.stringify(bioLines.filter(l => l.trim())),
-bio: bioLines[0] || '',  // keep bio as fallback
+  // keep bio as fallback
   async function loadPricingTab() {
   // Show verified status
   const statusEl = document.getElementById('verifiedBadgeStatus');
@@ -2551,6 +2549,8 @@ tog('tBgVideoMute', cs('bg_video_mute') !== false);
     activateBgTab(currentBgTab);
     updateBgPreview();
     updateCardPreview();
+  bioLines = pj(p.bio_lines, p.bio ? [p.bio] : []);
+renderBioLines();
     restoreCustomizeSelections();
   }
 
@@ -4038,7 +4038,9 @@ newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
        bg_video_url:    document.getElementById('fBgVideoUrl')?.value?.trim() || '',
  card_flip:       gtog('tCardFlip'),
  card_back_text:  document.getElementById('fCardBackText')?.value?.trim() || '',
-      age_gate: gtog('tAgeGate')
+      age_gate: gtog('tAgeGate'),
+        bio_lines: JSON.stringify(bioLines.filter(l => l.trim())),
+  bio: bioLines[0] || '',
     };
 
     console.log('[swaqq] update payload:', updates);
