@@ -499,6 +499,34 @@ body, html {
 }
     [id^="tab-"] { display: none; }
 [id^="tab-"].active { display: block; }
+
+    #discordGate {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(0,0,0,0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  z-index: 10000 !important;
+}
+
+#discordGate .gate-inner {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 18px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 10001;
+}
   </style>
 </head>
 <body>
