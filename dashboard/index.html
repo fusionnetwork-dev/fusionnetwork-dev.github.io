@@ -1807,6 +1807,86 @@ body, html {
 <script>
   console.log('[swaqq] script start');
 window.addEventListener('DOMContentLoaded', () => console.log('[swaqq] DOM ready'));
+
+
+  // ── HANDLE / NAME FILTER ──────────────────────────────────────────────────────
+const LOCAL_BLOCKLIST = new Set([
+  // slurs — common ones hardcoded for instant rejection
+  'nigger','nigga','faggot','fag','retard','tranny','chink','spic','kike',
+  'wetback','cunt','twat','whore','slut','dyke','cracker','gook','raghead',
+  'sandnigger','beaner','zipperhead','redskin','squaw','jap','nip','wop',
+  'dago','polack','kraut','mick','paddy','paki','towelhead','camel jockey',
+  // obvious spam / impersonation
+  'admin','administrator','support','moderator','mod','staff','official',
+  'swaqq','swaqqxyz','swaqq_xyz','swaqq_official',
+  // generic bad words
+  'fuck','shit','ass','bitch','bastard','piss','cock','dick','pussy','anus',
+  'asshole','motherfucker','fucker','bullshit','jackass','dumbass','dipshit',
+]);
+
+function normalizeInput(str) {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')       // strip underscores, dots, etc.
+    .replace(/0/g, 'o')              // leet speak
+    .replace(/1/g, 'i')
+    .replace(/3/g, 'e')
+    .replace(/4/g, 'a')
+    .replace(/5/g, 's')
+    .replace(/8/g, 'b')
+    .replace(/\$/g, 's')
+    .replace(/@/g, 'a');
+}
+
+function containsBlockedWord(str) {
+  const norm = normalizeInput(str);
+  for (const word of LOCAL_BLOCKLIST) {
+    const normWord = normalizeInput(word);
+    if (norm.includes(normWord)) return word;
+  }
+  return null;
+}
+
+async function checkUrbanDictionary(str) {
+  // Only check if it's a single word / short phrase
+  if (str.length > 30) return false;
+  try {
+    const res = await fetch(
+      `https://api.urbandictionary.com/v0/define?term=${encodeURIComponent(str)}`
+    );
+    const data = await res.json();
+    if (!data.list || data.list.length === 0) return false;
+
+    // Check the top result — if thumbs_down heavily outweigh thumbs_up it's likely a slur
+    // Also scan definition text for red flag words
+    const top = data.list[0];
+    const def = (top.definition + ' ' + top.example).toLowerCase();
+    const redFlags = ['slur','offensive','racist','derogatory','hate','bigot','discriminat'];
+    const hasRedFlag = redFlags.some(flag => def.includes(flag));
+    const ratio = top.thumbs_down / (top.thumbs_up + 1);
+
+    return hasRedFlag && ratio > 1.5;
+  } catch {
+    return false; // fail open — don't block if API is down
+  }
+}
+
+async function validateHandleOrName(value, fieldLabel = 'this field') {
+  if (!value || value.trim().length === 0) return null;
+
+  const blocked = containsBlockedWord(value);
+  if (blocked) {
+    return `${fieldLabel} contains a blocked word.`;
+  }
+
+  const flaggedByUD = await checkUrbanDictionary(value.trim());
+  if (flaggedByUD) {
+    return `${fieldLabel} was flagged as potentially offensive.`;
+  }
+
+  return null; // null = passed
+}
+  
   function sanitize(str) {
   if (typeof str !== 'string') return '';
   return str
@@ -4019,6 +4099,20 @@ async function syncDiscordRoleBadges(discordId) {
       showAlert('profileAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
       btn.disabled = false; btn.textContent = 'save changes →'; return;
     }
+    // Check handle for slurs / bad words
+const handleErr = await validateHandleOrName(handle, 'handle');
+if (handleErr) {
+  showAlert('profileAlert', handleErr, 'error');
+  btn.disabled = false; btn.textContent = 'save changes →'; return;
+}
+
+// Check display name
+const displayName = document.getElementById('fDisplayName').value.trim();
+const nameErr = await validateHandleOrName(displayName, 'display name');
+if (nameErr) {
+  showAlert('profileAlert', nameErr, 'error');
+  btn.disabled = false; btn.textContent = 'save changes →'; return;
+}
     if (handle !== currentProfile.handle) {
       const { data: taken } = await sb.from('profiles').select('id').eq('handle', handle).maybeSingle();
       if (taken && taken.id !== currentUser.id) {
@@ -4261,7 +4355,23 @@ async function loadAdminData() {
   allUsers = data || [];
   renderAdminStats(allUsers);
   renderAdminTable(allUsers);
+  if (isAdmin) auditExistingHandles();
   populateNoteUserSelect(allUsers);
+}
+  async function auditExistingHandles() {
+  const flagged = [];
+  for (const u of allUsers) {
+    const err = containsBlockedWord(u.handle) || containsBlockedWord(u.display_name || '');
+    if (err) flagged.push(u.handle);
+  }
+  if (flagged.length) {
+    console.warn('[swaqq] flagged handles:', flagged);
+    // Optionally show in admin panel
+    const el = document.getElementById('adminUserCount');
+    if (el && flagged.length) {
+      el.innerHTML += ` <span style="color:var(--red);font-family:'Geist Mono',monospace;font-size:10px">⚠ ${flagged.length} flagged handle(s)</span>`;
+    }
+  }
 }
 async function verifyAdminMFA() {
   const code = document.getElementById('adminMfaInput')?.value?.trim();
