@@ -399,6 +399,51 @@
 
   <script>
     /* ── Sanitizers ── */
+     // ── CAPTCHA ── put these FIRST before anything else
+  function initCaptcha() {
+    if (sessionStorage.getItem('swaqq_verified') === '1') {
+      document.getElementById('captchaGate').style.display = 'none';
+      return;
+    }
+  }
+
+  function checkCaptchaClick() {
+    const row       = document.getElementById('captchaCheckRow');
+    const checkbox  = document.getElementById('captchaCheckbox');
+    const checkmark = document.getElementById('captchaCheckmark');
+    const label     = document.getElementById('captchaLabel');
+    const spinner   = document.getElementById('captchaSpinnerRow');
+
+    row.style.pointerEvents = 'none';
+    row.onmouseenter = null;
+    row.onmouseleave = null;
+
+    spinner.style.display = 'flex';
+    label.style.color = 'rgba(255,255,255,0.3)';
+
+    const delay = 600 + Math.random() * 800;
+
+    setTimeout(() => {
+      spinner.style.display = 'none';
+      checkbox.style.background  = '#43b581';
+      checkbox.style.borderColor = '#43b581';
+      checkmark.style.opacity    = '1';
+      checkmark.style.transform  = 'scale(1)';
+      label.style.color          = 'rgba(255,255,255,0.8)';
+      label.textContent          = 'verified ✓';
+      row.style.borderColor      = 'rgba(67,181,129,0.4)';
+      row.style.background       = 'rgba(67,181,129,0.06)';
+
+      setTimeout(() => {
+        sessionStorage.setItem('swaqq_verified', '1');
+        const gate = document.getElementById('captchaGate');
+        gate.style.transition = 'opacity 0.5s ease';
+        gate.style.opacity    = '0';
+        setTimeout(() => gate.style.display = 'none', 500);
+      }, 700);
+    }, delay);
+  }
+
     function sanitize(str) {
       if (typeof str !== 'string') return '';
       return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -1816,57 +1861,7 @@ async function submitReport(profileId, handle, modal) {
     }
 
     /* ── Boot ── */
-    // ── CAPTCHA ──────────────────────────────────────────────────────────────────
-function initCaptcha() {
-  if (sessionStorage.getItem('swaqq_verified') === '1') {
-    document.getElementById('captchaGate').style.display = 'none';
-    return;
-  }
-}
 
-function checkCaptchaClick() {
-  const row      = document.getElementById('captchaCheckRow');
-  const checkbox = document.getElementById('captchaCheckbox');
-  const checkmark = document.getElementById('captchaCheckmark');
-  const label    = document.getElementById('captchaLabel');
-  const spinner  = document.getElementById('captchaSpinnerRow');
-
-  // Prevent double click
-  row.style.pointerEvents = 'none';
-  row.onmouseenter = null;
-  row.onmouseleave = null;
-
-  // Show spinner briefly — simulates "checking"
-  spinner.style.display = 'flex';
-  label.style.color = 'rgba(255,255,255,0.3)';
-
-  // Random delay 600ms–1400ms to feel legit
-  const delay = 600 + Math.random() * 800;
-
-  setTimeout(() => {
-    spinner.style.display = 'none';
-
-    // Check + green fill animation
-    checkbox.style.background    = '#43b581';
-    checkbox.style.borderColor   = '#43b581';
-    checkmark.style.opacity      = '1';
-    checkmark.style.transform    = 'scale(1)';
-    label.style.color            = 'rgba(255,255,255,0.8)';
-    label.textContent            = 'verified ✓';
-    row.style.borderColor        = 'rgba(67,181,129,0.4)';
-    row.style.background         = 'rgba(67,181,129,0.06)';
-
-    // Fade out gate after short pause
-    setTimeout(() => {
-      sessionStorage.setItem('swaqq_verified', '1');
-      const gate = document.getElementById('captchaGate');
-      gate.style.transition = 'opacity 0.5s ease';
-      gate.style.opacity    = '0';
-      setTimeout(() => gate.style.display = 'none', 500);
-    }, 700);
-
-  }, delay);
-}
 
 // Add shake keyframe
 const shakeStyle = document.createElement('style');
