@@ -2343,7 +2343,9 @@ CS = {
   bg_video_loop:      get('bg_video_loop',      true),
   bg_video_mute:      get('bg_video_mute',      true),
   youtube_video_id:   get('youtube_video_id',   ''),
+  
 };
+    
     console.log('[swaqq] loaded CS:', CS);
 
     // Owners auto-unlock all badges
@@ -2389,10 +2391,14 @@ CS = {
         `  <span class="kw">WHERE</span> id = <span class="str">'${currentUser.id}'</span>;`;
     }
 
-    populateForm(data);
+console.log('[swaqq] calling populateForm');
+populateForm(data);
+console.log('[swaqq] populateForm done');
+buildFontGrid();
+console.log('[swaqq] fontgrid done');
+renderBadgeGrid();
+console.log('[swaqq] badgegrid done');
 
-    buildFontGrid();
-    renderBadgeGrid();
 
     // Fetch UID number — position in signup order (oldest = uid 1)
     sb.from('profiles').select('id').order('created_at', { ascending: true }).then(({ data: allIds }) => {
