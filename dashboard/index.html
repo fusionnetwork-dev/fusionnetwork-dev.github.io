@@ -636,7 +636,7 @@ body, html {
   <div class="field-hint">your profile is also available at <span id="subdomainPreview" style="color:rgba(255,255,255,0.45)">yourname.swaqq.xyz</span></div>
 </div>
       
-      <div class="dash-section">
+  <div class="dash-section">
         <div class="dash-section-title">card settings</div>
         <div class="dash-section-sub">toggle features on / off</div>
         <div class="card-edit">
@@ -651,30 +651,33 @@ body, html {
           </div>
           <div class="toggle-row"><div><div class="toggle-title">view counter</div><div class="toggle-sub">show total visits at the bottom of your page</div></div><div class="toggle on" id="tViews" onclick="this.classList.toggle('on')"></div></div>
           <div class="toggle-row">
-  <div><div class="toggle-title">age gate</div><div class="toggle-sub">visitors must confirm they are 18+ before seeing your profile</div></div>
-  <div class="toggle" id="tAgeGate" onclick="this.classList.toggle('on')"></div>
-</div>
+            <div><div class="toggle-title">age gate</div><div class="toggle-sub">visitors must confirm they are 18+ before seeing your profile</div></div>
+            <div class="toggle" id="tAgeGate" onclick="this.classList.toggle('on')"></div>
+          </div>
           <div class="toggle-row">
-  <div><div class="toggle-title">card flip on click</div><div class="toggle-sub">clicking the card flips it to reveal back side info</div></div>
-  <div class="toggle" id="tCardFlip" onclick="this.classList.toggle('on')"></div>
-</div>
-<div id="cardBackTextWrap" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
-  <div class="field">
-    <div class="field-label">card back text</div>
-    <textarea class="field-input" id="fCardBackText" placeholder="text shown on the back of the card when flipped..." maxlength="200" style="min-height:60px"></textarea>
-  </div>
-</div>
-          <div class="dash-section">
-  <div class="dash-section-title">embed your card</div>
-  <div class="card-edit">
-    <div class="field-hint" style="margin-bottom:8px">paste this anywhere to show your card</div>
-    <div id="embedCodeBox" style="background:#050505;border:1px solid var(--border);border-radius:8px;padding:12px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);word-break:break-all"></div>
-    <button class="btn btn-ghost" style="margin-top:8px" onclick="copyEmbed()"><i class="fas fa-copy"></i> copy embed code</button>
-  </div>
-</div>
+            <div><div class="toggle-title">card flip on click</div><div class="toggle-sub">clicking the card flips it to reveal back side info</div></div>
+            <div class="toggle" id="tCardFlip" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div id="cardBackTextWrap" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+            <div class="field">
+              <div class="field-label">card back text</div>
+              <textarea class="field-input" id="fCardBackText" placeholder="text shown on the back of the card when flipped..." maxlength="200" style="min-height:60px"></textarea>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <div class="dash-section">
+        <div class="dash-section-title">embed your card</div>
+        <div class="dash-section-sub">paste this anywhere to show your card</div>
+        <div class="card-edit">
+          <div class="field-hint" style="margin-bottom:8px">paste this anywhere to show your card</div>
+          <div id="embedCodeBox" style="background:#050505;border:1px solid var(--border);border-radius:8px;padding:12px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);word-break:break-all"></div>
+          <button class="btn btn-ghost" style="margin-top:8px" onclick="copyEmbed()"><i class="fas fa-copy"></i> copy embed code</button>
+        </div>
+      </div>
+
+    </div><!-- closes tab-profile -->
 
     <div id="tab-appearance" style="display:none">
       <div class="page-header">
@@ -2583,24 +2586,25 @@ renderBioLines();
   // ─── TABS ─────────────────────────────────────────────────────────────────────
 const TABS = ['profile','appearance','customize','socials','badges','settings','analytics','music','schedule','pricing','admin'];
 function showTab(name) {
-document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.remove('active'));
-  const target = document.getElementById('tab-' + name);
-  if (target) target.classList.add('active');
- const sidebar = document.getElementById('sidebar');
+  TABS.forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    if (!el) return;
+    el.style.display = t === name ? 'block' : 'none';
+    el.classList.toggle('active', t === name);
+  });
+
+  const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebarOverlay');
   const btn = document.getElementById('mobileMenuBtn');
   if (sidebar) sidebar.classList.remove('open');
   if (overlay) overlay.classList.remove('open');
   if (btn) btn.querySelector('i').className = 'fas fa-bars';
 
-  TABS.forEach(t => {
-    const el = document.getElementById('tab-' + t);
-    if (el) el.style.display = t === name ? 'block' : 'none';
-  });
   document.querySelectorAll('.nav-item[onclick]').forEach(el => {
     const m = el.getAttribute('onclick').match(/showTab\('(\w+)'\)/);
     if (m) el.classList.toggle('active', m[1] === name);
   });
+
   if (name === 'admin')     loadAdminData();
   if (name === 'analytics') loadAnalytics();
   if (name === 'customize') { buildFontGrid(); updateCardPreview(); loadThemes(); buildPresetThemeGrid(); }
@@ -2608,7 +2612,7 @@ document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.remove('activ
   if (name === 'settings')  { loadMFAStatus(); renderChangelog(); }
   if (name === 'music')     loadMusicTab();
   if (name === 'schedule')  loadScheduleTab();
-  if (name === 'pricing') loadPricingTab();
+  if (name === 'pricing')   loadPricingTab();
   window.scrollTo(0, 0);
 }
   // ─── BG TABS ─────────────────────────────────────────────────────────────────
