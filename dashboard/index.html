@@ -538,7 +538,8 @@ body, html {
   <button class="nav-item" onclick="showTab('badges')"><i class="fas fa-certificate"></i> badges</button>
   <button class="nav-item" onclick="showTab('music')"><i class="fas fa-music"></i> music</button>
   <button class="nav-item" onclick="showTab('schedule')"><i class="fas fa-clock"></i> scheduled bio</button>
-
+<button class="nav-item" onclick="showTab('pricing')"><i class="fas fa-tag"></i> pricing</button>
+  
   <div class="nav-section-label">insights</div>
   <button class="nav-item" onclick="showTab('analytics')"><i class="fas fa-chart-line"></i> analytics</button>
 
@@ -551,7 +552,7 @@ body, html {
     <button class="nav-item admin-nav" onclick="showTab('admin')"><i class="fas fa-shield-alt"></i> admin panel</button>
   </div>
 
-  <div class="sidebar-bottom">
+  <div class="sidebar-bottom">    
     <button class="btn-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> log out</button>
   </div>
 </aside>
@@ -1301,43 +1302,14 @@ body, html {
     <div id="customBadgeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>
     <div class="alert" id="customBadgeAlert" style="margin-top:8px"></div>
   </div>
-        <!-- SLOT PURCHASE -->
-<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-  <div class="field-label" style="margin-bottom:10px">
-    badge slots 
-    <span id="slotCountTag" style="color:var(--text);font-size:11px"></span>
+<!-- after the customBadgeGrid div, inside the card-edit -->
+<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+  <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">
+    slots used: <span id="slotCountTag" style="color:var(--text)"></span>
   </div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-    <button class="btn-buy-slots" onclick="buySlots('3slot')" style="
-      display:inline-flex;align-items:center;gap:8px;
-      font-family:'Geist Mono',monospace;font-size:11px;font-weight:700;
-      letter-spacing:0.06em;text-transform:uppercase;
-      padding:10px 18px;border-radius:9px;cursor:pointer;
-      background:rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.12);
-      color:rgba(255,255,255,0.7);
-      transition:all 0.2s
-    "
-    onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff'"
-    onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='rgba(255,255,255,0.7)'">
-      <span style="font-size:16px;font-weight:900">+</span> 3 slots — $2.99
-    </button>
-    <button class="btn-buy-slots" onclick="buySlots('10slot')" style="
-      display:inline-flex;align-items:center;gap:8px;
-      font-family:'Geist Mono',monospace;font-size:11px;font-weight:700;
-      letter-spacing:0.06em;text-transform:uppercase;
-      padding:10px 18px;border-radius:9px;cursor:pointer;
-      background:rgba(245,166,35,0.08);
-      border:1px solid rgba(245,166,35,0.25);
-      color:rgba(245,166,35,0.8);
-      transition:all 0.2s
-    "
-    onmouseover="this.style.background='rgba(245,166,35,0.15)';this.style.color='#f5a623'"
-    onmouseout="this.style.background='rgba(245,166,35,0.08)';this.style.color='rgba(245,166,35,0.8)'">
-      <span style="font-size:16px;font-weight:900">+</span> 10 slots — $9.99 <span style="font-size:9px;opacity:0.7">best value</span>
-    </button>
-  </div>
-  <div class="field-hint" style="margin-top:8px">slots are permanent — added instantly after payment</div>
+  <button class="btn btn-ghost" onclick="showTab('pricing')" style="font-size:10px">
+    <i class="fas fa-tag"></i> get more slots
+  </button>
 </div>
 </div>
     </div>
@@ -1688,8 +1660,9 @@ function sanitizeHtml(html) {
 }
   // ── STRIPE BADGE SLOTS ────────────────────────────────────────────────────────
 const STRIPE_PRICE_IDS = {
-  '3slot':  'price_1T71EWIkWV8zhl3F4IhYadWy',
-  '10slot': 'price_1T71EyIkWV8zhl3FtyZpf7D9',
+  '3slot':    'price_1T71EWIkWV8zhl3F4IhYadWy',
+  '10slot':   'price_1T71EyIkWV8zhl3FtyZpf7D9',
+  'verified': 'price_1T74mpIkWV8zhl3F4ZoAKL1k', 
 };
 
 async function buySlots(pack) {
@@ -1728,7 +1701,47 @@ async function buySlots(pack) {
     showAlert('customBadgeAlert', 'payment error: ' + err.message, 'error');
   }
 }
+async function buyVerifiedBadge() {
+  if (!currentUser) return;
 
+  // Already has it?
+  if (unlockedBadges.includes('verified')) {
+    showAlert('pricingAlert', 'you already have the verified badge!', 'success');
+    return;
+  }
+
+  const btn = document.getElementById('buyVerifiedBtn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-sm"></span> redirecting to checkout...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(
+      'https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/create-checkout',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (await sb.auth.getSession()).data.session.access_token,
+        },
+        body: JSON.stringify({
+          price_id:    STRIPE_PRICE_IDS['verified'],
+          user_id:     currentUser.id,
+          metadata:    { grant_badge: 'verified' },
+          success_url: window.location.origin + '/dashboard?payment=verified',
+          cancel_url:  window.location.origin + '/dashboard?payment=cancelled',
+        }),
+      }
+    );
+    const { url, error } = await res.json();
+    if (error) throw new Error(error);
+    window.location.href = url;
+  } catch (err) {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+    showAlert('pricingAlert', 'checkout error: ' + err.message, 'error');
+  }
+}
 // Update slot display
 function updateSlotDisplay() {
   const slots = currentProfile?.custom_badge_slots ?? 3;
@@ -1737,11 +1750,53 @@ function updateSlotDisplay() {
 }
 
 // Show success message if returning from Stripe
-if (new URLSearchParams(window.location.search).get('payment') === 'success') {
+const _paymentResult = new URLSearchParams(window.location.search).get('payment');
+if (_paymentResult === 'success') {
   setTimeout(() => {
-    showAlert('customBadgeAlert', '✓ slots added! reloading your profile...', 'success');
+    showAlert('customBadgeAlert', '✓ slots added! reloading...', 'success');
     setTimeout(() => window.location.href = '/dashboard', 2000);
   }, 500);
+} else if (_paymentResult === 'verified') {
+  setTimeout(async () => {
+    // Grant the verified badge on return
+    const merged = [...new Set([...unlockedBadges, 'verified'])];
+    await sb.from('profiles').update({
+      unlocked_badges: JSON.stringify(merged),
+    }).eq('id', currentUser.id);
+    showAlert('pricingAlert', '✓ verified badge unlocked! saving...', 'success');
+    setTimeout(() => window.location.href = '/dashboard', 2000);
+  }, 800);
+}
+  async function loadPricingTab() {
+  // Show verified status
+  const statusEl = document.getElementById('verifiedBadgeStatus');
+  const buyBtn   = document.getElementById('buyVerifiedBtn');
+  if (unlockedBadges.includes('verified')) {
+    if (statusEl) statusEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:11px;color:#38bdf8;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:10px 14px">
+        <i class="fas fa-check-circle"></i> you already own the verified badge
+      </div>`;
+    if (buyBtn) { buyBtn.textContent = '✓ already verified'; buyBtn.disabled = true; buyBtn.style.opacity = '0.5'; }
+  }
+
+  // Show purchases list
+  const list = document.getElementById('purchasesList');
+  const owned = [];
+  if (unlockedBadges.includes('verified')) owned.push({ icon:'fas fa-check-circle', name:'Verified Badge', price:'$4.99', color:'#38bdf8' });
+  const slots = currentProfile?.custom_badge_slots ?? 3;
+  if (slots > 3) owned.push({ icon:'fas fa-certificate', name:`Badge Slots (${slots} total)`, price:'purchased', color:'rgba(255,255,255,0.5)' });
+
+  if (!owned.length) {
+    list.innerHTML = '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--muted)">no purchases yet</div>';
+  } else {
+    list.innerHTML = owned.map(item => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <i class="${item.icon}" style="color:${item.color};width:16px;text-align:center"></i>
+        <div style="flex:1;font-size:13px;font-weight:600">${item.name}</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">${item.price}</div>
+      </div>
+    `).join('');
+  }
 }
   const SUPABASE_URL  = 'https://cwaifnbgkqqecatggvrx.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3YWlmbmJna3FxZWNhdGdndnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMzgzNzUsImV4cCI6MjA4NzcxNDM3NX0.5o3aI40Z8orNW1yOVWt7uAsP4TJ6MvVPqFidaTOf0cE';
@@ -2248,6 +2303,7 @@ function showTab(name) {
   if (name === 'settings')  loadMFAStatus();
   if (name === 'music')     loadMusicTab();
   if (name === 'schedule')  loadScheduleTab();
+  if (name === 'pricing') loadPricingTab();
   window.scrollTo(0, 0);
 }
   // ─── BG TABS ─────────────────────────────────────────────────────────────────
@@ -4435,6 +4491,117 @@ async function exportUsersCSV() {
     <div class="dash-section-title">scheduled</div>
     <div class="card-edit">
       <div id="scheduleStatusText" style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--sub)"></div>
+    </div>
+  </div>
+</div>
+    <div id="tab-pricing" style="display:none">
+  <div class="page-header">
+    <h1 class="page-title">pricing</h1>
+    <p class="page-sub">one-time purchases — applied instantly to your profile</p>
+  </div>
+
+  <div class="alert" id="pricingAlert"></div>
+
+  <!-- VERIFIED BADGE -->
+  <div class="dash-section">
+    <div class="dash-section-title">badges</div>
+    <div class="dash-section-sub">permanent — yours forever</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+
+      <div class="card-edit" style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);display:flex;align-items:center;justify-content:center;font-size:20px;color:#38bdf8;flex-shrink:0">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div>
+            <div style="font-size:15px;font-weight:800;margin-bottom:2px">Verified Badge</div>
+            <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">shown next to your name forever</div>
+          </div>
+          <div style="margin-left:auto;font-size:22px;font-weight:800;letter-spacing:-0.03em">$4.99</div>
+        </div>
+        <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);line-height:1.7;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid var(--border)">
+          ✓ permanent verified checkmark<br>
+          ✓ shown on your public card<br>
+          ✓ one-time payment, no subscription
+        </div>
+        <div id="verifiedBadgeStatus"></div>
+        <button id="buyVerifiedBtn" onclick="buyVerifiedBadge()" style="
+          width:100%;padding:13px;border:none;border-radius:9px;cursor:pointer;
+          background:linear-gradient(110deg,#1a6aff,#38bdf8,#1a6aff);
+          background-size:200%;animation:shimmer 3s ease infinite;
+          color:#fff;font-family:'Geist Mono',monospace;font-size:12px;
+          font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+          transition:filter 0.2s,transform 0.15s
+        " onmouseover="this.style.filter='brightness(1.2)';this.style.transform='translateY(-1px)'"
+           onmouseout="this.style.filter='';this.style.transform=''">
+          <i class="fas fa-check-circle"></i> get verified — $4.99
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BADGE SLOTS -->
+  <div class="dash-section">
+    <div class="dash-section-title">badge slots</div>
+    <div class="dash-section-sub">add more custom badge upload slots</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+
+      <div class="card-edit" style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;color:rgba(255,255,255,0.5);flex-shrink:0">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <div>
+            <div style="font-size:15px;font-weight:800;margin-bottom:2px">+3 Badge Slots</div>
+            <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">upload 3 more custom badges</div>
+          </div>
+          <div style="margin-left:auto;font-size:22px;font-weight:800;letter-spacing:-0.03em">$2.99</div>
+        </div>
+        <button onclick="buySlots('3slot')" style="
+          width:100%;padding:13px;border:none;border-radius:9px;cursor:pointer;
+          background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+          color:#fff;font-family:'Geist Mono',monospace;font-size:12px;
+          font-weight:700;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.2s
+        " onmouseover="this.style.background='rgba(255,255,255,0.12)'"
+           onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+          <i class="fas fa-plus"></i> add 3 slots — $2.99
+        </button>
+      </div>
+
+      <div class="card-edit" style="display:flex;flex-direction:column;gap:16px;border-color:rgba(245,166,35,0.3)">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--gold);flex-shrink:0">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <div>
+            <div style="font-size:15px;font-weight:800;margin-bottom:2px">+10 Badge Slots</div>
+            <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">best value — upload 10 more</div>
+          </div>
+          <div style="margin-left:auto">
+            <div style="font-size:22px;font-weight:800;letter-spacing:-0.03em;color:var(--gold)">$9.99</div>
+            <div style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--muted);text-align:right">best value</div>
+          </div>
+        </div>
+        <button onclick="buySlots('10slot')" style="
+          width:100%;padding:13px;border:none;border-radius:9px;cursor:pointer;
+          background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);
+          color:var(--gold);font-family:'Geist Mono',monospace;font-size:12px;
+          font-weight:700;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.2s
+        " onmouseover="this.style.background='rgba(245,166,35,0.2)'"
+           onmouseout="this.style.background='rgba(245,166,35,0.12)'">
+          <i class="fas fa-plus"></i> add 10 slots — $9.99
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ALREADY OWNED -->
+  <div class="dash-section">
+    <div class="dash-section-title">your purchases</div>
+    <div class="card-edit" id="purchasesList">
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">loading...</div>
     </div>
   </div>
 </div>
