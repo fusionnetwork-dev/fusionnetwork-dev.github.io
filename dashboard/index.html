@@ -2453,6 +2453,10 @@ function showDiscordVerifyGate() {
   document.body.style.pointerEvents = '';
   document.body.appendChild(gate);
 }
+  const DISCORD_CLIENT_ID  = '1478888702649565234';
+const DISCORD_REDIRECT   = 'https://swaqq.xyz/discord-callback.html'; // e.g. https://swaqq.xyz/discord-callback.html
+const DISCORD_WEBHOOK    = 'https://discord.com/api/webhooks/1478889239604101203/KWHTeH7KqrN0EtdnnkY842yrB_WD1FdPmnFFIZKZlrWOG5fHbfBnKBHF2pYs5TB8L5G3';
+  
   async function verifyDiscordGate() {
   const state = Math.random().toString(36).slice(2);
   sessionStorage.setItem('dc_gate_state', state);
