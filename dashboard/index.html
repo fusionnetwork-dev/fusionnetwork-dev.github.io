@@ -2383,9 +2383,7 @@ CS = {
     }
 
     populateForm(data);
-if (data.discord_id) {
-  syncDiscordRoleBadges(data.discord_id);
-}
+
     buildFontGrid();
     renderBadgeGrid();
 
@@ -2400,10 +2398,9 @@ if (data.discord_id) {
     });
     updateSlotDisplay()
     // Start autosave after profile loads — add in loadProfile() at the end:
-loadDraft();
-setInterval(saveDraft, 30000);
+
   }
-checkChangelog()
+
   function pj(v, fallback) {
     if (v === null || v === undefined) return fallback;
     if (typeof v === 'object') return v;
@@ -3823,21 +3820,7 @@ async function applyMarketplaceTheme(id) {
     document.getElementById('statBadges').textContent = activeBadges.length;
   }
 
-const DISCORD_ROLE_BADGE_MAP = {
-  // 'ROLE_ID_HERE': 'badge_id',
-  // Example: '1234567890123456789': 'supporter',
-  // Example: '9876543210987654321': 'contributor',
-  '1476981046649032815': 'supporter',
-  '1477011805237940426': 'contributor',
-  '1476980632407248927': 'staff',
-  '1476980949563478096': 'og',
-  '1476980687172141131': 'developer',
-  '1476910986110959726': 'owner',
-  '1477745857406439574': 'vip',
-  '1477745987215687730': 'verified',
-  '1477746294796718140': 'early'
-  
-};
+
 async function loadReports() {
   const { data } = await sb.from('reports').select('*').eq('status','pending').order('created_at', { ascending:false }).limit(50);
   const el = document.getElementById('reportsBody');
@@ -3862,6 +3845,22 @@ async function resolveReport(reportId, action, profileId, handle) {
   await sb.from('reports').update({ status: action === 'ban' ? 'actioned' : 'dismissed' }).eq('id', reportId);
   loadReports();
 }
+
+  const DISCORD_ROLE_BADGE_MAP = {
+  // 'ROLE_ID_HERE': 'badge_id',
+  // Example: '1234567890123456789': 'supporter',
+  // Example: '9876543210987654321': 'contributor',
+  '1476981046649032815': 'supporter',
+  '1477011805237940426': 'contributor',
+  '1476980632407248927': 'staff',
+  '1476980949563478096': 'og',
+  '1476980687172141131': 'developer',
+  '1476910986110959726': 'owner',
+  '1477745857406439574': 'vip',
+  '1477745987215687730': 'verified',
+  '1477746294796718140': 'early'
+  
+};
 async function syncDiscordRoleBadges(discordId) {
   if (!discordId || Object.keys(DISCORD_ROLE_BADGE_MAP).length === 0) return;
   try {
@@ -5018,7 +5017,12 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
 });
-
+loadDraft();
+setInterval(saveDraft, 30000);
+  checkChangelog()
+  if (data.discord_id) {
+  syncDiscordRoleBadges(data.discord_id);
+}
 </script> 
     <!-- ═══ MUSIC TAB ═══ -->
 <div id="tab-music" style="display:none">
