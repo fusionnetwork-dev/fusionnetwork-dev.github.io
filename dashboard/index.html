@@ -2260,7 +2260,8 @@ if (window.innerWidth <= 768) {
   document.getElementById('sidebarOverlay').classList.add('open');
   document.getElementById('mobileMenuBtn').querySelector('i').className = 'fas fa-times';
 }
-    document.getElementById('saveBar').style.display    = 'flex';
+ document.getElementById('saveBar').style.display    = 'flex';
+    showTab('profile');  // ← add this
   }
 initAuth().catch(err => {
   console.error('initAuth failed:', err);
