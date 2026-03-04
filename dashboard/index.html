@@ -2389,6 +2389,7 @@ function toggleMobileSidebar() {
   // discord
 async function checkDiscordVerification() {
   const { data: { session } } = await sb.auth.getSession();
+  if (currentProfile.discord_verified) return;
   if (!session) return; // not logged in, handle normally
 
   const { data: profile } = await sb
