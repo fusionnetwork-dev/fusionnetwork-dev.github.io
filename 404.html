@@ -627,9 +627,9 @@ if (handle) document.getElementById('loadHandle').textContent = '@' + handle;
               if (!audioOnly) container.classList.add('active');
             },
             onStateChange: (e) => {
-              if (e.data === YT.PlayerState.PLAYING && !shouldMute) {
-                try { e.target.unMute(); e.target.setVolume(60); } catch(_) {}
-              }
+  if (e.data === YT.PlayerState.PLAYING && !shouldMute && window._userGestureUnlocked) {
+    try { e.target.unMute(); e.target.setVolume(60); } catch(_) {}
+  }
               if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.UNSTARTED) {
                 try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {}
               }
@@ -791,20 +791,27 @@ if (handle) document.getElementById('loadHandle').textContent = '@' + handle;
     }
 
     function createVideoBackground(url, loop, muted) {
-      const existing = document.getElementById('customVideoBg');
-      if (existing) existing.remove();
-      const video = document.createElement('video');
-      video.id = 'customVideoBg';
-      video.src = url;
-      video.autoplay = true;
-      video.muted = muted !== false;
-      video.loop = loop !== false;
-      video.playsInline = true;
-      video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none';
-      document.body.insertBefore(video, document.body.firstChild);
-      video.play().catch(() => {});
-    }
-
+  const existing = document.getElementById('customVideoBg');
+  if (existing) existing.remove();
+  const video = document.createElement('video');
+  video.id = 'customVideoBg';
+  video.src = url;
+  video.autoplay = true;
+  video.muted = true; // always start muted so mobile allows autoplay
+  video.loop = loop !== false;
+  video.playsInline = true;
+  video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none';
+  document.body.insertBefore(video, document.body.firstChild);
+  video.play().catch(() => {});
+  // unmute once user gesture has been captured
+  if (window._userGestureUnlocked && muted === false) {
+    video.muted = false;
+  } else if (muted === false) {
+    video.addEventListener('canplay', () => {
+      if (window._userGestureUnlocked) video.muted = false;
+    }, { once: true });
+  }
+}
     function safeAddClass(id, cls) {
       const el = document.getElementById(id);
       if (el) el.classList.add(cls);
@@ -1339,11 +1346,11 @@ if (profile.banner_url) {
       let i = 0;
       function type() { if (i <= name.length) { document.getElementById('splashName').textContent = name.slice(0, i++); setTimeout(type, 110); } }
       setTimeout(type, 200);
-      splashEl.addEventListener('click', () => {
-        splashEl.classList.add('out');
-        setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
-      }, { once: true });
-    }
+     splashEl.addEventListener('click', () => {
+  window._userGestureUnlocked = true;
+  splashEl.classList.add('out');
+  setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
+}, { once: true });
 function injectBanner(url, cardWidth) {
   const safeUrl = sanitizeUrl(url);
   if (!safeUrl) return;
