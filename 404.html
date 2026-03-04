@@ -1028,10 +1028,10 @@ function showAgeGate(profile) {
       }
 
       // Custom badges
-  const { data: customBadges } = await sb
+ const { data: customBadges } = await sb
   .from('custom_badges')
   .select('*')
-  .or(`profile_id.eq.${profile.id},user_id.eq.${profile.id}`);
+  .eq('profile_id', profile.id);
       if (customBadges?.length) {
         badgesEl.style.display = 'inline-flex';
         customBadges.forEach(cb => {
