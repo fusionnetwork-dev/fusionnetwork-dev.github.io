@@ -461,7 +461,7 @@
         bg_grad_dir:       get('bg_grad_dir'),
         show_video_bg:     get('show_video_bg'),
         mute_video:        get('mute_video'),
-        audio_only_id:     blob.audio_only_id || '',
+       audio_only_id: blob.audio_only_id || get('audio_only_id') || '',
         mute_audio:        blob.mute_audio ?? true,
         card_font:         get('card_font'),
         accent_color:      get('accent_color'),
@@ -501,9 +501,11 @@
         bio_italic:        get('bio_italic')    || false,
         typewriter:        get('typewriter')    !== false,
         card_flip:         get('card_flip')     || false,
-        bg_video_url:      get('bg_video_url')  || '',
+       bg_video_url: blob.bg_video_url || get('bg_video_url') || '',
         bg_video_loop:     get('bg_video_loop') !== false,
         bg_video_mute:     get('bg_video_mute') !== false,
+        banner_url: profile.banner_url || blob.banner_url || '',
+        
       };
     }
 
@@ -1342,13 +1344,22 @@ if (profile.banner_url) {
         setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
       }, { once: true });
     }
-
+function injectBanner(url, cardWidth) {
+  const safeUrl = sanitizeUrl(url);
+  if (!safeUrl) return;
+  const banner = document.createElement('div');
+  banner.style.cssText = `width:${cardWidth || 420}px;max-width:calc(100vw - 40px);height:110px;border-radius:16px 16px 0 0;background:url('${safeUrl}') center/cover no-repeat;margin-bottom:-16px;position:relative;z-index:1;`;
+  const cardWrap = document.getElementById('cardWrap');
+  const flipInner = document.getElementById('cardFlipInner');
+  if (cardWrap && flipInner) cardWrap.insertBefore(banner, flipInner);
+}
     /* ── Reveal Profile ── */
     function revealProfile(profile, CS) {
       const loading = document.getElementById('loading');
       if (loading) { loading.classList.add('out'); setTimeout(() => loading.style.display = 'none', 600); }
       safeAddClass('profilePage', 'visible');
-      safeAddClass('card', 'loaded');
+   safeAddClass('card', 'loaded');
+if (CS.banner_url) injectBanner(CS.banner_url, CS.card_width);
 
       const showVolume = CS.show_volume_widget !== false;
       if (profile.show_views !== false) {
@@ -1377,7 +1388,8 @@ if (profile.banner_url) {
       if (showVolume && hasAudio) initVolumeWidget();
 
       if (CS.typewriter !== false) {
-        typeBio(profile.bio || '');
+         applyScheduledBio(profile);
+     typeBio(profile.bio_lines, profile.bio);
       } else {
         const bioEl = document.getElementById('cardBio');
         if (bioEl) bioEl.innerHTML = sanitizeHtml(profile.bio || '');
@@ -1385,7 +1397,7 @@ if (profile.banner_url) {
 
       _profileIdForReactions = profile.id;
       initReactions(profile.id);
-      applyScheduledBio(profile);
+     
       initCardFlip(profile, CS);
       initMusicWidget(profile);
       initFollows(profile);
@@ -1423,8 +1435,9 @@ function addReportButton(profile) {
 }
 
 function openReportModal(profile) {
-  const modal = document.createElement('div');
-  modal.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.75);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:20px';
+ const modal = document.createElement('div');
+modal.id = 'reportModal';
+modal.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.75);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:20px';
   modal.innerHTML = `
     <div style="background:var(--surface,#111);border:1px solid rgba(255,255,255,0.13);border-radius:18px;padding:28px 32px;width:100%;max-width:380px">
       <div style="font-size:16px;font-weight:800;margin-bottom:4px">report @${profile.handle}</div>
@@ -1439,11 +1452,11 @@ function openReportModal(profile) {
       <textarea id="reportDetails" placeholder="additional details (optional)" maxlength="300"
         style="width:100%;background:#171717;border:1px solid rgba(255,255,255,0.11);border-radius:9px;padding:11px 14px;color:#f0f0f0;font-family:'Geist Mono',monospace;font-size:12px;outline:none;resize:vertical;min-height:80px;margin-bottom:16px"></textarea>
       <div style="display:flex;gap:8px">
-        <button onclick="submitReport('${profile.id}','${profile.handle}',this.closest('[style*=fixed]'))" 
+        <button onclick="submitReport('${profile.id}','${profile.handle}',document.getElementById('reportModal'))"
           style="flex:1;padding:11px;border:none;border-radius:9px;cursor:pointer;background:rgba(240,71,71,0.15);border:1px solid rgba(240,71,71,0.3);color:#f04747;font-family:'Geist Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.08em">
           submit report
         </button>
-        <button onclick="this.closest('[style*=fixed]').remove()"
+    <button onclick="document.getElementById('reportModal').remove()"
           style="padding:11px 18px;border:1px solid rgba(255,255,255,0.11);border-radius:9px;background:transparent;color:rgba(255,255,255,0.4);font-family:'Geist Mono',monospace;font-size:12px;cursor:pointer">
           cancel
         </button>
