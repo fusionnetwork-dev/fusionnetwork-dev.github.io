@@ -500,19 +500,30 @@ body, html {
     [id^="tab-"] { display: none; }
 [id^="tab-"].active { display: block; }
 
-    #discordGate {
-  position: fixed !important;
-  inset: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: rgba(0,0,0,0.85) !important;
-  backdrop-filter: blur(20px) !important;
-  z-index: 10000 !important;
+  /* the overlay - no blur here */
+#discordGate {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#discordGate .gate-inner {
+/* blur goes on a pseudo element behind everything */
+#discordGate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(20px);
+  z-index: -1;
+}
+
+/* the box itself - no blur */
+#discordGate .discord-gate-box {
+  position: relative;
+  z-index: 1;
   background: var(--surface);
   border: 1px solid var(--border2);
   border-radius: 18px;
@@ -520,12 +531,6 @@ body, html {
   max-width: 400px;
   width: 90%;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  position: relative;
-  z-index: 10001;
 }
   </style>
 </head>
@@ -2432,13 +2437,12 @@ async function checkDiscordVerification() {
 }
 
 function showDiscordVerifyGate() {
-  // Dim the dashboard
-  document.body.style.pointerEvents = 'none';
-  document.body.style.filter = 'blur(4px)';
-
+  // blur the layout, NOT the body
+  document.getElementById('dashLayout')?.style.setProperty('filter', 'blur(4px)');
+  
   const gate = document.createElement('div');
   gate.id = 'dcGate';
-  gate.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:20px';
+  gate.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px';
   gate.innerHTML = `
     <div style="background:#0f0f0f;border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:40px 36px;max-width:400px;width:100%;text-align:center">
       <div style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.25em;color:rgba(255,255,255,0.25);margin-bottom:20px">ONE-TIME VERIFICATION</div>
@@ -2450,7 +2454,6 @@ function showDiscordVerifyGate() {
       </button>
       <div id="dcGateStatus" style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);margin-top:14px;min-height:16px"></div>
     </div>`;
-  document.body.style.pointerEvents = '';
   document.body.appendChild(gate);
 }
   const DISCORD_CLIENT_ID  = '1478888702649565234';
@@ -2527,6 +2530,8 @@ const DISCORD_WEBHOOK    = 'https://discord.com/api/webhooks/1478889239604101203
     const btn = document.getElementById('dcGateBtn');
     if (btn) { btn.style.background = 'rgba(67,181,129,0.15)'; btn.style.borderColor = 'rgba(67,181,129,0.4)'; btn.style.color = '#43b581'; btn.textContent = '✓ verified'; }
     document.getElementById('dcGateStatus').textContent = 'success — loading dashboard...';
+    document.getElementById('dcGate')?.remove();
+document.getElementById('dashLayout')?.style.removeProperty('filter');
     document.body.style.filter = '';
     setTimeout(() => document.getElementById('dcGate')?.remove(), 1200);
   });
