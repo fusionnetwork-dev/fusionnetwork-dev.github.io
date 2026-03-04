@@ -1386,7 +1386,7 @@ if (profile.banner_url) {
       })();
     }
 
-    function renderSplash(profile, CS) {
+  function renderSplash(profile, CS) {
   const splashEl = document.getElementById('splash');
   if (!splashEl) { revealProfile(profile, CS); return; }
 
@@ -1394,15 +1394,27 @@ if (profile.banner_url) {
   document.getElementById('loading').classList.add('out');
   setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
 
-  const name = profile.display_name || profile.handle;
-  let i = 0;
-  function type() {
-    if (i <= name.length) {
-      document.getElementById('splashName').textContent = name.slice(0, i++);
-      setTimeout(type, 110);
-    }
+  const name = CS.splash_text || profile.display_name || profile.handle;
+
+  // Apply custom splash font if set
+  const splashNameEl = document.getElementById('splashName');
+  if (CS.splash_font && splashNameEl) {
+    splashNameEl.style.fontFamily = `'${CS.splash_font}', sans-serif`;
   }
-  setTimeout(type, 200);
+
+  if (CS.splash_typewriter === false) {
+    // Skip typewriter — show instantly
+    if (splashNameEl) splashNameEl.textContent = name;
+  } else {
+    let i = 0;
+    function type() {
+      if (i <= name.length) {
+        splashNameEl.textContent = name.slice(0, i++);
+        setTimeout(type, 110);
+      }
+    }
+    setTimeout(type, 200);
+  }
 
   splashEl.addEventListener('click', () => {
     window._userGestureUnlocked = true;
