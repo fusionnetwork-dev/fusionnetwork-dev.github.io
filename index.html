@@ -919,6 +919,7 @@ const DISCORD_WEBHOOK    = 'https://discord.com/api/webhooks/1478889239604101203
 let _discordVerified = false;
 let _discordUser     = null;
 
+  
 function verifyDiscord() {
   const state = Math.random().toString(36).slice(2);
   sessionStorage.setItem('dc_state', state);
@@ -957,6 +958,10 @@ function verifyDiscord() {
     if (!user?.id) return showAlert('signupAlert', 'could not fetch discord user.', 'error');
 
     _discordUser     = user;
+    await sb.from('profiles').update({
+  discord_verified: true,
+  discord_id_verified: _discordUser.id,
+}).eq('id', authData.user.id);
     _discordVerified = true;
 
     // update button
