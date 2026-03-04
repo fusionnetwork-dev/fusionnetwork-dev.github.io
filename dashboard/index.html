@@ -594,6 +594,12 @@ body, html {
             <div class="field-hint">plays with a typewriter effect on your card</div>
           </div>
           <div class="field">
+  <div class="field-label">bio lines <span class="tag">typewriter cycles through these</span></div>
+  <div id="bioLinesList"></div>
+  <button class="btn btn-ghost" style="margin-top:8px" onclick="addBioLine()"><i class="fas fa-plus"></i> add line</button>
+  <div class="field-hint">each line types and deletes in sequence — markdown supported: **bold** *italic* `code`</div>
+</div>
+          <div class="field">
             <div class="field-label">discord user id <span class="tag">live status</span></div>
             <input class="field-input" type="text" id="fDiscordId" placeholder="right-click your pfp → copy user id">
             <div class="field-hint">
@@ -624,6 +630,14 @@ body, html {
   <div class="field">
     <div class="field-label">card back text</div>
     <textarea class="field-input" id="fCardBackText" placeholder="text shown on the back of the card when flipped..." maxlength="200" style="min-height:60px"></textarea>
+  </div>
+</div>
+          <div class="dash-section">
+  <div class="dash-section-title">embed your card</div>
+  <div class="card-edit">
+    <div class="field-hint" style="margin-bottom:8px">paste this anywhere to show your card</div>
+    <div id="embedCodeBox" style="background:#050505;border:1px solid var(--border);border-radius:8px;padding:12px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);word-break:break-all"></div>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="copyEmbed()"><i class="fas fa-copy"></i> copy embed code</button>
   </div>
 </div>
         </div>
@@ -715,6 +729,16 @@ body, html {
           <div class="bg-panel" id="bgPanel-image">
             <div class="field">
               <div class="field-label">background image url</div>
+              <div class="field">
+  <div class="field-label">upload background image <span class="tag">max 5mb</span></div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <label style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);background:var(--surface2);border:1px dashed var(--border2);border-radius:8px;padding:9px 14px;transition:all 0.2s">
+      <i class="fas fa-upload" style="font-size:10px"></i> choose image
+      <input type="file" id="bgImageFileInput" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none" onchange="handleBgImageUpload(this)">
+    </label>
+    <span id="bgImageFileName" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)"></span>
+  </div>
+</div>
               <input class="field-input" type="url" id="fBgImageUrl" placeholder="https://..." oninput="updateBgPreview()">
               <div class="field-hint">any direct image url — unsplash, imgur, cdn, etc.</div>
             </div>
@@ -723,7 +747,7 @@ body, html {
               <input type="range" id="fBgOpacity" min="10" max="100" value="70" oninput="document.getElementById('bgOpacityVal').textContent=this.value+'%';updateBgPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
             </div>
           </div>
-
+         
           <!-- COLOR BG -->
           <div class="bg-panel" id="bgPanel-color">
             <div class="field">
@@ -1765,6 +1789,38 @@ if (_paymentResult === 'success') {
     setTimeout(() => window.location.href = '/dashboard', 2000);
   }, 800);
 }
+  let bioLines = [];
+
+function renderBioLines() {
+  const list = document.getElementById('bioLinesList');
+  if (!list) return;
+  list.innerHTML = '';
+  bioLines.forEach((line, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;align-items:center';
+    row.innerHTML = `
+      <input class="field-input" type="text" value="${sanitize(line)}" maxlength="120" 
+        style="flex:1" oninput="bioLines[${i}]=this.value" placeholder="bio line ${i+1}...">
+      <button class="btn btn-ghost" style="padding:8px;flex-shrink:0" onclick="bioLines.splice(${i},1);renderBioLines()">
+        <i class="fas fa-times"></i>
+      </button>`;
+    list.appendChild(row);
+  });
+}
+
+function addBioLine() {
+  if (bioLines.length >= 5) { showAlert('profileAlert', 'max 5 bio lines.', 'error'); return; }
+  bioLines.push('');
+  renderBioLines();
+}
+
+// Load existing bio lines when profile loads — in populateForm add:
+bioLines = pj(p.bio_lines, p.bio ? [p.bio] : []);
+renderBioLines();
+
+// In saveProfile, add to updates object:
+bio_lines: JSON.stringify(bioLines.filter(l => l.trim())),
+bio: bioLines[0] || '',  // keep bio as fallback
   async function loadPricingTab() {
   // Show verified status
   const statusEl = document.getElementById('verifiedBadgeStatus');
@@ -2375,7 +2431,15 @@ function showTab(name) {
       updateBgPreview();
     }
   }
-
+function generateEmbedCode(handle) {
+  return `<iframe src="https://swaqq.xyz/@${handle}/embed" width="420" height="300" frameborder="0" style="border-radius:20px;overflow:hidden"></iframe>`;
+}
+  function copyEmbed() {
+  const code = generateEmbedCode(currentProfile.handle);
+  document.getElementById('embedCodeBox').textContent = code;
+  navigator.clipboard.writeText(code);
+  showAlert('profileAlert', '✓ embed code copied!', 'success');
+}
   // ─── CUSTOM FONT ─────────────────────────────────────────────────────────────
   function handleCustomFont(input) {
     const file = input.files[0]; if (!file) return;
@@ -2568,7 +2632,32 @@ function pickSocialStyle(el, val) {
       el.textContent = (name || '?')[0].toUpperCase();
     }
   }
-
+async function handleBgImageUpload(input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showAlert('appearanceAlert', 'image too large — max 5mb.', 'error'); return; }
+  document.getElementById('bgImageFileName').textContent = 'uploading...';
+  const ext  = file.name.split('.').pop();
+  const path = `backgrounds/${currentUser.id}.${ext}`;
+  const { error } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
+  if (error) {
+    // fallback to base64
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('fBgImageUrl').value = e.target.result;
+      document.getElementById('bgImageFileName').textContent = '✓ ready — hit save';
+      updateBgPreview();
+    };
+    reader.readAsDataURL(file); return;
+  }
+  const { data:{ publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+  document.getElementById('fBgImageUrl').value = publicUrl;
+  document.getElementById('bgImageFileName').textContent = '✓ uploaded';
+  // auto switch to image tab
+  switchBgTab('image');
+  updateBgPreview();
+  showAlert('appearanceAlert', 'background uploaded! hit save to apply.', 'success');
+  input.value = '';
+}
   const pfpZone = document.getElementById('pfpZone');
   pfpZone.addEventListener('dragover',  e => { e.preventDefault(); pfpZone.classList.add('drag'); });
   pfpZone.addEventListener('dragleave', () => pfpZone.classList.remove('drag'));
@@ -2945,7 +3034,7 @@ function buildCurrentCS() {
 let _pendingBadgeFile = null;
 
 const CUSTOM_BADGE_LIMIT = () => {
-  if (isAdmin || isOwner) return 999;
+  if (isAdmin || isOwner) return 9999;
   return currentProfile?.custom_badge_slots ?? 3;
 };
 
