@@ -1290,7 +1290,51 @@ body, html {
       </div>
     </div>
   </div>
-
+<!-- SPLASH SCREEN STYLE -->
+  <div class="dash-section">
+    <div class="dash-section-title">splash screen</div>
+    <div class="dash-section-sub">the intro screen visitors see before your card</div>
+    <div class="card-edit">
+      <div class="field">
+        <div class="field-label">splash text <span class="tag">overrides display name</span></div>
+        <input class="field-input" type="text" id="fSplashText" placeholder="leave blank to use your display name" maxlength="40">
+        <div class="field-hint">the big text typed out on the splash screen</div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <div class="field-label">splash font</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="splashFontGrid">
+          <div class="font-card selected" data-splashfont="Syne" onclick="pickSplashFont(this,'Syne')">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:4px">Aa</div>
+            <div class="font-card-label">Syne</div>
+          </div>
+          <div class="font-card" data-splashfont="Geist Mono" onclick="pickSplashFont(this,'Geist Mono')">
+            <div style="font-family:'Geist Mono',monospace;font-size:15px;font-weight:700;margin-bottom:4px">Aa</div>
+            <div class="font-card-label">Geist Mono</div>
+          </div>
+          <div class="font-card" data-splashfont="Space Grotesk" onclick="pickSplashFont(this,'Space Grotesk')">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px">Aa</div>
+            <div class="font-card-label">Space</div>
+          </div>
+          <div class="font-card" data-splashfont="Raleway" onclick="pickSplashFont(this,'Raleway')">
+            <div style="font-family:'Raleway',sans-serif;font-size:15px;font-weight:800;margin-bottom:4px">Aa</div>
+            <div class="font-card-label">Raleway</div>
+          </div>
+          <div class="font-card" data-splashfont="Bebas Neue" onclick="pickSplashFont(this,'Bebas Neue')">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;font-weight:400;margin-bottom:4px">AA</div>
+            <div class="font-card-label">Bebas</div>
+          </div>
+          <div class="font-card" data-splashfont="Inter" onclick="pickSplashFont(this,'Inter')">
+            <div style="font-family:'Inter',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px">Aa</div>
+            <div class="font-card-label">Inter</div>
+          </div>
+        </div>
+      </div>
+      <div class="toggle-row" style="margin-top:8px">
+        <div><div class="toggle-title">typewriter effect</div><div class="toggle-sub">text types out letter by letter on the splash screen</div></div>
+        <div class="toggle on" id="tSplashTypewriter" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+  </div>
   <!-- BIO STYLE -->
   <div class="dash-section">
     <div class="dash-section-title">bio style</div>
@@ -2569,6 +2613,14 @@ tog('tMuteAudio',  cs('mute_audio') !== false);
 document.getElementById('fBgVideoUrl').value   = cs('bg_video_url') || '';
 tog('tBgVideoLoop', cs('bg_video_loop') !== false);
 tog('tBgVideoMute', cs('bg_video_mute') !== false);
+
+   document.getElementById('fSplashText').value = cs('splash_text') || '';
+  const splashFont = cs('splash_font') || 'Syne';
+  document.querySelectorAll('[data-splashfont]').forEach(c =>
+    c.classList.toggle('selected', c.dataset.splashfont === splashFont)
+  );
+  CS.splash_font = splashFont;
+  tog('tSplashTypewriter', cs('splash_typewriter') !== false);
 }
     currentBgTab = cs('bg_type') || 'video';
     activateBgTab(currentBgTab);
@@ -2820,7 +2872,11 @@ function pickCursor(el, val) {
   el.classList.add('selected');
   CS.cursor_style = val;
 }
-
+function pickSplashFont(el, val) {
+  document.querySelectorAll('[data-splashfont]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  CS.splash_font = val;
+}
 function pickSocialStyle(el, val) {
   document.querySelectorAll('[data-socialstyle]').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
@@ -3337,6 +3393,9 @@ function buildCurrentCS() {
     bio_italic:        gtog('tBioItalic'),
     typewriter:        gtog('tTypewriter'),
     show_volume_widget:gtog('tVolumeWidget'),
+    splash_text:       document.getElementById('fSplashText')?.value?.trim() || '',
+    splash_font:       CS.splash_font || 'Syne',
+    splash_typewriter: gtog('tSplashTypewriter'),
   };
 }
   // ── CUSTOM BADGES ─────────────────────────────────────────────────────────────
@@ -4029,6 +4088,9 @@ bg_video_url:    document.getElementById('fBgVideoUrl')?.value?.trim() || '',
  bg_video_mute:   gtog('tBgVideoMute'),
  card_flip:       gtog('tCardFlip'),
  card_back_text:  document.getElementById('fCardBackText')?.value?.trim() || '',
+      splash_text:       document.getElementById('fSplashText')?.value?.trim() || '',
+    splash_font:       CS.splash_font || 'Syne',
+    splash_typewriter: gtog('tSplashTypewriter'),
     };
 newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
     console.log('[swaqq] saving newCS:', newCS);
