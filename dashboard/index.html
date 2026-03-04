@@ -4627,16 +4627,21 @@ const DRAFT_KEY = () => `swaqq_draft_${currentUser?.id}`;
 
 function saveDraft() {
   if (!currentUser) return;
+  const { custom_font_data, custom_icons, ...lightCS } = CS;
   const draft = {
     fDisplayName: document.getElementById('fDisplayName')?.value,
     fHandle:      document.getElementById('fHandle')?.value,
     fBio:         document.getElementById('fBio')?.value,
     fAvatarUrl:   document.getElementById('fAvatarUrl')?.value,
     fYoutubeId:   document.getElementById('fYoutubeId')?.value,
-    CS:           JSON.stringify(CS),
+    CS:           JSON.stringify(lightCS),
     savedAt:      Date.now(),
   };
-  localStorage.setItem(DRAFT_KEY(), JSON.stringify(draft));
+  try {
+    localStorage.setItem(DRAFT_KEY(), JSON.stringify(draft));
+  } catch(e) {
+    console.warn('[swaqq] draft save failed (storage full):', e.message);
+  }
 }
 
 function loadDraft() {
