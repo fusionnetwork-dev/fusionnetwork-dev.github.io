@@ -1328,7 +1328,28 @@ body, html {
   </div>
 </div>
 </div>
+<div class="dash-section">
+  <div class="dash-section-title">share your theme</div>
+  <div class="card-edit">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <input class="field-input" type="text" id="shareThemeNameInput" placeholder="theme name..." maxlength="30" style="flex:1">
+      <input class="field-input" type="text" id="shareThemeDescInput" placeholder="short description..." maxlength="60" style="flex:2">
+    </div>
+    <button class="btn btn-ghost" onclick="shareThemePublic()"><i class="fas fa-share-alt"></i> share to marketplace</button>
+    <div class="alert" id="shareThemeAlert" style="margin-top:8px"></div>
+  </div>
+</div>
 
+<div class="dash-section">
+  <div class="dash-section-title">marketplace <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">themes by the community</span></div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <button class="tab-pill active" onclick="loadMarketplace('featured',this)">featured</button>
+    <button class="tab-pill" onclick="loadMarketplace('newest',this)">newest</button>
+    <button class="tab-pill" onclick="loadMarketplace('popular',this)">popular</button>
+  </div>
+  <div id="marketplaceGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px"></div>
+  <div class="alert" id="marketplaceAlert" style="margin-top:8px"></div>
+</div>
     <!-- ═══ SOCIALS TAB ═══ -->
     <div id="tab-socials" style="display:none">
       <div class="page-header">
@@ -1454,6 +1475,14 @@ body, html {
       </div>
     </div>
     <div class="alert" id="mfaAlert" style="margin-top:8px"></div>
+  </div>
+</div>
+
+      <div class="dash-section">
+  <div class="dash-section-title">export your data</div>
+  <div class="card-edit">
+    <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);margin-bottom:14px;line-height:1.6">download everything: profile info, settings, badges, socials, analytics — your data, yours to keep.</div>
+    <button class="btn btn-ghost" onclick="exportProfileData()"><i class="fas fa-download"></i> download my data (json)</button>
   </div>
 </div>
     </div>
@@ -2400,7 +2429,7 @@ checkChangelog()
     if (isAdmin) tog('tUid', cs('show_uid_scramble') === true);
     tog('tShowVideo',   cs('show_video_bg') !== false);
     tog('tMuteDefault', cs('mute_video')    === true);
-
+    tog('tAgeGate', p.age_gate === true)
     // BG fields
     document.getElementById('fBgImageUrl').value   = cs('bg_image_url');
     document.getElementById('fBgColor').value      = cs('bg_color');
@@ -2958,6 +2987,35 @@ async function handleBannerUpload(input) {
     wrap.appendChild(ov);
   }
 // ── ANALYTICS ────────────────────────────────────────────────────────────────
+  async function exportProfileData() {
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  const { data: views }   = await sb.from('view_events').select('viewed_at').eq('profile_id', currentUser.id).limit(1000);
+  const { data: clicks }  = await sb.from('link_clicks').select('*').eq('profile_id', currentUser.id).limit(500);
+  const { data: customs } = await sb.from('custom_badges').select('*').eq('profile_id', currentUser.id);
+  const { data: themes }  = await sb.from('profile_themes').select('*').eq('profile_id', currentUser.id);
+
+  // Strip sensitive internal fields
+  const { is_admin, is_owner, is_developer, is_banned, ban_reason, note, ...safeProfile } = profile;
+
+  const exportData = {
+    exported_at:  new Date().toISOString(),
+    version:      '1.0',
+    profile:      safeProfile,
+    analytics: {
+      view_events:  views || [],
+      link_clicks:  clicks || [],
+    },
+    custom_badges: customs || [],
+    saved_themes:  themes || [],
+  };
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type:'application/json' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `swaqq-${profile.handle}-export-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showAlert('settingsAlert', '✓ data exported!', 'success');
+}
 async function loadAnalytics() {
   if (!currentProfile) return;
 
@@ -3657,6 +3715,83 @@ async function disableMFA() {
   }).filter(s => s.url);
 }
   // ─── BADGES ──────────────────────────────────────────────────────────────────
+  async function shareThemePublic() {
+  const name = document.getElementById('shareThemeNameInput').value.trim();
+  const desc = document.getElementById('shareThemeDescInput').value.trim();
+  if (!name) { showAlert('shareThemeAlert', 'enter a theme name.', 'error'); return; }
+
+  const snap = buildCurrentCS();
+  const colors = [snap.accent_color, snap.bg_grad1 || snap.bg_color, snap.bg_grad2].filter(Boolean);
+
+  const { error } = await sb.from('public_themes').insert({
+    profile_id:    currentUser.id,
+    author_handle: currentProfile.handle,
+    name:          sanitize(name),
+    description:   sanitize(desc),
+    cs_blob:       snap,
+    preview_colors: colors,
+  });
+
+  if (error) { showAlert('shareThemeAlert', 'failed: ' + error.message, 'error'); return; }
+  document.getElementById('shareThemeNameInput').value = '';
+  document.getElementById('shareThemeDescInput').value = '';
+  showAlert('shareThemeAlert', '✓ theme shared to marketplace!', 'success');
+}
+
+async function loadMarketplace(sort, btn) {
+  document.querySelectorAll('#tab-customize .tab-pill').forEach(p => p.classList.remove('active'));
+  btn?.classList.add('active');
+
+  let query = sb.from('public_themes').select('*').limit(24);
+  if (sort === 'featured') query = query.eq('is_featured', true).order('created_at', { ascending:false });
+  else if (sort === 'popular') query = query.order('likes', { ascending:false });
+  else query = query.order('created_at', { ascending:false });
+
+  const { data, error } = await query;
+  const grid = document.getElementById('marketplaceGrid');
+
+  if (error || !data?.length) {
+    grid.innerHTML = '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--muted);grid-column:1/-1">no themes yet — be the first to share!</div>';
+    return;
+  }
+
+  grid.innerHTML = data.map(theme => {
+    const colors = theme.preview_colors || ['#111'];
+    const gradient = colors.length > 1
+      ? `linear-gradient(135deg, ${colors[0]}, ${colors[1]})`
+      : colors[0];
+    return `
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all 0.2s" 
+           onmouseover="this.style.borderColor='rgba(255,255,255,0.25)'" 
+           onmouseout="this.style.borderColor='var(--border)'">
+        <div style="height:70px;background:${gradient};position:relative">
+          ${theme.is_featured ? '<span style="position:absolute;top:6px;right:6px;background:rgba(245,166,35,0.9);color:#000;font-family:\'Geist Mono\',monospace;font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.1em">FEATURED</span>' : ''}
+        </div>
+        <div style="padding:10px 12px;background:var(--surface2)">
+          <div style="font-size:12px;font-weight:700;margin-bottom:2px">${sanitize(theme.name)}</div>
+          <div style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:8px">by @${sanitize(theme.author_handle)} · ♥ ${theme.likes||0}</div>
+          ${theme.description ? `<div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--sub);margin-bottom:8px;line-height:1.4">${sanitize(theme.description)}</div>` : ''}
+          <button onclick="applyMarketplaceTheme('${theme.id}')" style="width:100%;padding:7px;border:none;border-radius:7px;cursor:pointer;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);font-family:'Geist Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;transition:all 0.2s"
+            onmouseover="this.style.background='rgba(255,255,255,0.12)';this.style.color='#fff'"
+            onmouseout="this.style.background='rgba(255,255,255,0.07)';this.style.color='rgba(255,255,255,0.7)'">
+            apply
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function applyMarketplaceTheme(id) {
+  const { data, error } = await sb.from('public_themes').select('cs_blob, name').eq('id', id).single();
+  if (error || !data) { showAlert('marketplaceAlert', 'failed to load theme.', 'error'); return; }
+  if (!confirm(`apply "${sanitize(data.name)}"? this overwrites your current customize settings.`)) return;
+  Object.assign(CS, data.cs_blob);
+  populateForm({ ...currentProfile, custom_settings: CS });
+  updateCardPreview();
+  // Increment like count
+  await sb.from('public_themes').update({ likes: (data.likes||0) + 1 }).eq('id', id);
+  showAlert('marketplaceAlert', `✓ "${sanitize(data.name)}" applied — hit save to keep it!`, 'success');
+}
   function renderBadgeGrid() {
     const grid = document.getElementById('badgeGrid'); grid.innerHTML = '';
     BADGE_DEFS.forEach(def => {
@@ -3903,6 +4038,7 @@ newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
        bg_video_url:    document.getElementById('fBgVideoUrl')?.value?.trim() || '',
  card_flip:       gtog('tCardFlip'),
  card_back_text:  document.getElementById('fCardBackText')?.value?.trim() || '',
+      age_gate: gtog('tAgeGate')
     };
 
     console.log('[swaqq] update payload:', updates);
@@ -4172,6 +4308,7 @@ return `<tr>
         : ''
       }
       <a class="btn-sm btn-sm-ghost" href="/@${u.handle}" target="_blank"><i class="fas fa-eye"></i></a>
+      <button class="btn-sm btn-sm-gold" onclick="featureTheme('${u.id}')"><i class="fas fa-star"></i> themes</button>
     </div>
   </td>
 </tr>`;
@@ -4189,7 +4326,14 @@ return `<tr>
     `banned at: ${new Date(data.banned_at).toLocaleString()}`
   );
 }
-  
+  async function featureTheme(profileId) {
+  const { data } = await sb.from('public_themes').select('*').eq('profile_id', profileId);
+  if (!data?.length) { alert('this user has no public themes.'); return; }
+  // Toggle featured on their most recent theme
+  const theme = data[0];
+  await sb.from('public_themes').update({ is_featured: !theme.is_featured }).eq('id', theme.id);
+  alert(`theme "${theme.name}" ${!theme.is_featured ? 'featured' : 'unfeatured'}.`);
+}
 function populateNoteUserSelect(users) {
   const sel = document.getElementById('noteUserSelect');
   if (!sel) return;
