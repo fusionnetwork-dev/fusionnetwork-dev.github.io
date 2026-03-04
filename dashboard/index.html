@@ -599,7 +599,7 @@ body, html {
   <button class="btn btn-ghost" style="margin-top:8px" onclick="addBioLine()"><i class="fas fa-plus"></i> add line</button>
   <div class="field-hint">each line types and deletes in sequence — markdown supported: **bold** *italic* `code`</div>
 </div>
-          <div class="field">
+        <div class="field">
             <div class="field-label">discord user id <span class="tag">live status</span></div>
             <input class="field-input" type="text" id="fDiscordId" placeholder="right-click your pfp → copy user id">
             <div class="field-hint">
@@ -607,7 +607,22 @@ body, html {
             </div>
           </div>
         </div>
+        
       </div>
+      <div class="dash-section">
+  <div class="dash-section-title">referrals</div>
+  <div class="dash-section-sub">share your link — both of you get a bonus when they sign up</div>
+  <div class="card-edit">
+    <div style="display:flex;gap:8px;align-items:center">
+      <div id="referralLinkBox" style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Geist Mono',monospace;font-size:12px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+      <button class="btn btn-ghost" onclick="copyReferralLink()"><i class="fas fa-copy"></i> copy</button>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:16px">
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">successful referrals: <span id="referralCount" style="color:var(--text);font-weight:700">0</span></div>
+    </div>
+    <div class="field-hint" style="margin-top:8px">when someone signs up with your link, you both get +1 badge slot automatically</div>
+  </div>
+</div>
       <div class="dash-section">
         <div class="dash-section-title">card settings</div>
         <div class="dash-section-sub">toggle features on / off</div>
@@ -872,6 +887,14 @@ body, html {
         </div>
       </div>
     </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+  <button class="tab-pill active" id="previewDesktopBtn" onclick="switchPreviewMode('desktop')"><i class="fas fa-desktop" style="font-size:9px"></i> desktop</button>
+  <button class="tab-pill" id="previewMobileBtn" onclick="switchPreviewMode('mobile')"><i class="fas fa-mobile-alt" style="font-size:9px"></i> mobile</button>
+</div>
+<div id="mobilePreviewWrap" style="display:none;background:#0a0a0a;border:8px solid #222;border-radius:36px;padding:20px 8px;max-width:280px;margin:0 auto;box-shadow:0 0 0 2px #333">
+  <div style="width:60px;height:4px;background:#333;border-radius:2px;margin:0 auto 16px"></div>
+  <div id="mobilePreviewInner" style="transform:scale(0.6);transform-origin:top center;height:360px;overflow:hidden"></div>
+</div>
   </div>
 
   <!-- FONT PICKER -->
@@ -1353,10 +1376,15 @@ body, html {
 
     <!-- ═══ SETTINGS TAB ═══ -->
     <div id="tab-settings" style="display:none">
+      <div class="dash-section">
+  <div class="dash-section-title">what's new <span id="changelogVersionTag" style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px"></span></div>
+  <div class="card-edit" id="changelogList"></div>
+</div>
       <div class="page-header">
         <h1 class="page-title">account settings</h1>
         <p class="page-sub">password and danger zone</p>
       </div>
+      
       <div class="alert" id="settingsAlert"></div>
       <div class="dash-section">
         <div class="dash-section-title">change password</div>
@@ -1621,7 +1649,11 @@ body, html {
 
 <!-- SAVE BAR -->
 <div class="save-bar" id="saveBar" style="display:none">
-  <span class="save-status" id="saveStatus">unsaved changes</span>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button id="undoBtn" class="btn btn-ghost" onclick="undo()" title="undo (ctrl+z)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-undo"></i></button>
+    <button id="redoBtn" class="btn btn-ghost" onclick="redo()" title="redo (ctrl+y)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-redo"></i></button>
+    <span class="save-status" id="saveStatus">unsaved changes</span>
+  </div>
   <button class="btn-save" id="saveBtn" onclick="saveProfile()">save changes →</button>
 </div>
 
@@ -1694,6 +1726,51 @@ function sanitizeHtml(html) {
   const div = document.createElement('div');
   div.textContent = html;
   return div.innerHTML;
+}
+  const _history = [];
+let _historyIdx = -1;
+let _historyPaused = false;
+
+function snapshotHistory() {
+  if (_historyPaused) return;
+  const snap = JSON.stringify(CS);
+  // Don't push if same as current
+  if (_history[_historyIdx] === snap) return;
+  // Remove any redo states
+  _history.splice(_historyIdx + 1);
+  _history.push(snap);
+  if (_history.length > 50) _history.shift();
+  _historyIdx = _history.length - 1;
+  updateUndoRedoBtns();
+}
+
+function undo() {
+  if (_historyIdx <= 0) return;
+  _historyIdx--;
+  _historyPaused = true;
+  Object.assign(CS, JSON.parse(_history[_historyIdx]));
+  populateForm({ ...currentProfile, custom_settings: CS });
+  updateCardPreview();
+  _historyPaused = false;
+  updateUndoRedoBtns();
+}
+
+function redo() {
+  if (_historyIdx >= _history.length - 1) return;
+  _historyIdx++;
+  _historyPaused = true;
+  Object.assign(CS, JSON.parse(_history[_historyIdx]));
+  populateForm({ ...currentProfile, custom_settings: CS });
+  updateCardPreview();
+  _historyPaused = false;
+  updateUndoRedoBtns();
+}
+
+function updateUndoRedoBtns() {
+  const u = document.getElementById('undoBtn');
+  const r = document.getElementById('redoBtn');
+  if (u) u.disabled = _historyIdx <= 0;
+  if (r) r.disabled = _historyIdx >= _history.length - 1;
 }
   // ── STRIPE BADGE SLOTS ────────────────────────────────────────────────────────
 const STRIPE_PRICE_IDS = {
@@ -1917,6 +1994,67 @@ const CS_DEF = {
 
   // ─── BADGE DEFS ─────────────────────────────────────────────────────────────
   // owner gets ALL badges; developer gets developer badge auto
+  function buildPresetThemeGrid() {
+  const grid = document.getElementById('presetThemeGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  PRESET_THEMES.forEach(theme => {
+    const card = document.createElement('div');
+    card.style.cssText = `border-radius:12px;overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:all 0.2s`;
+    card.innerHTML = `
+      <div style="height:60px;background:${theme.preview};position:relative">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+          <div style="font-size:12px;font-weight:800;color:rgba(255,255,255,0.8);text-shadow:0 1px 4px rgba(0,0,0,0.8)">${theme.name}</div>
+        </div>
+      </div>
+      <div style="padding:8px 10px;background:var(--surface2);font-family:'Geist Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase">apply theme</div>
+    `;
+    card.addEventListener('mouseenter', () => card.style.borderColor = 'rgba(255,255,255,0.3)');
+    card.addEventListener('mouseleave', () => card.style.borderColor = 'var(--border)');
+    card.onclick = () => applyPresetTheme(theme);
+    grid.appendChild(card);
+  });
+}
+
+function applyPresetTheme(theme) {
+  if (!confirm(`apply "${theme.name}" theme? this will overwrite your current customize settings.`)) return;
+  Object.assign(CS, theme.cs);
+  populateForm({ ...currentProfile, custom_settings: CS });
+  updateCardPreview();
+  showAlert('customizeAlert', `✓ "${theme.name}" theme applied — hit save to keep it.`, 'success');
+}
+  const PRESET_THEMES = [
+  {
+    name: 'cyberpunk',
+    preview: 'linear-gradient(135deg,#0a0a1a,#1a0a2a)',
+    cs: { accent_color:'#00ffcc', bg_type:'gradient', bg_grad1:'#0a0a1a', bg_grad2:'#1a0a2a', bg_grad_dir:'to bottom right', card_font:'JetBrains Mono', border_style:'glow-pulse', name_style:'shimmer', card_texture:'grid', cursor_style:'glow', particles:true, particle_color:'#00ffcc' }
+  },
+  {
+    name: 'minimal',
+    preview: 'linear-gradient(135deg,#0d0d0d,#1a1a1a)',
+    cs: { accent_color:'#ffffff', bg_type:'color', bg_color:'#0d0d0d', card_font:'Inter', border_style:'none', name_style:'solid', card_texture:'none', cursor_style:'default', card_blur:0, card_glow:false, card_shadow:false }
+  },
+  {
+    name: 'retro',
+    preview: 'linear-gradient(135deg,#1a0a00,#2a1500)',
+    cs: { accent_color:'#f5a623', bg_type:'gradient', bg_grad1:'#1a0a00', bg_grad2:'#0a0a00', bg_grad_dir:'to bottom', card_font:'Bebas Neue', border_style:'dashed', name_style:'uppercase', card_texture:'noise', scanlines:true }
+  },
+  {
+    name: 'sakura',
+    preview: 'linear-gradient(135deg,#1a0a12,#2a1020)',
+    cs: { accent_color:'#f472b6', bg_type:'gradient', bg_grad1:'#1a0a12', bg_grad2:'#2a1020', bg_grad_dir:'135deg', card_font:'Raleway', border_style:'solid', name_style:'gradient', name_grad1:'#f472b6', name_grad2:'#fb923c', snow:false, particles:true, particle_color:'#f472b6' }
+  },
+  {
+    name: 'ocean',
+    preview: 'linear-gradient(135deg,#0a1628,#0a2040)',
+    cs: { accent_color:'#38bdf8', bg_type:'gradient', bg_grad1:'#0a1628', bg_grad2:'#0a2040', bg_grad_dir:'to bottom', card_font:'Space Grotesk', border_style:'shimmer', name_style:'shadow', particles:true, particle_color:'#38bdf8' }
+  },
+  {
+    name: 'void',
+    preview: '#000000',
+    cs: { accent_color:'#ffffff', bg_type:'color', bg_color:'#000000', card_font:'Geist Mono', border_style:'solid', name_style:'outline', card_texture:'dots', card_blur:0, card_opacity:100, cursor_style:'crosshair' }
+  },
+];
 const BADGE_DEFS = [
   { id:'early',       label:'Early',       icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',      locked:true, early:true  },
   { id:'supporter',   label:'Supporter',   icon:'fas fa-heart',       desc:'supports swaqq.xyz',                        locked:true  },
@@ -2191,8 +2329,11 @@ if (data.discord_id) {
       }
     });
     updateSlotDisplay()
+    // Start autosave after profile loads — add in loadProfile() at the end:
+loadDraft();
+setInterval(saveDraft, 30000);
   }
-
+checkChangelog()
   function pj(v, fallback) {
     if (v === null || v === undefined) return fallback;
     if (typeof v === 'object') return v;
@@ -2367,9 +2508,9 @@ function showTab(name) {
   });
   if (name === 'admin')     loadAdminData();
   if (name === 'analytics') loadAnalytics();
-  if (name === 'customize') { buildFontGrid(); updateCardPreview(); loadThemes(); }
+  if (name === 'customize') { buildFontGrid(); updateCardPreview(); loadThemes(); buildPresetThemeGrid(); }
   if (name === 'badges')    loadCustomBadges();
-  if (name === 'settings')  loadMFAStatus();
+  if (name === 'settings')  { loadMFAStatus(); renderChangelog(); }
   if (name === 'music')     loadMusicTab();
   if (name === 'schedule')  loadScheduleTab();
   if (name === 'pricing') loadPricingTab();
@@ -2633,6 +2774,7 @@ function pickSocialStyle(el, val) {
         pAv.style.background = '#1a1a1a';
       }
     }
+    snapshotHistory()
   }
 
   // ─── PFP ──────────────────────────────────────────────────────────────────────
@@ -3754,8 +3896,24 @@ delete updates.unlocked_badges;
 
     st.textContent = 'all changes saved ✓'; st.classList.add('saved');
     setTimeout(() => { st.textContent = 'unsaved changes'; st.classList.remove('saved'); }, 3500);
+    discardDraft();
   }
+function loadReferralSection() {
+  const code = currentProfile?.referral_code;
+  if (!code) return;
+  const link = `https://swaqq.xyz/?ref=${code}`;
+  const box  = document.getElementById('referralLinkBox');
+  const cnt  = document.getElementById('referralCount');
+  if (box) box.textContent = link;
+  if (cnt) cnt.textContent = currentProfile?.referral_count || 0;
+}
 
+function copyReferralLink() {
+  const code = currentProfile?.referral_code;
+  if (!code) return;
+  navigator.clipboard.writeText(`https://swaqq.xyz/?ref=${code}`);
+  showAlert('profileAlert', '✓ referral link copied!', 'success');
+}
   // ─── SETTINGS ────────────────────────────────────────────────────────────────
   async function changePassword() {
     const p1 = document.getElementById('fNewPassword').value;
@@ -4252,6 +4410,64 @@ async function unbanUser(uid, handle) {
   document.getElementById('badgeModal').addEventListener('click', e => {
     if (e.target===document.getElementById('badgeModal')) closeBadgeModal();
   });
+const DRAFT_KEY = () => `swaqq_draft_${currentUser?.id}`;
+
+function saveDraft() {
+  if (!currentUser) return;
+  const draft = {
+    fDisplayName: document.getElementById('fDisplayName')?.value,
+    fHandle:      document.getElementById('fHandle')?.value,
+    fBio:         document.getElementById('fBio')?.value,
+    fAvatarUrl:   document.getElementById('fAvatarUrl')?.value,
+    fYoutubeId:   document.getElementById('fYoutubeId')?.value,
+    CS:           JSON.stringify(CS),
+    savedAt:      Date.now(),
+  };
+  localStorage.setItem(DRAFT_KEY(), JSON.stringify(draft));
+}
+
+function loadDraft() {
+  if (!currentUser) return;
+  const raw = localStorage.getItem(DRAFT_KEY());
+  if (!raw) return;
+  const draft = JSON.parse(raw);
+  const age = Date.now() - (draft.savedAt || 0);
+  // Only restore drafts less than 24h old
+  if (age > 86400000) { localStorage.removeItem(DRAFT_KEY()); return; }
+  const mins = Math.round(age / 60000);
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:56px;left:240px;right:0;z-index:99;background:rgba(245,166,35,0.12);border-bottom:1px solid rgba(245,166,35,0.25);padding:10px 40px;display:flex;align-items:center;justify-content:space-between;font-family:\'Geist Mono\',monospace;font-size:11px;color:rgba(245,166,35,0.9)';
+  banner.innerHTML = `
+    <span><i class="fas fa-history" style="margin-right:7px"></i>unsaved draft from ${mins < 1 ? 'just now' : mins + 'm ago'}</span>
+    <div style="display:flex;gap:8px">
+      <button onclick="restoreDraft()" style="background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--gold);font-family:'Geist Mono',monospace;font-size:10px;padding:4px 12px;border-radius:6px;cursor:pointer">restore</button>
+      <button onclick="discardDraft()" style="background:none;border:1px solid rgba(255,255,255,0.1);color:var(--muted);font-family:'Geist Mono',monospace;font-size:10px;padding:4px 12px;border-radius:6px;cursor:pointer">discard</button>
+    </div>`;
+  banner.id = 'draftBanner';
+  document.body.appendChild(banner);
+}
+
+function restoreDraft() {
+  const draft = JSON.parse(localStorage.getItem(DRAFT_KEY()) || '{}');
+  if (draft.fDisplayName) document.getElementById('fDisplayName').value = draft.fDisplayName;
+  if (draft.fHandle)      document.getElementById('fHandle').value      = draft.fHandle;
+  if (draft.fBio)         document.getElementById('fBio').value         = draft.fBio;
+  if (draft.fAvatarUrl)   document.getElementById('fAvatarUrl').value   = draft.fAvatarUrl;
+  if (draft.fYoutubeId)   document.getElementById('fYoutubeId').value   = draft.fYoutubeId;
+  if (draft.CS)           Object.assign(CS, JSON.parse(draft.CS));
+  updateCardPreview();
+  discardDraft();
+  showAlert('profileAlert', '✓ draft restored!', 'success');
+}
+
+function discardDraft() {
+  localStorage.removeItem(DRAFT_KEY());
+  document.getElementById('draftBanner')?.remove();
+}
+
+
+
+
 
   // ─── SQL HELPERS ─────────────────────────────────────────────────────────────
  function copySql(elId) {
@@ -4341,7 +4557,29 @@ async function saveMusicSettings() {
   Object.assign(currentProfile, updates);
   showAlert('musicAlert', '✓ music settings saved!', 'success');
 }
-
+function switchPreviewMode(mode) {
+  const wrap    = document.getElementById('cardPreviewWrap');
+  const mobile  = document.getElementById('mobilePreviewWrap');
+  const deskBtn = document.getElementById('previewDesktopBtn');
+  const mobBtn  = document.getElementById('previewMobileBtn');
+  if (mode === 'mobile') {
+    wrap.style.display   = 'none';
+    mobile.style.display = 'block';
+    deskBtn.classList.remove('active');
+    mobBtn.classList.add('active');
+    // Clone the preview card into the mobile frame
+    const inner = document.getElementById('mobilePreviewInner');
+    const clone = document.getElementById('cardPreviewMini').cloneNode(true);
+    clone.style.transform = '';
+    inner.innerHTML = '';
+    inner.appendChild(clone);
+  } else {
+    wrap.style.display   = 'block';
+    mobile.style.display = 'none';
+    deskBtn.classList.add('active');
+    mobBtn.classList.remove('active');
+  }
+}
 // ── SCHEDULED BIO ─────────────────────────────────────────────────────────────
 function loadScheduleTab() {
   if (!currentProfile) return;
@@ -4354,7 +4592,24 @@ function loadScheduleTab() {
     showScheduleStatus();
   }
 }
+const CHANGELOG = [
+  { version:'1.4', date:'2026-03-03', items:['preset themes', 'multiple bios', 'mobile preview', 'undo/redo', 'pricing tab', 'verified badge',] },
+  { version:'1.3', date:'2026-03-02', items:['scheduled bio', 'music widget','analytics tab', 'custom badges', 'card flip', 'volume widget'] },
+];
+const LATEST_VERSION = CHANGELOG[0].version;
 
+function checkChangelog() {
+  const seen = localStorage.getItem('swaqq_changelog_seen');
+  if (seen !== LATEST_VERSION) {
+    // Add badge to nav
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+      if (item.getAttribute('onclick')?.includes('settings')) {
+        item.innerHTML += ' <span style="background:#f04747;color:#fff;font-size:8px;border-radius:100px;padding:1px 5px;margin-left:4px;font-family:\'Geist Mono\',monospace">new</span>';
+      }
+    });
+  }
+}
 function showScheduleStatus() {
   const bio = document.getElementById('fScheduledBio').value;
   const at  = document.getElementById('fScheduledAt').value;
@@ -4467,7 +4722,23 @@ function toggleBulkSelect(uid) {
   else _bulkSelected.add(uid);
   updateBulkBar();
 }
-
+function renderChangelog() {
+  const list = document.getElementById('changelogList');
+  const tag  = document.getElementById('changelogVersionTag');
+  if (!list) return;
+  if (tag) tag.textContent = 'v' + LATEST_VERSION;
+  list.innerHTML = CHANGELOG.map(entry => `
+    <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-family:'Geist Mono',monospace;font-size:11px;font-weight:700;color:var(--text)">v${entry.version}</span>
+        <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted)">${entry.date}</span>
+      </div>
+      ${entry.items.map(i => `<div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);margin-bottom:4px">✓ ${i}</div>`).join('')}
+    </div>`).join('');
+  localStorage.setItem('swaqq_changelog_seen', LATEST_VERSION);
+  // Remove badge
+  document.querySelectorAll('.nav-item span[style*="f04747"]').forEach(el => el.remove());
+}
 function updateBulkBar() {
   const bar = document.getElementById('bulkActionBar');
   const cnt = document.getElementById('bulkCount');
@@ -4531,7 +4802,10 @@ async function exportUsersCSV() {
   a.download = `swaqq-users-${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
 }
-
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
+});
 
 </script> 
     <!-- ═══ MUSIC TAB ═══ -->
