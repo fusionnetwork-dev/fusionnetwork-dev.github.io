@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>swaqq.xyz — authorizing...</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #080808; --surface: #0f0f0f; --surface2: #161616;
+      --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.12);
+      --text: #f0f0f0; --sub: rgba(255,255,255,0.42); --muted: rgba(255,255,255,0.18);
+      --discord: #5865F2; --discord-dim: rgba(88,101,242,0.15); --discord-border: rgba(88,101,242,0.35);
+      --green: #43b581; --green-dim: rgba(67,181,129,0.12); --green-border: rgba(67,181,129,0.35);
+      --red: #f04747; --red-dim: rgba(240,71,71,0.12); --red-border: rgba(240,71,71,0.3);
+    }
+
+    html, body {
+      min-height: 100vh; background: var(--bg);
+      font-family: 'Syne', sans-serif; color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+
+    .glow {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      transition: background 1s ease;
+    }
+    .glow.loading { background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(88,101,242,0.07) 0%, transparent 70%); }
+    .glow.success { background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(67,181,129,0.09) 0%, transparent 70%); }
+    .glow.error   { background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(240,71,71,0.08) 0%, transparent 70%); }
+
+    .corner { position: fixed; width: 24px; height: 24px; border-color: rgba(255,255,255,0.12); border-style: solid; }
+    .corner.tl { top: 24px; left: 24px; border-width: 1px 0 0 1px; }
+    .corner.tr { top: 24px; right: 24px; border-width: 1px 1px 0 0; }
+    .corner.bl { bottom: 24px; left: 24px; border-width: 0 0 1px 1px; }
+    .corner.br { bottom: 24px; right: 24px; border-width: 0 1px 1px 0; }
+
+    .card {
+      position: relative; z-index: 1;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 20px; padding: 48px 44px;
+      width: 100%; max-width: 400px; margin: 20px;
+      text-align: center;
+      animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.96); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .logo {
+      font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.08em; color: var(--muted); margin-bottom: 40px; display: block;
+    }
+
+    .icon-wrap {
+      width: 72px; height: 72px; border-radius: 50%;
+      margin: 0 auto 28px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; transition: all 0.5s ease;
+    }
+    .icon-wrap.loading { background: var(--discord-dim); border: 1px solid var(--discord-border); }
+    .icon-wrap.success { background: var(--green-dim); border: 1px solid var(--green-border); }
+    .icon-wrap.error   { background: var(--red-dim); border: 1px solid var(--red-border); }
+
+    .icon-wrap.loading::before {
+      content: ''; position: absolute; inset: -5px; border-radius: 50%;
+      border: 1px solid transparent;
+      border-top-color: var(--discord);
+      border-right-color: rgba(88,101,242,0.3);
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .icon-wrap svg { width: 32px; height: 32px; transition: fill 0.4s; }
+    .icon-wrap.loading svg { fill: var(--discord); }
+    .icon-wrap.success svg { fill: var(--green); }
+    .icon-wrap.error svg   { fill: var(--red); }
+
+    .title { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .sub {
+      font-family: 'Geist Mono', monospace; font-size: 12px;
+      color: var(--sub); line-height: 1.6; margin-bottom: 28px; min-height: 36px;
+    }
+
+    .user-chip {
+      display: none; align-items: center; gap: 12px;
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 12px; padding: 12px 16px; margin-bottom: 24px; text-align: left;
+      animation: chipIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .user-chip.visible { display: flex; }
+    @keyframes chipIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .user-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #222 center/cover no-repeat;
+      border: 2px solid var(--green-border); flex-shrink: 0;
+    }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-tag  { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--sub); margin-top: 1px; }
+    .user-badge {
+      font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.12em;
+      text-transform: uppercase; background: var(--green-dim); border: 1px solid var(--green-border);
+      color: var(--green); border-radius: 6px; padding: 3px 8px; flex-shrink: 0;
+    }
+
+    .progress-wrap { height: 1px; background: var(--border); border-radius: 1px; overflow: hidden; margin-bottom: 20px; }
+    .progress-bar  { height: 100%; width: 0%; border-radius: 1px; transition: width 0.4s ease, background 0.4s; }
+    .progress-bar.loading { background: var(--discord); animation: progressLoad 1.4s ease forwards; }
+    .progress-bar.success { background: var(--green); width: 100%; }
+    .progress-bar.error   { background: var(--red); width: 100%; }
+    @keyframes progressLoad { 0% { width: 0%; } 60% { width: 75%; } 100% { width: 90%; } }
+
+    .status { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .status.success { color: var(--green); }
+    .status.error   { color: var(--red); }
+
+    .close-hint { display: none; font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 20px; animation: fadeIn 0.5s ease 0.3s both; }
+    .close-hint.visible { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .retry-btn {
+      display: none; margin-top: 20px;
+      font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--red-dim); border: 1px solid var(--red-border);
+      color: var(--red); border-radius: 10px; padding: 10px 24px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .retry-btn:hover { background: rgba(240,71,71,0.2); }
+    .retry-btn.visible { display: inline-block; }
+  </style>
+</head>
+<body>
+
+  <div class="glow loading" id="glow"></div>
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <div class="card">
+    <span class="logo">swaqq.xyz</span>
+
+    <div class="icon-wrap loading" id="iconWrap">
+      <svg viewBox="0 0 24 24" id="mainIcon">
+        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.04.032.052a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+      </svg>
+    </div>
+
+    <div class="title" id="title">authorizing</div>
+    <div class="sub" id="sub">connecting your discord account<br>this will only take a moment.</div>
+
+    <div class="user-chip" id="userChip">
+      <div class="user-avatar" id="userAvatar"></div>
+      <div class="user-info">
+        <div class="user-name" id="userName"></div>
+        <div class="user-tag" id="userTag"></div>
+      </div>
+      <div class="user-badge">verified</div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar loading" id="progressBar"></div>
+    </div>
+
+    <div class="status" id="statusLabel">authorizing...</div>
+    <div class="close-hint" id="closeHint">you can close this tab now.</div>
+    <button class="retry-btn" id="retryBtn" onclick="window.close()">close tab</button>
+  </div>
+
+<script>
+  function setState(state, opts = {}) {
+    document.getElementById('glow').className        = 'glow ' + state;
+    document.getElementById('iconWrap').className    = 'icon-wrap ' + state;
+    document.getElementById('progressBar').className = 'progress-bar ' + state;
+    document.getElementById('statusLabel').className = 'status ' + state;
+
+    if (state === 'success') {
+      document.getElementById('title').textContent       = opts.title || 'discord verified';
+      document.getElementById('sub').textContent         = opts.sub || "you're all set. heading back to swaqq...";
+      document.getElementById('statusLabel').textContent = 'success — closing shortly...';
+
+      // swap to checkmark
+      const icon = document.getElementById('mainIcon');
+      icon.setAttribute('viewBox', '0 0 24 24');
+      icon.innerHTML = `<path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`;
+
+      if (opts.user) {
+        const u = opts.user;
+        document.getElementById('userName').textContent = u.global_name || u.username;
+        document.getElementById('userTag').textContent  = '@' + u.username + (u.discriminator && u.discriminator !== '0' ? '#' + u.discriminator : '');
+        if (u.avatar) {
+          document.getElementById('userAvatar').style.backgroundImage =
+            `url(https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png)`;
+        }
+        document.getElementById('userChip').classList.add('visible');
+      }
+      document.getElementById('closeHint').classList.add('visible');
+
+    } else if (state === 'error') {
+      document.getElementById('title').textContent       = opts.title || 'authorization failed';
+      document.getElementById('sub').textContent         = opts.sub || 'something went wrong. please try again.';
+      document.getElementById('statusLabel').textContent = 'error';
+
+      const icon = document.getElementById('mainIcon');
+      icon.setAttribute('viewBox', '0 0 24 24');
+      icon.innerHTML = `<path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>`;
+
+      document.getElementById('retryBtn').classList.add('visible');
+    }
+  }
+
+  (async () => {
+    const hash  = new URLSearchParams(location.hash.slice(1));
+    const search = new URLSearchParams(location.search);
+    const token = hash.get('access_token');
+    const state = hash.get('state') || search.get('state');
+
+    if (!token || !window.opener) {
+      setState('error', {
+        title: 'no token found',
+        sub: 'this page must be opened via the swaqq.xyz signup flow.',
+      });
+      return;
+    }
+
+    let user;
+    try {
+      const res = await fetch('https://discord.com/api/users/@me', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      user = await res.json();
+    } catch {
+      setState('error', { sub: 'could not reach discord api. check your connection.' });
+      return;
+    }
+
+    if (!user?.id) {
+      setState('error', { sub: 'discord returned an invalid response. please try again.' });
+      return;
+    }
+
+    window.opener.postMessage({ type: 'DISCORD_TOKEN', token, state }, location.origin);
+    setState('success', { user });
+    setTimeout(() => window.close(), 2800);
+  })();
+</script>
+</body>
+</html>
