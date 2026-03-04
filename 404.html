@@ -860,6 +860,36 @@ if (handle) document.getElementById('loadHandle').textContent = '@' + handle;
       }
 
       window._profileId = profile.id;
+      if (profile.age_gate) {
+  const confirmed = sessionStorage.getItem(`swaqq_age_${profile.id}`);
+  if (!confirmed) {
+    await showAgeGate(profile);
+    return; // stop execution until confirmed
+  }
+}
+
+function showAgeGate(profile) {
+  return new Promise(resolve => {
+    const gate = document.createElement('div');
+    gate.style.cssText = 'position:fixed;inset:0;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px';
+    gate.innerHTML = `
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.2em;color:rgba(255,255,255,0.25)">age verification</div>
+      <div style="font-size:22px;font-weight:800;text-align:center">this profile is marked 18+</div>
+      <div style="font-family:'Geist Mono',monospace;font-size:12px;color:rgba(255,255,255,0.4);text-align:center;max-width:300px">by continuing you confirm you are at least 18 years old</div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <button id="ageYes" style="padding:12px 28px;border:none;border-radius:9px;cursor:pointer;background:linear-gradient(110deg,#333,#777,#bbb);color:#fff;font-family:'Geist Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.1em">i am 18+</button>
+        <button id="ageNo" style="padding:12px 28px;border:1px solid rgba(255,255,255,0.1);border-radius:9px;background:transparent;color:rgba(255,255,255,0.4);font-family:'Geist Mono',monospace;font-size:12px;cursor:pointer">leave</button>
+      </div>`;
+    document.body.appendChild(gate);
+    document.getElementById('ageYes').onclick = () => {
+      sessionStorage.setItem(`swaqq_age_${profile.id}`, '1');
+      gate.style.transition = 'opacity 0.4s';
+      gate.style.opacity = '0';
+      setTimeout(() => { gate.remove(); resolve(); }, 400);
+    };
+    document.getElementById('ageNo').onclick = () => { window.location.href = '/'; };
+  });
+}
       const CS = buildCS(profile);
 
       // Inject custom font
