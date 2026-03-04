@@ -609,6 +609,7 @@ body, html {
         </div>
         
       </div>
+      
       <div class="dash-section">
   <div class="dash-section-title">referrals</div>
   <div class="dash-section-sub">share your link — both of you get a bonus when they sign up</div>
@@ -623,6 +624,16 @@ body, html {
     <div class="field-hint" style="margin-top:8px">when someone signs up with your link, you both get +1 badge slot automatically</div>
   </div>
 </div>
+      
+    <div class="field">
+  <div class="field-label">your subdomain <span class="tag">free</span></div>
+  <div class="prefix-wrap">
+    <span class="prefix-text">swaqq.xyz/</span>
+    <input class="prefix-input" type="text" id="fSubdomain" placeholder="yourname" maxlength="20">
+  </div>
+  <div class="field-hint">your profile is also available at <span id="subdomainPreview" style="color:rgba(255,255,255,0.45)">yourname.swaqq.xyz</span></div>
+</div>
+      
       <div class="dash-section">
         <div class="dash-section-title">card settings</div>
         <div class="dash-section-sub">toggle features on / off</div>
@@ -1776,7 +1787,8 @@ function updateUndoRedoBtns() {
 const STRIPE_PRICE_IDS = {
   '3slot':    'price_1T71EWIkWV8zhl3F4IhYadWy',
   '10slot':   'price_1T71EyIkWV8zhl3FtyZpf7D9',
-  'verified': 'price_1T74mpIkWV8zhl3F4ZoAKL1k', 
+  'verified': 'price_1T74mpIkWV8zhl3F4ZoAKL1k',
+  'custom_domain': 'price_1T75h0IkWV8zhl3Fm7jONbTP',
 };
 
 async function buySlots(pack) {
@@ -1882,7 +1894,23 @@ if (_paymentResult === 'success') {
   }, 800);
 }
   let bioLines = [];
-
+async function verifyCustomDomain() {
+  const domain = document.getElementById('fCustomDomain').value.trim();
+  if (!domain) return;
+  // Call an edge function that does a DNS lookup
+  const res = await fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/verify-domain', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (await sb.auth.getSession()).data.session.access_token },
+    body: JSON.stringify({ domain, user_id: currentUser.id }),
+  });
+  const { verified, error } = await res.json();
+  if (verified) {
+    await sb.from('profiles').update({ custom_domain: domain, custom_domain_verified: true }).eq('id', currentUser.id);
+    showAlert('pricingAlert', '✓ domain verified!', 'success');
+  } else {
+    showAlert('pricingAlert', 'domain not verified yet — ' + error, 'error');
+  }
+}
 function renderBioLines() {
   const list = document.getElementById('bioLinesList');
   if (!list) return;
