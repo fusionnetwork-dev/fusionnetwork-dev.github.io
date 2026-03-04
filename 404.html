@@ -520,10 +520,36 @@
     }
 
     /* ── Routing ── */
-    const handle = window.location.pathname.replace(/^\//, '').replace(/^@/, '').split('/')[0].toLowerCase();
-    window._handle = handle;
-    if (!handle) window.location.href = '/';
-    document.getElementById('loadHandle').textContent = '@' + handle;
+const rawPath = window.location.pathname;
+
+// /uid/5 → look up profile by signup order
+if (rawPath.startsWith('/uid/')) {
+  const pos = parseInt(rawPath.split('/uid/')[1]);
+  if (!isNaN(pos) && pos > 0) {
+    (async () => {
+      const { data } = await sb.from('profiles')
+        .select('handle')
+        .order('created_at', { ascending: true })
+        .range(pos - 1, pos - 1)
+        .maybeSingle();
+      if (data?.handle) {
+        window.location.replace('/@' + data.handle);
+      } else {
+        document.getElementById('loading').classList.add('out');
+        setTimeout(() => {
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('nfSub').textContent = `uid ${pos} doesn't exist yet.`;
+          document.getElementById('notFound').classList.add('visible');
+        }, 600);
+      }
+    })();
+  }
+}
+
+// Strip leading / and @ — works for /john, /@john, /john/
+const handle = rawPath.replace(/^\//, '').replace(/^@/, '').split('/')[0].toLowerCase().trim();
+window._handle = handle;
+if (!handle) window.location.href = '/';
 
     /* ── Top Bar hover-reveal ── */
     (function() {
