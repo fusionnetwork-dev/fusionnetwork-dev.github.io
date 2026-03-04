@@ -674,6 +674,21 @@ body, html {
         </div>
       </div>
       <div class="dash-section">
+  <div class="dash-section-title">profile banner</div>
+  <div class="dash-section-sub">wide image shown above your card</div>
+  <div class="card-edit">
+    <div id="bannerPreview" style="width:100%;height:80px;border-radius:10px;background:#111;border:1px solid var(--border);background-size:cover;background-position:center;margin-bottom:12px;transition:all 0.3s"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <label style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);background:var(--surface2);border:1px dashed var(--border2);border-radius:8px;padding:9px 14px">
+        <i class="fas fa-upload" style="font-size:10px"></i> upload banner
+        <input type="file" id="bannerFileInput" accept="image/*" style="display:none" onchange="handleBannerUpload(this)">
+      </label>
+      <input class="field-input" type="url" id="fBannerUrl" placeholder="or paste image url..." style="flex:1" oninput="updateBannerPreview()">
+      <button class="btn btn-ghost" onclick="document.getElementById('fBannerUrl').value='';updateBannerPreview()">clear</button>
+    </div>
+  </div>
+</div>
+      <div class="dash-section">
         <div class="dash-section-title">background</div>
         <div class="dash-section-sub">what shows behind your card on your profile page</div>
         <div class="card-edit">
@@ -2704,7 +2719,29 @@ async function handleBgImageUpload(input) {
     setPfpPreview(url, currentProfile?.display_name || currentProfile?.handle);
     updateCardPreview();
   }
+function updateBannerPreview() {
+  const url = document.getElementById('fBannerUrl').value.trim();
+  const prev = document.getElementById('bannerPreview');
+  if (url) { prev.style.backgroundImage = `url(${url})`; }
+  else { prev.style.backgroundImage = 'none'; }
+}
 
+async function handleBannerUpload(input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showAlert('appearanceAlert', 'banner too large — max 5mb.', 'error'); return; }
+  const ext = file.name.split('.').pop();
+  const path = `banners/${currentUser.id}.${ext}`;
+  const { error } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
+  if (error) {
+    const reader = new FileReader();
+    reader.onload = e => { document.getElementById('fBannerUrl').value = e.target.result; updateBannerPreview(); };
+    reader.readAsDataURL(file); return;
+  }
+  const { data:{ publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+  document.getElementById('fBannerUrl').value = publicUrl;
+  updateBannerPreview();
+  showAlert('appearanceAlert', 'banner uploaded!', 'success');
+}
   // ─── VIDEO ────────────────────────────────────────────────────────────────────
   let _vTimer;
   function debounceVideoPreview(val) { clearTimeout(_vTimer); _vTimer = setTimeout(() => renderVideoThumb(val), 700); }
