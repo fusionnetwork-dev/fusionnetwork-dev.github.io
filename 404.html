@@ -547,9 +547,27 @@ if (rawPath.startsWith('/uid/')) {
 }
 
 // Strip leading / and @ — works for /john, /@john, /john/
-const handle = rawPath.replace(/^\//, '').replace(/^@/, '').split('/')[0].toLowerCase().trim();
+let handle;
+const hostname = window.location.hostname;
+const subdomain = hostname.split('.')[0];
+const isSubdomain = hostname.endsWith('.swaqq.xyz') && subdomain !== 'swaqq' && subdomain !== 'www';
+const isCustomDomain = !hostname.endsWith('swaqq.xyz') && hostname !== 'swaqq.xyz';
+
+if (isCustomDomain) {
+  // custom domain — look up by custom_domain column
+  // handle will be resolved async in loadProfile
+  handle = null;
+} else if (isSubdomain) {
+  // username.swaqq.xyz
+  handle = subdomain.toLowerCase();
+} else {
+  // swaqq.xyz/@handle or swaqq.xyz/handle
+  handle = window.location.pathname.replace(/^\//, '').replace(/^@/, '').split('/')[0].toLowerCase().trim();
+}
+
 window._handle = handle;
-if (!handle) window.location.href = '/';
+if (!isCustomDomain && !handle) window.location.href = '/';
+if (handle) document.getElementById('loadHandle').textContent = '@' + handle;
 
     /* ── Top Bar hover-reveal ── */
     (function() {
@@ -792,16 +810,47 @@ if (!handle) window.location.href = '/';
 
     /* ── Main Profile Load ── */
     async function loadProfile() {
-      const { data: profile, error } = await sb.from('profiles').select('*').eq('handle', handle).single();
-      if (error || !profile) {
-        document.getElementById('loading').classList.add('out');
-        setTimeout(() => {
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('nfSub').textContent = `@${handle} hasn't been claimed yet.`;
-          document.getElementById('notFound').classList.add('visible');
-        }, 600);
-        return;
-      }
+      if (!handle) {
+    const { data: domainProfile, error: domainErr } = await sb
+      .from('profiles')
+      .select('handle')
+      .eq('custom_domain', hostname)
+      .eq('custom_domain_verified', true)
+      .maybeSingle();
+
+    if (domainErr || !domainProfile) {
+      document.getElementById('loading').classList.add('out');
+      setTimeout(() => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('nfSub').textContent = 'no profile found for this domain.';
+        document.getElementById('notFound').classList.add('visible');
+      }, 600);
+      return;
+    }
+
+    window._handle = domainProfile.handle;
+    window._resolvedHandle = domainProfile.handle;
+  }
+
+  const resolvedHandle = window._resolvedHandle || handle;
+  document.getElementById('loadHandle').textContent = '@' + resolvedHandle;
+
+  // Single profile query using resolvedHandle
+  const { data: profile, error } = await sb
+    .from('profiles')
+    .select('*')
+    .eq('handle', resolvedHandle)
+    .single();
+
+  if (error || !profile) {
+    document.getElementById('loading').classList.add('out');
+    setTimeout(() => {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('nfSub').textContent = `@${resolvedHandle} hasn't been claimed yet.`;
+      document.getElementById('notFound').classList.add('visible');
+    }, 600);
+    return;
+  }
       if (profile.is_banned) {
         document.getElementById('loading').classList.add('out');
         setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
@@ -1316,6 +1365,7 @@ if (profile.banner_url) {
 
       if (profile.show_tilt !== false) initTilt();
       initNavLinks();
+      addReportButton(profile);
       updateClock();
       setInterval(updateClock, 1000);
     }
@@ -1331,7 +1381,65 @@ if (profile.banner_url) {
       const el = document.getElementById('footerClock');
       if (el) el.textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
     }
+function addReportButton(profile) {
+  const btn = document.createElement('button');
+  btn.title = 'report profile';
+  btn.style.cssText = 'position:fixed;bottom:22px;left:22px;z-index:103;background:none;border:none;cursor:pointer;font-family:\'Geist Mono\',monospace;font-size:9px;color:rgba(255,255,255,0.12);letter-spacing:0.1em;transition:color 0.2s;padding:4px';
+  btn.textContent = 'report';
+  btn.onmouseenter = () => btn.style.color = 'rgba(255,80,80,0.5)';
+  btn.onmouseleave = () => btn.style.color = 'rgba(255,255,255,0.12)';
+  btn.onclick = () => openReportModal(profile);
+  document.body.appendChild(btn);
+}
 
+function openReportModal(profile) {
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.75);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML = `
+    <div style="background:var(--surface,#111);border:1px solid rgba(255,255,255,0.13);border-radius:18px;padding:28px 32px;width:100%;max-width:380px">
+      <div style="font-size:16px;font-weight:800;margin-bottom:4px">report @${profile.handle}</div>
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:18px">select a reason</div>
+      <select id="reportReason" style="width:100%;background:#171717;border:1px solid rgba(255,255,255,0.11);border-radius:9px;padding:11px 14px;color:#f0f0f0;font-family:'Geist Mono',monospace;font-size:12px;outline:none;margin-bottom:12px;cursor:pointer">
+        <option>spam or fake profile</option>
+        <option>inappropriate content</option>
+        <option>harassment or abuse</option>
+        <option>impersonation</option>
+        <option>other</option>
+      </select>
+      <textarea id="reportDetails" placeholder="additional details (optional)" maxlength="300"
+        style="width:100%;background:#171717;border:1px solid rgba(255,255,255,0.11);border-radius:9px;padding:11px 14px;color:#f0f0f0;font-family:'Geist Mono',monospace;font-size:12px;outline:none;resize:vertical;min-height:80px;margin-bottom:16px"></textarea>
+      <div style="display:flex;gap:8px">
+        <button onclick="submitReport('${profile.id}','${profile.handle}',this.closest('[style*=fixed]'))" 
+          style="flex:1;padding:11px;border:none;border-radius:9px;cursor:pointer;background:rgba(240,71,71,0.15);border:1px solid rgba(240,71,71,0.3);color:#f04747;font-family:'Geist Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.08em">
+          submit report
+        </button>
+        <button onclick="this.closest('[style*=fixed]').remove()"
+          style="padding:11px 18px;border:1px solid rgba(255,255,255,0.11);border-radius:9px;background:transparent;color:rgba(255,255,255,0.4);font-family:'Geist Mono',monospace;font-size:12px;cursor:pointer">
+          cancel
+        </button>
+      </div>
+    </div>`;
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+async function submitReport(profileId, handle, modal) {
+  const reason  = document.getElementById('reportReason').value;
+  const details = document.getElementById('reportDetails').value.trim();
+  const { data:{ session } } = await sb.auth.getSession();
+  await sb.from('reports').insert({
+    reporter_id: session?.user?.id || null,
+    reported_handle: handle,
+    reported_profile_id: profileId,
+    reason, details,
+  });
+  modal.innerHTML = `<div style="background:#111;border:1px solid rgba(255,255,255,0.13);border-radius:18px;padding:40px 32px;text-align:center;max-width:380px;width:100%">
+    <i class="fas fa-check-circle" style="font-size:32px;color:#43b581;margin-bottom:12px;display:block"></i>
+    <div style="font-size:15px;font-weight:800;margin-bottom:6px">report submitted</div>
+    <div style="font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4)">we'll review it shortly</div>
+    <button onclick="this.closest('[style*=fixed]').remove()" style="margin-top:16px;padding:8px 20px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;background:none;color:rgba(255,255,255,0.4);font-family:'Geist Mono',monospace;font-size:11px;cursor:pointer">close</button>
+  </div>`;
+}
     /* ── Discord / Lanyard Status ── */
     async function fetchDiscordStatus(discordId) {
       try {
