@@ -62,7 +62,7 @@
     .layout { display:flex; min-height:100vh; position:relative; z-index:1; }
 
   
-    .sidebar { width:240px; flex-shrink:0; background:var(--sidebar); border-right:1px solid var(--border); padding:20px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto;  scrollbar-width: none; -ms-overflow-style: none; }
+    .sidebar { width:240px; flex-shrink:0; background:var(--sidebar); border-right:1px solid var(--border); padding:20px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto;  scrollbar-width: none; -ms-overflow-style: none; z-index: 9999; pointer-events: all; -webkit-backdrop-filter: none; }
     .sidebar-logo { padding:0 20px 20px; border-bottom:1px solid var(--border); margin-bottom:12px; font-family:'Geist Mono',monospace; font-size:15px; font-weight:700; letter-spacing:0.05em; text-decoration:none; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; display:block; }
     .sidebar-user { padding:12px 20px 16px; border-bottom:1px solid var(--border); margin-bottom:12px; }
     .sidebar::-webkit-scrollbar {
@@ -474,7 +474,18 @@ body, html {
   .sidebar.open {
     transform: translateX(0);
   }
-  #sidebarOverlay.open { display: block; }
+#sidebarOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 149;
+  background: rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+#sidebarOverlay.open {
+  display: block;
+  pointer-events: all;
+}
 
   .main { padding: 20px 16px 100px; margin-left: 0; }
   .field-row { grid-template-columns: 1fr; }
@@ -2343,12 +2354,13 @@ function toggleMobileSidebar() {
   const btn = document.getElementById('mobileMenuBtn');
   sidebar.classList.toggle('open');
   overlay.classList.toggle('open');
-  // Swap icon between X and bars
   const icon = btn.querySelector('i');
   if (sidebar.classList.contains('open')) {
     icon.className = 'fas fa-times';
+    overlay.onclick = () => toggleMobileSidebar();  // ← tap outside to close
   } else {
     icon.className = 'fas fa-bars';
+    overlay.onclick = null;
   }
 }
   // ─── 3D CARD TILT ───────────────────────────────────────────────────────────
