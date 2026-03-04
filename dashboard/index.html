@@ -486,6 +486,8 @@ body, html {
   .top-bar-trigger { left: 0; }
   #topBar { padding-left: 60px; }
 }
+    [id^="tab-"] { display: none; }
+[id^="tab-"].active { display: block; }
   </style>
 </head>
 <body>
@@ -2558,12 +2560,11 @@ renderBioLines();
     on ? el.classList.add('on') : el.classList.remove('on');
   }
   function gtog(id) { return document.getElementById(id)?.classList.contains('on') ?? false; }
-[id^="tab-"] { display: none; }
-[id^="tab-"].active { display: block; }
+
   // ─── TABS ─────────────────────────────────────────────────────────────────────
 const TABS = ['profile','appearance','customize','socials','badges','settings','analytics','music','schedule','pricing','admin'];
 function showTab(name) {
-  document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.remove('active'));
+document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.remove('active'));
   const target = document.getElementById('tab-' + name);
   if (target) target.classList.add('active');
  const sidebar = document.getElementById('sidebar');
