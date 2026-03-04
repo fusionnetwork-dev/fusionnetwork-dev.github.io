@@ -1359,22 +1359,40 @@ if (!handle) window.location.href = '/';
     }
 
     /* ── Typewriter Bio ── */
-    function typeBio(text) {
-      const bioEl = document.getElementById('cardBio');
-      if (!text || !bioEl) { if (bioEl) bioEl.innerHTML = ''; return; }
-      let idx = 0, deleting = false;
-      function tick() {
-        bioEl.innerHTML = sanitizeHtml(text.slice(0, idx)) + '<span class="bio-cursor"></span>';
-        if (!deleting) {
-          if (idx < text.length) { idx++; setTimeout(tick, 90); }
-          else { deleting = true; setTimeout(tick, 2200); }
-        } else {
-          if (idx > 0) { idx--; setTimeout(tick, 45); }
-          else { deleting = false; setTimeout(tick, 500); }
-        }
+   function typeBio(bioLinesRaw, singleBio) {
+  const bioEl = document.getElementById('cardBio');
+  if (!bioEl) return;
+  let lines = [];
+  try { lines = JSON.parse(bioLinesRaw || '[]'); } catch { lines = []; }
+  if (!lines.length && singleBio) lines = [singleBio];
+  if (!lines.length) { bioEl.innerHTML = ''; return; }
+
+  // Render markdown
+  function renderMd(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g,   '<em>$1</em>')
+      .replace(/`(.*?)`/g,     '<code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;font-size:11px">$1</code>');
+  }
+
+  let lineIdx = 0, charIdx = 0, deleting = false;
+  function tick() {
+    const text = lines[lineIdx] || '';
+    bioEl.innerHTML = renderMd(text.slice(0, charIdx)) + '<span class="bio-cursor"></span>';
+    if (!deleting) {
+      if (charIdx < text.length) { charIdx++; setTimeout(tick, 85); }
+      else { deleting = true; setTimeout(tick, 2400); }
+    } else {
+      if (charIdx > 0) { charIdx--; setTimeout(tick, 40); }
+      else {
+        deleting = false;
+        lineIdx = (lineIdx + 1) % lines.length;
+        setTimeout(tick, 500);
       }
-      setTimeout(tick, 400);
     }
+  }
+  setTimeout(tick, 400);
+}
 
     /* ── 3D Tilt ── */
    function initTilt() {
