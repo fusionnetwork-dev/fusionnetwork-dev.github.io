@@ -266,6 +266,7 @@
   </div>
   <div style="font-family:'Geist Mono',monospace;font-size:9px;color:rgba(255,255,255,0.1);letter-spacing:0.15em">human verification</div>
 </div>
+  
   <div id="splash">
     <a class="splash-site" href="/">swaqq.xyz</a>
     <div class="splash-name" id="splashName"></div>
@@ -1385,14 +1386,30 @@ if (profile.banner_url) {
       })();
     }
 
-    /* ── Splash Screen ── */
     function renderSplash(profile, CS) {
-      splashEl.addEventListener('click', () => {
-      window._userGestureUnlocked = true;
-      splashEl.classList.add('out');
-      setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
-    }, { once: true });
-  }  // ← closes renderSplash()
+  const splashEl = document.getElementById('splash');
+  if (!splashEl) { revealProfile(profile, CS); return; }
+
+  splashEl.classList.add('active');
+  document.getElementById('loading').classList.add('out');
+  setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
+
+  const name = profile.display_name || profile.handle;
+  let i = 0;
+  function type() {
+    if (i <= name.length) {
+      document.getElementById('splashName').textContent = name.slice(0, i++);
+      setTimeout(type, 110);
+    }
+  }
+  setTimeout(type, 200);
+
+  splashEl.addEventListener('click', () => {
+    window._userGestureUnlocked = true;
+    splashEl.classList.add('out');
+    setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
+  }, { once: true });
+}
 
 
 
