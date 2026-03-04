@@ -649,47 +649,68 @@ if (handle) document.getElementById('loadHandle').textContent = '@' + handle;
     }
     window.onYouTubeIframeAPIReady = () => { ytApiReady = true; };
 
-    function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
-      if (!videoId) return;
-      const container = document.getElementById('ytBg');
-      if (!container) return;
-      if (audioOnly) { container.style.opacity = '0'; container.style.pointerEvents = 'none'; }
-      if (ytPlayer) { try { ytPlayer.destroy(); } catch(_) {} ytPlayer = null; }
-      const old = document.getElementById('yt-player');
-      if (old) old.remove();
-      const playerDiv = document.createElement('div');
-      playerDiv.id = 'yt-player';
-      container.appendChild(playerDiv);
-      function initWhenReady() {
-        if (!ytApiReady || !window.YT) { setTimeout(initWhenReady, 120); return; }
-        ytPlayer = new YT.Player('yt-player', {
-          height:'100%', width:'100%', videoId,
-          playerVars: {
-            autoplay:1, controls:0, mute:1, loop:1, playlist:videoId,
-            modestbranding:1, playsinline:1, disablekb:1, fs:0,
-            iv_load_policy:3, cc_load_policy:0, rel:0, showinfo:0,
-            autohide:1, start:0, origin:window.location.origin,
-          },
-          events: {
-            onReady: (e) => {
-              e.target.mute();
-              e.target.playVideo();
-              if (!audioOnly) container.classList.add('active');
-            },
-            onStateChange: (e) => {
-  if (e.data === YT.PlayerState.PLAYING && !shouldMute && window._userGestureUnlocked) {
-    try { e.target.unMute(); e.target.setVolume(60); } catch(_) {}
+function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
+  if (!videoId) return;
+  const container = document.getElementById('ytBg');
+  if (!container) return;
+  if (audioOnly) { container.style.opacity = '0'; container.style.pointerEvents = 'none'; }
+  if (ytPlayer) { try { ytPlayer.destroy(); } catch(_) {} ytPlayer = null; }
+  const old = document.getElementById('yt-player');
+  if (old) old.remove();
+  const playerDiv = document.createElement('div');
+  playerDiv.id = 'yt-player';
+  container.appendChild(playerDiv);
+
+  function initWhenReady() {
+    if (!ytApiReady || !window.YT) { setTimeout(initWhenReady, 120); return; }
+    ytPlayer = new YT.Player('yt-player', {
+      height:'100%', width:'100%', videoId,
+      playerVars: {
+        autoplay:1, controls:0, mute:1, loop:1, playlist:videoId,
+        modestbranding:1, playsinline:1, disablekb:1, fs:0,
+        iv_load_policy:3, cc_load_policy:0, rel:0, showinfo:0,
+        autohide:1, start:0, origin:window.location.origin,
+        // Mobile-critical flags
+        enablejsapi:1, widget_referrer: window.location.origin,
+      },
+      events: {
+        onReady: (e) => {
+          e.target.mute();
+          e.target.setVolume(0);
+          try { e.target.playVideo(); } catch(_) {}
+          if (!audioOnly) {
+            container.classList.add('active');
+          }
+          // On mobile, playVideo() often needs a nudge after a gesture
+          if (window._userGestureUnlocked) {
+            try { e.target.playVideo(); } catch(_) {}
+          }
+        },
+        onStateChange: (e) => {
+          // Unmute after gesture if needed
+          if (e.data === YT.PlayerState.PLAYING) {
+            if (!shouldMute && window._userGestureUnlocked) {
+              try { e.target.unMute(); e.target.setVolume(60); } catch(_) {}
+            }
+            if (!audioOnly) container.classList.add('active');
+          }
+          // Loop manually — mobile often ignores the loop param
+          if (e.data === YT.PlayerState.ENDED) {
+            try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {}
+          }
+          if (e.data === YT.PlayerState.UNSTARTED || e.data === YT.PlayerState.CUED) {
+            try { e.target.playVideo(); } catch(_) {}
+          }
+        },
+        onError: (e) => {
+          console.warn('[swaqq] yt error:', e.data);
+          container.classList.remove('active');
+        },
+      },
+    });
   }
-              if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.UNSTARTED) {
-                try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {}
-              }
-            },
-            onError: () => container.classList.remove('active'),
-          },
-        });
-      }
-      initWhenReady();
-    }
+  initWhenReady();
+}
     loadYouTubeIframeAPI();
 
     /* ── QR Modal ── */
@@ -1416,14 +1437,23 @@ if (profile.banner_url) {
     setTimeout(type, 200);
   }
 
-  splashEl.addEventListener('click', () => {
-    window._userGestureUnlocked = true;
-    splashEl.classList.add('out');
-    setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
-  }, { once: true });
-}
+ splashEl.addEventListener('click', () => {
+  window._userGestureUnlocked = true;
+  splashEl.classList.add('out');
 
+  // Kick YT player on mobile — needs user gesture to start
+  if (ytPlayer) {
+    try {
+      ytPlayer.unMute();
+      ytPlayer.setVolume(0);
+      ytPlayer.playVideo();
+    } catch(_) {}
+  }
 
+  setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
+}, { once: true });
+
+} 
 
 function injectBanner(url, cardWidth) {
   const safeUrl = sanitizeUrl(url);
