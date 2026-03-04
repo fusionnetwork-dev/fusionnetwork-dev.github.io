@@ -857,8 +857,7 @@ if (new URLSearchParams(window.location.search).get('banned') === '1') {
     showAlert('loginAlert', 'your account has been suspended.', 'error');
   }, 500);
 }
-  const ref = new URLSearchParams(window.location.search).get('ref');
-if (ref) sessionStorage.setItem('swaqq_ref', ref);
+
 
 // After user signs up successfully:
 const ref = sessionStorage.getItem('swaqq_ref');
