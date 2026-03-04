@@ -649,6 +649,10 @@ body, html {
           </div>
           <div class="toggle-row"><div><div class="toggle-title">view counter</div><div class="toggle-sub">show total visits at the bottom of your page</div></div><div class="toggle on" id="tViews" onclick="this.classList.toggle('on')"></div></div>
           <div class="toggle-row">
+  <div><div class="toggle-title">age gate</div><div class="toggle-sub">visitors must confirm they are 18+ before seeing your profile</div></div>
+  <div class="toggle" id="tAgeGate" onclick="this.classList.toggle('on')"></div>
+</div>
+          <div class="toggle-row">
   <div><div class="toggle-title">card flip on click</div><div class="toggle-sub">clicking the card flips it to reveal back side info</div></div>
   <div class="toggle" id="tCardFlip" onclick="this.classList.toggle('on')"></div>
 </div>
@@ -1657,7 +1661,18 @@ body, html {
   <button class="btn btn-ghost" onclick="loadIpStats()" style="font-size:10px;margin-top:10px"><i class="fas fa-sync"></i> load records</button>
 </div>
 </div>
-
+    
+<div class="dash-section">
+  <div class="dash-section-title">📋 reports queue</div>
+  <div class="dash-section-sub">pending user reports — click to act</div>
+  <div class="card-edit" style="padding:0;overflow-x:auto">
+    <table class="admin-table">
+      <thead><tr><th>reported</th><th>reason</th><th>details</th><th>date</th><th>actions</th></tr></thead>
+      <tbody id="reportsBody"><tr><td colspan="5" style="text-align:center;padding:16px;color:var(--muted)">click load</td></tr></tbody>
+    </table>
+  </div>
+  <button class="btn btn-ghost" onclick="loadReports()" style="font-size:10px;margin-top:10px"><i class="fas fa-sync"></i> load reports</button>
+</div>
 <!-- SAVE BAR -->
 <div class="save-bar" id="saveBar" style="display:none">
   <div style="display:flex;align-items:center;gap:8px">
@@ -3688,7 +3703,30 @@ const DISCORD_ROLE_BADGE_MAP = {
   '1477746294796718140': 'early'
   
 };
+async function loadReports() {
+  const { data } = await sb.from('reports').select('*').eq('status','pending').order('created_at', { ascending:false }).limit(50);
+  const el = document.getElementById('reportsBody');
+  if (!data?.length) { el.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:16px;color:var(--muted)">no pending reports</td></tr>'; return; }
+  el.innerHTML = data.map(r => `
+    <tr>
+      <td><a href="/@${r.reported_handle}" target="_blank" style="color:var(--text)">@${sanitize(r.reported_handle)}</a></td>
+      <td>${sanitize(r.reason)}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${sanitize(r.details||'')}">${sanitize(r.details||'—')}</td>
+      <td>${new Date(r.created_at).toLocaleDateString()}</td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn-sm btn-sm-danger" onclick="resolveReport('${r.id}','ban','${r.reported_profile_id}','${r.reported_handle}')"><i class="fas fa-ban"></i> ban</button>
+          <button class="btn-sm btn-sm-ghost" onclick="resolveReport('${r.id}','dismiss')"><i class="fas fa-check"></i> dismiss</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
 
+async function resolveReport(reportId, action, profileId, handle) {
+  if (action === 'ban' && profileId) await banUser(profileId, handle);
+  await sb.from('reports').update({ status: action === 'ban' ? 'actioned' : 'dismissed' }).eq('id', reportId);
+  loadReports();
+}
 async function syncDiscordRoleBadges(discordId) {
   if (!discordId || Object.keys(DISCORD_ROLE_BADGE_MAP).length === 0) return;
   try {
