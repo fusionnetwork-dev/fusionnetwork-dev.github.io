@@ -857,6 +857,29 @@ if (new URLSearchParams(window.location.search).get('banned') === '1') {
     showAlert('loginAlert', 'your account has been suspended.', 'error');
   }, 500);
 }
+  const ref = new URLSearchParams(window.location.search).get('ref');
+if (ref) sessionStorage.setItem('swaqq_ref', ref);
+
+// After user signs up successfully:
+const ref = sessionStorage.getItem('swaqq_ref');
+if (ref) {
+  // Find referrer and give both users +1 slot
+  const { data: referrer } = await sb.from('profiles')
+    .select('id, custom_badge_slots, referral_count')
+    .eq('referral_code', ref).maybeSingle();
+  if (referrer) {
+    await sb.from('profiles').update({
+      custom_badge_slots: (referrer.custom_badge_slots ?? 3) + 1,
+      referral_count: (referrer.referral_count || 0) + 1,
+    }).eq('id', referrer.id);
+    // Give new user +1 slot too and record who referred them
+    await sb.from('profiles').update({
+      custom_badge_slots: 4, // default 3 + 1 bonus
+      referred_by: ref,
+    }).eq('id', newUserId);
+    sessionStorage.removeItem('swaqq_ref');
+  }
+}
 </script>
 
 <!-- 2FA MODAL -->
