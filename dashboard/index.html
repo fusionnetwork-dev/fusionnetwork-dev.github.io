@@ -4698,6 +4698,8 @@ async function applyMarketplaceTheme(id) {
       const isActive = activeBadges.includes(def.id);
       const card = document.createElement('div');
    card.className = ['badge-card', def.early ? 'early-badge' : '', def.founder ? 'founder-badge' : '', canUse ? 'unlocked' : 'locked', isActive ? 'selected' : ''].filter(Boolean).join(' ');
+      // inside renderBadgeGrid() loop, after creating card:
+card.style.setProperty('--badge-color', badgeColors[def.id] || def.defaultColor || '#ffffff');
       card.dataset.id = def.id;
 
       let stateHtml;
