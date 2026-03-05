@@ -724,6 +724,16 @@ function sanitizeHtml(html) {
   // ── SIGN UP ──
  async function signUp() {
   if (!_discordVerified) return showAlert('signupAlert', 'please verify your discord account first.', 'error');
+
+  const rlKey = 'swaqq_signup_rl';
+  const rlRaw = JSON.parse(localStorage.getItem(rlKey) || '{"c":0,"t":0}');
+  const hourMs = 60 * 60 * 1000;
+  if (Date.now() - rlRaw.t > hourMs) { rlRaw.c = 0; rlRaw.t = Date.now(); }
+  if (rlRaw.c >= 2) {
+    const remaining = Math.ceil((hourMs - (Date.now() - rlRaw.t)) / 60000);
+    return showAlert('signupAlert', `too many accounts created — try again in ${remaining} minute${remaining !== 1 ? 's' : ''}.`, 'error');
+  }
+   
   const handle   = document.getElementById('signupHandle').value.trim().toLowerCase();
   const email    = document.getElementById('signupEmail').value.trim();
   const password = document.getElementById('signupPassword').value;
