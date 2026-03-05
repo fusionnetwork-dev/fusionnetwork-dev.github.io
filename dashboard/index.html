@@ -2864,7 +2864,15 @@ async function initAuth() {
 
   showTab('profile');
   loadReferralSection();
+
+   const overlay = document.getElementById('iconPickerOverlay');
+  if (overlay) {
+    overlay.addEventListener('mousedown', e => {
+      if (e.target === overlay) closeIconPicker();
+    });
+  }
 }
+
 
 initAuth().catch(err => {
   console.error('initAuth failed:', err);
@@ -5804,8 +5812,7 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
 });
-  document.getElementById('iconPickerOverlay').addEventListener('mousedown', function(e) {
-  if (e.target === this) closeIconPicker();
+
 });
 loadDraft();
 setInterval(saveDraft, 30000);
