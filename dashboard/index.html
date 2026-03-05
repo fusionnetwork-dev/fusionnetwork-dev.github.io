@@ -251,7 +251,12 @@
 .founder-badge .badge-icon { background:rgba(240,71,71,0.1); border-color:rgba(240,71,71,0.25); color:var(--red); }
 .badge-early-tag.founder-tag { color:var(--red); background:rgba(240,71,71,0.1); border-color:rgba(240,71,71,0.25); }
 .active-pill.founder { background:rgba(240,71,71,0.1); border-color:rgba(240,71,71,0.3); color:var(--red); }
-    
+    .badge i[style] {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  animation: none !important;
+}
     .social-row-edit { display:grid; grid-template-columns:36px 110px 1fr auto 36px; align-items:center; gap:8px; margin-bottom:10px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 12px; transition:border-color 0.2s; }
     .social-row-edit:hover { border-color:var(--border2); }
     .social-icon-btn { width:36px; height:36px; background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:14px; flex-shrink:0; cursor:pointer; transition:all 0.2s; padding:0; }
