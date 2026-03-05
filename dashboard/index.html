@@ -4739,7 +4739,9 @@ card.style.setProperty('--badge-rgb', hexToRgb(color)); // helper below
 function renderBadgeColorPickers() {
   const el = document.getElementById('badgeColorPickers');
   if (!el) return;
-  const available = BADGE_DEFS.filter(def => unlockedBadges.includes(def.id) || !def.locked);
+  const available = BADGE_DEFS.filter(def => 
+  unlockedBadges.includes(def.id) || !def.locked || activeBadges.includes(def.id)
+);
   if (!available.length) {
     el.innerHTML = '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--muted)">unlock badges to customize their colors</div>';
     return;
