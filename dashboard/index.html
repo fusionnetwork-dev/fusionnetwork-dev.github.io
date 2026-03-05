@@ -4704,7 +4704,8 @@ async function applyMarketplaceTheme(id) {
       const canUse   = isOwner || !def.locked || unlockedBadges.includes(def.id);
       const isActive = activeBadges.includes(def.id);
       const card = document.createElement('div');
-    const color = badgeColors[badgeId] || def.defaultColor || '#ffffff';
+  const colorData = badgeColors[def.id] || {};
+const color = typeof colorData === 'string' ? colorData : (colorData.color || def.defaultColor || '#ffffff');
 console.log('[badge]', badgeId, '→', color);
 div.style.setProperty('--badge-color', color);
    card.className = ['badge-card', def.early ? 'early-badge' : '', def.founder ? 'founder-badge' : '', canUse ? 'unlocked' : 'locked', isActive ? 'selected' : ''].filter(Boolean).join(' ');
@@ -4741,24 +4742,39 @@ card.style.setProperty('--badge-rgb', hexToRgb(color)); // helper below
 function renderBadgeColorPickers() {
   const el = document.getElementById('badgeColorPickers');
   if (!el) return;
-  const available = BADGE_DEFS.filter(def => 
-  unlockedBadges.includes(def.id) || !def.locked || activeBadges.includes(def.id)
-);
+  const available = BADGE_DEFS.filter(def =>
+    unlockedBadges.includes(def.id) || !def.locked || activeBadges.includes(def.id)
+  );
   if (!available.length) {
     el.innerHTML = '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--muted)">unlock badges to customize their colors</div>';
     return;
   }
   el.innerHTML = available.map(def => {
-    const color = badgeColors[def.id] || def.defaultColor || '#ffffff';
+    const colorData = badgeColors[def.id] || {};
+    const color = typeof colorData === 'string' ? colorData : (colorData.color || def.defaultColor || '#ffffff');
+    const style = typeof colorData === 'object' ? (colorData.style || 'gradient') : 'gradient';
     return `
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border)">
-        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:${color}">
-          <i class="${def.icon}" style="font-size:13px"></i>
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center">
+          <i class="${def.icon}" style="font-size:13px;color:${color}"></i>
         </div>
-        <div style="flex:1;font-size:13px;font-weight:700">${def.label}</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <input type="color" value="${color}" oninput="setBadgeColor('${def.id}', this.value, this)" style="width:32px;height:32px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0">
-          <input class="field-input" type="text" value="${color}" maxlength="7" placeholder="#ffffff" style="width:90px;font-family:'Geist Mono',monospace;font-size:12px" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)) setBadgeColor('${def.id}', this.value, this)">
+        <div style="flex:1;font-size:13px;font-weight:700;min-width:80px">${def.label}</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <input type="color" value="${color}" oninput="setBadgeColor('${def.id}', this.value, this)"
+            style="width:32px;height:32px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0">
+          <input class="field-input" type="text" value="${color}" maxlength="7" placeholder="#ffffff"
+            style="width:90px;font-family:'Geist Mono',monospace;font-size:12px"
+            oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)) setBadgeColor('${def.id}', this.value, this)">
+          <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden">
+            <button onclick="setBadgeStyle('${def.id}','gradient',this)"
+              style="padding:5px 10px;font-family:'Geist Mono',monospace;font-size:10px;border:none;cursor:pointer;transition:all 0.15s;
+              background:${style==='gradient'?'rgba(255,255,255,0.12)':'transparent'};
+              color:${style==='gradient'?'#fff':'var(--muted)'}">shimmer</button>
+            <button onclick="setBadgeStyle('${def.id}','solid',this)"
+              style="padding:5px 10px;font-family:'Geist Mono',monospace;font-size:10px;border:none;cursor:pointer;transition:all 0.15s;border-left:1px solid var(--border);
+              background:${style==='solid'?'rgba(255,255,255,0.12)':'transparent'};
+              color:${style==='solid'?'#fff':'var(--muted)'}">solid</button>
+          </div>
           <button class="btn btn-ghost" style="font-size:10px;padding:5px 10px" onclick="resetBadgeColor('${def.id}')">reset</button>
         </div>
       </div>`;
@@ -4766,22 +4782,35 @@ function renderBadgeColorPickers() {
 }
 
 function setBadgeColor(id, color, sourceEl) {
-  badgeColors[id] = color;
-  // Sync the paired input
+  const existing = badgeColors[id] || {};
+  const style = typeof existing === 'object' ? (existing.style || 'gradient') : 'gradient';
+  badgeColors[id] = { color, style };
+
   const parent = sourceEl.closest('div[style*="display:flex"]');
   if (parent) {
     const colorInput = parent.querySelector('input[type="color"]');
     const textInput  = parent.querySelector('input[type="text"]');
     if (colorInput) colorInput.value = color;
     if (textInput)  textInput.value  = color;
-    // Update icon preview
     const icon = parent.querySelector('i');
     if (icon) icon.style.color = color;
   }
 }
+function setBadgeStyle(id, style, btn) {
+  const existing = badgeColors[id] || {};
+  const color = typeof existing === 'object' ? (existing.color || '#ffffff') : (existing || '#ffffff');
+  badgeColors[id] = { color, style };
 
+  // Update button highlight
+  const btnGroup = btn.parentElement;
+  btnGroup.querySelectorAll('button').forEach(b => {
+    b.style.background = 'transparent';
+    b.style.color = 'var(--muted)';
+  });
+  btn.style.background = 'rgba(255,255,255,0.12)';
+  btn.style.color = '#fff';
+}
 function resetBadgeColor(id) {
-  const def = BADGE_DEFS.find(b => b.id === id);
   delete badgeColors[id];
   renderBadgeColorPickers();
 }
