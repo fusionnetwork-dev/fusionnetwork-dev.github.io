@@ -927,7 +927,7 @@ body, html {
   <button class="btn btn-ghost" style="margin-top:8px" onclick="addAlias()">
     <i class="fas fa-plus"></i> add alias
   </button>
-  <div class="field-hint">each alias creates a url like swaqq.xyz/youralias — max 3 aliases — globally unique</div>
+  <div class="field-hint">each alias creates a url like swaqq.xyz/youralias — max 1 alias — globally unique</div>
   <div class="alert" id="aliasAlert"></div>
 </div>
             <div class="field">
@@ -3407,7 +3407,7 @@ function renderAliases() {
 }
 
 function addAlias() {
-  if (aliases.length >= 3) { showAlert('aliasAlert', 'max 3 aliases.', 'error'); return; }
+  if (aliases.length >= 1) { showAlert('aliasAlert', 'max 1 alias.', 'error'); return; }
   aliases.push('');
   renderAliases();
 }
