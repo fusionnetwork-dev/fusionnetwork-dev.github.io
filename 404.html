@@ -736,6 +736,34 @@ window._handle = handle;
 if (!isCustomDomain && !handle) window.location.href = '/';
 if (handle) document.getElementById('loadHandle').textContent = '@' + handle;
 
+// alias fallback — runs before loadProfile, blocks until resolved
+async function resolveAliasAndLoad() {
+  if (handle && !isCustomDomain && !isSubdomain) {
+    const { data: profileByHandle } = await sb.from('profiles')
+      .select('id')
+      .eq('handle', handle)
+      .maybeSingle();
+
+    if (!profileByHandle) {
+      const { data: aliasRow } = await sb.from('alias_map')
+        .select('profile_id')
+        .eq('alias', handle)
+        .maybeSingle();
+
+      if (aliasRow) {
+        const { data: aliasProfile } = await sb.from('profiles')
+          .select('handle')
+          .eq('id', aliasRow.profile_id)
+          .maybeSingle();
+        if (aliasProfile?.handle) {
+          window.location.replace('/@' + aliasProfile.handle);
+          return; // stop — redirect is happening
+        }
+      }
+    }
+  }
+  loadProfile();
+}
     /* ── Top Bar hover-reveal ── */
     (function() {
       const bar = document.getElementById('topBar');
@@ -2163,7 +2191,7 @@ shakeStyle.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}20%{t
 document.head.appendChild(shakeStyle);
 document.getElementById('captchaCheckRow').onclick = checkCaptchaClick;
 initCaptcha();
-    loadProfile();
+  resolveAliasAndLoad();
   </script>
 </body>
 </html>
