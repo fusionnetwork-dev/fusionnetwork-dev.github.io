@@ -532,6 +532,297 @@ body, html {
   width: 90%;
   text-align: center;
 }
+    /* ══════════════════════════════════
+   ADMIN PANEL — ap- namespace
+══════════════════════════════════ */
+
+.ap-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+@media(max-width:860px){ .ap-stats { grid-template-columns: repeat(3,1fr); } }
+@media(max-width:500px){ .ap-stats { grid-template-columns: repeat(2,1fr); } }
+
+.ap-stat {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 18px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.ap-stat:hover { border-color: rgba(255,255,255,0.13); transform: translateY(-2px); }
+.ap-stat-icon { font-size: 16px; color: rgba(255,255,255,0.35); }
+.ap-stat-val { font-family: 'Geist Mono', monospace; font-size: 26px; font-weight: 700; color: #f0f0f0; line-height: 1; }
+.ap-stat-label { font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+
+.ap-section {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ap-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ap-section-title {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ap-section-title i { color: rgba(167,139,250,0.8); }
+
+.ap-section-sub {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.04em;
+}
+
+.ap-icon-btn {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.ap-icon-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+.ap-toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ap-search-wrap {
+  flex: 1; min-width: 200px;
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 0 14px; height: 40px;
+  transition: border-color 0.2s;
+}
+.ap-search-wrap:focus-within { border-color: rgba(167,139,250,0.45); }
+.ap-search-wrap i { color: rgba(255,255,255,0.25); font-size: 12px; flex-shrink:0; }
+.ap-search-input {
+  background: none; border: none; outline: none;
+  color: #f0f0f0; font-family: 'Geist Mono', monospace;
+  font-size: 12px; width: 100%;
+}
+.ap-search-input::placeholder { color: rgba(255,255,255,0.2); }
+
+.ap-select {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  height: 40px; padding: 0 14px;
+  color: #f0f0f0;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  outline: none; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.ap-select:hover { border-color: rgba(255,255,255,0.2); }
+.ap-select-full { width: 100%; height: 42px; }
+
+.ap-table-wrap {
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.07);
+  overflow-x: auto;
+}
+.ap-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ap-table thead tr {
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.ap-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-family: 'Geist Mono', monospace;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  white-space: nowrap;
+}
+.ap-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: #f0f0f0;
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  vertical-align: middle;
+}
+.ap-table tbody tr:last-child td { border-bottom: none; }
+.ap-table tbody tr { transition: background 0.15s; }
+.ap-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+.ap-table-empty {
+  text-align: center !important;
+  padding: 28px !important;
+  color: rgba(255,255,255,0.2) !important;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.ap-bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: rgba(167,139,250,0.06);
+  border: 1px solid rgba(167,139,250,0.18);
+  border-radius: 12px;
+  padding: 10px 16px;
+  position: sticky;
+  top: 52px;
+  z-index: 40;
+}
+.ap-bulk-info {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px; color: rgba(255,255,255,0.5);
+}
+.ap-bulk-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #a78bfa;
+  box-shadow: 0 0 6px #a78bfa;
+  animation: ap-blink 1.4s ease-in-out infinite;
+}
+@keyframes ap-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.ap-bulk-actions { display: flex; gap: 6px; flex-wrap: wrap; flex:1; }
+
+.ap-bulk-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 6px 12px; border-radius: 8px; border: 1px solid;
+  cursor: pointer; transition: all 0.18s; white-space: nowrap;
+}
+.ap-bulk-ghost { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); }
+.ap-bulk-ghost:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.ap-bulk-gold { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.25); color: #fbbf24; }
+.ap-bulk-gold:hover { background: rgba(251,191,36,0.16); }
+.ap-bulk-danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.25); color: #f87171; }
+.ap-bulk-danger:hover { background: rgba(248,113,113,0.16); }
+
+.ap-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width:720px){ .ap-grid-2 { grid-template-columns: 1fr; } }
+
+.ap-field { display: flex; flex-direction: column; gap: 6px; }
+.ap-label {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+.ap-textarea {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 12px 14px;
+  color: #f0f0f0; font-family: 'Geist Mono', monospace;
+  font-size: 12px; outline: none; resize: vertical; min-height: 76px;
+  transition: border-color 0.2s;
+}
+.ap-textarea:focus { border-color: rgba(167,139,250,0.4); }
+.ap-textarea::placeholder { color: rgba(255,255,255,0.18); }
+
+.ap-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 9px 18px; border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.6);
+  cursor: pointer; transition: all 0.18s; align-self: flex-start;
+}
+.ap-btn:hover { background: rgba(255,255,255,0.11); color: #fff; }
+
+.ap-audit-list {
+  display: flex; flex-direction: column; gap: 2px;
+  max-height: 300px; overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.ap-audit-entry {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 7px 10px; border-radius: 8px;
+  border: 1px solid transparent;
+  transition: background 0.15s;
+  font-family: 'Geist Mono', monospace; font-size: 11px;
+  color: rgba(255,255,255,0.45);
+}
+.ap-audit-entry:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07); }
+.ap-audit-time { font-size: 9px; color: rgba(255,255,255,0.2); white-space: nowrap; padding-top: 1px; flex-shrink: 0; }
+.ap-audit-msg { flex: 1; line-height: 1.5; }
+.ap-audit-actor { color: #a78bfa; font-weight: 700; }
+
+.ap-empty-state {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px; color: rgba(255,255,255,0.2);
+  padding: 8px 4px; letter-spacing: 0.05em;
+}
+
+/* SQL blocks */
+.ap-sql-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+@media(max-width:860px){ .ap-sql-grid { grid-template-columns: 1fr; } }
+.ap-sql-block {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.ap-sql-label {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+.ap-sql-code {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px; line-height: 1.7;
+  color: rgba(255,255,255,0.55);
+  white-space: pre-wrap; word-break: break-all;
+}
+.ap-copy-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 10px; border-radius: 7px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  cursor: pointer; transition: all 0.18s; align-self: flex-start;
+}
+.ap-copy-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
   </style>
 </head>
 <body>
@@ -1645,16 +1936,21 @@ body, html {
   </div>
 
   <!-- SQL HELPER -->
-  <div class="dash-section">
-    <div class="dash-section-title">🔧 supabase sql helpers</div>
-    <div class="card-edit" style="padding:18px">
-      <div class="sql-box" id="sqlGrantAdmin"></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
-        <button class="copy-sql-btn" onclick="copySql('sqlGrantAdmin')"><i class="fas fa-copy" style="font-size:9px"></i> copy sql</button>
-      </div>
-      <div style="padding-top:14px;border-top:1px solid var(--border)">
-        <div class="field-label" style="margin-bottom:8px">add missing columns</div>
-        <div class="sql-box" id="sqlColumns"><span class="kw">ALTER TABLE</span> profiles
+<!-- SQL HELPERS -->
+<div class="ap-section">
+  <div class="ap-section-head">
+    <div class="ap-section-title"><i class="fas fa-code"></i> sql helpers</div>
+    <div class="ap-section-sub">run these in supabase sql editor</div>
+  </div>
+  <div class="ap-sql-grid">
+    <div class="ap-sql-block">
+      <div class="ap-sql-label">grant admin</div>
+      <div class="ap-sql-code" id="sqlGrantAdmin"></div>
+      <button class="ap-copy-btn" onclick="copySql('sqlGrantAdmin')"><i class="fas fa-copy"></i> copy</button>
+    </div>
+    <div class="ap-sql-block">
+      <div class="ap-sql-label">add missing columns</div>
+      <div class="ap-sql-code" id="sqlColumns"><span class="kw">ALTER TABLE</span> profiles
   <span class="kw">ADD COLUMN IF NOT EXISTS</span> custom_settings jsonb,
   <span class="kw">ADD COLUMN IF NOT EXISTS</span> is_owner boolean <span class="kw">DEFAULT</span> false,
   <span class="kw">ADD COLUMN IF NOT EXISTS</span> is_developer boolean <span class="kw">DEFAULT</span> false,
@@ -1663,11 +1959,11 @@ body, html {
   <span class="kw">ADD COLUMN IF NOT EXISTS</span> note text,
   <span class="kw">ADD COLUMN IF NOT EXISTS</span> email text,
   <span class="kw">ADD COLUMN IF NOT EXISTS</span> unlocked_badges jsonb <span class="kw">DEFAULT</span> <span class="str">'[]'</span>;</div>
-        
-        <button class="copy-sql-btn" onclick="copySql('sqlColumns')"><i class="fas fa-copy" style="font-size:9px"></i> copy</button>
-        <div style="padding-top:14px;border-top:1px solid var(--border);margin-top:14px">
-  <div class="field-label" style="margin-bottom:8px">create bans table</div>
-  <div class="sql-box" id="sqlBans"><span class="kw">CREATE TABLE IF NOT EXISTS</span> bans (
+      <button class="ap-copy-btn" onclick="copySql('sqlColumns')"><i class="fas fa-copy"></i> copy</button>
+    </div>
+    <div class="ap-sql-block">
+      <div class="ap-sql-label">create bans table</div>
+      <div class="ap-sql-code" id="sqlBans"><span class="kw">CREATE TABLE IF NOT EXISTS</span> bans (
   id uuid <span class="kw">PRIMARY KEY DEFAULT</span> gen_random_uuid(),
   profile_id uuid <span class="kw">REFERENCES</span> profiles(id) <span class="kw">ON DELETE CASCADE</span>,
   fingerprint text,
@@ -1677,132 +1973,169 @@ body, html {
 );
 <span class="kw">CREATE INDEX IF NOT EXISTS</span> bans_fp_idx <span class="kw">ON</span> bans (fingerprint);
 <span class="kw">CREATE INDEX IF NOT EXISTS</span> bans_profile_idx <span class="kw">ON</span> bans (profile_id);</div>
-  <button class="copy-sql-btn" onclick="copySql('sqlBans')"><i class="fas fa-copy" style="font-size:9px"></i> copy</button>
+      <button class="ap-copy-btn" onclick="copySql('sqlBans')"><i class="fas fa-copy"></i> copy</button>
+    </div>
+  </div>
 </div>
+
+<!-- STATS -->
+<div class="ap-stats">
+  <div class="ap-stat">
+    <div class="ap-stat-icon"><i class="fas fa-users"></i></div>
+    <div class="ap-stat-val" id="aTotalUsers">--</div>
+    <div class="ap-stat-label">total users</div>
+  </div>
+  <div class="ap-stat">
+    <div class="ap-stat-icon" style="color:#a78bfa"><i class="fas fa-eye"></i></div>
+    <div class="ap-stat-val" id="aTotalViews">--</div>
+    <div class="ap-stat-label">total views</div>
+  </div>
+  <div class="ap-stat">
+    <div class="ap-stat-icon" style="color:#fbbf24"><i class="fas fa-seedling"></i></div>
+    <div class="ap-stat-val" id="aEarlyCount">--</div>
+    <div class="ap-stat-label">early badge</div>
+  </div>
+  <div class="ap-stat">
+    <div class="ap-stat-icon" style="color:#34d399"><i class="fas fa-user-plus"></i></div>
+    <div class="ap-stat-val" id="aNewToday">--</div>
+    <div class="ap-stat-label">joined today</div>
+  </div>
+  <div class="ap-stat">
+    <div class="ap-stat-icon" style="color:#f87171"><i class="fas fa-ban"></i></div>
+    <div class="ap-stat-val" id="aBannedCount">--</div>
+    <div class="ap-stat-label">banned</div>
+  </div>
+</div>
+
+<!-- BULK BAR -->
+<div id="bulkActionBar" class="ap-bulk-bar" style="display:none">
+  <div class="ap-bulk-info">
+    <div class="ap-bulk-dot"></div>
+    <span id="bulkCount">0 selected</span>
+  </div>
+  <div class="ap-bulk-actions">
+    <button class="ap-bulk-btn ap-bulk-gold" onclick="bulkGrantBadge('early')"><i class="fas fa-seedling"></i> grant early</button>
+    <button class="ap-bulk-btn ap-bulk-ghost" onclick="bulkGrantBadge('supporter')"><i class="fas fa-heart"></i> supporter</button>
+    <button class="ap-bulk-btn ap-bulk-danger" onclick="bulkBan()"><i class="fas fa-ban"></i> ban all</button>
+  </div>
+  <button class="ap-bulk-btn ap-bulk-ghost" style="margin-left:auto" onclick="_bulkSelected.clear();updateBulkBar();document.querySelectorAll('.bulk-check').forEach(c=>c.checked=false)"><i class="fas fa-times"></i> clear</button>
+</div>
+
+<!-- USER TABLE -->
+<div class="ap-section">
+  <div class="ap-section-head">
+    <div>
+      <div class="ap-section-title"><i class="fas fa-table-list"></i> user directory</div>
+      <div class="ap-section-sub" id="adminUserCount"></div>
+    </div>
+    <button class="ap-icon-btn" onclick="loadAdminData()" title="refresh"><i class="fas fa-rotate-right"></i></button>
+  </div>
+  <div class="ap-toolbar">
+    <div class="ap-search-wrap">
+      <i class="fas fa-magnifying-glass"></i>
+      <input class="ap-search-input" type="text" id="adminSearch" placeholder="search handle, name, email..." oninput="filterUsers()">
+    </div>
+    <select id="adminRoleFilter" class="ap-select" onchange="filterUsers()">
+      <option value="all">all roles</option>
+      <option value="owner">owner</option>
+      <option value="admin">admin</option>
+      <option value="developer">developer</option>
+      <option value="banned">banned</option>
+      <option value="normal">normal</option>
+    </select>
+    <select id="adminSortBy" class="ap-select" onchange="filterUsers()">
+      <option value="newest">newest first</option>
+      <option value="oldest">oldest first</option>
+      <option value="views">most views</option>
+      <option value="handle">handle a–z</option>
+    </select>
+  </div>
+  <div class="ap-table-wrap">
+    <table class="ap-table">
+      <thead>
+        <tr>
+          <th style="width:28px"></th>
+          <th>user</th>
+          <th>email</th>
+          <th>badges</th>
+          <th>views</th>
+          <th>joined</th>
+          <th>actions</th>
+        </tr>
+      </thead>
+      <tbody id="adminUserTbody">
+        <tr><td colspan="7" class="ap-table-empty"><i class="fas fa-spinner fa-spin"></i> loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- BOTTOM ROW: NOTE + AUDIT -->
+<div class="ap-grid-2">
+  <div class="ap-section">
+    <div class="ap-section-head">
+      <div class="ap-section-title"><i class="fas fa-note-sticky"></i> admin note</div>
+    </div>
+    <div class="ap-section-sub" style="margin-top:-6px">internal note — admin eyes only</div>
+    <div class="ap-field">
+      <label class="ap-label">select user</label>
+      <select id="noteUserSelect" class="ap-select ap-select-full"></select>
+    </div>
+    <div class="ap-field">
+      <label class="ap-label">note content</label>
+      <textarea class="ap-textarea" id="noteText" placeholder="write an internal note..."></textarea>
+    </div>
+    <button class="ap-btn" onclick="saveAdminNote()"><i class="fas fa-floppy-disk"></i> save note</button>
+    <div class="alert" id="noteAlert" style="margin-top:8px"></div>
+  </div>
+
+  <div class="ap-section">
+    <div class="ap-section-head">
+      <div class="ap-section-title"><i class="fas fa-clock-rotate-left"></i> audit log</div>
+      <div style="display:flex;gap:6px">
+        <button class="ap-icon-btn" onclick="loadAuditLog()" title="refresh"><i class="fas fa-rotate-right"></i></button>
+        <button class="ap-icon-btn" onclick="exportUsersCSV()" title="export csv"><i class="fas fa-download"></i></button>
       </div>
     </div>
-  </div>
-
-  <!-- STATS -->
-  <div class="admin-stats-row" style="grid-template-columns:repeat(5,1fr)">
-    <div class="admin-stat"><div class="admin-stat-val" id="aTotalUsers">--</div><div class="admin-stat-label">total users</div></div>
-    <div class="admin-stat"><div class="admin-stat-val" id="aTotalViews">--</div><div class="admin-stat-label">total views</div></div>
-    <div class="admin-stat"><div class="admin-stat-val gold" id="aEarlyCount">--</div><div class="admin-stat-label">early badge</div></div>
-    <div class="admin-stat"><div class="admin-stat-val" id="aNewToday">--</div><div class="admin-stat-label">joined today</div></div>
-    <div class="admin-stat"><div class="admin-stat-val" style="color:var(--red)" id="aBannedCount">--</div><div class="admin-stat-label">banned</div></div>
-  </div>
-
-  <!-- FILTERS + SEARCH -->
-  <div class="dash-section">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
-      <input class="admin-search" type="text" id="adminSearch" placeholder="search handle, name, email..." oninput="filterUsers()" style="flex:1;min-width:180px;margin-bottom:0">
-      <select id="adminRoleFilter" onchange="filterUsers()" style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Geist Mono',monospace;font-size:12px;outline:none;cursor:pointer">
-        <option value="all">all roles</option>
-        <option value="owner">owner</option>
-        <option value="admin">admin</option>
-        <option value="developer">developer</option>
-        <option value="banned">banned</option>
-        <option value="normal">normal</option>
-      </select>
-      <select id="adminSortBy" onchange="filterUsers()" style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Geist Mono',monospace;font-size:12px;outline:none;cursor:pointer">
-        <option value="newest">newest first</option>
-        <option value="oldest">oldest first</option>
-        <option value="views">most views</option>
-        <option value="handle">handle a-z</option>
-      </select>
-      <button class="btn btn-ghost" onclick="loadAdminData()" style="font-size:10px"><i class="fas fa-sync"></i> refresh</button>
+    <div class="ap-section-sub" style="margin-top:-6px">last 100 admin actions</div>
+    <div class="ap-audit-list" id="auditLogList">
+      <div class="ap-empty-state">click refresh to load</div>
     </div>
+  </div>
+</div>
 
-  <div class="card-edit" style="padding:0;overflow-x:auto;width:100%">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>user</th>
-            <th>email</th>
-            <th>unlocked badges</th>
-            <th>views</th>
-            <th>joined</th>
-            <th>actions</th>
-          </tr>
-        </thead>
-        <tbody id="adminUserTbody">
-          <tr><td colspan="6" style="text-align:center;padding:28px;color:var(--muted)">loading...</td></tr>
-        </tbody>
+<!-- BOTTOM ROW: BAN RECORDS + REPORTS -->
+<div class="ap-grid-2">
+  <div class="ap-section">
+    <div class="ap-section-head">
+      <div class="ap-section-title"><i class="fas fa-fingerprint"></i> ban records</div>
+      <button class="ap-icon-btn" onclick="loadIpStats()"><i class="fas fa-rotate-right"></i></button>
+    </div>
+    <div class="ap-section-sub" style="margin-top:-6px">fingerprints & ip hints at ban time</div>
+    <div class="ap-table-wrap">
+      <table class="ap-table">
+        <thead><tr><th>ip hint</th><th>fingerprint</th><th>reason</th><th>date</th></tr></thead>
+        <tbody id="ipStatsBody"><tr><td colspan="4" class="ap-table-empty">click refresh to load</td></tr></tbody>
       </table>
     </div>
-    <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);margin-top:8px" id="adminUserCount"></div>
   </div>
 
-  <!-- BROADCAST MESSAGE -->
-  <div class="dash-section">
-    <div class="dash-section-title">📢 admin note</div>
-    <div class="dash-section-sub">leave an internal note on a user's account (only visible to admins)</div>
-    <div class="card-edit" style="padding:18px">
-      <div class="field">
-        <div class="field-label">select user</div>
-        <select id="noteUserSelect" class="field-input" style="cursor:pointer"></select>
-      </div>
-      <div class="field">
-        <div class="field-label">note</div>
-        <textarea class="field-input" id="noteText" placeholder="internal admin note..." style="min-height:60px"></textarea>
-      </div>
-      <button class="btn btn-ghost" onclick="saveAdminNote()"><i class="fas fa-save"></i> save note</button>
-      <div class="alert" id="noteAlert" style="margin-top:8px"></div>
+  <div class="ap-section">
+    <div class="ap-section-head">
+      <div class="ap-section-title"><i class="fas fa-flag"></i> reports queue</div>
+      <button class="ap-icon-btn" onclick="loadReports()"><i class="fas fa-rotate-right"></i></button>
+    </div>
+    <div class="ap-section-sub" style="margin-top:-6px">pending user reports</div>
+    <div class="ap-table-wrap">
+      <table class="ap-table">
+        <thead><tr><th>reported</th><th>reason</th><th>details</th><th>date</th><th>actions</th></tr></thead>
+        <tbody id="reportsBody"><tr><td colspan="5" class="ap-table-empty">click refresh to load</td></tr></tbody>
+      </table>
     </div>
   </div>
-<!-- BULK ACTION BAR -->
-<div id="bulkActionBar" style="display:none;position:sticky;top:48px;z-index:40;background:rgba(7,7,7,0.95);backdrop-filter:blur(16px);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;margin-bottom:12px;align-items:center;gap:10px;flex-wrap:wrap">
-  <span id="bulkCount" style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub)">0 selected</span>
-  <button class="btn-sm btn-sm-gold" onclick="bulkGrantBadge('early')"><i class="fas fa-star"></i> grant early</button>
-  <button class="btn-sm btn-sm-ghost" onclick="bulkGrantBadge('supporter')"><i class="fas fa-heart"></i> grant supporter</button>
-  <button class="btn-sm btn-sm-danger" onclick="bulkBan()"><i class="fas fa-ban"></i> ban all</button>
-  <button class="btn-sm btn-sm-ghost" style="margin-left:auto" onclick="_bulkSelected.clear();updateBulkBar();document.querySelectorAll('.bulk-check').forEach(c=>c.checked=false)">clear</button>
 </div>
 
-<!-- AUDIT LOG -->
-<div class="dash-section">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <div>
-      <div class="dash-section-title" style="margin-bottom:2px">📋 audit log</div>
-      <div class="dash-section-sub" style="margin-bottom:0">last 100 admin actions</div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-ghost" onclick="loadAuditLog()" style="font-size:10px"><i class="fas fa-sync"></i> refresh</button>
-      <button class="btn btn-ghost" onclick="exportUsersCSV()" style="font-size:10px"><i class="fas fa-download"></i> export csv</button>
-    </div>
-  </div>
-  <div class="card-edit" style="padding:16px 20px;max-height:320px;overflow-y:auto" id="auditLogList">
-    <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">click refresh to load</div>
-  </div>
-</div>
-
-<!-- IP / BAN RECORDS -->
-<div class="dash-section">
-  <div class="dash-section-title" style="margin-bottom:4px">🔒 ban records & fingerprints</div>
-  <div class="dash-section-sub">fingerprints and IP hints captured at ban time</div>
-  <div class="card-edit" style="padding:0;overflow-x:auto">
-    <table class="ip-table">
-      <thead><tr><th>ip hint</th><th>fingerprint</th><th>reason</th><th>date</th></tr></thead>
-      <tbody id="ipStatsBody"><tr><td colspan="4" style="text-align:center;padding:16px;color:var(--muted)">click refresh to load</td></tr></tbody>
-    </table>
-  </div>
-  <button class="btn btn-ghost" onclick="loadIpStats()" style="font-size:10px;margin-top:10px"><i class="fas fa-sync"></i> load records</button>
-</div>
-  <div class="dash-section">
-  <div class="dash-section-title">📋 reports queue</div>
-  <div class="dash-section-sub">pending user reports — click to act</div>
-  <div class="card-edit" style="padding:0;overflow-x:auto">
-    <table class="admin-table">
-      <thead><tr><th>reported</th><th>reason</th><th>details</th><th>date</th><th>actions</th></tr></thead>
-      <tbody id="reportsBody"><tr><td colspan="5" style="text-align:center;padding:16px;color:var(--muted)">click load</td></tr></tbody>
-    </table>
-  </div>
-  <button class="btn btn-ghost" onclick="loadReports()" style="font-size:10px;margin-top:10px"><i class="fas fa-sync"></i> load reports</button>
-</div>
-</div>
-    
-
-<!-- SAVE BAR -->
+<!-- SAVE BAR (unchanged functionality, restyled) -->
 <div class="save-bar" id="saveBar" style="display:none">
   <div style="display:flex;align-items:center;gap:8px">
     <button id="undoBtn" class="btn btn-ghost" onclick="undo()" title="undo (ctrl+z)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-undo"></i></button>
@@ -1812,7 +2145,7 @@ body, html {
   <button class="btn-save" id="saveBtn" onclick="saveProfile()">save changes →</button>
 </div>
 
-<!-- BADGE GRANT MODAL -->
+<!-- BADGE MODAL (unchanged) -->
 <div class="modal-bg" id="badgeModal">
   <div class="modal-box">
     <div class="modal-title">manage badges</div>
