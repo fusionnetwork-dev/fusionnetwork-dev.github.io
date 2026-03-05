@@ -785,7 +785,7 @@ function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
   if (e.data === YT.PlayerState.UNSTARTED || e.data === YT.PlayerState.CUED) {
     try { e.target.playVideo(); } catch(_) {}
   }
-},
+}
   initWhenReady();
 }
     loadYouTubeIframeAPI();
