@@ -2897,8 +2897,14 @@ document.getElementById('dashLayout')?.style.removeProperty('filter');
       document.getElementById('mobileMenuBtn').querySelector('i').className = 'fas fa-times';
     }
     document.getElementById('saveBar').style.display = 'flex';
-    showTab('profile');
-  }
+const { data: viewData } = await sb
+  .from('profiles')
+  .select('view_count')
+  .eq('id', session.user.id)
+  .single();
+console.log('[views] dashboard view_count:', viewData?.view_count);
+const viewEl = document.getElementById('statViews');
+if (viewEl) viewEl.textContent = (viewData?.view_count || 0).toLocaleString();
 initAuth().catch(err => {
   console.error('initAuth failed:', err);
   document.getElementById('authGate').innerHTML = '<div style="color:red">Login failed — check console</div>';
