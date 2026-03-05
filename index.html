@@ -975,10 +975,7 @@ function verifyDiscord() {
     if (!user?.id) return showAlert('signupAlert', 'could not fetch discord user.', 'error');
 
     _discordUser     = user;
-    await sb.from('profiles').update({
-  discord_verified: true,
-  discord_id_verified: _discordUser.id,
-}).eq('id', authData.user.id);
+
     _discordVerified = true;
 
     // update button
