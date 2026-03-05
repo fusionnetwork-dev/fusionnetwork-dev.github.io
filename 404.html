@@ -1174,19 +1174,31 @@ document.getElementById('discordStatus').insertAdjacentElement('afterend', joine
       });
 
       // Badges
-      const badgesEl = document.getElementById('cardBadges');
-      const rawBadges = Array.isArray(profile.badges) ? profile.badges : (() => { try { return JSON.parse(profile.badges || '[]'); } catch { return []; } })();
-      if (rawBadges.length) {
-        badgesEl.style.display = 'inline-flex';
-        rawBadges.forEach(badgeId => {
-          const def = BADGE_DEFS.find(b => b.id === badgeId);
-          if (!def) return;
-          const div = document.createElement('div');
-          div.className = 'badge';
-          div.innerHTML = `<i class="${def.icon}"></i><div class="badge-tip">${def.label}</div>`;
-          badgesEl.appendChild(div);
-        });
-      }
+    // Badges
+const badgesEl = document.getElementById('cardBadges');
+const rawBadges = Array.isArray(profile.badges) ? profile.badges : (() => { try { return JSON.parse(profile.badges || '[]'); } catch { return []; } })();
+const badgeColors = (() => {
+  try {
+    const v = profile.badge_colors;
+    if (!v) return {};
+    return typeof v === 'object' ? v : JSON.parse(v);
+  } catch { return {}; }
+})();
+if (rawBadges.length) {
+  badgesEl.style.display = 'inline-flex';
+  rawBadges.forEach(badgeId => {
+    const def = BADGE_DEFS.find(b => b.id === badgeId);
+    if (!def) return;
+    const div = document.createElement('div');
+    div.className = 'badge';
+    const color = badgeColors[badgeId];
+    const iconStyle = color
+      ? `style="color:${color};background:none;-webkit-text-fill-color:${color}"`
+      : '';
+    div.innerHTML = `<i class="${def.icon}" ${iconStyle}></i><div class="badge-tip">${def.label}</div>`;
+    badgesEl.appendChild(div);
+  });
+}
 
       // Custom badges
  const { data: customBadges } = await sb
