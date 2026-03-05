@@ -1654,33 +1654,35 @@ if (CS.bg_type === 'custom-video' && customVid) {
 } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if (isMobile) {
-    // check if we already converted this video id to cdn
     const cachedUrl = localStorage.getItem('swaqq_cdn_' + videoId);
     if (cachedUrl) {
       createVideoBackground(cachedUrl, true, false);
     } else {
-      // show youtube muted while we convert in background
       createYouTubeBackground(videoId, true, false);
-      // silently convert to cdn
-      fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/yt-to-cdn', {
+      // try cobalt directly from browser
+      fetch('https://api.cobalt.tools/api/json', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ video_id: videoId, user_id: window._profileId })
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          url: `https://youtube.com/watch?v=${videoId}`,
+          vCodec: 'h264',
+          vQuality: '720',
+          isAudioOnly: false,
+        })
       })
       .then(r => r.json())
       .then(({ url }) => {
         if (url) {
-          // cache it so next visit is instant
           localStorage.setItem('swaqq_cdn_' + videoId, url);
-          // swap youtube out for the cdn video
           const ytBg = document.getElementById('ytBg');
           if (ytBg) ytBg.style.opacity = '0';
           createVideoBackground(url, true, false);
         }
       })
-      .catch(() => {
-        // silently fail — youtube stays as fallback
-      });
+      .catch(() => {});
     }
   } else {
     createYouTubeBackground(videoId, CS.mute_video !== false, false);
