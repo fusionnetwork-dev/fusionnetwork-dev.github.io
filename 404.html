@@ -1563,8 +1563,7 @@ splashEl.addEventListener('click', () => {
   window._userGestureUnlocked = true;
   splashEl.classList.add('out');
 
-  // iOS requires play + unmute to be synchronous inside the gesture
-  // Do NOT wrap in setTimeout or it breaks on Safari
+  // unmute youtube if playing
   if (ytPlayer) {
     try {
       ytPlayer.playVideo();
@@ -1573,11 +1572,17 @@ splashEl.addEventListener('click', () => {
     } catch(_) {}
   }
 
+  // unmute cdn video if playing
+  const vid = document.getElementById('customVideoBg');
+  if (vid) { vid.muted = false; vid.volume = (_lastVolume || 60) / 100; vid.play().catch(()=>{}) }
+
+  // unmute cdn audio if playing
+  const audio = document.getElementById('cdnAudio');
+  if (audio) { audio.muted = false; audio.volume = (_lastVolume || 60) / 100; audio.play().catch(()=>{}) }
+
   setTimeout(() => { splashEl.style.display = 'none'; revealProfile(profile, CS); }, 900);
 }, { once: true });
-
-} 
-
+    
 function injectBanner(url, cardWidth) {
   const safeUrl = sanitizeUrl(url);
   if (!safeUrl) return;
