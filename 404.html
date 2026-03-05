@@ -1962,7 +1962,7 @@ async function submitReport(profileId, handle, modal) {
       slider?.addEventListener('mouseup',   () => { _volumeHideTimer = setTimeout(closeVolumeSlider, 1200); });
     }
 
-    function openVolumeSlider() {
+  function openVolumeSlider() {
   if (_volumeOpen) return;
   _volumeOpen = true;
   const wrap = document.getElementById('volumeSliderWrap');
@@ -1974,7 +1974,6 @@ function closeVolumeSlider() {
   const wrap = document.getElementById('volumeSliderWrap');
   if (wrap) { wrap.style.height = '0'; wrap.style.opacity = '0'; wrap.style.padding = '0'; }
 }
-
     function setVolume(val) {
       val = parseInt(val);
       _lastVolume = val > 0 ? val : _lastVolume;
