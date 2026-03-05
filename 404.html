@@ -567,18 +567,18 @@ function checkCaptchaClick() {
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
     /* ── Badge Definitions ── */
-    const BADGE_DEFS = [
-      { id:'early',       label:'Early',       icon:'fas fa-seedling' },
-     { id:'founder',     label:'Founder',     icon:'fas fa-flag' },
-      { id:'owner',       label:'Owner',       icon:'fas fa-crown' },
-      { id:'supporter',   label:'Supporter',   icon:'fas fa-heart' },
-      { id:'contributor', label:'Contributor', icon:'fas fa-code-branch' },
-      { id:'developer',   label:'Developer',   icon:'fas fa-code' },
-      { id:'staff',       label:'Staff',       icon:'fas fa-shield-alt' },
-      { id:'vip',         label:'VIP',         icon:'fas fa-star' },
-      { id:'verified',    label:'Verified',    icon:'fas fa-check-circle' },
-      { id:'og',          label:'OG',          icon:'fas fa-fire' },
-    ];
+const BADGE_DEFS = [
+  { id:'early',       label:'Early',       icon:'fas fa-seedling',  defaultColor:'#43b581' },
+  { id:'founder',     label:'Founder',     icon:'fas fa-flag',      defaultColor:'#f04747' },
+  { id:'owner',       label:'Owner',       icon:'fas fa-crown',     defaultColor:'#faa61a' },
+  { id:'supporter',   label:'Supporter',   icon:'fas fa-heart',     defaultColor:'#f47fff' },
+  { id:'contributor', label:'Contributor', icon:'fas fa-code-branch',defaultColor:'#7289da' },
+  { id:'developer',   label:'Developer',   icon:'fas fa-code',      defaultColor:'#43b581' },
+  { id:'staff',       label:'Staff',       icon:'fas fa-shield-alt',defaultColor:'#7289da' },
+  { id:'vip',         label:'VIP',         icon:'fas fa-star',      defaultColor:'#faa61a' },
+  { id:'verified',    label:'Verified',    icon:'fas fa-check-circle',defaultColor:'#5865f2'},
+  { id:'og',          label:'OG',          icon:'fas fa-fire',      defaultColor:'#f04747' },
+];
 
     /* ── Custom Settings Defaults & Builder ── */
     const CS_DEF = {
