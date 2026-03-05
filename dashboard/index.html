@@ -5063,6 +5063,8 @@ async function syncDiscordRoleBadges(discordId) {
   if (csJson.length > 50000) {
     console.warn('[swaqq] custom_settings is large:', csJson.length, 'bytes — consider moving font to storage');
   }
+    console.log('[save] badgeColors =', badgeColors);
+console.log('[save] CS.badge_colors =', CS.badge_colors);
 // this needs to run BEFORE the updates object is built
   const updates = {
     display_name:      displayName || handle,
@@ -5080,7 +5082,7 @@ async function syncDiscordRoleBadges(discordId) {
     show_video_bg:     newCS.show_video_bg,
     mute_video:        newCS.mute_video,
     badges:            JSON.stringify(activeBadges),
-    badge_colors: JSON.stringify(CS.badge_colors || badgeColors),
+badge_colors: JSON.stringify(Object.keys(badgeColors).length ? badgeColors : (CS.badge_colors || {})), 
     socials:           JSON.stringify(getSocials()),
     card_font:         newCS.card_font,
     accent_color:      newCS.accent_color,
