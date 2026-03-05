@@ -790,7 +790,11 @@ if (_discordUser) {
   if (session) {
     await sb.from('profiles').update({
       discord_verified: true,
-      discord_id_verified: _discordUser.id,
+      discord_id: _discordUser.id,
+      discord_username: _discordUser.username,
+      discord_avatar: _discordUser.avatar
+        ? `https://cdn.discordapp.com/avatars/${_discordUser.id}/${_discordUser.avatar}.png`
+        : null,
     }).eq('id', session.user.id);
   }
 }
@@ -973,7 +977,7 @@ const DISCORD_WEBHOOK    = 'https://discord.com/api/webhooks/1478889239604101203
 
 let _discordVerified = false;
 let _discordUser     = null;
-
+let _discordToken = null;
   
 function verifyDiscord() {
   const state = Math.random().toString(36).slice(2);
@@ -1013,7 +1017,7 @@ function verifyDiscord() {
     if (!user?.id) return showAlert('signupAlert', 'could not fetch discord user.', 'error');
 
     _discordUser     = user;
-
+_discordToken = token; // save it for later
     _discordVerified = true;
 
     // update button
