@@ -1190,6 +1190,8 @@ const badgeColors = typeof profile.badge_colors === 'string'
   ? JSON.parse(profile.badge_colors || '{}')
   : (profile.badge_colors || {});
 
+console.log('[badge_colors]', JSON.stringify(badgeColors)); // ← add this
+
 if (rawBadges.length) {
   badgesEl.style.display = 'inline-flex';
   rawBadges.forEach(badgeId => {
