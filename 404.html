@@ -1607,11 +1607,13 @@ if (CS.banner_url) injectBanner(CS.banner_url, CS.card_width);
 }
       window._showTopBarBriefly?.();
 
-      const videoId   = CS.youtube_video_id || profile.youtube_video_id || '';
-      const audioId   = CS.audio_only_id || '';
-      const customVid = CS.bg_video_url || profile.bg_video_url || '';
+   const videoId   = CS.youtube_video_id || profile.youtube_video_id || '';
+const audioId   = CS.audio_only_id || '';
+const customVid = CS.bg_video_url || profile.bg_video_url || '';
+const cdnAudio  = CS.music_url || profile.music_url || '';
 
-    if (CS.bg_type === 'custom-video' && customVid) {
+
+if (CS.bg_type === 'custom-video' && customVid) {
   createVideoBackground(customVid, CS.bg_video_loop !== false, CS.bg_video_mute !== false);
   if (window._userGestureUnlocked && CS.bg_video_mute === false) {
     setTimeout(() => {
@@ -1619,10 +1621,70 @@ if (CS.banner_url) injectBanner(CS.banner_url, CS.card_width);
       if (vid) { vid.muted = false; vid.volume = (_lastVolume || 60) / 100; }
     }, 500);
   }
+} else if (CS.bg_type === 'audio' && cdnAudio && cdnAudio.includes('supabase.co')) {
+  // cdn audio only
+
+  // CDN audio — works on mobile
+  const audio = document.createElement('audio');
+  audio.id = 'cdnAudio';
+  audio.src = cdnAudio;
+  audio.loop = true;
+  audio.muted = true;
+  audio.autoplay = true;
+  document.body.appendChild(audio);
+  audio.play().catch(() => {});
+  // unmute on first interaction
+  document.addEventListener('click', () => {
+    if (window._userGestureUnlocked) {
+      audio.muted = false;
+      audio.volume = (_lastVolume || 60) / 100;
+    }
+  }, { once: true });
+  document.addEventListener('touchstart', () => {
+    window._userGestureUnlocked = true;
+    audio.muted = false;
+    audio.volume = (_lastVolume || 60) / 100;
+  }, { once: true });
+  // still show youtube video visually if they have one set
+  if (videoId && CS.show_video_bg !== false) {
+    createYouTubeBackground(videoId, true, false); // force muted since audio handles sound
+  }
 } else if (CS.bg_type === 'audio' && audioId) {
   createYouTubeBackground(audioId, CS.mute_audio !== false, true);
 } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
-  createYouTubeBackground(videoId, CS.mute_video !== false, false);
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    // check if we already converted this video id to cdn
+    const cachedUrl = localStorage.getItem('swaqq_cdn_' + videoId);
+    if (cachedUrl) {
+      createVideoBackground(cachedUrl, true, false);
+    } else {
+      // show youtube muted while we convert in background
+      createYouTubeBackground(videoId, true, false);
+      // silently convert to cdn
+      fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/yt-to-cdn', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ video_id: videoId, user_id: window._profileId })
+      })
+      .then(r => r.json())
+      .then(({ url }) => {
+        if (url) {
+          // cache it so next visit is instant
+          localStorage.setItem('swaqq_cdn_' + videoId, url);
+          // swap youtube out for the cdn video
+          const ytBg = document.getElementById('ytBg');
+          if (ytBg) ytBg.style.opacity = '0';
+          createVideoBackground(url, true, false);
+        }
+      })
+      .catch(() => {
+        // silently fail — youtube stays as fallback
+      });
+    }
+  } else {
+    createYouTubeBackground(videoId, CS.mute_video !== false, false);
+  }
 }
 
 // If no splash, unmute immediately after player is ready
