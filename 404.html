@@ -973,7 +973,9 @@ function showAgeGate(profile) {
   });
 }
       const CS = buildCS(profile);
-
+if (CS.show_volume_widget !== false) {
+  document.getElementById('volumeWidget').style.display = 'flex';
+}
       // Inject custom font
       if (CS.custom_font_data && CS.custom_font_family) {
         const style = document.createElement('style');
