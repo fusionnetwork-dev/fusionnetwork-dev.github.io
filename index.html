@@ -763,14 +763,31 @@ function sanitizeHtml(html) {
     setLoading('signupBtn', false);
 
     if (authErr) {
-      return showAlert('signupAlert', authErr.message, 'error');
-    }
+  return showAlert('signupAlert', authErr.message, 'error');
+}
 
-    // Profile is created automatically by the DB trigger (handle_new_user)
-    // No manual insert needed — works even before email confirmation
-    showAlert('signupAlert', '✓ check your email to confirm your account, then log in!', 'success');
-    setTimeout(() => openModal('login'), 3000);
+// Auto sign in after signup
+const { error: signInErr } = await sb.auth.signInWithPassword({ email, password });
+if (signInErr) {
+  showAlert('signupAlert', '✓ account created! please log in.', 'success');
+  setTimeout(() => openModal('login'), 2000);
+  return;
+}
 
+// Update discord verified on the new profile
+if (_discordUser) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    await sb.from('profiles').update({
+      discord_verified: true,
+      discord_id_verified: _discordUser.id,
+    }).eq('id', session.user.id);
+  }
+}
+
+showAlert('signupAlert', '✓ account created! redirecting...', 'success');
+setTimeout(() => window.location.href = '/dashboard', 900);
+    
   } catch (err) {
     clearTimeout(safetyTimer);
     setLoading('signupBtn', false);
