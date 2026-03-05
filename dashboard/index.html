@@ -922,6 +922,15 @@ body, html {
               <input class="field-input" type="text" id="fDisplayName" placeholder="your name" maxlength="32">
             </div>
             <div class="field">
+  <div class="field-label">aliases <span class="tag">url shortcuts</span></div>
+  <div id="aliasListEl"></div>
+  <button class="btn btn-ghost" style="margin-top:8px" onclick="addAlias()">
+    <i class="fas fa-plus"></i> add alias
+  </button>
+  <div class="field-hint">each alias creates a url like swaqq.xyz/youralias — max 3 aliases — globally unique</div>
+  <div class="alert" id="aliasAlert"></div>
+</div>
+            <div class="field">
               <div class="field-label">handle <span class="tag">url</span></div>
               <div class="prefix-wrap">
                 <span class="prefix-text">swaqq.xyz/@</span>
@@ -2871,6 +2880,16 @@ async function initAuth() {
       if (e.target === overlay) closeIconPicker();
     });
   }
+  // mark unsaved whenever user changes anything
+document.querySelectorAll('.field-input, .prefix-input').forEach(el => {
+  el.addEventListener('input', markUnsaved);
+});
+document.querySelectorAll('.toggle').forEach(el => {
+  el.addEventListener('click', markUnsaved);
+});
+document.querySelectorAll('.font-card, .color-chip').forEach(el => {
+  el.addEventListener('click', markUnsaved);
+});
 }
 
 
@@ -3183,6 +3202,8 @@ tog('tBgVideoMute', cs('bg_video_mute') !== false);
     updateCardPreview();
   bioLines = pj(p.bio_lines, p.bio ? [p.bio] : []);
 renderBioLines();
+    aliases = pj(p.aliases, []);
+renderAliases();
     restoreCustomizeSelections();
   }
 
@@ -3362,7 +3383,78 @@ function generateEmbedCode(handle) {
       grid.appendChild(card);
     }
   }
+let aliases = [];
 
+function renderAliases() {
+  const el = document.getElementById('aliasListEl');
+  if (!el) return;
+  el.innerHTML = '';
+  aliases.forEach((alias, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;align-items:center';
+    row.innerHTML = `
+      <div class="prefix-wrap" style="flex:1">
+        <span class="prefix-text">swaqq.xyz/</span>
+        <input class="prefix-input" type="text" value="${sanitize(alias)}" maxlength="20"
+          placeholder="youralias" spellcheck="false"
+          oninput="aliases[${i}]=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')">
+      </div>
+      <button class="btn btn-ghost" style="padding:8px;flex-shrink:0" onclick="removeAlias(${i})">
+        <i class="fas fa-times"></i>
+      </button>`;
+    el.appendChild(row);
+  });
+}
+
+function addAlias() {
+  if (aliases.length >= 3) { showAlert('aliasAlert', 'max 3 aliases.', 'error'); return; }
+  aliases.push('');
+  renderAliases();
+}
+
+function removeAlias(i) {
+  aliases.splice(i, 1);
+  renderAliases();
+}
+
+async function saveAliases() {
+  const cleaned = aliases.map(a => a.trim().toLowerCase()).filter(a => /^[a-z0-9_]{2,20}$/.test(a));
+
+  // Check each alias isn't taken by someone else
+  for (const alias of cleaned) {
+    const { data } = await sb.from('alias_map')
+      .select('profile_id')
+      .eq('alias', alias)
+      .maybeSingle();
+    if (data && data.profile_id !== currentUser.id) {
+      showAlert('aliasAlert', `"${alias}" is already taken.`, 'error');
+      return false;
+    }
+    // also can't be someone's handle
+    const { data: handleTaken } = await sb.from('profiles')
+      .select('id')
+      .eq('handle', alias)
+      .maybeSingle();
+    if (handleTaken && handleTaken.id !== currentUser.id) {
+      showAlert('aliasAlert', `"${alias}" is already a handle.`, 'error');
+      return false;
+    }
+  }
+
+  // Delete old aliases for this user then re-insert
+  await sb.from('alias_map').delete().eq('profile_id', currentUser.id);
+  if (cleaned.length) {
+    const rows = cleaned.map(alias => ({ alias, profile_id: currentUser.id }));
+    const { error } = await sb.from('alias_map').insert(rows);
+    if (error) { showAlert('aliasAlert', 'save failed: ' + error.message, 'error'); return false; }
+  }
+
+  // Store on profile too for easy access
+  await sb.from('profiles').update({ aliases: JSON.stringify(cleaned) }).eq('id', currentUser.id);
+  aliases = cleaned;
+  renderAliases();
+  return true;
+}
   // ─── ACCENT ──────────────────────────────────────────────────────────────────
   function pickAccent(chip, color) {
     document.querySelectorAll('#tab-customize .color-chip').forEach(c => c.classList.remove('selected'));
@@ -4810,8 +4902,9 @@ async function syncDiscordRoleBadges(discordId) {
   document.getElementById('topBarViewLink').href      = '/@' + currentProfile.handle;
 
   btn.disabled = false; btn.textContent = 'save changes →';
+    await saveAliases();
   st.textContent = 'all changes saved ✓'; st.classList.add('saved');
-  setTimeout(() => { st.textContent = 'unsaved changes'; st.classList.remove('saved'); }, 3500);
+
   discardDraft();
 }
 function loadReferralSection() {
@@ -4823,7 +4916,12 @@ function loadReferralSection() {
   if (box) box.textContent = link;
   if (cnt) cnt.textContent = currentProfile?.referral_count || 0;
 }
-
+function markUnsaved() {
+  const st = document.getElementById('saveStatus');
+  if (!st) return;
+  st.textContent = 'unsaved changes';
+  st.classList.remove('saved');
+}
 function copyReferralLink() {
   const code = currentProfile?.referral_code;
   if (!code) return;
