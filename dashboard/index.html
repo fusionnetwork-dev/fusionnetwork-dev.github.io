@@ -2136,14 +2136,7 @@ body, html {
 </div>
 
 <!-- SAVE BAR (unchanged functionality, restyled) -->
-<div class="save-bar" id="saveBar" style="display:none">
-  <div style="display:flex;align-items:center;gap:8px">
-    <button id="undoBtn" class="btn btn-ghost" onclick="undo()" title="undo (ctrl+z)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-undo"></i></button>
-    <button id="redoBtn" class="btn btn-ghost" onclick="redo()" title="redo (ctrl+y)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-redo"></i></button>
-    <span class="save-status" id="saveStatus">unsaved changes</span>
-  </div>
-  <button class="btn-save" id="saveBtn" onclick="saveProfile()">save changes →</button>
-</div>
+
 
 <!-- BADGE MODAL (unchanged) -->
 <div class="modal-bg" id="badgeModal">
@@ -2162,29 +2155,7 @@ body, html {
   </div>
 </div>
 
-<!-- ICON PICKER -->
-<div class="icon-picker-overlay" id="iconPickerOverlay" onclick="if(event.target===this)closeIconPicker()">
-  <div class="icon-picker-box">
-    <div class="icon-picker-title">choose icon</div>
-    <input class="icon-search" type="text" placeholder="search icons..." oninput="filterIcons(this.value)" id="iconSearchInput">
-    <div class="icon-grid" id="iconGrid"></div>
-    <!-- Custom icon upload -->
-    <div class="icon-upload-area">
-      <span class="icon-upload-label">custom icon <span class="tag">image/gif file — max 10 mb</span></span>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <div class="icon-drop-zone" onclick="document.getElementById('customIconInput').click()">
-          <i class="fas fa-upload" style="font-size:10px;margin-right:5px"></i> upload png / jpg / gif / webp 
-        </div>
-        <input type="file" id="customIconInput" accept="image/png,image/svg+xml,image/jpeg,image/webp" onchange="handleCustomIcon(this)">
-      </div>
-      <div class="custom-icons-row" id="customIconsRow"></div>
-    </div>
-    <div style="margin-top:12px;display:flex;gap:8px">
-      <button class="modal-save" onclick="confirmIconPick()">apply →</button>
-      <button class="modal-cancel" onclick="closeIconPicker()">cancel</button>
-    </div>
-  </div>
-</div>
+
 
 <script>
   console.log('[swaqq] script start');
@@ -6040,7 +6011,38 @@ setInterval(saveDraft, 30000);
   </div>
 </div>
 
+<div class="save-bar" id="saveBar" style="display:none">
+  <div style="display:flex;align-items:center;gap:8px">
+    <button id="undoBtn" class="btn btn-ghost" onclick="undo()" title="undo (ctrl+z)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-undo"></i></button>
+    <button id="redoBtn" class="btn btn-ghost" onclick="redo()" title="redo (ctrl+y)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-redo"></i></button>
+    <span class="save-status" id="saveStatus">unsaved changes</span>
+  </div>
+  <button class="btn-save" id="saveBtn" onclick="saveProfile()">save changes →</button>
+</div>
 
+  <!-- ICON PICKER -->
+<div class="icon-picker-overlay" id="iconPickerOverlay" onclick="if(event.target===this)closeIconPicker()">
+  <div class="icon-picker-box">
+    <div class="icon-picker-title">choose icon</div>
+    <input class="icon-search" type="text" placeholder="search icons..." oninput="filterIcons(this.value)" id="iconSearchInput">
+    <div class="icon-grid" id="iconGrid"></div>
+    <!-- Custom icon upload -->
+    <div class="icon-upload-area">
+      <span class="icon-upload-label">custom icon <span class="tag">image/gif file — max 10 mb</span></span>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div class="icon-drop-zone" onclick="document.getElementById('customIconInput').click()">
+          <i class="fas fa-upload" style="font-size:10px;margin-right:5px"></i> upload png / jpg / gif / webp 
+        </div>
+        <input type="file" id="customIconInput" accept="image/png,image/svg+xml,image/jpeg,image/webp" onchange="handleCustomIcon(this)">
+      </div>
+      <div class="custom-icons-row" id="customIconsRow"></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="modal-save" onclick="confirmIconPick()">apply →</button>
+      <button class="modal-cancel" onclick="closeIconPicker()">cancel</button>
+    </div>
+  </div>
+</div>
   </main>
 </div>
 </body>
