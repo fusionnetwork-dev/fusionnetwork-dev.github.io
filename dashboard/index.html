@@ -2846,37 +2846,25 @@ document.getElementById('dashLayout')?.style.removeProperty('filter');
   });
 }
   // ─── AUTH ────────────────────────────────────────────────────────────────────
- async function initAuth() {
-    const { data:{ session } } = await sb.auth.getSession();
-    console.log('[swaqq] session:', session);
-    if (!session) { window.location.href = '/'; return; }
-    currentUser = session.user;
-    console.log('[swaqq] user:', currentUser.id);
-    try {
-      await loadProfile();
-       await checkDiscordVerification();
-      console.log('[swaqq] loadProfile complete');
-    } catch(e) {
-      console.error('[swaqq] loadProfile threw:', e);
-    }
-    console.log('[swaqq] hiding gate');
-   document.getElementById('authGate').style.setProperty('display', 'none', 'important');
-    document.getElementById('dashLayout').style.display = 'flex';
-    if (window.innerWidth <= 768) {
-      document.getElementById('sidebar').classList.add('open');
-      document.getElementById('sidebarOverlay').classList.add('open');
-      document.getElementById('mobileMenuBtn').querySelector('i').className = 'fas fa-times';
-    }
-    document.getElementById('saveBar').style.display = 'flex';
-const { data: viewData } = await sb
-  .from('profiles')
-  .select('view_count')
-  .eq('id', session.user.id)
-  .single();
-console.log('[views] dashboard view_count:', viewData?.view_count);
-const viewEl = document.getElementById('statViews');
-if (viewEl) viewEl.textContent = (viewData?.view_count || 0).toLocaleString();
-}  // ← closes initAuth
+async function initAuth() {
+  const { data:{ session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/'; return; }
+  currentUser = session.user;
+
+  try {
+    await loadProfile();
+    await checkDiscordVerification();
+  } catch(e) {
+    console.error('[swaqq] loadProfile threw:', e);
+  }
+
+  document.getElementById('authGate').style.setProperty('display', 'none', 'important');
+  document.getElementById('dashLayout').style.display = 'flex';
+  document.getElementById('saveBar').style.display = 'flex';
+
+  showTab('profile');
+  loadReferralSection();
+}
 
 initAuth().catch(err => {
   console.error('initAuth failed:', err);
@@ -2884,8 +2872,8 @@ initAuth().catch(err => {
 });
 
 sb.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_OUT' || !session) window.location.href = '/';
-  });
+  if (event === 'SIGNED_OUT') window.location.href = '/';
+});
 
   async function loadProfile() {
     const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
