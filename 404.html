@@ -758,40 +758,39 @@ function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
       },
       events: {
         onReady: (e) => {
-          e.target.mute();
-          e.target.setVolume(0);
-          try { e.target.playVideo(); } catch(_) {}
-          if (!audioOnly) {
-            container.classList.add('active');
-          }
-          // On mobile, playVideo() often needs a nudge after a gesture
-          if (window._userGestureUnlocked) {
-            try { e.target.playVideo(); } catch(_) {}
-          }
-        },
-       onStateChange: (e) => {
+  e.target.mute();
+  e.target.setVolume(0);
+  try { e.target.playVideo(); } catch(_) {}
+  if (!audioOnly) container.classList.add('active');
+  setTimeout(() => {
+    try { e.target.playVideo(); } catch(_) {}
+  }, 500);
+  if (window._userGestureUnlocked && localStorage.getItem('swaqq_bg_muted') !== '1') {
+    try { e.target.unMute(); e.target.setVolume(_lastVolume || 60); } catch(_) {}
+  }
+},
+     onStateChange: (e) => {
   if (e.data === YT.PlayerState.PLAYING) {
     if (localStorage.getItem('swaqq_bg_muted') === '1') {
       e.target.mute();
       e.target.setVolume(0);
-    } else {
+    } else if (window._userGestureUnlocked) {
       e.target.unMute();
       e.target.setVolume(_lastVolume || 60);
     }
     if (!audioOnly) container.classList.add('active');
   }
-
   if (e.data === YT.PlayerState.ENDED) {
     try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {}
   }
   if (e.data === YT.PlayerState.UNSTARTED || e.data === YT.PlayerState.CUED) {
-          try { e.target.playVideo(); } catch(_) {}
-        }
-      }  // closes onStateChange
-    }    // closes events object
-  });    // closes new YT.Player(...)
-  }      // closes initWhenReady function
-  initWhenReady();
+    try { e.target.playVideo(); } catch(_) {}
+  }
+}  // closes onStateChange
+}    // closes events object
+});    // closes new YT.Player(...)
+}      // closes initWhenReady function
+initWhenReady();
 }        // closes createYouTubeBackground
     loadYouTubeIframeAPI();
 
@@ -1536,16 +1535,17 @@ document.getElementById('discordStatus').insertAdjacentElement('afterend', joine
     setTimeout(type, 200);
   }
 
- splashEl.addEventListener('click', () => {
+splashEl.addEventListener('click', () => {
   window._userGestureUnlocked = true;
   splashEl.classList.add('out');
 
-  // Kick YT player on mobile — needs user gesture to start
+  // iOS requires play + unmute to be synchronous inside the gesture
+  // Do NOT wrap in setTimeout or it breaks on Safari
   if (ytPlayer) {
     try {
-      ytPlayer.unMute();
-      ytPlayer.setVolume(0);
       ytPlayer.playVideo();
+      ytPlayer.unMute();
+      ytPlayer.setVolume(_lastVolume || 60);
     } catch(_) {}
   }
 
