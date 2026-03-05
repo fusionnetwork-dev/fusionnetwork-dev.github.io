@@ -1659,24 +1659,6 @@ if (CS.bg_type === 'custom-video' && customVid) {
   createYouTubeBackground(audioId, CS.mute_audio !== false, true);
 } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  console.log('[bg] entering video block, isMobile:', isMobile, 'cached:', localStorage.getItem('swaqq_cdn_' + videoId));
- if (isMobile) {
-  const cachedUrl = localStorage.getItem('swaqq_cdn_' + videoId);
-if (cachedUrl) {
-  console.log('[bg] using cached url:', cachedUrl);
-  createVideoBackground(cachedUrl, true, true);
-  console.log('[bg] vid after create:', document.getElementById('customVideoBg'));
-    const vid = document.getElementById('customVideoBg');
-    if (vid) {
-      document.addEventListener('touchstart', () => {
-        vid.muted = false; vid.volume = (_lastVolume || 60) / 100; vid.play().catch(() => {});
-      }, { once: true });
-      document.addEventListener('click', () => {
-        vid.muted = false; vid.volume = (_lastVolume || 60) / 100; vid.play().catch(() => {});
-      }, { once: true });
-    }
- } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if (isMobile) {
     const cachedUrl = localStorage.getItem('swaqq_cdn_' + videoId);
     if (cachedUrl) {
@@ -1721,7 +1703,6 @@ if (cachedUrl) {
     createYouTubeBackground(videoId, CS.mute_video !== false, false);
   }
 }
- }
 // If no splash, unmute immediately after player is ready
 if (window._userGestureUnlocked && localStorage.getItem('swaqq_bg_muted') !== '1') {
   setTimeout(() => {
