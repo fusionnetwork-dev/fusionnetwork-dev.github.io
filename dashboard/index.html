@@ -596,9 +596,14 @@ body, html {
     <button class="nav-item admin-nav" onclick="showTab('admin')"><i class="fas fa-shield-alt"></i> admin panel</button>
   </div>
 
-  <div class="sidebar-bottom">    
-    <button class="btn-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> log out</button>
-  </div>
+<div class="sidebar-bottom">
+  <a href="https://discord.gg/QdPad6KwKj" target="_blank" class="btn-logout" style="color:rgba(88,101,242,0.5)">
+    <i class="fab fa-discord"></i> discord
+  </a>
+  <button class="btn-logout" onclick="handleLogout()">
+    <i class="fas fa-sign-out-alt"></i> logout
+  </button>
+</div>
 </aside>
 
 
