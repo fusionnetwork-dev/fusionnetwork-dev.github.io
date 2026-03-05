@@ -1078,11 +1078,7 @@ function showAgeGate(profile) {
         document.getElementById('discordStatus').classList.add('visible');
         fetchDiscordStatus(profile.discord_id);
       }
-if (profile.banner_url) {
-  const banner = document.createElement('div');
-  banner.style.cssText = `width:100%;max-width:${CS.card_width||420}px;height:120px;border-radius:16px 16px 0 0;background:url(${profile.banner_url}) center/cover no-repeat;margin-bottom:-16px;position:relative;z-index:1`;
-  document.querySelector('.card-wrap').prepend(banner);
-}
+
       // Splash or direct reveal
       if (profile.show_splash !== false) {
         renderSplash(profile, CS);
