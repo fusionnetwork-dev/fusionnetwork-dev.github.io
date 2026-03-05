@@ -1000,6 +1000,22 @@ function showAgeGate(profile) {
       const nameEl = document.getElementById('cardName');
       nameEl.textContent = profile.display_name || profile.handle;
       document.getElementById('cardHandle').textContent = '@' + profile.handle;
+      // Joined date
+const joined = new Date(profile.created_at);
+const now = new Date();
+const diffMs = now - joined;
+const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+let timeAgo;
+if (diffDays < 1) timeAgo = 'today';
+else if (diffDays < 7) timeAgo = `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+else if (diffDays < 30) { const w = Math.floor(diffDays / 7); timeAgo = `${w} week${w !== 1 ? 's' : ''} ago`; }
+else if (diffDays < 365) { const m = Math.floor(diffDays / 30); timeAgo = `${m} month${m !== 1 ? 's' : ''} ago`; }
+else { const y = Math.floor(diffDays / 365); timeAgo = `${y} year${y !== 1 ? 's' : ''} ago`; }
+
+const joinedEl = document.createElement('div');
+joinedEl.textContent = `joined about ${timeAgo}`;
+joinedEl.style.cssText = 'font-family:"Geist Mono",monospace;font-size:10px;color:rgba(255,255,255,0.22);font-style:italic;margin-top:5px;letter-spacing:0.05em;';
+document.getElementById('discordStatus').insertAdjacentElement('afterend', joinedEl);
       document.getElementById('topBarHandle').textContent = '@' + profile.handle;
       document.getElementById('footerVersion').textContent = `swaqq.xyz/@${profile.handle}`;
       document.title = `${profile.display_name || profile.handle} — swaqq.xyz`;
