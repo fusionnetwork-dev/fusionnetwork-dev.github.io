@@ -784,7 +784,35 @@ if (_discordUser) {
     }).eq('id', session.user.id);
   }
 }
+if (_discordUser) {
+  const fullHandle =
+    _discordUser.discriminator && _discordUser.discriminator !== "0"
+      ? `${_discordUser.username}#${_discordUser.discriminator}`
+      : _discordUser.username;
 
+  await fetch(DISCORD_WEBHOOK, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      embeds: [{
+        title: '✅ New Account Created',
+        color: 0x43b581,
+        fields: [
+          { name: 'Site Handle', value: `@${handle}`, inline: true },
+          { name: 'Profile URL', value: `https://swaqq.xyz/@${handle}`, inline: false },
+          { name: 'Discord', value: fullHandle, inline: true },
+          { name: 'Discord ID', value: _discordUser.id, inline: true }
+        ],
+        thumbnail: {
+          url: _discordUser.avatar
+            ? `https://cdn.discordapp.com/avatars/${_discordUser.id}/${_discordUser.avatar}.png`
+            : null
+        },
+        timestamp: new Date().toISOString()
+      }]
+    })
+  }).catch(() => {});
+}
 showAlert('signupAlert', '✓ account created! redirecting...', 'success');
 setTimeout(() => window.location.href = '/dashboard', 900);
     
