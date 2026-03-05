@@ -229,21 +229,26 @@
 #volumeBtn {
   width: 52px;
   height: 52px;
-  border-radius: 14px 14px 0 0;
+  border-radius: 14px;
   background: rgba(255,255,255,0.08);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.13);
-  border-bottom: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-radius 0.3s ease;
   flex-shrink: 0;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
-
+#volumeBtn.slider-open {
+  border-radius: 14px 14px 0 0;
+  border-bottom-color: transparent;
+  box-shadow: none;
+}
 #volumeBtn:hover { background: rgba(255,255,255,0.13); }
 #volumeBtn i { font-size: 17px; color: rgba(255,255,255,0.7); transition: color 0.2s; }
 
@@ -251,7 +256,7 @@
   width: 52px;
   height: 0;
   overflow: hidden;
-  transition: height 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s;
+  transition: height 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
   opacity: 0;
   display: flex;
   flex-direction: column;
@@ -281,7 +286,6 @@
   writing-mode: vertical-lr;
   direction: rtl;
 }
-
 #volumeSlider::-webkit-slider-thumb {
   width: 18px;
   height: 18px;
@@ -1592,8 +1596,7 @@ if (CS.banner_url) injectBanner(CS.banner_url, CS.card_width);
         createYouTubeBackground(videoId, CS.mute_video !== false, false);
       }
 
-      const hasAudio = (CS.bg_type === 'video' && videoId) || (CS.bg_type === 'audio' && audioId);
-      if (showVolume && hasAudio) initVolumeWidget();
+if (showVolume) initVolumeWidget();
 
       if (CS.typewriter !== false) {
          applyScheduledBio(profile);
@@ -1946,33 +1949,48 @@ async function submitReport(profileId, handle, modal) {
     let _isMuted     = false;
     let _lastVolume  = 60;
 
-    function initVolumeWidget() {
-      const widget = document.getElementById('volumeWidget');
-      if (!widget) return;
-      widget.style.display = 'flex';
-      widget.addEventListener('mouseenter', () => {
-        clearTimeout(_volumeHideTimer);
-        openVolumeSlider();
-      });
-      widget.addEventListener('mouseleave', () => {
-        _volumeHideTimer = setTimeout(closeVolumeSlider, 800);
-      });
-      const slider = document.getElementById('volumeSlider');
-      slider?.addEventListener('mousedown', () => clearTimeout(_volumeHideTimer));
-      slider?.addEventListener('mouseup',   () => { _volumeHideTimer = setTimeout(closeVolumeSlider, 1200); });
-    }
+  function initVolumeWidget() {
+  const widget = document.getElementById('volumeWidget');
+  if (!widget) return;
+  widget.style.display = 'flex';
 
-  function openVolumeSlider() {
+  // hover (desktop)
+  widget.addEventListener('mouseenter', () => {
+    clearTimeout(_volumeHideTimer);
+    openVolumeSlider();
+  });
+  widget.addEventListener('mouseleave', () => {
+    _volumeHideTimer = setTimeout(closeVolumeSlider, 900);
+  });
+
+  // tap (mobile) — toggle on button click
+  document.getElementById('volumeBtn').addEventListener('click', () => {
+    if (_volumeOpen) closeVolumeSlider();
+    else openVolumeSlider();
+  });
+
+  const slider = document.getElementById('volumeSlider');
+  slider?.addEventListener('mousedown', () => clearTimeout(_volumeHideTimer));
+  slider?.addEventListener('touchstart', () => clearTimeout(_volumeHideTimer));
+  slider?.addEventListener('mouseup', () => { _volumeHideTimer = setTimeout(closeVolumeSlider, 1400); });
+  slider?.addEventListener('touchend', () => { _volumeHideTimer = setTimeout(closeVolumeSlider, 1400); });
+}
+
+ function openVolumeSlider() {
   if (_volumeOpen) return;
   _volumeOpen = true;
   const wrap = document.getElementById('volumeSliderWrap');
+  const btn  = document.getElementById('volumeBtn');
   if (wrap) { wrap.style.height = '120px'; wrap.style.opacity = '1'; wrap.style.padding = '12px 0 10px'; }
+  if (btn)  btn.classList.add('slider-open');
 }
 
 function closeVolumeSlider() {
   _volumeOpen = false;
   const wrap = document.getElementById('volumeSliderWrap');
+  const btn  = document.getElementById('volumeBtn');
   if (wrap) { wrap.style.height = '0'; wrap.style.opacity = '0'; wrap.style.padding = '0'; }
+  if (btn)  btn.classList.remove('slider-open');
 }
     function setVolume(val) {
       val = parseInt(val);
