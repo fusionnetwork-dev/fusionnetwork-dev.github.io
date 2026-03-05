@@ -1659,6 +1659,7 @@ if (CS.bg_type === 'custom-video' && customVid) {
   createYouTubeBackground(audioId, CS.mute_audio !== false, true);
 } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  console.log('[bg] entering video block, isMobile:', isMobile, 'cached:', localStorage.getItem('swaqq_cdn_' + videoId));
  if (isMobile) {
   const cachedUrl = localStorage.getItem('swaqq_cdn_' + videoId);
 if (cachedUrl) {
