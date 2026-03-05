@@ -1178,20 +1178,22 @@ document.getElementById('discordStatus').insertAdjacentElement('afterend', joine
     // Badges
 const badgesEl = document.getElementById('cardBadges');
 const rawBadges = Array.isArray(profile.badges) ? profile.badges : JSON.parse(profile.badges || '[]');
-const badgeColors = JSON.parse(profile.badge_colors || '{}');
+const badgeColors = typeof profile.badge_colors === 'string'
+  ? JSON.parse(profile.badge_colors || '{}')
+  : (profile.badge_colors || {});
 
 if (rawBadges.length) {
   badgesEl.style.display = 'inline-flex';
   rawBadges.forEach(badgeId => {
     const def = BADGE_DEFS.find(b => b.id === badgeId);
     if (!def) return;
-    
+
     const div = document.createElement('div');
     div.className = 'badge';
-    
+
     const color = badgeColors[badgeId] || def.defaultColor || '#ffffff';
     div.style.setProperty('--badge-color', color);
-    
+
     div.innerHTML = `<i class="${def.icon}"></i><div class="badge-tip">${def.label}</div>`;
     badgesEl.appendChild(div);
   });
