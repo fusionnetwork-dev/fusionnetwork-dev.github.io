@@ -231,6 +231,7 @@
     .badge-card.early-badge.selected { border-color:var(--gold); background:rgba(245,166,35,0.1); }
     .badge-icon { width:36px; height:36px; border-radius:9px; background:rgba(255,255,255,0.06); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
     .early-badge .badge-icon { background:rgba(245,166,35,0.1); border-color:rgba(245,166,35,0.25); color:var(--gold); }
+    
     .badge-info { flex:1; min-width:0; overflow:hidden; }
     .badge-name { font-size:13px; font-weight:700; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .badge-desc { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -244,8 +245,13 @@
     .active-pill { display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.07); border:1px solid var(--border2); border-radius:100px; padding:4px 12px; font-family:'Geist Mono',monospace; font-size:11px; color:var(--sub); }
     .active-pill.early { background:rgba(245,166,35,0.1); border-color:rgba(245,166,35,0.3); color:var(--gold); }
     .no-badges-msg { font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.18); }
-
-
+.badge-card.founder-badge { border-color:rgba(240,71,71,0.3); }
+.badge-card.founder-badge:hover { border-color:var(--red); background:rgba(240,71,71,0.06); }
+.badge-card.founder-badge.selected { border-color:var(--red); background:rgba(240,71,71,0.1); }
+.founder-badge .badge-icon { background:rgba(240,71,71,0.1); border-color:rgba(240,71,71,0.25); color:var(--red); }
+.badge-early-tag.founder-tag { color:var(--red); background:rgba(240,71,71,0.1); border-color:rgba(240,71,71,0.25); }
+.active-pill.founder { background:rgba(240,71,71,0.1); border-color:rgba(240,71,71,0.3); color:var(--red); }
+    
     .social-row-edit { display:grid; grid-template-columns:36px 110px 1fr auto 36px; align-items:center; gap:8px; margin-bottom:10px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 12px; transition:border-color 0.2s; }
     .social-row-edit:hover { border-color:var(--border2); }
     .social-icon-btn { width:36px; height:36px; background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:14px; flex-shrink:0; cursor:pointer; transition:all 0.2s; padding:0; }
@@ -1809,6 +1815,11 @@ body, html {
     <div id="customBadgeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>
     <div class="alert" id="customBadgeAlert" style="margin-top:8px"></div>
   </div>
+        <div class="dash-section" style="margin-top:24px">
+  <div class="dash-section-title">badge colors</div>
+  <div class="dash-section-sub">customize the color of each unlocked badge</div>
+  <div class="card-edit" id="badgeColorPickers"></div>
+</div>
 <!-- after the customBadgeGrid div, inside the card-edit -->
 <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
   <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">
@@ -2766,15 +2777,16 @@ function applyPresetTheme(theme) {
   },
 ];
 const BADGE_DEFS = [
-  { id:'early',       label:'Early',       icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',      locked:true, early:true  },
-  { id:'supporter',   label:'Supporter',   icon:'fas fa-heart',       desc:'supports swaqq.xyz',                        locked:true  },
-  { id:'contributor', label:'Contributor', icon:'fas fa-code-branch', desc:'contributed to swaqq.xyz',                  locked:true  },
-  { id:'owner',       label:'Owner',       icon:'fas fa-crown',       desc:'platform owner',                            locked:true  },
-  { id:'developer',   label:'Developer',   icon:'fas fa-code',        desc:'built something for swaqq.xyz',             locked:true  },
-  { id:'staff',       label:'Staff',       icon:'fas fa-shield-alt',  desc:'part of the swaqq.xyz team',                locked:true  },
-  { id:'vip',         label:'VIP',         icon:'fas fa-star',        desc:'very important person',                     locked:true  },
-  { id:'verified',    label:'Verified',    icon:'fas fa-check-circle',desc:'verified identity',                         locked:true  },
-  { id:'og',          label:'OG',          icon:'fas fa-fire',        desc:'been here from day one',                    locked:false  },
+  { id:'early',       label:'Early',       icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',   locked:true,  early:true,   founder:false, defaultColor:'#f5a623' },
+  { id:'supporter',   label:'Supporter',   icon:'fas fa-heart',       desc:'supports swaqq.xyz',                    locked:true,               defaultColor:'#f472b6' },
+  { id:'contributor', label:'Contributor', icon:'fas fa-code-branch', desc:'contributed to swaqq.xyz',              locked:true,               defaultColor:'#a78bfa' },
+  { id:'founder',     label:'Founder',     icon:'fas fa-flag',        desc:'founding member of swaqq.xyz',          locked:true,  founder:true, defaultColor:'#f04747' },
+  { id:'owner',       label:'Owner',       icon:'fas fa-crown',       desc:'platform owner',                        locked:true,               defaultColor:'#f5a623' },
+  { id:'developer',   label:'Developer',   icon:'fas fa-code',        desc:'built something for swaqq.xyz',         locked:true,               defaultColor:'#38bdf8' },
+  { id:'staff',       label:'Staff',       icon:'fas fa-shield-alt',  desc:'part of the swaqq.xyz team',            locked:true,               defaultColor:'#34d399' },
+  { id:'vip',         label:'VIP',         icon:'fas fa-star',        desc:'very important person',                 locked:true,               defaultColor:'#faff00' },
+  { id:'verified',    label:'Verified',    icon:'fas fa-check-circle',desc:'verified identity',                     locked:true,               defaultColor:'#38bdf8' },
+  { id:'og',          label:'OG',          icon:'fas fa-fire',        desc:'been here from day one',                locked:false,              defaultColor:'#fb923c' },
 ];
 
   const FONTS = [
@@ -3044,7 +3056,7 @@ initAuth().catch(err => {
 sb.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_OUT') window.location.href = '/';
 });
-
+let badgeColors = {};
   async function loadProfile() {
     const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
     if (error || !data) { console.error('loadProfile:', error); return; }
@@ -3117,7 +3129,7 @@ CS = {
   bg_video_loop:      get('bg_video_loop',      true),
   bg_video_mute:      get('bg_video_mute',      true),
   youtube_video_id:   get('youtube_video_id',   ''),
-  
+  badgeColors = pj(data.badge_colors, {});
 };
     
     console.log('[swaqq] loaded CS:', CS);
@@ -4682,19 +4694,23 @@ async function applyMarketplaceTheme(id) {
       const canUse   = isOwner || !def.locked || unlockedBadges.includes(def.id);
       const isActive = activeBadges.includes(def.id);
       const card = document.createElement('div');
-      card.className = ['badge-card', def.early ? 'early-badge' : '', canUse ? 'unlocked' : 'locked', isActive ? 'selected' : ''].filter(Boolean).join(' ');
+   card.className = ['badge-card', def.early ? 'early-badge' : '', def.founder ? 'founder-badge' : '', canUse ? 'unlocked' : 'locked', isActive ? 'selected' : ''].filter(Boolean).join(' ');
       card.dataset.id = def.id;
 
       let stateHtml;
-      if (!canUse) {
-        stateHtml = '<div class="badge-state"><span class="badge-locked-tag">locked</span></div>';
-      } else if (def.early) {
-        stateHtml = '<div class="badge-state">' + (isActive
-          ? '<div class="badge-pip"><i class="fas fa-check"></i></div>'
-          : '<span class="badge-early-tag">early</span>') + '</div>';
-      } else {
-        stateHtml = '<div class="badge-state"><div class="badge-pip"><i class="fas fa-check"></i></div></div>';
-      }
+    if (!canUse) {
+  stateHtml = '<div class="badge-state"><span class="badge-locked-tag">locked</span></div>';
+} else if (def.founder) {
+  stateHtml = '<div class="badge-state">' + (isActive
+    ? '<div class="badge-pip"><i class="fas fa-check"></i></div>'
+    : '<span class="badge-early-tag founder-tag">founder</span>') + '</div>';
+} else if (def.early) {
+  stateHtml = '<div class="badge-state">' + (isActive
+    ? '<div class="badge-pip"><i class="fas fa-check"></i></div>'
+    : '<span class="badge-early-tag">early</span>') + '</div>';
+} else {
+  stateHtml = '<div class="badge-state"><div class="badge-pip"><i class="fas fa-check"></i></div></div>';
+}
 
       card.innerHTML =
         '<div class="badge-icon"><i class="' + def.icon + '"></i></div>' +
@@ -4706,7 +4722,51 @@ async function applyMarketplaceTheme(id) {
     renderActivePills();
     document.getElementById('statBadges').textContent = activeBadges.length;
   }
+function renderBadgeColorPickers() {
+  const el = document.getElementById('badgeColorPickers');
+  if (!el) return;
+  const available = BADGE_DEFS.filter(def => unlockedBadges.includes(def.id) || !def.locked);
+  if (!available.length) {
+    el.innerHTML = '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--muted)">unlock badges to customize their colors</div>';
+    return;
+  }
+  el.innerHTML = available.map(def => {
+    const color = badgeColors[def.id] || def.defaultColor || '#ffffff';
+    return `
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:${color}">
+          <i class="${def.icon}" style="font-size:13px"></i>
+        </div>
+        <div style="flex:1;font-size:13px;font-weight:700">${def.label}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="color" value="${color}" oninput="setBadgeColor('${def.id}', this.value, this)" style="width:32px;height:32px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0">
+          <input class="field-input" type="text" value="${color}" maxlength="7" placeholder="#ffffff" style="width:90px;font-family:'Geist Mono',monospace;font-size:12px" oninput="if(/^#[0-9a-f]{6}$/i.test(this.value)) setBadgeColor('${def.id}', this.value, this)">
+          <button class="btn btn-ghost" style="font-size:10px;padding:5px 10px" onclick="resetBadgeColor('${def.id}')">reset</button>
+        </div>
+      </div>`;
+  }).join('');
+}
 
+function setBadgeColor(id, color, sourceEl) {
+  badgeColors[id] = color;
+  // Sync the paired input
+  const parent = sourceEl.closest('div[style*="display:flex"]');
+  if (parent) {
+    const colorInput = parent.querySelector('input[type="color"]');
+    const textInput  = parent.querySelector('input[type="text"]');
+    if (colorInput) colorInput.value = color;
+    if (textInput)  textInput.value  = color;
+    // Update icon preview
+    const icon = parent.querySelector('i');
+    if (icon) icon.style.color = color;
+  }
+}
+
+function resetBadgeColor(id) {
+  const def = BADGE_DEFS.find(b => b.id === id);
+  delete badgeColors[id];
+  renderBadgeColorPickers();
+}
 
 async function loadReports() {
   const tbody = document.getElementById('reportsBody');
@@ -4836,13 +4896,13 @@ async function syncDiscordRoleBadges(discordId) {
   function renderActivePills() {
     const row = document.getElementById('activeBadgesPreview'); row.innerHTML = '';
     if (!activeBadges.length) { row.innerHTML = '<span class="no-badges-msg">no badges active</span>'; return; }
-    activeBadges.forEach(id => {
-      const def = BADGE_DEFS.find(b => b.id === id); if (!def) return;
-      const pill = document.createElement('div');
-      pill.className = 'active-pill' + (def.early ? ' early' : '');
-      pill.innerHTML = '<i class="' + def.icon + '" style="font-size:10px"></i> ' + def.label;
-      row.appendChild(pill);
-    });
+ activeBadges.forEach(id => {
+  const def = BADGE_DEFS.find(b => b.id === id); if (!def) return;
+  const pill = document.createElement('div');
+  pill.className = 'active-pill' + (def.early ? ' early' : '') + (def.founder ? ' founder' : '');
+  pill.innerHTML = '<i class="' + def.icon + '" style="font-size:10px"></i> ' + def.label;
+  row.appendChild(pill);
+});
   }
 
   // ─── SAVE ────────────────────────────────────────────────────────────────────
@@ -4949,6 +5009,7 @@ async function syncDiscordRoleBadges(discordId) {
     splash_typewriter: gtog('tSplashTypewriter'),
     banner_url:     document.getElementById('fBannerUrl').value.trim(),
     youtube_video_id: document.getElementById('fYoutubeId').value.trim(),
+    badge_colors: JSON.stringify(badgeColors),
   };
 
   // Serialize and check size — warn if still too large
