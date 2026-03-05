@@ -4256,207 +4256,208 @@ async function syncDiscordRoleBadges(discordId) {
 
   // ─── SAVE ────────────────────────────────────────────────────────────────────
   async function saveProfile() {
-    const btn = document.getElementById('saveBtn');
-    const st  = document.getElementById('saveStatus');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner" style="display:inline-block;width:11px;height:11px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite"></span>';
+  const btn = document.getElementById('saveBtn');
+  const st  = document.getElementById('saveStatus');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="display:inline-block;width:11px;height:11px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite"></span>';
 
-    const handle = document.getElementById('fHandle').value.trim().toLowerCase();
-    if (!/^[a-z0-9_]{2,20}$/.test(handle)) {
-      showAlert('profileAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
+  const handle = document.getElementById('fHandle').value.trim().toLowerCase();
+  if (!/^[a-z0-9_]{2,20}$/.test(handle)) {
+    showAlert('profileAlert', 'handle: 2–20 chars, letters/numbers/underscores only.', 'error');
+    btn.disabled = false; btn.textContent = 'save changes →'; return;
+  }
+
+  const handleErr = await validateHandleOrName(handle, 'handle');
+  if (handleErr) {
+    showAlert('profileAlert', handleErr, 'error');
+    btn.disabled = false; btn.textContent = 'save changes →'; return;
+  }
+
+  const displayName = document.getElementById('fDisplayName').value.trim();
+  const nameErr = await validateHandleOrName(displayName, 'display name');
+  if (nameErr) {
+    showAlert('profileAlert', nameErr, 'error');
+    btn.disabled = false; btn.textContent = 'save changes →'; return;
+  }
+
+  if (handle !== currentProfile.handle) {
+    const { data: taken } = await sb.from('profiles').select('id').eq('handle', handle).maybeSingle();
+    if (taken && taken.id !== currentUser.id) {
+      showAlert('profileAlert', '@' + handle + ' is already taken.', 'error');
       btn.disabled = false; btn.textContent = 'save changes →'; return;
     }
-    // Check handle for slurs / bad words
-const handleErr = await validateHandleOrName(handle, 'handle');
-if (handleErr) {
-  showAlert('profileAlert', handleErr, 'error');
-  btn.disabled = false; btn.textContent = 'save changes →'; return;
-}
-
-// Check display name
-const displayName = document.getElementById('fDisplayName').value.trim();
-const nameErr = await validateHandleOrName(displayName, 'display name');
-if (nameErr) {
-  showAlert('profileAlert', nameErr, 'error');
-  btn.disabled = false; btn.textContent = 'save changes →'; return;
-}
-    if (handle !== currentProfile.handle) {
-      const { data: taken } = await sb.from('profiles').select('id').eq('handle', handle).maybeSingle();
-      if (taken && taken.id !== currentUser.id) {
-        showAlert('profileAlert', '@' + handle + ' is already taken.', 'error');
-        btn.disabled = false; btn.textContent = 'save changes →'; return;
-      }
-    }
-
-    // Safe parseInt that falls back to CS value or default
-    const safeInt = (elId, csKey) => {
-      const el = document.getElementById(elId);
-      const v = el ? parseInt(el.value) : NaN;
-      return isNaN(v) ? (cs(csKey)) : v;
-    };
-
-    // Build full CS blob from current UI state
-    const newCS = {
-      bg_type:           currentBgTab,
-      bg_image_url:      (document.getElementById('fBgImageUrl')?.value || '').trim(),
-      bg_opacity:        safeInt('fBgOpacity', 'bg_opacity'),
-      bg_color:          document.getElementById('fBgColor')?.value || cs('bg_color'),
-      bg_grad1:          document.getElementById('fGrad1')?.value   || cs('bg_grad1'),
-      bg_grad2:          document.getElementById('fGrad2')?.value   || cs('bg_grad2'),
-      bg_grad_dir:       document.getElementById('fGradDir')?.value || cs('bg_grad_dir'),
-      show_video_bg:     gtog('tShowVideo'),
-      mute_video:        gtog('tMuteDefault'),
-      card_font:         CS.card_font || cs('card_font'),
-      accent_color:      document.getElementById('fAccentColor')?.value || cs('accent_color'),
-      card_blur:         safeInt('fCardBlur', 'card_blur'),
-      card_opacity:      safeInt('fCardOpacity', 'card_opacity'),
-      card_glow:         gtog('tCardGlow'),
-      card_rounded:      gtog('tRounded'),
-      show_uid_scramble: isAdmin ? gtog('tUid') : false,
-      custom_font_name:   customFontName,
-      custom_font_family: customFontFamily,
-      custom_font_data:   customFontDataUrl,
-      custom_icons: customIcons,
-  audio_only_id: document.getElementById('fAudioId')?.value.trim() || '',
-mute_audio: gtog('tMuteAudio'),
-       border_style:   CS.border_style  || cs('border_style'),
-  name_style:     CS.name_style    || cs('name_style'),
-  name_grad1:     document.getElementById('fNameGrad1')?.value    || cs('name_grad1'),
-  name_grad2:     document.getElementById('fNameGrad2')?.value    || cs('name_grad2'),
-  card_layout:    CS.card_layout   || cs('card_layout'),
-  avatar_shape:   CS.avatar_shape  || cs('avatar_shape'),
-  avatar_border:  parseInt(document.getElementById('fAvatarBorder')?.value) || cs('avatar_border'),
-  avatar_glow:    gtog('tAvatarGlow'),
-  avatar_spin:    gtog('tAvatarSpin'),
-  card_texture:   CS.card_texture  || cs('card_texture'),
-  cursor_style:   CS.cursor_style  || cs('cursor_style'),
-  social_style:   CS.social_style  || cs('social_style'),
-  card_width:     parseInt(document.getElementById('fCardWidth')?.value)    || cs('card_width'),
-  card_glass:     gtog('tGlass'),
-  card_shadow:    gtog('tCardShadow'),
-  particles:      gtog('tParticles'),
-  page_anim:      gtog('tPageAnim'),
-  snow:           gtog('tSnow'),
-  scanlines:      gtog('tScanlines'),
-  particle_color: document.getElementById('fParticleColor')?.value || cs('particle_color'),
-  bio_size:       parseInt(document.getElementById('fBioSize')?.value)      || cs('bio_size'),
-  bio_color:      document.getElementById('fBioColor')?.value               || cs('bio_color'),
-  bio_italic:     gtog('tBioItalic'),
-  typewriter:     gtog('tTypewriter'),
-    show_volume_widget: gtog('tVolumeWidget'),
-bg_video_url:    document.getElementById('fBgVideoUrl')?.value?.trim() || '',
- bg_video_loop:   gtog('tBgVideoLoop'),
- bg_video_mute:   gtog('tBgVideoMute'),
- card_flip:       gtog('tCardFlip'),
- card_back_text:  document.getElementById('fCardBackText')?.value?.trim() || '',
-      splash_text:       document.getElementById('fSplashText')?.value?.trim() || '',
-    splash_font:       CS.splash_font || 'Syne',
-    splash_typewriter: gtog('tSplashTypewriter'),
-      banner_url: document.getElementById('fBannerUrl').value.trim(),
-    };
-newCS.youtube_video_id = document.getElementById('fYoutubeId').value.trim();
-    console.log('[swaqq] saving newCS:', newCS);
-
-    // Write BOTH custom_settings blob AND flat columns so profile page can read either
-    const updates = {
-      display_name:      document.getElementById('fDisplayName').value.trim() || handle,
-      handle,
-      bio:               document.getElementById('fBio').value.trim(),
-      discord_id:        document.getElementById('fDiscordId').value.trim(),
-      avatar_url:        document.getElementById('fAvatarUrl').value.trim(),
-      youtube_video_id:  document.getElementById('fYoutubeId').value.trim(),
-      show_splash:       gtog('tSplash'),
-      show_tilt:         gtog('tTilt'),
-      show_views:        gtog('tViews'),
-      show_uid_scramble: newCS.show_uid_scramble,
-      show_video_bg:     newCS.show_video_bg,
-      mute_video:        newCS.mute_video,
-      badges:            JSON.stringify(activeBadges),
-      socials:           JSON.stringify(getSocials()),
-      // Flat columns (for profile page compatibility)
-      card_font:         newCS.card_font,
-      accent_color:      newCS.accent_color,
-      card_blur:         newCS.card_blur,
-      card_opacity:      newCS.card_opacity,
-      card_glow:         newCS.card_glow,
-      card_rounded:      newCS.card_rounded,
-      bg_type:           newCS.bg_type,
-      bg_image_url:      newCS.bg_image_url,
-      bg_opacity:        newCS.bg_opacity,
-      bg_color:          newCS.bg_color,
-      bg_grad1:          newCS.bg_grad1,
-      bg_grad2:          newCS.bg_grad2,
-      bg_grad_dir:       newCS.bg_grad_dir,
-      // custom_settings blob as backup
-      custom_settings:   JSON.stringify(newCS),
-      updated_at:        new Date().toISOString(),
-       bg_video_url:    document.getElementById('fBgVideoUrl')?.value?.trim() || '',
- card_flip:       gtog('tCardFlip'),
- card_back_text:  document.getElementById('fCardBackText')?.value?.trim() || '',
-      age_gate: gtog('tAgeGate'),
-        bio_lines: JSON.stringify(bioLines.filter(l => l.trim())),
-  bio: bioLines[0] || '',
-    };
-
-    console.log('[swaqq] update payload:', updates);
-
-    // Try full update first
-delete updates.is_admin;
-delete updates.is_owner;
-delete updates.is_developer;
-delete updates.unlocked_badges;
-    let { data: saveData, error } = await sb.from('profiles').update(updates).eq('id', currentUser.id).select();
-    console.log('[swaqq] save result:', saveData, error);
-
-    // If any column is missing, strip unknowns and retry with just the guaranteed columns
-    if (error) {
-      console.warn('[swaqq] full save failed, trying slim save:', error.message);
-      const slim = {
-        display_name: updates.display_name, handle, bio: updates.bio,
-        discord_id: updates.discord_id, avatar_url: updates.avatar_url,
-        youtube_video_id: updates.youtube_video_id,
-        show_splash: updates.show_splash, show_tilt: updates.show_tilt,
-        show_views: updates.show_views, show_uid_scramble: updates.show_uid_scramble,
-        show_video_bg: updates.show_video_bg, mute_video: updates.mute_video,
-        badges: updates.badges, socials: updates.socials,
-        updated_at: updates.updated_at,
-      };
-      // Add custom_settings if that column exists
-      slim.custom_settings = updates.custom_settings;
-      const res2 = await sb.from('profiles').update(slim).eq('id', currentUser.id).select();
-      console.log('[swaqq] slim save result:', res2.data, res2.error);
-      if (res2.error) {
-        // Last resort: no custom_settings
-        delete slim.custom_settings;
-        const res3 = await sb.from('profiles').update(slim).eq('id', currentUser.id);
-        error = res3.error;
-      } else {
-        error = null;
-      }
-      if (!error) showAlert('profileAlert', 'saved! (some custom columns may be missing — check admin SQL)', 'success');
-    }
-
-    btn.disabled = false; btn.textContent = 'save changes →';
-    if (error) { showAlert('profileAlert', 'save failed: ' + error.message, 'error'); return; }
-
-    CS = newCS;
-    currentProfile = { ...currentProfile, ...updates };
-
-    // Refresh sidebar/topbar
-    const name = currentProfile.display_name || currentProfile.handle || '?';
-    document.getElementById('sideName').textContent     = name;
-    document.getElementById('sideHandle').textContent   = '@' + currentProfile.handle;
-    document.getElementById('sideUrlText').textContent  = 'swaqq.xyz/@' + currentProfile.handle;
-    document.getElementById('sideUrl').href             = '/@' + currentProfile.handle;
-    document.getElementById('viewProfileLink').href     = '/@' + currentProfile.handle;
-    document.getElementById('hdrHandle').textContent    = currentProfile.handle;
-    document.getElementById('topBarHandle').textContent = '@' + currentProfile.handle;
-    document.getElementById('topBarViewLink').href      = '/@' + currentProfile.handle;
-
-    st.textContent = 'all changes saved ✓'; st.classList.add('saved');
-    setTimeout(() => { st.textContent = 'unsaved changes'; st.classList.remove('saved'); }, 3500);
-    discardDraft();
   }
+
+  const safeInt = (elId, csKey) => {
+    const el = document.getElementById(elId);
+    const v = el ? parseInt(el.value) : NaN;
+    return isNaN(v) ? (cs(csKey)) : v;
+  };
+
+  // Strip heavy base64 data from custom_settings — store refs only
+  const newCS = {
+    bg_type:           currentBgTab,
+    bg_image_url:      (document.getElementById('fBgImageUrl')?.value || '').trim(),
+    bg_opacity:        safeInt('fBgOpacity', 'bg_opacity'),
+    bg_color:          document.getElementById('fBgColor')?.value || cs('bg_color'),
+    bg_grad1:          document.getElementById('fGrad1')?.value   || cs('bg_grad1'),
+    bg_grad2:          document.getElementById('fGrad2')?.value   || cs('bg_grad2'),
+    bg_grad_dir:       document.getElementById('fGradDir')?.value || cs('bg_grad_dir'),
+    show_video_bg:     gtog('tShowVideo'),
+    mute_video:        gtog('tMuteDefault'),
+    card_font:         CS.card_font || cs('card_font'),
+    accent_color:      document.getElementById('fAccentColor')?.value || cs('accent_color'),
+    card_blur:         safeInt('fCardBlur', 'card_blur'),
+    card_opacity:      safeInt('fCardOpacity', 'card_opacity'),
+    card_glow:         gtog('tCardGlow'),
+    card_rounded:      gtog('tRounded'),
+    show_uid_scramble: isAdmin ? gtog('tUid') : false,
+    custom_font_name:   customFontName,
+    custom_font_family: customFontFamily,
+    custom_font_data:   customFontDataUrl, // kept for font rendering
+    // strip base64 data from custom_icons, keep metadata only
+    custom_icons: (customIcons || []).map(icon => ({
+      id:    icon.id,
+      name:  icon.name,
+      url:   icon.url,   // storage URL only, no base64
+    })),
+    audio_only_id:  document.getElementById('fAudioId')?.value.trim() || '',
+    mute_audio:     gtog('tMuteAudio'),
+    border_style:   CS.border_style  || cs('border_style'),
+    name_style:     CS.name_style    || cs('name_style'),
+    name_grad1:     document.getElementById('fNameGrad1')?.value    || cs('name_grad1'),
+    name_grad2:     document.getElementById('fNameGrad2')?.value    || cs('name_grad2'),
+    card_layout:    CS.card_layout   || cs('card_layout'),
+    avatar_shape:   CS.avatar_shape  || cs('avatar_shape'),
+    avatar_border:  parseInt(document.getElementById('fAvatarBorder')?.value) || cs('avatar_border'),
+    avatar_glow:    gtog('tAvatarGlow'),
+    avatar_spin:    gtog('tAvatarSpin'),
+    card_texture:   CS.card_texture  || cs('card_texture'),
+    cursor_style:   CS.cursor_style  || cs('cursor_style'),
+    social_style:   CS.social_style  || cs('social_style'),
+    card_width:     parseInt(document.getElementById('fCardWidth')?.value) || cs('card_width'),
+    card_glass:     gtog('tGlass'),
+    card_shadow:    gtog('tCardShadow'),
+    particles:      gtog('tParticles'),
+    page_anim:      gtog('tPageAnim'),
+    snow:           gtog('tSnow'),
+    scanlines:      gtog('tScanlines'),
+    particle_color: document.getElementById('fParticleColor')?.value || cs('particle_color'),
+    bio_size:       parseInt(document.getElementById('fBioSize')?.value) || cs('bio_size'),
+    bio_color:      document.getElementById('fBioColor')?.value || cs('bio_color'),
+    bio_italic:     gtog('tBioItalic'),
+    typewriter:     gtog('tTypewriter'),
+    show_volume_widget: gtog('tVolumeWidget'),
+    bg_video_url:   document.getElementById('fBgVideoUrl')?.value?.trim() || '',
+    bg_video_loop:  gtog('tBgVideoLoop'),
+    bg_video_mute:  gtog('tBgVideoMute'),
+    card_flip:      gtog('tCardFlip'),
+    card_back_text: document.getElementById('fCardBackText')?.value?.trim() || '',
+    splash_text:    document.getElementById('fSplashText')?.value?.trim() || '',
+    splash_font:    CS.splash_font || 'Syne',
+    splash_typewriter: gtog('tSplashTypewriter'),
+    banner_url:     document.getElementById('fBannerUrl').value.trim(),
+    youtube_video_id: document.getElementById('fYoutubeId').value.trim(),
+  };
+
+  // Serialize and check size — warn if still too large
+  const csJson = JSON.stringify(newCS);
+  if (csJson.length > 50000) {
+    console.warn('[swaqq] custom_settings is large:', csJson.length, 'bytes — consider moving font to storage');
+  }
+
+  const updates = {
+    display_name:      displayName || handle,
+    handle,
+    bio:               bioLines[0] || '',
+    bio_lines:         JSON.stringify(bioLines.filter(l => l.trim())),
+    discord_id:        document.getElementById('fDiscordId').value.trim(),
+    avatar_url:        document.getElementById('fAvatarUrl').value.trim(),
+    banner_url:        newCS.banner_url,
+    youtube_video_id:  newCS.youtube_video_id,
+    show_splash:       gtog('tSplash'),
+    show_tilt:         gtog('tTilt'),
+    show_views:        gtog('tViews'),
+    show_uid_scramble: newCS.show_uid_scramble,
+    show_video_bg:     newCS.show_video_bg,
+    mute_video:        newCS.mute_video,
+    badges:            JSON.stringify(activeBadges),
+    socials:           JSON.stringify(getSocials()),
+    card_font:         newCS.card_font,
+    accent_color:      newCS.accent_color,
+    card_blur:         newCS.card_blur,
+    card_opacity:      newCS.card_opacity,
+    card_glow:         newCS.card_glow,
+    card_rounded:      newCS.card_rounded,
+    bg_type:           newCS.bg_type,
+    bg_image_url:      newCS.bg_image_url,
+    bg_opacity:        newCS.bg_opacity,
+    bg_color:          newCS.bg_color,
+    bg_grad1:          newCS.bg_grad1,
+    bg_grad2:          newCS.bg_grad2,
+    bg_grad_dir:       newCS.bg_grad_dir,
+    bg_video_url:      newCS.bg_video_url,
+    card_flip:         newCS.card_flip,
+    card_back_text:    newCS.card_back_text,
+    age_gate:          gtog('tAgeGate'),
+    custom_settings:   csJson,
+    updated_at:        new Date().toISOString(),
+  };
+
+  delete updates.is_admin;
+  delete updates.is_owner;
+  delete updates.is_developer;
+  delete updates.unlocked_badges;
+
+  let { error } = await sb.from('profiles').update(updates).eq('id', currentUser.id);
+
+  if (error) {
+    console.warn('[swaqq] full save failed, trying slim save:', error.message);
+
+    // Slim save — no blobs at all
+    const slim = {
+      display_name:  updates.display_name,
+      handle:        updates.handle,
+      bio:           updates.bio,
+      bio_lines:     updates.bio_lines,
+      socials:       updates.socials,
+      badges:        updates.badges,
+      banner_url:    updates.banner_url,
+      avatar_url:    updates.avatar_url,
+      discord_id:    updates.discord_id,
+      updated_at:    new Date().toISOString(),
+    };
+
+    const { error: slimError } = await sb.from('profiles').update(slim).eq('id', currentUser.id);
+    if (slimError) {
+      btn.disabled = false; btn.textContent = 'save changes →';
+      showAlert('profileAlert', 'save failed: ' + slimError.message, 'error');
+      return;
+    }
+
+    showAlert('profileAlert', 'partially saved — custom settings timed out. try removing your custom font.', 'success');
+    btn.disabled = false; btn.textContent = 'save changes →';
+    return;
+  }
+
+  CS = newCS;
+  currentProfile = { ...currentProfile, ...updates };
+
+  const name = currentProfile.display_name || currentProfile.handle || '?';
+  document.getElementById('sideName').textContent     = name;
+  document.getElementById('sideHandle').textContent   = '@' + currentProfile.handle;
+  document.getElementById('sideUrlText').textContent  = 'swaqq.xyz/@' + currentProfile.handle;
+  document.getElementById('sideUrl').href             = '/@' + currentProfile.handle;
+  document.getElementById('viewProfileLink').href     = '/@' + currentProfile.handle;
+  document.getElementById('hdrHandle').textContent    = currentProfile.handle;
+  document.getElementById('topBarHandle').textContent = '@' + currentProfile.handle;
+  document.getElementById('topBarViewLink').href      = '/@' + currentProfile.handle;
+
+  btn.disabled = false; btn.textContent = 'save changes →';
+  st.textContent = 'all changes saved ✓'; st.classList.add('saved');
+  setTimeout(() => { st.textContent = 'unsaved changes'; st.classList.remove('saved'); }, 3500);
+  discardDraft();
+}
 function loadReferralSection() {
   const code = currentProfile?.referral_code;
   if (!code) return;
