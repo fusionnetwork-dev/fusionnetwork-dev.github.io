@@ -4706,8 +4706,7 @@ async function applyMarketplaceTheme(id) {
       const card = document.createElement('div');
   const colorData = badgeColors[def.id] || {};
 const color = typeof colorData === 'string' ? colorData : (colorData.color || def.defaultColor || '#ffffff');
-console.log('[badge]', badgeId, '→', color);
-div.style.setProperty('--badge-color', color);
+
    card.className = ['badge-card', def.early ? 'early-badge' : '', def.founder ? 'founder-badge' : '', canUse ? 'unlocked' : 'locked', isActive ? 'selected' : ''].filter(Boolean).join(' ');
 
 card.style.setProperty('--badge-color', color);
