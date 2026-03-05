@@ -1658,31 +1658,47 @@ if (CS.bg_type === 'custom-video' && customVid) {
   createYouTubeBackground(audioId, CS.mute_audio !== false, true);
 } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    const cachedUrl = localStorage.getItem('swaqq_cdn_' + videoId);
-    if (cachedUrl) {
-      createVideoBackground(cachedUrl, true, false);
-    } else {
-      createYouTubeBackground(videoId, true, false);
-      fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/yt-to-cdn', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ video_id: videoId, user_id: window._profileId })
-      })
-      .then(r => r.json())
-      .then(({ url }) => {
-        if (url) {
-          localStorage.setItem('swaqq_cdn_' + videoId, url);
-          const ytBg = document.getElementById('ytBg');
-          if (ytBg) ytBg.style.opacity = '0';
-          createVideoBackground(url, true, false);
-        }
-      })
-      .catch(() => {});
+ if (isMobile) {
+  const cachedUrl = localStorage.getItem('swaqq_cdn_' + videoId);
+  if (cachedUrl) {
+    createVideoBackground(cachedUrl, true, true);
+    const vid = document.getElementById('customVideoBg');
+    if (vid) {
+      document.addEventListener('touchstart', () => {
+        vid.muted = false; vid.volume = (_lastVolume || 60) / 100; vid.play().catch(() => {});
+      }, { once: true });
+      document.addEventListener('click', () => {
+        vid.muted = false; vid.volume = (_lastVolume || 60) / 100; vid.play().catch(() => {});
+      }, { once: true });
     }
   } else {
-    createYouTubeBackground(videoId, CS.mute_video !== false, false);
+    createYouTubeBackground(videoId, true, false);
+    fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/yt-to-cdn', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video_id: videoId, user_id: window._profileId })
+    })
+    .then(r => r.json())
+    .then(({ url }) => {
+      if (url) {
+        localStorage.setItem('swaqq_cdn_' + videoId, url);
+        const ytBg = document.getElementById('ytBg');
+        if (ytBg) ytBg.style.opacity = '0';
+        createVideoBackground(url, true, true);
+        const vid = document.getElementById('customVideoBg');
+        if (vid) {
+          document.addEventListener('touchstart', () => {
+            vid.muted = false; vid.volume = (_lastVolume || 60) / 100; vid.play().catch(() => {});
+          }, { once: true });
+          document.addEventListener('click', () => {
+            vid.muted = false; vid.volume = (_lastVolume || 60) / 100; vid.play().catch(() => {});
+          }, { once: true });
+        }
+      }
+    })
+    .catch(() => {});
   }
+}
 }
 
 // If no splash, unmute immediately after player is ready
