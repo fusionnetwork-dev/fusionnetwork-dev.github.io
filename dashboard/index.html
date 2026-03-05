@@ -4497,6 +4497,8 @@ function copyReferralLink() {
 
   async function doLogout() { await sb.auth.signOut(); window.location.href = '/'; }
 
+  handleLogout = doLogout
+
  // ─── ADMIN ────────────────────────────────────────────────────────────────────
 async function loadAdminData() {
     const { data: factors } = await sb.auth.mfa.listFactors();
