@@ -4193,18 +4193,24 @@ async function disableMFA() {
   let _iconPickerTarget   = null;
   let _iconPickerSelected = null;
 
-  function openIconPicker(rowEl) {
-    _iconPickerTarget   = rowEl;
-    _iconPickerSelected = rowEl.dataset.iconType === 'custom'
-      ? { type:'custom', id:rowEl.dataset.iconId, dataUrl:rowEl.dataset.iconData, label:rowEl.dataset.iconLabel }
-      : rowEl.dataset.icon || 'fas fa-link';
+function openIconPicker(rowEl) {
+  _iconPickerTarget   = rowEl;
+  _iconPickerSelected = rowEl.dataset.iconType === 'custom'
+    ? { type:'custom', id:rowEl.dataset.iconId, dataUrl:rowEl.dataset.iconData, label:rowEl.dataset.iconLabel }
+    : rowEl.dataset.icon || 'fas fa-link';
+  
+  const overlay = document.getElementById('iconPickerOverlay');
+  overlay.classList.add('open');
+  
+  // Defer grid build until overlay is visible in DOM
+  requestAnimationFrame(() => {
     const si = document.getElementById('iconSearchInput');
     if (si) si.value = '';
     buildIconGrid('');
     renderCustomIconsRow();
-    document.getElementById('iconPickerOverlay').classList.add('open');
-    si && si.focus();
-  }
+    if (si) si.focus();
+  });
+}
 
   function closeIconPicker() {
     document.getElementById('iconPickerOverlay').classList.remove('open');
@@ -5798,6 +5804,9 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
 });
+  document.getElementById('iconPickerOverlay').addEventListener('mousedown', function(e) {
+  if (e.target === this) closeIconPicker();
+});
 loadDraft();
 setInterval(saveDraft, 30000);
   checkChangelog()
@@ -6002,7 +6011,9 @@ setInterval(saveDraft, 30000);
 
 
   <!-- ICON PICKER -->
-<div class="icon-picker-overlay" id="iconPickerOverlay" onclick="if(event.target===this)closeIconPicker()">
+
+  </main>
+<div class="icon-picker-overlay" id="iconPickerOverlay">
   <div class="icon-picker-box">
     <div class="icon-picker-title">choose icon</div>
     <input class="icon-search" type="text" placeholder="search icons..." oninput="filterIcons(this.value)" id="iconSearchInput">
@@ -6024,7 +6035,7 @@ setInterval(saveDraft, 30000);
     </div>
   </div>
 </div>
-  </main>
+  
   <div class="save-bar" id="saveBar" style="display:none">
   <div style="display:flex;align-items:center;gap:8px">
     <button id="undoBtn" class="btn btn-ghost" onclick="undo()" title="undo (ctrl+z)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-undo"></i></button>
