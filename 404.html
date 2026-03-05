@@ -601,7 +601,7 @@
         card_glow:         get('card_glow'),
         card_rounded:      get('card_rounded'),
         show_uid_scramble: get('show_uid_scramble'),
-        youtube_video_id:  get('youtube_video_id') || profile.youtube_video_id || '',
+        youtube_video_id: get('youtube_video_id') || profile.youtube_video_id || '',
         custom_font_name:  blob.custom_font_name  || null,
         custom_font_family:blob.custom_font_family || null,
         custom_font_data:  blob.custom_font_data  || null,
@@ -639,6 +639,7 @@
         splash_text:       blob.splash_text       || '',
 splash_font:       blob.splash_font       || 'Syne',
 splash_typewriter: blob.splash_typewriter ?? true,
+        
       };
     }
 
@@ -1616,7 +1617,7 @@ if (CS.banner_url) injectBanner(CS.banner_url, CS.card_width);
 const audioId   = CS.audio_only_id || '';
 const customVid = CS.bg_video_url || profile.bg_video_url || '';
 const cdnAudio  = CS.music_url || profile.music_url || '';
-
+console.log('[bg] type:', CS.bg_type, 'videoId:', videoId, 'customVid:', customVid);
 
 if (CS.bg_type === 'custom-video' && customVid) {
   createVideoBackground(customVid, CS.bg_video_loop !== false, CS.bg_video_mute !== false);
