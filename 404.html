@@ -1176,12 +1176,12 @@ document.getElementById('discordStatus').insertAdjacentElement('afterend', joine
         fetchDiscordStatus(profile.discord_id);
       }
 
-      // Splash or direct reveal
-      if (profile.show_splash !== false) {
-        renderSplash(profile, CS);
-      } else {
-        revealProfile(profile, CS);
-      }
+if (profile.show_splash !== false) {
+  renderSplash(profile, CS);
+} else {
+  window._userGestureUnlocked = true;
+  revealProfile(profile, CS);
+}
 
       // View counting
       if (profile.show_views !== false) {
@@ -1587,13 +1587,28 @@ if (CS.banner_url) injectBanner(CS.banner_url, CS.card_width);
       const audioId   = CS.audio_only_id || '';
       const customVid = CS.bg_video_url || profile.bg_video_url || '';
 
-      if (CS.bg_type === 'custom-video' && customVid) {
-        createVideoBackground(customVid, CS.bg_video_loop !== false, CS.bg_video_mute !== false);
-      } else if (CS.bg_type === 'audio' && audioId) {
-        createYouTubeBackground(audioId, CS.mute_audio !== false, true);
-      } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
-        createYouTubeBackground(videoId, CS.mute_video !== false, false);
-      }
+    if (CS.bg_type === 'custom-video' && customVid) {
+  createVideoBackground(customVid, CS.bg_video_loop !== false, CS.bg_video_mute !== false);
+  if (window._userGestureUnlocked && CS.bg_video_mute === false) {
+    setTimeout(() => {
+      const vid = document.getElementById('customVideoBg');
+      if (vid) { vid.muted = false; vid.volume = (_lastVolume || 60) / 100; }
+    }, 500);
+  }
+} else if (CS.bg_type === 'audio' && audioId) {
+  createYouTubeBackground(audioId, CS.mute_audio !== false, true);
+} else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
+  createYouTubeBackground(videoId, CS.mute_video !== false, false);
+}
+
+// If no splash, unmute immediately after player is ready
+if (window._userGestureUnlocked && localStorage.getItem('swaqq_bg_muted') !== '1') {
+  setTimeout(() => {
+    if (ytPlayer) {
+      try { ytPlayer.unMute(); ytPlayer.setVolume(_lastVolume || 60); } catch(_) {}
+    }
+  }, 1500);
+}
 
 if (showVolume) initVolumeWidget();
 
