@@ -279,11 +279,16 @@
   background: rgba(255,255,255,0.12);
   border-radius: 3px;
   outline: none;
-  appearance: slider-vertical;
-  -webkit-appearance: slider-vertical;
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
   writing-mode: vertical-lr;
   direction: rtl;
+  padding: 0;
+  margin: 0;
+}
+@supports not (writing-mode: vertical-lr) {
+  #volumeSlider { transform: rotate(-90deg); width: 80px; height: 6px; }
 }
 #volumeSlider::-webkit-slider-thumb {
   width: 18px;
@@ -483,11 +488,12 @@
     /* ── Sanitizers ── */
      // ── CAPTCHA ── put these FIRST before anything else
   function initCaptcha() {
+   try {
     if (sessionStorage.getItem('swaqq_verified') === '1') {
       document.getElementById('captchaGate').style.display = 'none';
       return;
     }
-  }
+  } catch(e) {}
 
   function checkCaptchaClick() {
     const row       = document.getElementById('captchaCheckRow');
@@ -517,7 +523,7 @@
       row.style.background       = 'rgba(67,181,129,0.06)';
 
       setTimeout(() => {
-        sessionStorage.setItem('swaqq_verified', '1');
+        try { sessionStorage.setItem('swaqq_verified', '1'); } catch(e) {}
         const gate = document.getElementById('captchaGate');
         gate.style.transition = 'opacity 0.5s ease';
         gate.style.opacity    = '0';
@@ -1934,8 +1940,10 @@ async function submitReport(profileId, handle, modal) {
         overlay.classList.remove('active');
         if (pending) {
           if (window._profileId) {
-            const clicked = document.querySelector(`.nav-link[data-href="${CSS.escape(pending)}"]`);
-            const label = clicked?.querySelector('span')?.textContent || '';
+         let label = '';
+document.querySelectorAll('.nav-link').forEach(el => {
+  if (el.dataset.href === pending) label = el.querySelector('span')?.textContent || '';
+});
             trackLinkClick(window._profileId, label, pending);
           }
           window.open(pending, '_blank');
