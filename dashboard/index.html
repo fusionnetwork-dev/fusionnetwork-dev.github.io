@@ -4488,12 +4488,28 @@ function copyReferralLink() {
     document.getElementById('fConfirmPassword').value = '';
   }
 
-  async function deleteAccount() {
-    if (!confirm('permanently delete your account and profile? this cannot be undone.')) return;
-    await sb.from('profiles').delete().eq('id', currentUser.id);
-    await sb.auth.signOut();
-    window.location.href = '/';
+  async function deleteAccount(userId, handle) {
+  if (!confirm(`Delete @${handle} permanently?`)) return;
+
+  const res = await fetch('https://your-project-ref.supabase.co/functions/v1/delete-user', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${(await sb.auth.getSession()).data.session.access_token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ userId })
+  });
+
+  if (!res.ok) {
+    alert('Delete failed: ' + await res.text());
+    return;
   }
+
+  // Remove from UI
+  allUsers = allUsers.filter(u => u.id !== userId);
+  renderAdminTable(allUsers);
+  alert(`@${handle} deleted.`);
+}
 
   async function doLogout() { await sb.auth.signOut(); window.location.href = '/'; }
 
