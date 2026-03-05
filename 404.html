@@ -1846,33 +1846,20 @@ async function submitReport(profileId, handle, modal) {
       }
     }
 
-  async function countView(profileId, profileHandle) {
+async function countView(profileId, profileHandle) {
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user?.id === profileId) { await refreshViewDisplay(profileId); return; }
 
-  const canvas = document.createElement('canvas');
-  canvas.getContext('2d').fillText('fp', 0, 0);
-  const fp = {
-    ua:  navigator.userAgent,
-    lang: navigator.language,
-    res:  `${screen.width}x${screen.height}`,
-    tz:   Intl.DateTimeFormat().resolvedOptions().timeZone,
-    cv:   canvas.toDataURL(),
-  };
-  let hash = 0;
-  const str = JSON.stringify(fp);
-  for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
-  const key   = `sv_${profileHandle}_${Math.abs(hash).toString(36)}`;
   const today = new Date().toDateString();
-  const stored = JSON.parse(localStorage.getItem(key) || '{"c":0,"d":""}');
-  if (stored.d !== today) stored.c = 0;
-  if (stored.c < 2) {
-    stored.c++;
-    stored.d = today;
-    localStorage.setItem(key, JSON.stringify(stored));
-    await sb.rpc('increment_views', { profile_id: profileId }).catch(console.error);
+  const key = `sv2_${profileHandle}_${today}`;
+  const count = parseInt(localStorage.getItem(key) || '0');
+
+  if (count < 2) {
+    localStorage.setItem(key, count + 1);
+    const { error } = await sb.rpc('increment_views', { profile_id: profileId });
+    if (error) console.error('[views] rpc error:', error.message, error);
   }
-  // always refresh the display regardless of whether we incremented
+
   await refreshViewDisplay(profileId);
 }
     /* ── Reactions ── */
