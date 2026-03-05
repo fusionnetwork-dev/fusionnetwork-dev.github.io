@@ -1199,10 +1199,24 @@ if (rawBadges.length) {
     const div = document.createElement('div');
     div.className = 'badge';
 
-    const color = badgeColors[badgeId] || def.defaultColor || '#ffffff';
-    div.style.setProperty('--badge-color', color);
+    const colorData = badgeColors[badgeId] || {};
+    const color = typeof colorData === 'string' ? colorData : (colorData.color || def.defaultColor || '#ffffff');
+    const badgeStyle = typeof colorData === 'object' ? (colorData.style || 'gradient') : 'gradient';
 
     div.innerHTML = `<i class="${def.icon}"></i><div class="badge-tip">${def.label}</div>`;
+
+    const icon = div.querySelector('i');
+    if (badgeStyle === 'solid') {
+      icon.style.background = 'none';
+      icon.style.webkitBackgroundClip = 'unset';
+      icon.style.backgroundClip = 'unset';
+      icon.style.webkitTextFillColor = color;
+      icon.style.color = color;
+      icon.style.animation = 'none';
+    } else {
+      div.style.setProperty('--badge-color', color);
+    }
+
     badgesEl.appendChild(div);
   });
 }
