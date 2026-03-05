@@ -474,9 +474,7 @@
       <div class="music-artist-text" id="profileMusicArtist"></div>
     </div>
   </div>
-<script>
-document.getElementById('captchaCheckRow').onclick = checkCaptchaClick;
-</script>
+
   <script>
     /* ── Sanitizers ── */
      // ── CAPTCHA ── put these FIRST before anything else
@@ -778,16 +776,19 @@ function createYouTubeBackground(videoId, shouldMute, audioOnly = false) {
     }
     if (!audioOnly) container.classList.add('active');
   }
-  // Keep your loop logic
+
   if (e.data === YT.PlayerState.ENDED) {
     try { e.target.seekTo(0); e.target.playVideo(); } catch(_) {}
   }
   if (e.data === YT.PlayerState.UNSTARTED || e.data === YT.PlayerState.CUED) {
-    try { e.target.playVideo(); } catch(_) {}
-  }
-}
+          try { e.target.playVideo(); } catch(_) {}
+        }
+      }  // closes onStateChange
+    }    // closes events object
+  });    // closes new YT.Player(...)
+  }      // closes initWhenReady function
   initWhenReady();
-}
+}        // closes createYouTubeBackground
     loadYouTubeIframeAPI();
 
     /* ── QR Modal ── */
@@ -2021,7 +2022,7 @@ async function submitReport(profileId, handle, modal) {
 const shakeStyle = document.createElement('style');
 shakeStyle.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}`;
 document.head.appendChild(shakeStyle);
-
+document.getElementById('captchaCheckRow').onclick = checkCaptchaClick;
 initCaptcha();
     loadProfile();
   </script>
