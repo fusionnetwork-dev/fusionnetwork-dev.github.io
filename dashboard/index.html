@@ -251,8 +251,14 @@
 .founder-badge .badge-icon { background:rgba(240,71,71,0.1); border-color:rgba(240,71,71,0.25); color:var(--red); }
 .badge-early-tag.founder-tag { color:var(--red); background:rgba(240,71,71,0.1); border-color:rgba(240,71,71,0.25); }
 .active-pill.founder { background:rgba(240,71,71,0.1); border-color:rgba(240,71,71,0.3); color:var(--red); }
- .badge-card .badge-icon i {
-  color: var(--badge-color) !important;
+.badge-icon i,
+.badge-pip {
+  color: var(--badge-color, inherit) !important;
+}
+.badge-card.selected .badge-icon,
+.badge-card.unlocked .badge-icon {
+  background: rgba(var(--badge-rgb, 255,255,255), 0.12) !important;
+  border-color: rgba(var(--badge-rgb, 255,255,255), 0.3) !important;
 }
     .social-row-edit { display:grid; grid-template-columns:36px 110px 1fr auto 36px; align-items:center; gap:8px; margin-bottom:10px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 12px; transition:border-color 0.2s; }
     .social-row-edit:hover { border-color:var(--border2); }
@@ -4697,9 +4703,11 @@ async function applyMarketplaceTheme(id) {
       const canUse   = isOwner || !def.locked || unlockedBadges.includes(def.id);
       const isActive = activeBadges.includes(def.id);
       const card = document.createElement('div');
+      const color = badgeColors[def.id] || def.defaultColor || '#ffffff';
    card.className = ['badge-card', def.early ? 'early-badge' : '', def.founder ? 'founder-badge' : '', canUse ? 'unlocked' : 'locked', isActive ? 'selected' : ''].filter(Boolean).join(' ');
-      // inside renderBadgeGrid() loop, after creating card:
-card.style.setProperty('--badge-color', badgeColors[def.id] || def.defaultColor || '#ffffff');
+
+card.style.setProperty('--badge-color', color);
+card.style.setProperty('--badge-rgb', hexToRgb(color)); // helper below
       card.dataset.id = def.id;
 
       let stateHtml;
@@ -5246,7 +5254,14 @@ function renderAdminStats(users) {
   const today = new Date().toDateString();
   document.getElementById('aNewToday').textContent = users.filter(u => new Date(u.created_at).toDateString()===today).length;
 }
-
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  return [
+    parseInt(hex.substring(0,2),16),
+    parseInt(hex.substring(2,4),16),
+    parseInt(hex.substring(4,6),16)
+  ].join(',');
+}
 function filterUsers() {
   const q       = (document.getElementById('adminSearch').value || '').toLowerCase();
   const role    = document.getElementById('adminRoleFilter').value;
