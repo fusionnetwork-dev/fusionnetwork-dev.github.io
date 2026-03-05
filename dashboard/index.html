@@ -4041,7 +4041,7 @@ function buildCurrentCS() {
     typewriter:        gtog('tTypewriter'),
     show_volume_widget:gtog('tVolumeWidget'),
     splash_text:       document.getElementById('fSplashText')?.value?.trim() || '',
-    splash_font:       CS.splash_font || 'Syne',
+   splash_font: document.querySelector('[data-splashfont].selected')?.dataset.splashfont || CS.splash_font || 'Syne',
     splash_typewriter: gtog('tSplashTypewriter'),
   };
 }
@@ -4802,7 +4802,7 @@ async function syncDiscordRoleBadges(discordId) {
     card_flip:      gtog('tCardFlip'),
     card_back_text: document.getElementById('fCardBackText')?.value?.trim() || '',
     splash_text:    document.getElementById('fSplashText')?.value?.trim() || '',
-    splash_font:    CS.splash_font || 'Syne',
+    splash_font: document.querySelector('[data-splashfont].selected')?.dataset.splashfont || CS.splash_font || 'Syne',
     splash_typewriter: gtog('tSplashTypewriter'),
     banner_url:     document.getElementById('fBannerUrl').value.trim(),
     youtube_video_id: document.getElementById('fYoutubeId').value.trim(),
