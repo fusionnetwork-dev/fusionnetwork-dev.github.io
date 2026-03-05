@@ -654,7 +654,7 @@ splash_typewriter: blob.splash_typewriter ?? true,
       return map[(label||'').toLowerCase()] || 'fas fa-link';
     }
 
-    /* ── Routing ── */
+/* ── Routing ── */
 const rawPath = window.location.pathname;
 
 // /uid/5 → look up profile by signup order
@@ -681,7 +681,6 @@ if (rawPath.startsWith('/uid/')) {
   }
 }
 
-// Strip leading / and @ — works for /john, /@john, /john/
 let handle;
 const hostname = window.location.hostname;
 const subdomain = hostname.split('.')[0];
@@ -689,15 +688,40 @@ const isSubdomain = hostname.endsWith('.swaqq.xyz') && subdomain !== 'swaqq' && 
 const isCustomDomain = !hostname.endsWith('swaqq.xyz') && hostname !== 'swaqq.xyz';
 
 if (isCustomDomain) {
-  // custom domain — look up by custom_domain column
-  // handle will be resolved async in loadProfile
   handle = null;
 } else if (isSubdomain) {
-  // username.swaqq.xyz
   handle = subdomain.toLowerCase();
 } else {
-  // swaqq.xyz/@handle or swaqq.xyz/handle
   handle = window.location.pathname.replace(/^\//, '').replace(/^@/, '').split('/')[0].toLowerCase().trim();
+}
+
+// alias fallback — if no handle found by normal routing, check alias_map
+if (handle && !isCustomDomain && !isSubdomain) {
+  (async () => {
+    const { data: profileByHandle } = await sb.from('profiles')
+      .select('id')
+      .eq('handle', handle)
+      .maybeSingle();
+
+    if (!profileByHandle) {
+      // not a handle — check if it's an alias
+      const { data: aliasRow } = await sb.from('alias_map')
+        .select('profile_id')
+        .eq('alias', handle)
+        .maybeSingle();
+
+      if (aliasRow) {
+        const { data: profile } = await sb.from('profiles')
+          .select('handle')
+          .eq('id', aliasRow.profile_id)
+          .maybeSingle();
+        if (profile?.handle) {
+          // redirect to canonical handle url
+          window.location.replace('/@' + profile.handle);
+        }
+      }
+    }
+  })();
 }
 
 window._handle = handle;
