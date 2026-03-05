@@ -5999,14 +5999,7 @@ setInterval(saveDraft, 30000);
   </div>
 </div>
 
-<div class="save-bar" id="saveBar" style="display:none">
-  <div style="display:flex;align-items:center;gap:8px">
-    <button id="undoBtn" class="btn btn-ghost" onclick="undo()" title="undo (ctrl+z)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-undo"></i></button>
-    <button id="redoBtn" class="btn btn-ghost" onclick="redo()" title="redo (ctrl+y)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-redo"></i></button>
-    <span class="save-status" id="saveStatus">unsaved changes</span>
-  </div>
-  <button class="btn-save" id="saveBtn" onclick="saveProfile()">save changes →</button>
-</div>
+
 
   <!-- ICON PICKER -->
 <div class="icon-picker-overlay" id="iconPickerOverlay" onclick="if(event.target===this)closeIconPicker()">
@@ -6032,6 +6025,14 @@ setInterval(saveDraft, 30000);
   </div>
 </div>
   </main>
+  <div class="save-bar" id="saveBar" style="display:none">
+  <div style="display:flex;align-items:center;gap:8px">
+    <button id="undoBtn" class="btn btn-ghost" onclick="undo()" title="undo (ctrl+z)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-undo"></i></button>
+    <button id="redoBtn" class="btn btn-ghost" onclick="redo()" title="redo (ctrl+y)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-redo"></i></button>
+    <span class="save-status" id="saveStatus">unsaved changes</span>
+  </div>
+  <button class="btn-save" id="saveBtn" onclick="saveProfile()">save changes →</button>
+</div>
 </div>
 </body>
       <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" aria-label="menu">
