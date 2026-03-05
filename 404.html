@@ -124,7 +124,7 @@
     .footer-text { font-family:'Geist Mono',monospace; font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:0.1em; }
 
     /* ── Views ── */
-    .views { position:fixed; bottom:22px; left:22px; z-index:102; display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.6); }
+   .views { position:fixed; bottom:22px; left:22px; z-index:102; display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.07); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:100px; padding:9px 16px; font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.6); }
     .views.visible { display:flex; }
     .views i { font-size:12px; color:rgba(255,255,255,0.35); }
 
@@ -1575,13 +1575,12 @@ if (CS.banner_url) injectBanner(CS.banner_url, CS.card_width);
 
       const showVolume = CS.show_volume_widget !== false;
       if (profile.show_views !== false) {
-        const viewsEl = document.getElementById('views');
-        if (viewsEl) {
-          if (showVolume) viewsEl.style.bottom = '72px';
-          viewsEl.classList.add('visible');
-        }
-      }
-
+  const viewsEl = document.getElementById('views');
+  if (viewsEl) {
+    viewsEl.style.bottom = '22px';
+    viewsEl.classList.add('visible');
+  }
+}
       window._showTopBarBriefly?.();
 
       const videoId   = CS.youtube_video_id || profile.youtube_video_id || '';
@@ -1635,12 +1634,11 @@ if (showVolume) initVolumeWidget();
       if (el) el.textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ap}`;
     }
 function addReportButton(profile) {
-  const btn = document.createElement('button');
-  btn.title = 'report profile';
-  btn.style.cssText = 'position:fixed;bottom:22px;left:22px;z-index:103;background:none;border:none;cursor:pointer;font-family:\'Geist Mono\',monospace;font-size:9px;color:rgba(255,255,255,0.12);letter-spacing:0.1em;transition:color 0.2s;padding:4px';
-  btn.textContent = 'report';
-  btn.onmouseenter = () => btn.style.color = 'rgba(255,80,80,0.5)';
-  btn.onmouseleave = () => btn.style.color = 'rgba(255,255,255,0.12)';
+  const btn = document.createElement('a');
+  btn.style.cssText = 'position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:102;font-family:\'Geist Mono\',monospace;font-size:10px;letter-spacing:0.15em;color:rgba(255,255,255,0.15);text-transform:uppercase;cursor:pointer;pointer-events:all;transition:color 0.2s;white-space:nowrap;';
+  btn.textContent = 'swaqq.xyz · report';
+  btn.onmouseenter = () => btn.style.color = 'rgba(255,255,255,0.4)';
+  btn.onmouseleave = () => btn.style.color = 'rgba(255,255,255,0.15)';
   btn.onclick = () => openReportModal(profile);
   document.body.appendChild(btn);
 }
