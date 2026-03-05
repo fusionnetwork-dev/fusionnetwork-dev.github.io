@@ -1660,8 +1660,10 @@ if (CS.bg_type === 'custom-video' && customVid) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
  if (isMobile) {
   const cachedUrl = localStorage.getItem('swaqq_cdn_' + videoId);
-  if (cachedUrl) {
-    createVideoBackground(cachedUrl, true, true);
+if (cachedUrl) {
+  console.log('[bg] using cached url:', cachedUrl);
+  createVideoBackground(cachedUrl, true, true);
+  console.log('[bg] vid after create:', document.getElementById('customVideoBg'));
     const vid = document.getElementById('customVideoBg');
     if (vid) {
       document.addEventListener('touchstart', () => {
