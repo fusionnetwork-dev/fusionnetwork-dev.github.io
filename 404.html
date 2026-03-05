@@ -1463,9 +1463,11 @@ if (profile.banner_url) {
 function injectBanner(url, cardWidth) {
   const safeUrl = sanitizeUrl(url);
   if (!safeUrl) return;
+  if (document.getElementById('profileBanner')) return; // prevent duplicates
   const banner = document.createElement('div');
+  banner.id = 'profileBanner';
   banner.style.cssText = `width:${cardWidth || 420}px;max-width:calc(100vw - 40px);height:110px;border-radius:16px 16px 0 0;background:url('${safeUrl}') center/cover no-repeat;margin-bottom:-16px;position:relative;z-index:1;`;
-  const cardWrap = document.getElementById('cardWrap');
+  const cardWrap = document.querySelector('.card-wrap'); // ← fix
   const flipInner = document.getElementById('cardFlipInner');
   if (cardWrap && flipInner) cardWrap.insertBefore(banner, flipInner);
 }
