@@ -482,11 +482,23 @@ body, html {
   background: rgba(0,0,0,0.5);
   pointer-events: none;
 }
-#sidebarOverlay.open {
-  display: block;
-  pointer-events: all;
+@media(max-width:768px) {
+  #sidebarOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 240px;  /* ← KEY: starts after sidebar, doesn't cover it */
+    right: 0;
+    bottom: 0;
+    z-index: 149;
+    background: rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+  #sidebarOverlay.open {
+    display: block;
+    pointer-events: all;
+  }
 }
-
   .main { padding: 20px 16px 100px; margin-left: 0; }
   .field-row { grid-template-columns: 1fr; }
   .stats-row { grid-template-columns: 1fr 1fr; }
@@ -2708,10 +2720,8 @@ function toggleMobileSidebar() {
   const icon = btn.querySelector('i');
   if (sidebar.classList.contains('open')) {
     icon.className = 'fas fa-times';
-    overlay.onclick = () => toggleMobileSidebar();  // ← tap outside to close
   } else {
     icon.className = 'fas fa-bars';
-    overlay.onclick = null;
   }
 }
   // ─── 3D CARD TILT ───────────────────────────────────────────────────────────
