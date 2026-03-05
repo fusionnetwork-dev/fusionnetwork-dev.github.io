@@ -2905,12 +2905,14 @@ const { data: viewData } = await sb
 console.log('[views] dashboard view_count:', viewData?.view_count);
 const viewEl = document.getElementById('statViews');
 if (viewEl) viewEl.textContent = (viewData?.view_count || 0).toLocaleString();
+}  // ← closes initAuth
+
 initAuth().catch(err => {
   console.error('initAuth failed:', err);
   document.getElementById('authGate').innerHTML = '<div style="color:red">Login failed — check console</div>';
 });
 
-  sb.auth.onAuthStateChange((event, session) => {
+sb.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_OUT' || !session) window.location.href = '/';
   });
 
