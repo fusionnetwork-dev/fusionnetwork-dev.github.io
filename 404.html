@@ -989,6 +989,10 @@ initWhenReady();
     }, { once: true });
   }
 }
+
+
+
+    
     function safeAddClass(id, cls) {
       const el = document.getElementById(id);
       if (el) el.classList.add(cls);
@@ -1674,6 +1678,14 @@ if (CS.bg_type === 'custom-video' && customVid) {
       }
     } else {
       createYouTubeBackground(videoId, true, false);
+
+      const hint = document.createElement('div');
+      hint.id = 'tapHint';
+      hint.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:200;font-family:"Geist Mono",monospace;font-size:11px;letter-spacing:0.15em;color:rgba(255,255,255,0.4);pointer-events:none;animation:pulse 2s ease-in-out infinite';
+      hint.textContent = 'tap anywhere for audio';
+      document.body.appendChild(hint);
+      document.addEventListener('touchstart', () => { hint.remove(); }, { once: true });
+      document.addEventListener('click', () => { hint.remove(); }, { once: true });
       fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/yt-to-cdn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
