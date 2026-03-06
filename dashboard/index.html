@@ -3,10 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:title"       content="">
-<meta property="og:description" content="">
-<meta property="og:image"       content="">
-<meta name="twitter:card"       content="summary_large_image">
+<meta property="og:type"         content="profile">
+<meta property="og:url"          content="">
+<meta property="og:title"        content="">
+<meta property="og:description"  content="">
+<meta property="og:image"        content="">
+<meta property="og:image:width"  content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="">
+<meta name="twitter:description" content="">
+<meta name="twitter:image"       content="">
   <title>dashboard — swaqq.xyz</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Raleway:wght@400;600;700;800&family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2361,14 +2368,21 @@ body, html {
   console.log('[swaqq] script start');
 window.addEventListener('DOMContentLoaded', () => console.log('[swaqq] DOM ready'));
 // Fill OG tags from profile data for crawlers
-async function setOgTags() {
-  const handle = window.location.pathname.replace('/@','').replace('/','').toLowerCase()
-  if (!handle) return
-  
-  // Bots that crawl won't execute JS anyway — this is just a fallback hint
-  // Real solution: edge function above handles bot requests
-  const ogImg = `https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/og-image?handle=${handle}`
+function setOgTags(profile) {
+  const name   = profile.display_name || profile.handle
+  const handle = profile.handle
+  const bio    = profile.bio || 'view my profile on swaqq.xyz'
+  const url    = `https://swaqq.xyz/@${handle}`
+  const ogImg  = `https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/og-image?handle=${encodeURIComponent(handle)}`
+
+  document.title = `${name} — swaqq.xyz`
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', url)
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', name)
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', `@${handle} · ${bio}`)
   document.querySelector('meta[property="og:image"]')?.setAttribute('content', ogImg)
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', name)
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', `@${handle} · ${bio}`)
+  document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', ogImg)
 }
 setOgTags()
 
