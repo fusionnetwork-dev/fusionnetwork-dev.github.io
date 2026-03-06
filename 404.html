@@ -591,9 +591,7 @@ function checkCaptchaClick() {
   document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', `@${handle} · ${bio}`)
   document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', ogImg)
 }
-  if (profile) {
-  setOgTags(profile)
-}
+
 
     function sanitize(str) {
       if (typeof str !== 'string') return '';
@@ -791,6 +789,9 @@ if (handle && !isCustomDomain && !isSubdomain) {
           // redirect to canonical handle url
           window.location.replace('/@' + profile.handle);
         }
+          if (profile) {
+  setOgTags(profile)
+}
       }
     }
   })();
