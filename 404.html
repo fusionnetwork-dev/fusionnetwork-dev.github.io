@@ -591,7 +591,9 @@ function checkCaptchaClick() {
   document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', `@${handle} · ${bio}`)
   document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', ogImg)
 }
-    setOgTags();
+  if (profile) {
+  setOgTags(profile)
+}
 
     function sanitize(str) {
       if (typeof str !== 'string') return '';
