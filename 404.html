@@ -708,6 +708,7 @@ const BADGE_DEFS = [
         splash_text:       blob.splash_text       || '',
 splash_font:       blob.splash_font       || 'Syne',
 splash_typewriter: blob.splash_typewriter ?? true,
+        audio_only_bg: blob.audio_only_bg || '',
         
       };
     }
@@ -1786,6 +1787,16 @@ if (CS.bg_type === 'custom-video' && customVid) {
   }
 } else if (CS.bg_type === 'audio' && audioId) {
   createYouTubeBackground(audioId, CS.mute_audio !== false, true);
+  // show image/gif background if set
+  if (CS.audio_only_bg) {
+    const safeUrl = sanitizeUrl(CS.audio_only_bg)
+    if (safeUrl) {
+      const audioBg = document.createElement('div')
+      audioBg.id = 'audioBg'
+      audioBg.style.cssText = `position:fixed;inset:0;z-index:0;background:url('${safeUrl}') center/cover no-repeat;opacity:${(CS.bg_opacity ?? 70) / 100};pointer-events:none;`
+      document.body.insertBefore(audioBg, document.body.firstChild)
+    }
+  }
 } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if (isMobile) {
