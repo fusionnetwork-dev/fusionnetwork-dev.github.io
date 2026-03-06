@@ -5225,6 +5225,7 @@ badge_colors: JSON.stringify(Object.keys(badgeColors).length ? badgeColors : (CS
     age_gate:          gtog('tAgeGate'),
     custom_settings:   csJson,
     updated_at:        new Date().toISOString(),
+     audio_only_bg: document.getElementById('audioOnlyBgUrl')?.value.trim() || '',
   };
 
   delete updates.is_admin;
