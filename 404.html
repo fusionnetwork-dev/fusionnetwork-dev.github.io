@@ -506,6 +506,7 @@
   <script>
     /* ── Sanitizers ── */
      // ── CAPTCHA ── put these FIRST before anything else
+    
  function initCaptcha() {
   try {
     if (sessionStorage.getItem('swaqq_verified') === '1') {
@@ -551,6 +552,23 @@ function checkCaptchaClick() {
     }, 700);
   }, delay);
 }
+    function setOgTags(profile) {
+  const name   = profile.display_name || profile.handle
+  const handle = profile.handle
+  const bio    = profile.bio || 'view my profile on swaqq.xyz'
+  const url    = `https://swaqq.xyz/@${handle}`
+  const ogImg  = `https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/og-image?handle=${encodeURIComponent(handle)}`
+
+  document.title = `${name} — swaqq.xyz`
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', url)
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', name)
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', `@${handle} · ${bio}`)
+  document.querySelector('meta[property="og:image"]')?.setAttribute('content', ogImg)
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', name)
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', `@${handle} · ${bio}`)
+  document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', ogImg)
+}
+    setOgTags();
 
     function sanitize(str) {
       if (typeof str !== 'string') return '';
