@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title"       content="">
+<meta property="og:description" content="">
+<meta property="og:image"       content="">
+<meta name="twitter:card"       content="summary_large_image">
   <title>dashboard — swaqq.xyz</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Raleway:wght@400;600;700;800&family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2356,7 +2360,17 @@ body, html {
 <script>
   console.log('[swaqq] script start');
 window.addEventListener('DOMContentLoaded', () => console.log('[swaqq] DOM ready'));
-
+// Fill OG tags from profile data for crawlers
+async function setOgTags() {
+  const handle = window.location.pathname.replace('/@','').replace('/','').toLowerCase()
+  if (!handle) return
+  
+  // Bots that crawl won't execute JS anyway — this is just a fallback hint
+  // Real solution: edge function above handles bot requests
+  const ogImg = `https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/og-image?handle=${handle}`
+  document.querySelector('meta[property="og:image"]')?.setAttribute('content', ogImg)
+}
+setOgTags()
 
   // ── HANDLE / NAME FILTER ──────────────────────────────────────────────────────
 const LOCAL_BLOCKLIST = new Set([
