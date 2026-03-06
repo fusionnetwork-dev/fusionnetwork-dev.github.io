@@ -1788,15 +1788,29 @@ if (CS.bg_type === 'custom-video' && customVid) {
 } else if (CS.bg_type === 'audio' && audioId) {
   createYouTubeBackground(audioId, CS.mute_audio !== false, true);
   // show image/gif background if set
-  if (CS.audio_only_bg) {
-    const safeUrl = sanitizeUrl(CS.audio_only_bg)
-    if (safeUrl) {
+if (CS.audio_only_bg) {
+  const safeUrl = sanitizeUrl(CS.audio_only_bg)
+  if (safeUrl) {
+    const isMp4 = safeUrl.match(/\.mp4(\?|$)/i)
+    if (isMp4) {
+      const vid = document.createElement('video')
+      vid.id = 'audioBg'
+      vid.src = safeUrl
+      vid.autoplay = true
+      vid.muted = true
+      vid.loop = true
+      vid.playsInline = true
+      vid.style.cssText = `position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;opacity:${(CS.bg_opacity ?? 70) / 100};`
+      document.body.insertBefore(vid, document.body.firstChild)
+      vid.play().catch(() => {})
+    } else {
       const audioBg = document.createElement('div')
       audioBg.id = 'audioBg'
       audioBg.style.cssText = `position:fixed;inset:0;z-index:0;background:url('${safeUrl}') center/cover no-repeat;opacity:${(CS.bg_opacity ?? 70) / 100};pointer-events:none;`
       document.body.insertBefore(audioBg, document.body.firstChild)
     }
   }
+}
 } else if (CS.bg_type === 'video' && videoId && CS.show_video_bg !== false) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if (isMobile) {
