@@ -5141,6 +5141,7 @@ async function syncDiscordRoleBadges(discordId) {
       url:   icon.url,   // storage URL only, no base64
     })),
     audio_only_id:  document.getElementById('fAudioId')?.value.trim() || '',
+    audio_only_bg: document.getElementById('audioOnlyBgUrl')?.value.trim() || '',
     mute_audio:     gtog('tMuteAudio'),
     border_style:   CS.border_style  || cs('border_style'),
     name_style:     CS.name_style    || cs('name_style'),
