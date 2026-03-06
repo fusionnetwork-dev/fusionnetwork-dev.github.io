@@ -1120,6 +1120,18 @@ body, html {
     </div>
     <div class="field-hint">plays audio only — no video renders. great for lo-fi, beats, ambience.</div>
   </div>
+  <div class="settings-field" id="audioOnlyBgField">
+  <label class="field-label">audio background image / gif</label>
+  <div style="display:flex;gap:8px;align-items:center">
+    <input type="text" id="audioOnlyBgUrl" class="field-input" placeholder="https://... image or gif url">
+    <button onclick="previewAudioBg()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Geist Mono',monospace;font-size:11px;white-space:nowrap">preview</button>
+  </div>
+  <div class="field-hint">shows as background when audio only mode is active. supports gif.</div>
+  <div id="audioOnlyBgPreview" style="display:none;margin-top:8px;border-radius:8px;overflow:hidden;max-height:120px">
+    <img id="audioOnlyBgImg" src="" style="width:100%;height:120px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.08)">
+  </div>
+</div>
+  
   <div class="toggle-row">
     <div><div class="toggle-title">mute audio by default</div><div class="toggle-sub">visitors click to unmute</div></div>
     <div class="toggle" id="tMuteAudio" onclick="this.classList.toggle('on')"></div>
@@ -3231,11 +3243,13 @@ CS = {
   card_flip:          get('card_flip',          false),
   card_back_text:     get('card_back_text',     ''),
   audio_only_id:      csBlob.audio_only_id      ?? '',
+  audio_only_bg: document.getElementById('audioOnlyBgUrl')?.value.trim() || '',
   mute_audio:         csBlob.mute_audio         ?? true,
   bg_video_url:       get('bg_video_url',       ''),
   bg_video_loop:      get('bg_video_loop',      true),
   bg_video_mute:      get('bg_video_mute',      true),
   youtube_video_id:   get('youtube_video_id',   ''),
+  
   badge_colors: pj(data.badge_colors, {}),
 
 };
@@ -3561,7 +3575,14 @@ function showTab(name) {
       box.innerHTML = '';
     }
   }
-
+function previewAudioBg() {
+  const url = document.getElementById('audioOnlyBgUrl').value.trim()
+  const preview = document.getElementById('audioOnlyBgPreview')
+  const img = document.getElementById('audioOnlyBgImg')
+  if (!url) { preview.style.display = 'none'; return }
+  img.src = url
+  preview.style.display = 'block'
+}
   function syncGradHex(colorId, hexId) {
     document.getElementById(hexId).value = document.getElementById(colorId).value;
   }
