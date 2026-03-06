@@ -768,36 +768,7 @@ if (isCustomDomain) {
 }
 
 // alias fallback — if no handle found by normal routing, check alias_map
-if (handle && !isCustomDomain && !isSubdomain) {
-  (async () => {
-    const { data: profileByHandle } = await sb.from('profiles')
-      .select('id')
-      .eq('handle', handle)
-      .maybeSingle();
 
-    if (!profileByHandle) {
-      // not a handle — check if it's an alias
-      const { data: aliasRow } = await sb.from('alias_map')
-        .select('profile_id')
-        .eq('alias', handle)
-        .maybeSingle();
-
-      if (aliasRow) {
-        const { data: profile } = await sb.from('profiles')
-          .select('handle')
-          .eq('id', aliasRow.profile_id)
-          .maybeSingle();
-        if (profile?.handle) {
-          // redirect to canonical handle url
-          window.location.replace('/@' + profile.handle);
-        }
-          if (profile) {
-  setOgTags(profile)
-}
-      }
-    }
-  })();
-}
 
 window._handle = handle;
 if (!isCustomDomain && !handle) window.location.href = '/';
@@ -1122,6 +1093,9 @@ initWhenReady();
 
     window._handle = domainProfile.handle;
     window._resolvedHandle = domainProfile.handle;
+           if (profile) {
+  setOgTags(profile)
+}
   }
 
   const resolvedHandle = window._resolvedHandle || handle;
@@ -1142,7 +1116,9 @@ initWhenReady();
       document.getElementById('notFound').classList.add('visible');
     }, 600);
     return;
+    
   }
+      setOgTags(profile)
       if (profile.is_banned) {
         document.getElementById('loading').classList.add('out');
         setTimeout(() => document.getElementById('loading').style.display = 'none', 600);
@@ -1233,12 +1209,10 @@ document.getElementById('discordStatus').insertAdjacentElement('afterend', joine
       document.title = `${profile.display_name || profile.handle} — swaqq.xyz`;
 
       // UID
-      sb.from('profiles').select('id').order('created_at', { ascending: true }).then(({ data: allIds }) => {
-        if (!allIds) return;
-        const pos = allIds.findIndex(r => r.id === profile.id);
-        const num = pos !== -1 ? pos + 1 : '?';
-        CS.show_uid_scramble ? startUidScramble(num) : (document.getElementById('uidVal').textContent = num);
-      });
+    sb.rpc('get_profile_position', { profile_handle: profile.handle }).then(({ data }) => {
+  const num = data || '?'
+  CS.show_uid_scramble ? startUidScramble(num) : (document.getElementById('uidVal').textContent = num)
+})
 
       // Badges
     // Badges
