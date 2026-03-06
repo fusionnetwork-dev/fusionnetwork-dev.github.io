@@ -126,6 +126,22 @@
     .status-dot.dnd { background:#f04747; box-shadow:0 0 6px #f04747; }
     .status-dot.offline { background:#4f545c; }
 
+
+#activityBar {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 16px 0;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+
+
+    
     /* ── Bio ── */
     .bio { font-family:'Geist Mono',monospace; font-size:13px; color:rgba(255,255,255,0.75); line-height:1.65; margin-bottom:18px; min-height:22px; }
     .bio-cursor { display:inline-block; width:2px; height:13px; background:rgba(255,255,255,0.5); animation:blink 1s step-end infinite; vertical-align:middle; margin-left:1px; }
@@ -387,42 +403,49 @@
   </div>
 
   <div class="page" id="profilePage">
-    <div class="card-wrap">
-      <div class="card-flip-inner" id="cardFlipInner">
-        <div class="card card-front" id="card">
-          <div class="card-header">
-            <div class="avatar" id="cardAvatar"></div>
-            <div class="user-info">
-              <div class="uid-row">uid <span class="uid-val" id="uidVal">...</span></div>
-              <div class="name-row">
-                <span class="username" id="cardName">...</span>
-                <div class="badges" id="cardBadges"></div>
-              </div>
-              <div class="handle" id="cardHandle">@...</div>
-              <div class="status" id="discordStatus">
-                <div class="status-dot offline" id="statusDot"></div>
-                <span id="statusText">offline</span>
-              </div>
+  <div class="card-wrap">
+    <div class="card-flip-inner" id="cardFlipInner">
+      <div class="card card-front" id="card">
+
+        <div class="card-header">
+          <div class="avatar" id="cardAvatar"></div>
+          <div class="user-info">
+            <div class="uid-row">uid <span class="uid-val" id="uidVal">...</span></div>
+            <div class="name-row">
+              <span class="username" id="cardName">...</span>
+              <div class="badges" id="cardBadges"></div>
+            </div>
+            <div class="handle" id="cardHandle">@...</div>
+            <div class="status" id="discordStatus">
+              <div class="status-dot offline" id="statusDot"></div>
+              <span id="statusText">offline</span>
             </div>
           </div>
-          <div class="bio" id="cardBio"><span class="bio-cursor"></span></div>
-          <div class="socials" id="cardSocials"></div>
-          <div class="card-footer">
-            <span class="footer-text" id="footerVersion">swaqq.xyz</span>
-            <div style="display:flex;align-items:center;gap:12px">
-              <button id="likeBtn" onclick="handleReaction('like')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
-                <i class="fas fa-thumbs-up"></i>
-                <span id="likeCount">0</span>
-              </button>
-              <button id="dislikeBtn" onclick="handleReaction('dislike')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
-                <i class="fas fa-thumbs-down"></i>
-                <span id="dislikeCount">0</span>
-              </button>
-              <span class="footer-text" id="footerClock">--:-- --</span>
-            </div>
-          </div>
-          <span class="flip-tap-hint" id="flipTapHint" style="display:none">tap to flip ↺</span>
         </div>
+
+        <div id="activityBar"></div>
+
+        <div class="bio" id="cardBio"><span class="bio-cursor"></span></div>
+        <div class="socials" id="cardSocials"></div>
+
+        <div class="card-footer">
+          <span class="footer-text" id="footerVersion">swaqq.xyz</span>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button id="likeBtn" onclick="handleReaction('like')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
+              <i class="fas fa-thumbs-up"></i>
+              <span id="likeCount">0</span>
+            </button>
+            <button id="dislikeBtn" onclick="handleReaction('dislike')" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:11px;color:rgba(255,255,255,0.35);transition:all 0.2s;padding:4px 8px;border-radius:6px;border:1px solid transparent">
+              <i class="fas fa-thumbs-down"></i>
+              <span id="dislikeCount">0</span>
+            </button>
+            <span class="footer-text" id="footerClock">--:-- --</span>
+          </div>
+        </div>
+
+        <span class="flip-tap-hint" id="flipTapHint" style="display:none">tap to flip ↺</span>
+
+      </div>
 
         <div class="card card-back" id="cardBack" style="display:none">
           <div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:4px">joined</div>
@@ -1921,20 +1944,65 @@ async function submitReport(profileId, handle, modal) {
   </div>`;
 }
     /* ── Discord / Lanyard Status ── */
-    async function fetchDiscordStatus(discordId) {
-      try {
-        const r = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
-        const d = await r.json();
-        if (d.success && d.data) {
-          const { discord_status: st, activities } = d.data;
-          const dotEl  = document.getElementById('statusDot');
-          const textEl = document.getElementById('statusText');
-          if (dotEl)  dotEl.className  = 'status-dot ' + (st || 'offline');
-          const custom = activities?.find(a => a.type === 4);
-          if (textEl) textEl.textContent = (st && st !== 'offline' && custom?.state) ? custom.state : (st || 'offline');
-        }
-      } catch(_) {}
+async function fetchDiscordStatus(discordId) {
+  try {
+    const r = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
+    const d = await r.json();
+    if (d.success && d.data) {
+      const { discord_status: st, activities, spotify } = d.data;
+
+      // ── status dot + text (unchanged) ──────────────────────────
+      const dotEl  = document.getElementById('statusDot');
+      const textEl = document.getElementById('statusText');
+      if (dotEl)  dotEl.className = 'status-dot ' + (st || 'offline');
+      const custom = activities?.find(a => a.type === 4);
+      if (textEl) textEl.textContent = (st && st !== 'offline' && custom?.state) ? custom.state : (st || 'offline');
+
+      // ── activity bar ────────────────────────────────────────────
+      const el = document.getElementById('activityBar');
+      if (!el) return;
+
+      const playing = activities?.find(a => a.type === 0);
+
+      if (spotify) {
+        const icon = spotify.album_art_url
+          ? `<img src="${spotify.album_art_url}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0">`
+          : `<div style="width:36px;height:36px;border-radius:6px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fab fa-spotify" style="color:#1db954"></i></div>`;
+        el.style.display = 'flex';
+        el.innerHTML = `
+          ${icon}
+          <div style="flex:1;min-width:0;overflow:hidden">
+            <div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:3px">
+              <i class="fab fa-spotify" style="color:#1db954;margin-right:4px"></i>listening to spotify
+            </div>
+            <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${spotify.song}</div>
+            <div style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${spotify.artist}</div>
+          </div>`;
+
+      } else if (playing) {
+        const imgSrc = playing.assets?.large_image
+          ? `https://cdn.discordapp.com/app-assets/${playing.application_id}/${playing.assets.large_image}.png`
+          : null;
+        const icon = imgSrc
+          ? `<img src="${imgSrc}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0">`
+          : `<div style="width:36px;height:36px;border-radius:6px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-gamepad" style="color:rgba(255,255,255,.4)"></i></div>`;
+        el.style.display = 'flex';
+        el.innerHTML = `
+          ${icon}
+          <div style="flex:1;min-width:0;overflow:hidden">
+            <div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:3px">
+              <i class="fas fa-gamepad" style="margin-right:4px"></i>playing
+            </div>
+            <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${playing.name}</div>
+            ${playing.details ? `<div style="font-family:'Geist Mono',monospace;font-size:10px;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${playing.details}</div>` : ''}
+          </div>`;
+
+      } else {
+        el.style.display = 'none';
+      }
     }
+  } catch(_) {}
+}
 
     /* ── UID Scramble ── */
     const scrambleChars = '0123456789ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛟ⚡☠✦✧⚔◊◈△▽';
