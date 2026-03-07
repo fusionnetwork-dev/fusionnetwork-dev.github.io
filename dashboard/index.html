@@ -2402,7 +2402,10 @@ function normalizeInput(str) {
     .replace(/\$/g, 's')
     .replace(/@/g, 'a');
 }
-
+function cdnUrl(url) {
+  if (!url) return url;
+  return url.replace('https://cwaifnbgkqqecatggvrx.supabase.co', 'https://cdn.swaqq.xyz');
+}
 function containsBlockedWord(str) {
   const norm = normalizeInput(str);
   for (const word of LOCAL_BLOCKLIST) {
@@ -3962,7 +3965,8 @@ async function handleBgImageUpload(input) {
       return;
     }
 
-    const { data: { publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+const { data: { publicUrl: rawUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+const publicUrl = cdnUrl(rawUrl);;
     document.getElementById('fAvatarUrl').value = publicUrl;
     setPfpPreview(publicUrl, currentProfile?.display_name || currentProfile?.handle);
     updateCardPreview();
