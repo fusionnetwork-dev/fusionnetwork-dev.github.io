@@ -6492,8 +6492,19 @@ function ihRenderGallery(images) {
           <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted)">${ihFormatSize(img.size_bytes)} · ${new Date(img.uploaded_at).toLocaleDateString()}</div>
         </div>
         <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${img.url}</div>
-        <button onclick="event.stopPropagation();ihCopyUrl('${img.url}')" class="btn btn-ghost" style="font-size:10px;flex-shrink:0"><i class="fas fa-copy"></i></button>
-        <button onclick="event.stopPropagation();ihDeleteImage('${img.id}',this)" class="btn btn-danger" style="font-size:10px;flex-shrink:0"><i class="fas fa-trash"></i></button>`;
+<button class="btn btn-ghost ih-copy-btn" data-url="${img.url}" style="font-size:10px;flex-shrink:0"><i class="fas fa-copy"></i></button>
+        <button class="btn btn-danger ih-del-btn" data-id="${img.id}" style="font-size:10px;flex-shrink:0"><i class="fas fa-trash"></i></button>`;
+      // After row.innerHTML = `...`
+      const copyBtn = row.querySelector('.ih-copy-btn');
+copyBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  ihCopyUrl(copyBtn.dataset.url);
+});
+const delBtn = row.querySelector('.ih-del-btn');
+delBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  ihDeleteImage(delBtn.dataset.id, delBtn);
+});
       row.onclick = () => ihOpenLightbox(img);
       gallery.appendChild(row);
     });
@@ -6578,6 +6589,10 @@ function ihCopyUrl(url) {
 }
 
 async function ihDeleteImage(id, btn) {
+   if (!id || id === 'null' || id === 'undefined') {
+    console.error('[ih] ihDeleteImage called with bad id:', id);
+    return;
+  }
   if (!confirm('delete this image? the link will stop working.')) return;
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-sm"></span>'; }
 
