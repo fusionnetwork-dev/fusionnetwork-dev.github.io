@@ -902,7 +902,9 @@ body, html {
   <button class="nav-item" onclick="showTab('music')"><i class="fas fa-music"></i> music</button>
   <button class="nav-item" onclick="showTab('schedule')"><i class="fas fa-clock"></i> scheduled bio</button>
 <button class="nav-item" onclick="showTab('pricing')"><i class="fas fa-tag"></i> pricing</button>
-  
+  <button class="nav-item" onclick="showTab('imagehost')">
+  <i class="fas fa-images"></i> image host
+</button>
   <div class="nav-section-label">insights</div>
   <button class="nav-item" onclick="showTab('analytics')"><i class="fas fa-chart-line"></i> analytics</button>
 
@@ -2548,6 +2550,7 @@ const STRIPE_PRICE_IDS = {
   '10slot':   'price_1T71EyIkWV8zhl3FtyZpf7D9',
   'verified': 'price_1T74mpIkWV8zhl3F4ZoAKL1k',
   'custom_domain': 'price_1T75h0IkWV8zhl3Fm7jONbTP',
+  'imagehost': 'price_1T8EKbIkWV8zhl3FBSXJEK8q',
 };
 
 async function buySlots(pack) {
@@ -2844,7 +2847,7 @@ const BADGE_DEFS = [
   { id:'early',       label:'Early',       icon:'fas fa-seedling',    desc:'one of the first users on swaqq.xyz',   locked:true,  early:true,   founder:false, defaultColor:'#f5a623' },
   { id:'supporter',   label:'Supporter',   icon:'fas fa-heart',       desc:'supports swaqq.xyz',                    locked:true,               defaultColor:'#f472b6' },
   { id:'contributor', label:'Contributor', icon:'fas fa-code-branch', desc:'contributed to swaqq.xyz',              locked:true,               defaultColor:'#a78bfa' },
-  { id:'founder',     label:'Founder',     icon:'fas fa-flag',        desc:'founding member of swaqq.xyz',          locked:true,  founder:true, defaultColor:'#f04747' },
+  { id:'founder',     label:'Founder',     icon:'fas fa-flag',        desc:'founding member of swaqq.xyz',          locked:true, founder:true, defaultColor:'#f04747' },
   { id:'owner',       label:'Owner',       icon:'fas fa-crown',       desc:'platform owner',                        locked:true,               defaultColor:'#f5a623' },
   { id:'developer',   label:'Developer',   icon:'fas fa-code',        desc:'built something for swaqq.xyz',         locked:true,               defaultColor:'#38bdf8' },
   { id:'staff',       label:'Staff',       icon:'fas fa-shield-alt',  desc:'part of the swaqq.xyz team',            locked:true,               defaultColor:'#34d399' },
@@ -2852,6 +2855,7 @@ const BADGE_DEFS = [
   { id:'verified',    label:'Verified',    icon:'fas fa-check-circle',desc:'verified identity',                     locked:true,               defaultColor:'#38bdf8' },
   { id:'og',          label:'OG',          icon:'fas fa-fire',        desc:'been here from day one',                locked:false,              defaultColor:'#fb923c' },
   { id:'promo',       label:'Promoter',    icon:'fas fa-gift',        desc:'promoted swaqq.xyz',                    locked:true,               defaultColor:'#FFD700' },
+  { id:'imagehost',   label:'Image Host',  icon:'fas fa-images',      desc:'hosts images on swaqq.xyz',             locked:true,               defaultColor:'#38bdf8' },
 ];
 
   const FONTS = [
@@ -3512,7 +3516,7 @@ renderAliases();
   function gtog(id) { return document.getElementById(id)?.classList.contains('on') ?? false; }
 
   // ─── TABS ─────────────────────────────────────────────────────────────────────
-const TABS = ['profile','appearance','customize','socials','badges','settings','analytics','music','schedule','pricing','admin'];
+const TABS = ['profile','appearance','customize','socials','badges','settings','analytics','music','schedule','pricing','imagehost','admin'];
 function showTab(name) {
   TABS.forEach(t => {
     const el = document.getElementById('tab-' + t);
@@ -3541,6 +3545,7 @@ function showTab(name) {
   if (name === 'music')     loadMusicTab();
   if (name === 'schedule')  loadScheduleTab();
   if (name === 'pricing')   loadPricingTab();
+  if (name === 'imagehost') loadImagehostTab();
   window.scrollTo(0, 0);
 }
   // ─── BG TABS ─────────────────────────────────────────────────────────────────
@@ -6318,6 +6323,262 @@ document.addEventListener('keydown', e => {
 });
 
 
+// ── IMAGE HOST ────────────────────────────────────────────────────────────────
+let _ihImages = [];
+let _ihView   = 'grid';
+let _ihLightboxId = null;
+let _ihCopyCount  = 0;
+
+async function loadImagehostTab() {
+  const hasAccess = currentProfile?.imagehost_unlocked || isOwner || isAdmin;
+  document.getElementById('imagehostLocked').style.display   = hasAccess ? 'none'  : 'block';
+  document.getElementById('imagehostUnlocked').style.display = hasAccess ? 'block' : 'none';
+  if (!hasAccess) return;
+  await ihLoadImages();
+}
+
+async function buyImagehost() {
+  const btn = document.getElementById('buyImagehostBtn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-sm"></span> redirecting...';
+  btn.disabled = true;
+  try {
+    const res = await fetch(
+      'https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/create-checkout',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (await sb.auth.getSession()).data.session.access_token,
+        },
+        body: JSON.stringify({
+          price_id:    STRIPE_PRICE_IDS['imagehost'],
+          user_id:     currentUser.id,
+         metadata: { grant_feature: 'imagehost', grant_badge: 'imagehost' },
+          success_url: window.location.origin + '/dashboard?payment=imagehost',
+          cancel_url:  window.location.origin + '/dashboard?payment=cancelled',
+        }),
+      }
+    );
+    const { url, error } = await res.json();
+    if (error) throw new Error(error);
+    window.location.href = url;
+  } catch (err) {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+    showAlert('imagehostAlert', 'checkout error: ' + err.message, 'error');
+  }
+}
+
+// Handle payment return
+if (new URLSearchParams(window.location.search).get('payment') === 'imagehost') {
+  setTimeout(async () => {
+    // Reload profile first so unlockedBadges is fresh
+    const { data: prof } = await sb.from('profiles').select('unlocked_badges').eq('id', currentUser?.id).single();
+    const current = JSON.parse(prof?.unlocked_badges || '[]');
+    const merged  = [...new Set([...current, 'imagehost'])];
+
+    await sb.from('profiles').update({
+      imagehost_unlocked: true,
+      unlocked_badges:    JSON.stringify(merged),
+      updated_at:         new Date().toISOString(),
+    }).eq('id', currentUser?.id);
+
+    showAlert('imagehostAlert', '✓ image host + badge unlocked!', 'success');
+    setTimeout(() => window.location.href = '/dashboard', 2000);
+  }, 800);
+}
+
+async function ihLoadImages() {
+  const { data } = await sb.from('hosted_images')
+    .select('*')
+    .eq('profile_id', currentUser.id)
+    .order('uploaded_at', { ascending: false });
+  _ihImages = data || [];
+  ihRenderGallery(_ihImages);
+  ihUpdateStats();
+}
+
+function ihUpdateStats() {
+  document.getElementById('ihTotalCount').textContent = _ihImages.length;
+  const totalBytes = _ihImages.reduce((a, i) => a + (i.size_bytes || 0), 0);
+  document.getElementById('ihTotalSize').textContent  = (totalBytes / (1024*1024)).toFixed(1) + ' mb';
+  document.getElementById('ihTotalCopies').textContent = _ihCopyCount;
+  document.getElementById('ihGalleryCount').textContent = _ihImages.length + ' files';
+}
+
+function ihRenderGallery(images) {
+  const gallery = document.getElementById('ihGallery');
+  const empty   = document.getElementById('ihEmpty');
+  gallery.innerHTML = '';
+  if (!images.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  if (_ihView === 'grid') {
+    gallery.style.display = 'grid';
+    gallery.style.gridTemplateColumns = 'repeat(auto-fill,minmax(160px,1fr))';
+    images.forEach(img => {
+      const card = document.createElement('div');
+      card.style.cssText = 'border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all 0.2s;position:relative;group';
+      card.onmouseenter = () => card.style.borderColor = 'rgba(255,255,255,0.25)';
+      card.onmouseleave = () => card.style.borderColor = 'var(--border)';
+      card.onclick = () => ihOpenLightbox(img);
+      card.innerHTML = `
+        <div style="width:100%;aspect-ratio:1;overflow:hidden;background:#0a0a0a">
+          <img src="${img.url}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform=''">
+        </div>
+        <div style="padding:8px 10px">
+          <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sanitize(img.filename)}</div>
+          <div style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px">${ihFormatSize(img.size_bytes)}</div>
+        </div>`;
+      gallery.appendChild(card);
+    });
+  } else {
+    gallery.style.display = 'flex';
+    gallery.style.flexDirection = 'column';
+    gallery.style.gap = '6px';
+    images.forEach(img => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;transition:border-color 0.2s;cursor:pointer';
+      row.onmouseenter = () => row.style.borderColor = 'rgba(255,255,255,0.2)';
+      row.onmouseleave = () => row.style.borderColor = 'var(--border)';
+      row.innerHTML = `
+        <img src="${img.url}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;background:#0a0a0a;flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sanitize(img.filename)}</div>
+          <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted)">${ihFormatSize(img.size_bytes)} · ${new Date(img.uploaded_at).toLocaleDateString()}</div>
+        </div>
+        <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${img.url}</div>
+        <button onclick="event.stopPropagation();ihCopyUrl('${img.url}')" class="btn btn-ghost" style="font-size:10px;flex-shrink:0"><i class="fas fa-copy"></i></button>
+        <button onclick="event.stopPropagation();ihDeleteImage('${img.id}',this)" class="btn btn-danger" style="font-size:10px;flex-shrink:0"><i class="fas fa-trash"></i></button>`;
+      row.onclick = () => ihOpenLightbox(img);
+      gallery.appendChild(row);
+    });
+  }
+}
+
+function ihSetView(v) {
+  _ihView = v;
+  document.getElementById('ihGridBtn').style.background = v==='grid' ? 'rgba(255,255,255,0.08)' : 'transparent';
+  document.getElementById('ihGridBtn').style.color      = v==='grid' ? '#fff' : 'var(--muted)';
+  document.getElementById('ihListBtn').style.background = v==='list' ? 'rgba(255,255,255,0.08)' : 'transparent';
+  document.getElementById('ihListBtn').style.color      = v==='list' ? '#fff' : 'var(--muted)';
+  ihRenderGallery(_ihImages);
+}
+
+function ihFilterGallery(q) {
+  const filtered = q ? _ihImages.filter(i => i.filename.toLowerCase().includes(q.toLowerCase())) : _ihImages;
+  ihRenderGallery(filtered);
+}
+
+async function ihHandleFiles(files) {
+  for (const file of files) await ihUploadFile(file);
+}
+
+function ihHandleDrop(e) {
+  e.preventDefault();
+  document.getElementById('ihDropZone').style.borderColor = 'rgba(255,255,255,0.12)';
+  document.getElementById('ihDropZone').style.background  = '';
+  ihHandleFiles(e.dataTransfer.files);
+}
+
+async function ihUploadFile(file) {
+  if (file.size > 10 * 1024 * 1024) { showAlert('imagehostAlert', file.name + ' is too large (max 10mb).', 'error'); return; }
+  if (!file.type.startsWith('image/')) { showAlert('imagehostAlert', file.name + ' is not an image.', 'error'); return; }
+
+  // Add progress item
+  const queueId = 'ih_' + Date.now();
+  const queueEl = document.getElementById('ihUploadQueue');
+  const item    = document.createElement('div');
+  item.id       = queueId;
+  item.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--sub)';
+  item.innerHTML = `<span class="spinner-sm"></span><span style="flex:1">${sanitize(file.name)}</span><span style="color:var(--muted)">${ihFormatSize(file.size)}</span>`;
+  queueEl.appendChild(item);
+
+  const ext  = file.name.split('.').pop().toLowerCase();
+  const uid  = Math.random().toString(36).slice(2, 10);
+  const path = `imagehost/${currentUser.id}/${uid}.${ext}`;
+
+  const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: false, contentType: file.type });
+  if (upErr) {
+    item.innerHTML = `<i class="fas fa-times-circle" style="color:var(--red)"></i><span style="flex:1;color:var(--red)">${sanitize(file.name)} — failed: ${upErr.message}</span>`;
+    setTimeout(() => item.remove(), 4000);
+    return;
+  }
+
+  const { data: { publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+
+  const { error: dbErr } = await sb.from('hosted_images').insert({
+    profile_id:  currentUser.id,
+    filename:    file.name,
+    url:         publicUrl,
+    size_bytes:  file.size,
+    storage_path: path,
+  });
+
+  if (dbErr) {
+    item.innerHTML = `<i class="fas fa-times-circle" style="color:var(--red)"></i><span style="flex:1;color:var(--red)">${sanitize(file.name)} — db error</span>`;
+    setTimeout(() => item.remove(), 4000);
+    return;
+  }
+
+  item.innerHTML = `<i class="fas fa-check-circle" style="color:var(--green)"></i><span style="flex:1">${sanitize(file.name)}</span><button onclick="ihCopyUrl('${publicUrl}');this.textContent='copied!'" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:6px;color:var(--sub);font-family:'Geist Mono',monospace;font-size:10px;padding:3px 9px;cursor:pointer"><i class="fas fa-copy"></i> copy link</button>`;
+  setTimeout(() => item.remove(), 8000);
+  await ihLoadImages();
+}
+
+function ihCopyUrl(url) {
+  navigator.clipboard.writeText(url);
+  _ihCopyCount++;
+  ihUpdateStats();
+  showAlert('imagehostAlert', '✓ link copied!', 'success');
+}
+
+async function ihDeleteImage(id, btn) {
+  if (!confirm('delete this image? the link will stop working.')) return;
+  if (btn) btn.innerHTML = '<span class="spinner-sm"></span>';
+  const img = _ihImages.find(i => i.id === id);
+  if (img?.storage_path) {
+    await sb.storage.from('avatars').remove([img.storage_path]);
+  }
+  await sb.from('hosted_images').delete().eq('id', id);
+  await ihLoadImages();
+}
+
+function ihOpenLightbox(img) {
+  _ihLightboxId = img.id;
+  document.getElementById('ihLightboxImg').src   = img.url;
+  document.getElementById('ihLightboxName').textContent = img.filename;
+  document.getElementById('ihLightboxUrl').textContent  = img.url;
+  document.getElementById('ihLightbox').style.display   = 'flex';
+}
+function ihCloseLightbox() {
+  document.getElementById('ihLightbox').style.display = 'none';
+  _ihLightboxId = null;
+}
+function ihCopyLightboxUrl() {
+  const url = document.getElementById('ihLightboxUrl').textContent;
+  ihCopyUrl(url);
+}
+async function ihDeleteLightbox() {
+  if (!_ihLightboxId) return;
+  const img = _ihImages.find(i => i.id === _ihLightboxId);
+  if (!img) return;
+  if (!confirm('delete this image?')) return;
+  ihCloseLightbox();
+  if (img.storage_path) await sb.storage.from('avatars').remove([img.storage_path]);
+  await sb.from('hosted_images').delete().eq('id', _ihLightboxId);
+  await ihLoadImages();
+}
+
+function ihFormatSize(bytes) {
+  if (!bytes) return '—';
+  if (bytes < 1024) return bytes + ' b';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' kb';
+  return (bytes/(1024*1024)).toFixed(1) + ' mb';
+}
+
+  
 loadDraft();
 setInterval(saveDraft, 30000);
   checkChangelog()
@@ -6393,7 +6654,119 @@ setInterval(saveDraft, 30000);
 
 
   <!-- ICON PICKER -->
+<!-- ═══ IMAGE HOST TAB ═══ -->
+<div id="tab-imagehost" style="display:none">
+  <div class="page-header">
+    <h1 class="page-title">image host</h1>
+    <p class="page-sub">upload and share images — direct links, forever</p>
+  </div>
 
+  <div class="alert" id="imagehostAlert"></div>
+
+  <!-- LOCKED STATE -->
+  <div id="imagehostLocked" style="display:none">
+    <div class="card-edit" style="text-align:center;padding:48px 32px;display:flex;flex-direction:column;align-items:center;gap:20px">
+      <div style="width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;color:rgba(255,255,255,0.3)">
+        <i class="fas fa-images"></i>
+      </div>
+      <div>
+        <div style="font-size:20px;font-weight:800;margin-bottom:8px">image host</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--sub);line-height:1.7;max-width:360px">
+          upload images and get permanent direct links. share them anywhere.<br>
+          one-time payment — no subscription.
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:20px 32px">
+        <div style="font-size:32px;font-weight:800;letter-spacing:-0.03em">$3.99</div>
+        <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase">one-time · unlimited uploads · bundle</div>
+      </div>
+      <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);line-height:1.8">
+  ✓ direct image links (cdn.swaqq.xyz/...)<br>
+  ✓ png · jpg · gif · webp support<br>
+  ✓ up to 10mb per image<br>
+  ✓ manage & delete anytime<br>
+  ✓ <span style="color:#38bdf8"><i class="fas fa-images"></i> image host badge</span> — shows on your profile card
+</div>
+      <button id="buyImagehostBtn" onclick="buyImagehost()" style="
+        padding:14px 32px;border:none;border-radius:10px;cursor:pointer;
+        background:linear-gradient(110deg,#333,#777,#bbb,#777,#333);
+        background-size:200%;animation:shimmer 3s ease infinite;
+        color:#fff;font-family:'Geist Mono',monospace;font-size:13px;
+        font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+        transition:filter 0.2s,transform 0.15s
+      " onmouseover="this.style.filter='brightness(1.3)';this.style.transform='translateY(-1px)'"
+         onmouseout="this.style.filter='';this.style.transform=''">
+      <i class="fas fa-unlock"></i> unlock image host + badge — $3.99
+      </button>
+    </div>
+  </div>
+
+  <!-- UNLOCKED STATE -->
+  <div id="imagehostUnlocked" style="display:none">
+
+    <!-- UPLOAD ZONE -->
+    <div class="dash-section">
+      <div class="dash-section-title">upload</div>
+      <div class="dash-section-sub">png · jpg · gif · webp — max 10mb each</div>
+      <div class="card-edit">
+        <div id="ihDropZone" style="
+          border:1.5px dashed rgba(255,255,255,0.12);border-radius:14px;
+          padding:40px 20px;text-align:center;cursor:pointer;
+          transition:all 0.2s;position:relative
+        " onclick="document.getElementById('ihFileInput').click()"
+           ondragover="event.preventDefault();this.style.borderColor='rgba(255,255,255,0.4)';this.style.background='rgba(255,255,255,0.03)'"
+           ondragleave="this.style.borderColor='rgba(255,255,255,0.12)';this.style.background=''"
+           ondrop="ihHandleDrop(event)">
+          <i class="fas fa-cloud-upload-alt" style="font-size:32px;color:rgba(255,255,255,0.15);margin-bottom:12px;display:block"></i>
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px">drag & drop or click to upload</div>
+          <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">multiple files supported</div>
+          <input type="file" id="ihFileInput" accept="image/png,image/jpeg,image/gif,image/webp" multiple style="display:none" onchange="ihHandleFiles(this.files)">
+        </div>
+        <!-- Upload progress -->
+        <div id="ihUploadQueue" style="margin-top:12px;display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:28px">
+      <div class="stat-card"><div class="stat-card-val" id="ihTotalCount">0</div><div class="stat-card-label">images uploaded</div></div>
+      <div class="stat-card"><div class="stat-card-val" id="ihTotalSize">0 mb</div><div class="stat-card-label">storage used</div></div>
+      <div class="stat-card"><div class="stat-card-val" id="ihTotalCopies">0</div><div class="stat-card-label">links copied</div></div>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="dash-section">
+      <div class="dash-section-title">your images <span id="ihGalleryCount" style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px"></span></div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+        <input class="field-input" type="text" id="ihSearch" placeholder="search filenames..." style="max-width:260px" oninput="ihFilterGallery(this.value)">
+        <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-left:auto">
+          <button id="ihGridBtn" onclick="ihSetView('grid')" style="padding:7px 12px;background:rgba(255,255,255,0.08);border:none;color:#fff;cursor:pointer;font-size:12px"><i class="fas fa-th"></i></button>
+          <button id="ihListBtn" onclick="ihSetView('list')" style="padding:7px 12px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:12px;border-left:1px solid var(--border)"><i class="fas fa-list"></i></button>
+        </div>
+      </div>
+      <div id="ihGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px"></div>
+      <div id="ihEmpty" style="display:none;text-align:center;padding:40px;font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)">
+        no images yet — upload your first one above
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE LIGHTBOX -->
+<div id="ihLightbox" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.9);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)ihCloseLightbox()">
+  <div style="max-width:800px;width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:16px;overflow:hidden">
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <div style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--sub)" id="ihLightboxName"></div>
+      <button onclick="ihCloseLightbox()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px"><i class="fas fa-times"></i></button>
+    </div>
+    <img id="ihLightboxImg" src="" style="width:100%;max-height:60vh;object-fit:contain;display:block;background:#000">
+    <div style="padding:16px 20px;display:flex;gap:8px;flex-wrap:wrap">
+      <div id="ihLightboxUrl" style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+      <button onclick="ihCopyLightboxUrl()" class="btn btn-ghost"><i class="fas fa-copy"></i> copy link</button>
+      <button onclick="ihDeleteLightbox()" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+    </div>
+  </div>
+</div>
   </main>
 <div class="icon-picker-overlay" id="iconPickerOverlay">
   <div class="icon-picker-box">
