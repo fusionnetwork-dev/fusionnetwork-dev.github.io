@@ -6619,6 +6619,10 @@ async function ihDeleteImage(id, btn) {
 }
 
 function ihOpenLightbox(img) {
+  if (!img?.id) {
+    console.error('[ih] ihOpenLightbox: img has no id', img);
+    return;
+  }
   _ihLightboxId = img.id;
   document.getElementById('ihLightboxImg').src   = img.url;
   document.getElementById('ihLightboxName').textContent = img.filename;
@@ -6634,10 +6638,11 @@ function ihCopyLightboxUrl() {
   ihCopyUrl(url);
 }
 async function ihDeleteLightbox() {
-  if (!_ihLightboxId) return;
+  if (!_ihLightboxId || _ihLightboxId === 'null') return;
   if (!confirm('delete this image?')) return;
+  const idToDelete = _ihLightboxId;
   ihCloseLightbox();
-  await ihDeleteImage(_ihLightboxId, null);
+  await ihDeleteImage(idToDelete, null);
 }
 
 function ihFormatSize(bytes) {
