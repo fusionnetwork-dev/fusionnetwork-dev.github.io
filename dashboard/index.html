@@ -6579,13 +6579,31 @@ function ihCopyUrl(url) {
 
 async function ihDeleteImage(id, btn) {
   if (!confirm('delete this image? the link will stop working.')) return;
-  if (btn) btn.innerHTML = '<span class="spinner-sm"></span>';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-sm"></span>'; }
+
   const img = _ihImages.find(i => i.id === id);
+  
+  // Delete from storage first
   if (img?.storage_path) {
-    await sb.storage.from('avatars').remove([img.storage_path]);
+    const { error: storageErr } = await sb.storage.from('avatars').remove([img.storage_path]);
+    if (storageErr) console.warn('[ih] storage delete failed:', storageErr.message);
+    // Continue anyway — still remove from DB
   }
-  await sb.from('hosted_images').delete().eq('id', id);
+
+  // Delete from DB
+  const { error: dbErr } = await sb.from('hosted_images').delete().eq('id', id);
+  if (dbErr) {
+    showAlert('imagehostAlert', 'delete failed: ' + dbErr.message, 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-trash"></i>'; }
+    return;
+  }
+
+  if (document.getElementById('ihLightbox').style.display === 'flex') {
+    ihCloseLightbox();
+  }
+
   await ihLoadImages();
+  showAlert('imagehostAlert', '✓ image deleted.', 'success');
 }
 
 function ihOpenLightbox(img) {
@@ -6605,13 +6623,9 @@ function ihCopyLightboxUrl() {
 }
 async function ihDeleteLightbox() {
   if (!_ihLightboxId) return;
-  const img = _ihImages.find(i => i.id === _ihLightboxId);
-  if (!img) return;
   if (!confirm('delete this image?')) return;
   ihCloseLightbox();
-  if (img.storage_path) await sb.storage.from('avatars').remove([img.storage_path]);
-  await sb.from('hosted_images').delete().eq('id', _ihLightboxId);
-  await ihLoadImages();
+  await ihDeleteImage(_ihLightboxId, null);
 }
 
 function ihFormatSize(bytes) {
