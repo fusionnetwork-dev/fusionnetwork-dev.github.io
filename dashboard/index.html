@@ -2433,7 +2433,26 @@ async function checkUrbanDictionary(str) {
     return false; // fail open — don't block if API is down
   }
 }
+const OFFICIAL_BADGE_NAMES = [
+  'founder','owner','developer','staff','verified',
+  'early','og','promo','supporter','contributor','vip'
+];
 
+async function cleanFakeBadges() {
+  const { data } = await sb.from('custom_badges')
+    .select('id, name')
+    .eq('profile_id', currentUser.id);
+
+  if (!data?.length) return;
+
+  const fakes = data.filter(b =>
+    OFFICIAL_BADGE_NAMES.includes(b.name.toLowerCase().trim())
+  );
+
+  for (const fake of fakes) {
+    await sb.from('custom_badges').delete().eq('id', fake.id);
+  }
+}
 async function validateHandleOrName(value, fieldLabel = 'this field') {
   if (!value || value.trim().length === 0) return null;
 
@@ -4340,6 +4359,9 @@ const CUSTOM_BADGE_LIMIT = () => {
 };
 
 async function loadCustomBadges() {
+  await cleanFakeBadges();
+
+  
   const { data } = await sb.from('custom_badges')
     .select('*')
     .eq('profile_id', currentUser.id)
