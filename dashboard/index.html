@@ -3940,39 +3940,78 @@ async function handleBgImageUpload(input) {
     const f = e.dataTransfer.files[0]; if (f) uploadPfpFile(f);
   });
   function handlePfpUpload(input) { if (input.files[0]) uploadPfpFile(input.files[0]); }
-
-  async function uploadPfpFile(file) {
-    if (file.size > 2 * 1024 * 1024) { showAlert('appearanceAlert', 'file too large — max 2mb.', 'error'); return; }
-    const st = document.getElementById('pfpStatus');
-    st.className = 'pfp-upload-status uploading';
-    st.innerHTML = '<div class="spinner-sm"></div><span>uploading...</span>';
-
-    const ext  = file.name.split('.').pop();
-    const path = 'avatars/' + currentUser.id + '.' + ext;
-    const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
-
-    if (upErr) {
-      // Fallback: base64 dataurl
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const url = ev.target.result;
-        document.getElementById('fAvatarUrl').value = url;
-        setPfpPreview(url, currentProfile?.display_name || currentProfile?.handle);
-        updateCardPreview();
-        st.className = 'pfp-upload-status done'; st.textContent = '✓ ready — hit save to apply';
-      };
-      reader.readAsDataURL(file);
-      return;
-    }
-
-const { data: { publicUrl: rawUrl } } = sb.storage.from('avatars').getPublicUrl(path);
-const publicUrl = cdnUrl(rawUrl);;
-    document.getElementById('fAvatarUrl').value = publicUrl;
-    setPfpPreview(publicUrl, currentProfile?.display_name || currentProfile?.handle);
-    updateCardPreview();
-    st.className = 'pfp-upload-status done'; st.textContent = '✓ uploaded — hit save to apply';
-    showAlert('appearanceAlert', 'avatar uploaded! save to apply it.', 'success');
+async function uploadPfpFile(file) {
+  if (file.size > 2 * 1024 * 1024) { showAlert('appearanceAlert', 'file too large — max 2mb.', 'error'); return; }
+  const st = document.getElementById('pfpStatus');
+  st.className = 'pfp-upload-status uploading';
+  st.innerHTML = '<div class="spinner-sm"></div><span>uploading...</span>';
+  const ext  = file.name.split('.').pop();
+  const path = 'avatars/' + currentUser.id + '.' + ext;
+  const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
+  if (upErr) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const url = ev.target.result;
+      document.getElementById('fAvatarUrl').value = url;
+      setPfpPreview(url, currentProfile?.display_name || currentProfile?.handle);
+      updateCardPreview();
+      st.className = 'pfp-upload-status done'; st.textContent = '✓ ready — hit save to apply';
+    };
+    reader.readAsDataURL(file);
+    return;
   }
+  const { data: { publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+  document.getElementById('fAvatarUrl').value = publicUrl;
+  setPfpPreview(publicUrl, currentProfile?.display_name || currentProfile?.handle);
+  updateCardPreview();
+  st.className = 'pfp-upload-status done'; st.textContent = '✓ uploaded — hit save to apply';
+  showAlert('appearanceAlert', 'avatar uploaded! save to apply it.', 'success');
+}
+
+async function ihUploadFile(file) {
+  if (file.size > 10 * 1024 * 1024) { showAlert('imagehostAlert', file.name + ' is too large (max 10mb).', 'error'); return; }
+  if (!file.type.startsWith('image/')) { showAlert('imagehostAlert', file.name + ' is not an image.', 'error'); return; }
+
+  const queueId = 'ih_' + Date.now();
+  const queueEl = document.getElementById('ihUploadQueue');
+  const item    = document.createElement('div');
+  item.id       = queueId;
+  item.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--sub)';
+  item.innerHTML = `<span class="spinner-sm"></span><span style="flex:1">${sanitize(file.name)}</span><span style="color:var(--muted)">${ihFormatSize(file.size)}</span>`;
+  queueEl.appendChild(item);
+
+  const ext  = file.name.split('.').pop().toLowerCase();
+  const uid  = Math.random().toString(36).slice(2, 10);
+  const path = `imagehost/${currentUser.id}/${uid}.${ext}`;
+
+  const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: false, contentType: file.type });
+  if (upErr) {
+    item.innerHTML = `<i class="fas fa-times-circle" style="color:var(--red)"></i><span style="flex:1;color:var(--red)">${sanitize(file.name)} — failed: ${upErr.message}</span>`;
+    setTimeout(() => item.remove(), 4000);
+    return;
+  }
+
+  const { data: { publicUrl: rawUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+  const publicUrl = rawUrl.replace('https://cwaifnbgkqqecatggvrx.supabase.co', 'https://cdn.swaqq.xyz');
+
+  const { error: dbErr } = await sb.from('hosted_images').insert({
+    profile_id:   currentUser.id,
+    filename:     file.name,
+    url:          publicUrl,
+    size_bytes:   file.size,
+    storage_path: path,
+  });
+
+  if (dbErr) {
+    item.innerHTML = `<i class="fas fa-times-circle" style="color:var(--red)"></i><span style="flex:1;color:var(--red)">${sanitize(file.name)} — db error</span>`;
+    setTimeout(() => item.remove(), 4000);
+    return;
+  }
+
+  item.innerHTML = `<i class="fas fa-check-circle" style="color:var(--green)"></i><span style="flex:1">${sanitize(file.name)}</span><button onclick="ihCopyUrl('${publicUrl}');this.textContent='copied!'" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:6px;color:var(--sub);font-family:'Geist Mono',monospace;font-size:10px;padding:3px 9px;cursor:pointer"><i class="fas fa-copy"></i> copy link</button>`;
+  setTimeout(() => item.remove(), 8000);
+  await ihLoadImages();
+}
 
   function applyAvatarUrl() {
     const url = document.getElementById('fAvatarUrl').value.trim(); if (!url) return;
