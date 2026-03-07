@@ -2978,7 +2978,7 @@ function showDiscordVerifyGate() {
 }
   const DISCORD_CLIENT_ID  = '1478888702649565234';
 const DISCORD_REDIRECT   = 'https://swaqq.xyz/discord-callback.html';
-const DISCORD_WEBHOOK    = 'https://discord.com/api/webhooks/1478889239604101203/KWHTeH7KqrN0EtdnnkY842yrB_WD1FdPmnFFIZKZlrWOG5fHbfBnKBHF2pYs5TB8L5G3';
+
 
   async function verifyDiscordGate() {
   const state = Math.random().toString(36).slice(2);
@@ -3027,22 +3027,11 @@ const DISCORD_WEBHOOK    = 'https://discord.com/api/webhooks/1478889239604101203
       discord_id_verified: user.id,
     }).eq('id', session.user.id);
 
-    await fetch(DISCORD_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        content: null,
-        embeds: [{
-          title: 'Existing user verified Discord',
-          color: 0x43b581,
-          fields: [
-            { name: 'Discord Username', value: user.username,  inline: true },
-            { name: 'Discord ID',       value: user.id,        inline: true },
-          ],
-          timestamp: new Date().toISOString(),
-        }]
-      })
-    }).catch(() => {});
+await fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/discord-notify', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (await sb.auth.getSession()).data.session.access_token },
+  body: JSON.stringify({ type: 'existing_verify', username: user.username, discordId: user.id, avatar: user.avatar }),
+}).catch(() => {});
 
     const btn = document.getElementById('dcGateBtn');
     if (btn) { btn.style.background = 'rgba(67,181,129,0.15)'; btn.style.borderColor = 'rgba(67,181,129,0.4)'; btn.style.color = '#43b581'; btn.textContent = '✓ verified'; }
@@ -5377,7 +5366,7 @@ function renderAdminTable(users) {
     const unlocked = pj(u.unlocked_badges, []);
     const initials = (u.display_name||u.handle||'?')[0].toUpperCase();
     const av = u.avatar_url
-      ? `<div class="user-av" style="background-image:url(${u.avatar_url});background-size:cover"></div>`
+      ? `<div class="user-av" style="background-image:url(${sanitizeUrl(u.avatar_url) || ''});background-size:cover"></div>`
       : `<div class="user-av">${initials}</div>`;
 
     const roleTags = [
