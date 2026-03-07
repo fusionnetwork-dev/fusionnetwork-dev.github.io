@@ -6560,15 +6560,16 @@ async function ihUploadFile(file) {
     return;
   }
 
-  const { data: { publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+const { data: { publicUrl: rawUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+const publicUrl = rawUrl.replace('https://cwaifnbgkqqecatggvrx.supabase.co', 'https://cdn.swaqq.xyz');
 
-  const { error: dbErr } = await sb.from('hosted_images').insert({
-    profile_id:  currentUser.id,
-    filename:    file.name,
-    url:         publicUrl,
-    size_bytes:  file.size,
-    storage_path: path,
-  });
+const { error: dbErr } = await sb.from('hosted_images').insert({
+  profile_id:  currentUser.id,
+  filename:    file.name,
+  url:         publicUrl,
+  size_bytes:  file.size,
+  storage_path: path,
+});
 
   if (dbErr) {
     item.innerHTML = `<i class="fas fa-times-circle" style="color:var(--red)"></i><span style="flex:1;color:var(--red)">${sanitize(file.name)} — db error</span>`;
