@@ -689,7 +689,7 @@ function sanitizeHtml(html) {
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
 
- async function signUp() {
+async function signUp() {
   if (!_discordVerified) return showAlert('signupAlert', 'please verify your discord account first.', 'error');
 
   const rlKey = 'swaqq_signup_rl';
@@ -712,14 +712,12 @@ function sanitizeHtml(html) {
   if (password.length < 6) return showAlert('signupAlert', 'password must be at least 6 characters.', 'error');
 
   setLoading('signupBtn', true);
-
   const safetyTimer = setTimeout(() => {
     setLoading('signupBtn', false);
     showAlert('signupAlert', 'request timed out — check your connection and try again.', 'error');
   }, 12000);
 
   try {
-
     const { data: taken } = await sb.from('profiles').select('id').eq('handle', handle).maybeSingle();
     if (taken) {
       clearTimeout(safetyTimer);
@@ -730,65 +728,60 @@ function sanitizeHtml(html) {
     const { data: authData, error: authErr } = await sb.auth.signUp({
       email,
       password,
-      options: {
-        data: { handle: handle }
-      }
+      options: { data: { handle } }
     });
 
     clearTimeout(safetyTimer);
     setLoading('signupBtn', false);
 
-    if (authErr) {
-  return showAlert('signupAlert', authErr.message, 'error');
-}
+    if (authErr) return showAlert('signupAlert', authErr.message, 'error');
 
-const { error: signInErr } = await sb.auth.signInWithPassword({ email, password });
-if (signInErr) {
-  showAlert('signupAlert', '✓ account created! please log in.', 'success');
-  setTimeout(() => openModal('login'), 2000);
-  return;
-}
+    const { error: signInErr } = await sb.auth.signInWithPassword({ email, password });
+    if (signInErr) {
+      showAlert('signupAlert', '✓ account created! please log in.', 'success');
+      setTimeout(() => openModal('login'), 2000);
+      return;
+    }
 
-if (_discordUser) {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    await sb.from('profiles').update({
-      discord_verified: true,
-      discord_id: _discordUser.id,
-      discord_username: _discordUser.username,
-      discord_avatar: _discordUser.avatar
-        ? `https://cdn.discordapp.com/avatars/${_discordUser.id}/${_discordUser.avatar}.png`
-        : null,
-    }).eq('id', session.user.id);
-  }
-}
-try {
-  if (_discordUser) {
-    const fullHandle =
-      _discordUser.discriminator && _discordUser.discriminator !== "0"
-        ? `${_discordUser.username}#${_discordUser.discriminator}`
-        : _discordUser.username;
+    if (_discordUser) {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) {
+        await sb.from('profiles').update({
+          discord_verified:  true,
+          discord_id:        _discordUser.id,
+          discord_username:  _discordUser.username,
+          discord_avatar:    _discordUser.avatar
+            ? `https://cdn.discordapp.com/avatars/${_discordUser.id}/${_discordUser.avatar}.png`
+            : null,
+        }).eq('id', session.user.id);
+      }
 
-    await fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/discord-notify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type:      'account_created',
-        username:  _discordUser.username,
-        discordId: _discordUser.id,
-        avatar:    _discordUser.avatar,
-        handle:    fullHandle,  // ← was `handle` (undefined variable)
-      }),
-    }).catch(() => {});
+      const fullHandle =
+        _discordUser.discriminator && _discordUser.discriminator !== "0"
+          ? `${_discordUser.username}#${_discordUser.discriminator}`
+          : _discordUser.username;
+
+      await fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/discord-notify', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type:      'account_created',
+          username:  _discordUser.username,
+          discordId: _discordUser.id,
+          avatar:    _discordUser.avatar,
+          handle:    fullHandle,
+        }),
+      }).catch(() => {});
+    }
 
     showAlert('signupAlert', '✓ account created! redirecting...', 'success');
     setTimeout(() => window.location.href = '/dashboard', 900);
+
+  } catch (err) {
+    clearTimeout(safetyTimer);
+    setLoading('signupBtn', false);
+    showAlert('signupAlert', 'unexpected error: ' + err.message, 'error');
   }
-} catch (err) {
-  clearTimeout(safetyTimer);
-  setLoading('signupBtn', false);
-  showAlert('signupAlert', 'unexpected error: ' + err.message, 'error');
-}
 }
 
 const DISCORD_CLIENT_ID = '1478888702649565234';
