@@ -6582,26 +6582,23 @@ async function ihDeleteImage(id, btn) {
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-sm"></span>'; }
 
   const img = _ihImages.find(i => i.id === id);
-  
-  // Delete from storage first
+  console.log('[ih] deleting:', img);
+
   if (img?.storage_path) {
-    const { error: storageErr } = await sb.storage.from('avatars').remove([img.storage_path]);
-    if (storageErr) console.warn('[ih] storage delete failed:', storageErr.message);
-    // Continue anyway — still remove from DB
+    const { data, error: storageErr } = await sb.storage.from('avatars').remove([img.storage_path]);
+    console.log('[ih] storage delete result:', data, storageErr);
   }
 
-  // Delete from DB
   const { error: dbErr } = await sb.from('hosted_images').delete().eq('id', id);
+  console.log('[ih] db delete error:', dbErr);
+
   if (dbErr) {
     showAlert('imagehostAlert', 'delete failed: ' + dbErr.message, 'error');
     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-trash"></i>'; }
     return;
   }
 
-  if (document.getElementById('ihLightbox').style.display === 'flex') {
-    ihCloseLightbox();
-  }
-
+  if (document.getElementById('ihLightbox').style.display === 'flex') ihCloseLightbox();
   await ihLoadImages();
   showAlert('imagehostAlert', '✓ image deleted.', 'success');
 }
