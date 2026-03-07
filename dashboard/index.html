@@ -24,7 +24,6 @@
       background-image:linear-gradient(rgba(255,255,255,0.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.012) 1px,transparent 1px);
       background-size:44px 44px; }
 
-
 #authGate {
   position: fixed !important;
   inset: 0 !important;
@@ -44,7 +43,6 @@
     .spinner-sm { display:inline-block; width:10px; height:10px; border:1.5px solid rgba(255,255,255,0.2); border-top-color:rgba(255,255,255,0.7); border-radius:50%; animation:spin 0.6s linear infinite; }
     @keyframes spin{to{transform:rotate(360deg)}}
 
-  
     #topBar {
       position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 200;
       background: rgba(7,7,7,0.92); backdrop-filter: blur(20px);
@@ -60,15 +58,13 @@
     .top-bar-handle { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
     .top-bar-actions { display:flex; align-items:center; gap:8px; }
 
-   
     .layout { display:flex; min-height:100vh; position:relative; z-index:1; }
 
-  
     .sidebar { width:240px; flex-shrink:0; background:var(--sidebar); border-right:1px solid var(--border); padding:20px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto;  scrollbar-width: none; -ms-overflow-style: none; z-index: 9999; pointer-events: all; -webkit-backdrop-filter: none; }
     .sidebar-logo { padding:0 20px 20px; border-bottom:1px solid var(--border); margin-bottom:12px; font-family:'Geist Mono',monospace; font-size:15px; font-weight:700; letter-spacing:0.05em; text-decoration:none; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; display:block; }
     .sidebar-user { padding:12px 20px 16px; border-bottom:1px solid var(--border); margin-bottom:12px; }
     .sidebar::-webkit-scrollbar {
-  display: none;                /* Chrome/Safari */
+  display: none;
 }
     .sidebar-avatar { width:44px; height:44px; border-radius:50%; margin-bottom:10px; background:#1a1a1a center/cover no-repeat; border:2px solid rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; color:rgba(255,255,255,0.4); overflow:hidden; flex-shrink:0; }
     .sidebar-name { font-size:15px; font-weight:700; }
@@ -87,28 +83,24 @@
     .btn-logout { display:flex; align-items:center; gap:8px; width:100%; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.05em; color:rgba(255,100,100,0.5); background:none; border:none; cursor:pointer; padding:8px 0; transition:color 0.2s; }
     .btn-logout:hover { color:rgba(255,100,100,0.8); }
 
-    
    .main { flex:1; padding:32px 40px 120px; max-width:860px; min-width:0; }
     #tab-admin { margin: 0 -40px; padding: 0 40px; width: calc(100% + 80px); max-width:none; }
     .page-header { margin-bottom:32px; }
     .page-title { font-size:26px; font-weight:800; letter-spacing:-0.02em; margin-bottom:4px; display:flex; align-items:center; gap:12px; }
     .page-sub { font-family:'Geist Mono',monospace; font-size:12px; color:var(--sub); }
 
-  
     .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px; }
     .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
     .stat-card-val { font-size:28px; font-weight:800; letter-spacing:-0.03em; margin-bottom:4px; background:linear-gradient(110deg,#555,#bbb,#fff,#bbb,#555); background-size:200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s ease infinite; }
     .stat-card-label { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.15em; text-transform:uppercase; }
 
-    
     .dash-section { margin-bottom:28px; }
     .dash-section-title { font-size:15px; font-weight:700; margin-bottom:4px; }
     .dash-section-sub { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:16px; }
     #tab-admin .dash-section { max-width:100%; }
 #tab-admin { max-width:100%; }
     .card-edit { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; }
-    
-    
+
     .field { margin-bottom:18px; }
     .field:last-child { margin-bottom:0; }
     .field-label { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--sub); margin-bottom:7px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
@@ -125,7 +117,6 @@
     .prefix-input { flex:1; background:transparent; border:none; outline:none; font-family:'Geist Mono',monospace; font-size:13px; color:var(--text); padding:11px 14px; min-width:0; }
     .prefix-input::placeholder { color:var(--muted); }
 
-  
     .pfp-area { display:flex; align-items:center; gap:20px; margin-bottom:20px; }
     .pfp-preview {
       width:80px; height:80px; border-radius:50%;
@@ -134,7 +125,7 @@
       border:2px solid rgba(255,255,255,0.14); flex-shrink:0;
       display:flex; align-items:center; justify-content:center;
       font-size:28px; font-weight:800; color:rgba(255,255,255,0.3); overflow:hidden;
-      
+
       object-fit:cover; position:relative;
     }
     .pfp-preview img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; border-radius:50%; }
@@ -149,7 +140,6 @@
     .pfp-upload-status.err { display:block; color:var(--red); }
     #pfpFileInput { display:none; }
 
-    
     .video-thumb { position:relative; width:100%; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:#0a0a0a; border:1px solid var(--border); margin-bottom:14px; }
     .video-thumb iframe { position:absolute; inset:0; width:100%; height:100%; border:none; pointer-events:none; }
     .video-thumb-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; }
@@ -158,7 +148,6 @@
     .video-thumb-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%); display:flex; align-items:flex-end; padding:10px 12px; pointer-events:none; }
     .video-thumb-label { font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.4); background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:3px 8px; }
 
-    
     .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); }
     .toggle-row:last-child { border-bottom:none; }
     .toggle-title { font-size:14px; font-weight:600; margin-bottom:2px; }
@@ -169,7 +158,6 @@
     .toggle.on::after { transform:translateX(18px); }
     .toggle.locked { opacity:0.35; cursor:not-allowed; }
 
-    
     .font-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px; }
     .font-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 12px; cursor:pointer; transition:all 0.2s; text-align:center; }
     .font-card:hover { border-color:var(--border2); background:rgba(255,255,255,0.04); }
@@ -180,7 +168,6 @@
     .font-card.custom-font-card:hover { border-color:rgba(255,255,255,0.3); }
     .font-card.custom-font-card.selected { border-style:solid; }
 
-    
     .color-section { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
     .color-chip { width:32px; height:32px; border-radius:8px; border:2px solid transparent; cursor:pointer; transition:all 0.15s; }
     .color-chip.selected { border-color:#fff; transform:scale(1.15); }
@@ -188,14 +175,12 @@
     .color-input-wrap { display:flex; align-items:center; gap:8px; }
     input[type="color"] { width:36px; height:36px; border:none; border-radius:8px; cursor:pointer; background:none; padding:0; }
 
-  
     .tab-pills { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
     .tab-pill { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; padding:6px 14px; border-radius:100px; border:1px solid var(--border); background:transparent; color:var(--sub); cursor:pointer; transition:all 0.2s; }
     .tab-pill.active { background:rgba(255,255,255,0.1); border-color:var(--border2); color:var(--text); }
     .bg-panel { display:none; }
     .bg-panel.active { display:block; }
 
-    
     .card-preview-wrap {
       perspective: 1000px;
       border-radius:16px; margin-bottom:16px;
@@ -221,7 +206,6 @@
     .card-preview-name { font-size:16px; font-weight:800; }
     .card-preview-bio { font-family:'Geist Mono',monospace; font-size:10px; opacity:0.6; margin-top:2px; }
 
-
     .badge-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; }
     .badge-card { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:12px; position:relative; transition:all 0.2s; min-width:0; overflow:hidden; }
     .badge-card.unlocked { cursor:pointer; border-color:var(--border2); }
@@ -233,7 +217,7 @@
     .badge-card.early-badge.selected { border-color:var(--gold); background:rgba(245,166,35,0.1); }
     .badge-icon { width:36px; height:36px; border-radius:9px; background:rgba(255,255,255,0.06); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
     .early-badge .badge-icon { background:rgba(245,166,35,0.1); border-color:rgba(245,166,35,0.25); color:var(--gold); }
-    
+
     .badge-info { flex:1; min-width:0; overflow:hidden; }
     .badge-name { font-size:13px; font-weight:700; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .badge-desc { font-family:'Geist Mono',monospace; font-size:10px; color:var(--muted); line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -288,8 +272,8 @@
     .icon-drop-zone:hover { border-color:rgba(255,255,255,0.25); color:var(--sub); }
     #customIconInput { display:none; }
    .custom-icons-row {
-  max-height: 120px;         
-  overflow-y: auto;          
+  max-height: 120px;
+  overflow-y: auto;
   padding: 8px;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -312,7 +296,7 @@ body, html {
   min-height: auto !important;
   overflow-y: visible !important;
 }
-   
+
     .btn { font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; border-radius:7px; padding:7px 14px; transition:all 0.2s; text-decoration:none; border:none; display:inline-flex; align-items:center; gap:6px; }
     .btn-ghost { background:transparent; color:var(--sub); border:1px solid var(--border); }
     .btn-ghost:hover { border-color:var(--border2); color:var(--text); background:rgba(255,255,255,0.04); }
@@ -321,12 +305,10 @@ body, html {
     .btn-gold { background:rgba(245,166,35,0.1); color:var(--gold); border:1px solid rgba(245,166,35,0.3); }
     .btn-gold:hover { background:rgba(245,166,35,0.18); }
 
-  
     .alert { font-family:'Geist Mono',monospace; font-size:12px; border-radius:8px; padding:10px 14px; margin-bottom:16px; display:none; }
     .alert.error { background:rgba(240,71,71,0.12); border:1px solid rgba(240,71,71,0.3); color:rgba(255,130,130,0.9); display:block; }
     .alert.success { background:rgba(67,181,129,0.12); border:1px solid rgba(67,181,129,0.3); color:rgba(67,181,129,0.9); display:block; }
 
-   
     .save-bar { position:fixed; bottom:0; left:240px; right:0; z-index:50; background:rgba(7,7,7,0.94); backdrop-filter:blur(16px); border-top:1px solid var(--border); padding:14px 40px; display:flex; align-items:center; justify-content:space-between; }
     .save-status { font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted); }
     .save-status.saved { color:rgba(67,181,129,0.8); }
@@ -334,7 +316,6 @@ body, html {
     .btn-save:hover { filter:brightness(1.3); transform:translateY(-1px); }
     .btn-save:disabled { opacity:0.5; cursor:not-allowed; transform:none; filter:none; }
 
-  
     .admin-pill { font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; background:rgba(245,166,35,0.15); border:1px solid rgba(245,166,35,0.3); color:var(--gold); border-radius:4px; padding:3px 9px; }
     .admin-stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:24px; }
     .admin-stat { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
@@ -363,7 +344,7 @@ body, html {
     .btn-sm-danger:hover { background:rgba(255,80,80,0.07); color:rgba(255,80,80,0.85); }
     .btn-sm-gold { background:rgba(245,166,35,0.08); color:rgba(245,166,35,0.7); border:1px solid rgba(245,166,35,0.2); }
     .btn-sm-gold:hover { background:rgba(245,166,35,0.15); color:var(--gold); }
-/* Card flip */
+
 .card-flip-wrap { perspective: 1200px; }
 .card-flip-inner { position:relative; transform-style:preserve-3d; transition:transform 0.7s cubic-bezier(0.4,0,0.2,1); cursor:pointer; }
 .card-flip-inner.flipped { transform:rotateY(180deg); }
@@ -371,7 +352,6 @@ body, html {
 .card-flip-back { position:absolute; inset:0; transform:rotateY(180deg); border-radius:inherit; padding:28px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:16px; text-align:center; }
 .flip-hint { position:absolute; bottom:10px; right:14px; font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.2); letter-spacing:0.1em; pointer-events:none; }
 
-/* Follows */
 .follow-btn { display:inline-flex; align-items:center; gap:7px; font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:8px 18px; border-radius:100px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.7); cursor:pointer; transition:all 0.2s; }
 .follow-btn:hover { background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.3); }
 .follow-btn.following { background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.25); }
@@ -379,7 +359,6 @@ body, html {
 .follow-counts { display:flex; gap:16px; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.4); }
 .follow-count-val { color:#fff; font-weight:700; margin-right:3px; }
 
-/* Music widget */
 .music-widget { display:none; position:fixed; bottom:22px; right:22px; z-index:103; background:rgba(10,10,10,0.88); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:10px 14px; max-width:220px; cursor:pointer; transition:all 0.3s; }
 .music-widget.visible { display:flex; align-items:center; gap:10px; }
 .music-widget:hover { border-color:rgba(255,255,255,0.2); background:rgba(20,20,20,0.92); }
@@ -393,12 +372,10 @@ body, html {
 .music-title-text { font-size:11px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .music-artist-text { font-family:'Geist Mono',monospace; font-size:9px; color:rgba(255,255,255,0.4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-/* QR modal */
 .qr-modal-bg { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.75); backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.2s; }
 .qr-modal-bg.open { opacity:1; pointer-events:all; }
 .qr-modal-box { background:var(--surface); border:1px solid var(--border2); border-radius:18px; padding:28px 32px; text-align:center; }
 
-/* Audit log */
 .audit-row { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); font-family:'Geist Mono',monospace; font-size:11px; }
 .audit-row:last-child { border-bottom:none; }
 .audit-time { color:var(--muted); flex-shrink:0; width:90px; }
@@ -406,7 +383,6 @@ body, html {
 .audit-action { flex:1; }
 .audit-action .hl { color:var(--text); font-weight:600; }
 
-/* IP table */
 .ip-table { width:100%; border-collapse:collapse; }
 .ip-table th { text-align:left; padding:6px 12px; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--border); }
 .ip-table td { padding:8px 12px; font-family:'Geist Mono',monospace; font-size:11px; color:var(--sub); border-bottom:1px solid rgba(255,255,255,0.03); }
@@ -437,18 +413,15 @@ body, html {
     .modal-cancel { padding:11px 18px; border:1px solid var(--border2); border-radius:9px; background:transparent; color:var(--sub); font-family:'Geist Mono',monospace; font-size:12px; cursor:pointer; transition:all 0.2s; }
     .modal-cancel:hover { background:rgba(255,255,255,0.04); color:var(--text); }
 
- 
     .sql-box { background:#050505; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px 16px; font-family:'Geist Mono',monospace; font-size:12px; color:rgba(255,255,255,0.5); line-height:1.8; margin-bottom:12px; white-space:pre-wrap; word-break:break-all; }
     .sql-box .kw { color:#a78bfa; }
     .sql-box .str { color:#34d399; }
     .copy-sql-btn { font-family:'Geist Mono',monospace; font-size:10px; padding:5px 12px; border-radius:6px; background:rgba(255,255,255,0.06); border:1px solid var(--border); color:var(--sub); cursor:pointer; transition:all 0.2s; }
     .copy-sql-btn:hover { background:rgba(255,255,255,0.1); color:var(--text); }
 
-
     .lanyard-link { color:#fff; font-weight:600; text-decoration:underline; text-underline-offset:2px; }
     .lanyard-link:hover { opacity:0.8; }
 
-   /* Mobile menu button */
 #mobileMenuBtn {
   display: none;
   position: fixed;
@@ -466,7 +439,6 @@ body, html {
 }
 #mobileMenuBtn:hover { color: #fff; border-color: rgba(255,255,255,0.25); }
 
-/* Sidebar overlay (mobile) */
 #sidebarOverlay {
   display: none;
   position: fixed; inset: 0;
@@ -503,7 +475,7 @@ body, html {
     display: none;
     position: fixed;
     top: 0;
-    left: 240px;  /* ← KEY: starts after sidebar, doesn't cover it */
+    left: 240px;
     right: 0;
     bottom: 0;
     z-index: 149;
@@ -528,7 +500,6 @@ body, html {
     [id^="tab-"] { display: none; }
 [id^="tab-"].active { display: block; }
 
-  /* the overlay - no blur here */
 #discordGate {
   position: fixed;
   inset: 0;
@@ -539,7 +510,6 @@ body, html {
   justify-content: center;
 }
 
-/* blur goes on a pseudo element behind everything */
 #discordGate::before {
   content: '';
   position: absolute;
@@ -548,7 +518,6 @@ body, html {
   z-index: -1;
 }
 
-/* the box itself - no blur */
 #discordGate .discord-gate-box {
   position: relative;
   z-index: 1;
@@ -560,9 +529,6 @@ body, html {
   width: 90%;
   text-align: center;
 }
-    /* ══════════════════════════════════
-   ADMIN PANEL — ap- namespace
-══════════════════════════════════ */
 
 .ap-stats {
   display: grid;
@@ -817,7 +783,6 @@ body, html {
   padding: 8px 4px; letter-spacing: 0.05em;
 }
 
-/* SQL blocks */
 .ap-sql-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
 @media(max-width:860px){ .ap-sql-grid { grid-template-columns: 1fr; } }
 .ap-sql-block {
@@ -863,7 +828,6 @@ body, html {
   </div>
 </div>
 
-
 <div id="topBar">
   <a class="top-bar-logo" href="/">swaqq.xyz</a>
   <span class="top-bar-handle" id="topBarHandle">@...</span>
@@ -876,7 +840,6 @@ body, html {
 <div class="top-bar-trigger" id="topBarTrigger"></div>
 
 <div class="layout" id="dashLayout" style="display:none">
-
 
 <aside class="sidebar" id="sidebar">
   <a class="sidebar-logo" href="/">swaqq.xyz</a>
@@ -927,9 +890,7 @@ body, html {
 </div>
 </aside>
 
-
   <main class="main">
-
 
     <div id="tab-profile">
       <div class="page-header">
@@ -988,9 +949,9 @@ body, html {
             </div>
           </div>
         </div>
-        
+
       </div>
-      
+
       <div class="dash-section">
   <div class="dash-section-title">referrals</div>
   <div class="dash-section-sub">share your link — both of you get a bonus when they sign up</div>
@@ -1005,7 +966,7 @@ body, html {
     <div class="field-hint" style="margin-top:8px">when someone signs up with your link, you both get +1 badge slot automatically</div>
   </div>
 </div>
-      
+
     <div class="field">
   <div class="field-label">your subdomain <span class="tag">W.I.P</span></div>
   <div class="prefix-wrap">
@@ -1014,7 +975,7 @@ body, html {
   </div>
   <div class="field-hint">your profile is also available at <span id="subdomainPreview" style="color:rgba(255,255,255,0.45)">yourname.swaqq.xyz</span></div>
 </div>
-      
+
   <div class="dash-section">
         <div class="dash-section-title">card settings</div>
         <div class="dash-section-sub">toggle features on / off</div>
@@ -1056,7 +1017,7 @@ body, html {
         </div>
       </div>
 
-    </div><!-- closes tab-profile -->
+    </div>
 
     <div id="tab-appearance" style="display:none">
       <div class="page-header">
@@ -1134,13 +1095,13 @@ body, html {
     <img id="audioOnlyBgImg" src="" style="width:100%;height:120px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.08)">
   </div>
 </div>
-  
+
   <div class="toggle-row">
     <div><div class="toggle-title">mute audio by default</div><div class="toggle-sub">visitors click to unmute</div></div>
     <div class="toggle" id="tMuteAudio" onclick="this.classList.toggle('on')"></div>
   </div>
 </div>
-        
+
           <div class="bg-panel active" id="bgPanel-video">
             <div class="video-thumb" id="videoThumb">
               <div class="video-thumb-placeholder" id="videoPlaceholder">
@@ -1166,7 +1127,6 @@ body, html {
             </div>
           </div>
 
-        
           <div class="bg-panel" id="bgPanel-image">
             <div class="field">
               <div class="field-label">background image url</div>
@@ -1188,8 +1148,7 @@ body, html {
               <input type="range" id="fBgOpacity" min="10" max="100" value="70" oninput="document.getElementById('bgOpacityVal').textContent=this.value+'%';updateBgPreview()" style="width:100%;accent-color:#fff;cursor:pointer">
             </div>
           </div>
-         
-          <!-- COLOR BG -->
+
           <div class="bg-panel" id="bgPanel-color">
             <div class="field">
               <div class="field-label">card background color</div>
@@ -1210,7 +1169,6 @@ body, html {
             </div>
           </div>
 
-          <!-- GRADIENT BG -->
           <div class="bg-panel" id="bgPanel-gradient">
             <div class="field-row">
               <div class="field">
@@ -1239,10 +1197,9 @@ body, html {
               </select>
             </div>
           </div>
-<!-- add to tab pills -->
+
 <button class="tab-pill" data-bgtab="custom-video" onclick="switchBgTab('custom-video',this)"><i class="fas fa-film" style="font-size:9px"></i> custom video</button>
 
-<!-- add as new bg-panel -->
 <div class="bg-panel" id="bgPanel-custom-video">
   <div class="field">
     <div class="field-label">upload video <span class="tag">mp4 · webm — max 50mb</span></div>
@@ -1268,7 +1225,7 @@ body, html {
     <div class="toggle on" id="tBgVideoMute" onclick="this.classList.toggle('on')"></div>
   </div>
 </div>
-          <!-- BG PREVIEW -->
+
           <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
             <div class="field-label" style="margin-bottom:8px">preview</div>
             <div id="bgPreviewBox" style="width:100%;height:80px;border-radius:10px;border:1px solid var(--border);background:#070707;transition:all 0.3s"></div>
@@ -1277,8 +1234,6 @@ body, html {
       </div>
     </div>
 
-    <!-- ═══ CUSTOMIZE TAB ═══ -->
-<!-- ═══ CUSTOMIZE TAB ═══ -->
 <div id="tab-customize" style="display:none">
   <div class="page-header">
     <h1 class="page-title">customize</h1>
@@ -1286,7 +1241,6 @@ body, html {
   </div>
   <div class="alert" id="customizeAlert"></div>
 
-  <!-- LIVE CARD PREVIEW -->
   <div class="dash-section">
     <div class="dash-section-title">live preview <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">hover to tilt</span></div>
     <div class="card-preview-wrap" id="cardPreviewWrap">
@@ -1308,7 +1262,6 @@ body, html {
 </div>
   </div>
 
-  <!-- FONT PICKER -->
   <div class="dash-section">
     <div class="dash-section-title">profile font</div>
     <div class="dash-section-sub">font used on your card</div>
@@ -1328,7 +1281,7 @@ body, html {
       </div>
     </div>
   </div>
-  
+
 <div class="toggle-row">
   <div>
     <div class="toggle-title">volume widget</div>
@@ -1336,7 +1289,7 @@ body, html {
   </div>
   <div class="toggle on" id="tVolumeWidget" onclick="this.classList.toggle('on')"></div>
 </div>
-  <!-- ACCENT COLOR -->
+
   <div class="dash-section">
     <div class="dash-section-title">accent color</div>
     <div class="dash-section-sub">used for borders, glow, and your name on your card</div>
@@ -1362,7 +1315,6 @@ body, html {
     </div>
   </div>
 
-  <!-- NAME STYLE -->
   <div class="dash-section">
     <div class="dash-section-title">name style</div>
     <div class="dash-section-sub">how your display name looks on the card</div>
@@ -1414,7 +1366,6 @@ body, html {
     </div>
   </div>
 
-  <!-- CARD BORDER STYLE -->
   <div class="dash-section">
     <div class="dash-section-title">card border</div>
     <div class="dash-section-sub">style of the border around your card</div>
@@ -1448,7 +1399,6 @@ body, html {
     </div>
   </div>
 
-  <!-- CARD STYLE -->
   <div class="dash-section">
     <div class="dash-section-title">card style</div>
     <div class="dash-section-sub">overall card look — preview updates live above</div>
@@ -1484,7 +1434,6 @@ body, html {
     </div>
   </div>
 
-  <!-- AVATAR SHAPE -->
   <div class="dash-section">
     <div class="dash-section-title">avatar shape</div>
     <div class="dash-section-sub">shape of your profile picture on the card</div>
@@ -1526,7 +1475,6 @@ body, html {
     </div>
   </div>
 
-  <!-- CARD LAYOUT -->
   <div class="dash-section">
     <div class="dash-section-title">card layout</div>
     <div class="dash-section-sub">arrangement of elements on the card</div>
@@ -1552,7 +1500,6 @@ body, html {
     </div>
   </div>
 
-  <!-- CARD TEXTURE -->
   <div class="dash-section">
     <div class="dash-section-title">card texture</div>
     <div class="dash-section-sub">subtle overlay pattern on the card surface</div>
@@ -1586,7 +1533,6 @@ body, html {
     </div>
   </div>
 
-  <!-- SOCIAL BUTTON STYLE -->
   <div class="dash-section">
     <div class="dash-section-title">social button style</div>
     <div class="dash-section-sub">how your social link buttons look on the card</div>
@@ -1620,7 +1566,6 @@ body, html {
     </div>
   </div>
 
-  <!-- CURSOR -->
   <div class="dash-section">
     <div class="dash-section-title">cursor</div>
     <div class="dash-section-sub">custom cursor shown on your profile page</div>
@@ -1650,7 +1595,6 @@ body, html {
     </div>
   </div>
 
-  <!-- PAGE EFFECTS -->
   <div class="dash-section">
     <div class="dash-section-title">page effects</div>
     <div class="dash-section-sub">animations and effects on your profile page</div>
@@ -1681,7 +1625,7 @@ body, html {
       </div>
     </div>
   </div>
-<!-- SPLASH SCREEN STYLE -->
+
   <div class="dash-section">
     <div class="dash-section-title">splash screen</div>
     <div class="dash-section-sub">the intro screen visitors see before your card</div>
@@ -1726,7 +1670,7 @@ body, html {
       </div>
     </div>
   </div>
-  <!-- BIO STYLE -->
+
   <div class="dash-section">
     <div class="dash-section-title">bio style</div>
     <div class="dash-section-sub">how your bio text appears on the card</div>
@@ -1752,7 +1696,7 @@ body, html {
       </div>
     </div>
   </div>
-<!-- PROFILE THEMES -->
+
 <div class="dash-section">
   <div class="dash-section-title">profile themes</div>
   <div class="dash-section-sub">save your current settings as a named theme — load or delete anytime</div>
@@ -1791,7 +1735,6 @@ body, html {
 </div>
 </div>
 
-    <!-- ═══ SOCIALS TAB ═══ -->
     <div id="tab-socials" style="display:none">
       <div class="page-header">
         <h1 class="page-title">social links</h1>
@@ -1804,7 +1747,6 @@ body, html {
       <button class="btn btn-ghost" onclick="addSocialRow()"><i class="fas fa-plus"></i> add link</button>
     </div>
 
-    <!-- ═══ BADGES TAB ═══ -->
     <div id="tab-badges" style="display:none">
       <div class="page-header">
         <h1 class="page-title">badges</h1>
@@ -1844,7 +1786,7 @@ body, html {
   <div class="dash-section-sub">customize the color of each unlocked badge</div>
   <div class="card-edit" id="badgeColorPickers"></div>
 </div>
-<!-- after the customBadgeGrid div, inside the card-edit -->
+
 <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
   <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">
     slots used: <span id="slotCountTag" style="color:var(--text)"></span>
@@ -1856,7 +1798,6 @@ body, html {
 </div>
     </div>
 
-    <!-- ═══ SETTINGS TAB ═══ -->
     <div id="tab-settings" style="display:none">
       <div class="dash-section">
   <div class="dash-section-title">what's new <span id="changelogVersionTag" style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px"></span></div>
@@ -1866,7 +1807,7 @@ body, html {
         <h1 class="page-title">account settings</h1>
         <p class="page-sub">password and danger zone</p>
       </div>
-      
+
       <div class="alert" id="settingsAlert"></div>
       <div class="dash-section">
         <div class="dash-section-title">change password</div>
@@ -1900,7 +1841,7 @@ body, html {
     <div class="alert" id="discordLinkAlert" style="margin-top:10px"></div>
   </div>
 </div>
-      
+
       <div class="dash-section">
         <div class="dash-section-title" style="color:rgba(255,80,80,0.7)">danger zone</div>
         <div class="card-edit" style="border-color:rgba(255,80,80,0.12)">
@@ -1920,7 +1861,7 @@ body, html {
       </div>
       <button class="btn btn-ghost" id="mfaToggleBtn" onclick="toggleMFA()" style="font-size:10px">enable 2fa</button>
     </div>
-    <!-- Enroll flow -->
+
     <div id="mfaEnrollSection" style="display:none;padding-top:16px;border-top:1px solid var(--border);margin-top:4px">
       <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:12px">scan this QR code with your authenticator app</div>
       <div id="mfaQrCode" style="background:#fff;border-radius:10px;padding:12px;display:inline-block;margin-bottom:14px"></div>
@@ -1935,7 +1876,7 @@ body, html {
         </div>
       </div>
     </div>
-    <!-- Disable flow -->
+
     <div id="mfaDisableSection" style="display:none;padding-top:16px;border-top:1px solid var(--border);margin-top:4px">
       <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:12px">enter your authenticator code to disable 2FA</div>
       <div style="display:flex;gap:8px">
@@ -1955,14 +1896,13 @@ body, html {
   </div>
 </div>
     </div>
-<!-- ═══ ANALYTICS TAB ═══ -->
+
 <div id="tab-analytics" style="display:none">
   <div class="page-header">
     <h1 class="page-title">analytics</h1>
     <p class="page-sub">profile views over the last 90 days</p>
   </div>
 
-  <!-- STAT CARDS -->
   <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
     <div class="stat-card"><div class="stat-card-val" id="anTotal">--</div><div class="stat-card-label">total views</div></div>
     <div class="stat-card"><div class="stat-card-val" id="anToday">--</div><div class="stat-card-label">today</div></div>
@@ -1970,7 +1910,6 @@ body, html {
     <div class="stat-card"><div class="stat-card-val" id="anPeak">--</div><div class="stat-card-label">peak day</div></div>
   </div>
 
-  <!-- CHART -->
   <div class="dash-section">
     <div class="dash-section-title">views over time <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">last 90 days</span></div>
     <div class="card-edit" style="padding:24px 20px 16px">
@@ -1981,7 +1920,6 @@ body, html {
     </div>
   </div>
 
-  <!-- REACTIONS BREAKDOWN -->
   <div class="dash-section">
     <div class="dash-section-title">reactions</div>
     <div class="card-edit" style="display:grid;grid-template-columns:1fr 1fr;gap:0">
@@ -1996,7 +1934,6 @@ body, html {
     </div>
   </div>
 
-  <!-- HOURLY HEATMAP -->
   <div class="dash-section">
     <div class="dash-section-title">peak hours <span style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">when people visit most</span></div>
     <div class="card-edit" style="padding:20px">
@@ -2007,15 +1944,13 @@ body, html {
     </div>
   </div>
 </div>
-   <!-- ═══ ADMIN TAB ═══ -->
+
 <div id="tab-admin" style="display:none">
   <div class="page-header">
     <h1 class="page-title">admin panel <span class="admin-pill"><i class="fas fa-shield-alt" style="font-size:8px;margin-right:3px"></i>admin</span></h1>
     <p class="page-sub">manage users, badges, roles, bans — changes apply instantly</p>
   </div>
 
-  <!-- SQL HELPER -->
-<!-- SQL HELPERS -->
 <div class="ap-section">
   <div class="ap-section-head">
     <div class="ap-section-title"><i class="fas fa-code"></i> sql helpers</div>
@@ -2057,7 +1992,6 @@ body, html {
   </div>
 </div>
 
-<!-- STATS -->
 <div class="ap-stats">
   <div class="ap-stat">
     <div class="ap-stat-icon"><i class="fas fa-users"></i></div>
@@ -2086,7 +2020,6 @@ body, html {
   </div>
 </div>
 
-<!-- BULK BAR -->
 <div id="bulkActionBar" class="ap-bulk-bar" style="display:none">
   <div class="ap-bulk-info">
     <div class="ap-bulk-dot"></div>
@@ -2100,7 +2033,6 @@ body, html {
   <button class="ap-bulk-btn ap-bulk-ghost" style="margin-left:auto" onclick="_bulkSelected.clear();updateBulkBar();document.querySelectorAll('.bulk-check').forEach(c=>c.checked=false)"><i class="fas fa-times"></i> clear</button>
 </div>
 
-<!-- USER TABLE -->
 <div class="ap-section">
   <div class="ap-section-head">
     <div>
@@ -2149,7 +2081,6 @@ body, html {
   </div>
 </div>
 
-<!-- BOTTOM ROW: NOTE + AUDIT -->
 <div class="ap-grid-2">
   <div class="ap-section">
     <div class="ap-section-head">
@@ -2183,7 +2114,6 @@ body, html {
   </div>
 </div>
 
-<!-- BOTTOM ROW: BAN RECORDS + REPORTS -->
 <div class="ap-grid-2">
   <div class="ap-section">
     <div class="ap-section-head">
@@ -2214,10 +2144,6 @@ body, html {
   </div>
 </div>
 
-<!-- SAVE BAR (unchanged functionality, restyled) -->
-
-
-<!-- BADGE MODAL (unchanged) -->
 <div class="modal-bg" id="badgeModal">
   <div class="modal-box">
     <div class="modal-title">manage badges</div>
@@ -2235,7 +2161,6 @@ body, html {
 </div>
 </div>
 
-  
 <div id="tab-music" style="display:none">
   <div class="page-header">
     <h1 class="page-title">now playing</h1>
@@ -2268,7 +2193,7 @@ body, html {
       </div>
     </div>
   </div>
-  <!-- Preview -->
+
   <div class="dash-section">
     <div class="dash-section-title">preview</div>
     <div style="position:relative;height:80px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
@@ -2286,7 +2211,6 @@ body, html {
   </div>
 </div>
 
-<!-- ═══ SCHEDULED BIO TAB ═══ -->
 <div id="tab-schedule" style="display:none">
   <div class="page-header">
     <h1 class="page-title">scheduled bio</h1>
@@ -2327,7 +2251,6 @@ body, html {
 
   <div class="alert" id="pricingAlert"></div>
 
-  <!-- VERIFIED BADGE -->
   <div class="dash-section">
     <div class="dash-section-title">badges</div>
     <div class="dash-section-sub">permanent — yours forever</div>
@@ -2366,25 +2289,20 @@ body, html {
     </div>
   </div>
 
-
-
-
 <script>
   console.log('[swaqq] script start');
 window.addEventListener('DOMContentLoaded', () => console.log('[swaqq] DOM ready'));
-// Fill OG tags from profile data for crawlers
 
-  // ── HANDLE / NAME FILTER ──────────────────────────────────────────────────────
 const LOCAL_BLOCKLIST = new Set([
-  // slurs — common ones hardcoded for instant rejection
+
   'nigger','nigga','faggot','fag','retard','tranny','chink','spic','kike',
   'wetback','cunt','twat','whore','slut','dyke','cracker','gook','raghead',
   'sandnigger','beaner','zipperhead','redskin','squaw','jap','nip','wop',
   'dago','polack','kraut','mick','paddy','paki','towelhead','camel jockey',
-  // obvious spam / impersonation
+
   'admin','administrator','support','moderator','mod','staff','official',
   'swaqq','swaqqxyz','swaqq_xyz','swaqq_official',
-  // generic bad words
+
   'fuck','shit','ass','bitch','bastard','piss','cock','dick','pussy','anus',
   'asshole','motherfucker','fucker','bullshit','jackass','dumbass','dipshit',
 ]);
@@ -2392,8 +2310,8 @@ const LOCAL_BLOCKLIST = new Set([
 function normalizeInput(str) {
   return str
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, '')       // strip underscores, dots, etc.
-    .replace(/0/g, 'o')              // leet speak
+    .replace(/[^a-z0-9]/g, '')
+    .replace(/0/g, 'o')
     .replace(/1/g, 'i')
     .replace(/3/g, 'e')
     .replace(/4/g, 'a')
@@ -2416,7 +2334,7 @@ function containsBlockedWord(str) {
 }
 
 async function checkUrbanDictionary(str) {
-  // Only check if it's a single word / short phrase
+
   if (str.length > 30) return false;
   try {
     const res = await fetch(
@@ -2425,8 +2343,6 @@ async function checkUrbanDictionary(str) {
     const data = await res.json();
     if (!data.list || data.list.length === 0) return false;
 
-    // Check the top result — if thumbs_down heavily outweigh thumbs_up it's likely a slur
-    // Also scan definition text for red flag words
     const top = data.list[0];
     const def = (top.definition + ' ' + top.example).toLowerCase();
     const redFlags = ['slur','offensive','racist','derogatory','hate','bigot','discriminat'];
@@ -2435,7 +2351,7 @@ async function checkUrbanDictionary(str) {
 
     return hasRedFlag && ratio > 1.5;
   } catch {
-    return false; // fail open — don't block if API is down
+    return false;
   }
 }
 const OFFICIAL_BADGE_NAMES = [
@@ -2471,9 +2387,9 @@ async function validateHandleOrName(value, fieldLabel = 'this field') {
     return `${fieldLabel} was flagged as potentially offensive.`;
   }
 
-  return null; // null = passed
+  return null;
 }
-  
+
   function sanitize(str) {
   if (typeof str !== 'string') return '';
   return str
@@ -2490,9 +2406,9 @@ async function validateHandleOrName(value, fieldLabel = 'this field') {
 function sanitizeUrl(url) {
   if (!url || typeof url !== 'string') return '';
   url = url.trim();
-  // Block javascript:, data:, vbscript:, and other dangerous schemes
+
   if (/^(javascript|data|vbscript|blob|file):/i.test(url)) return '';
-  // Only allow http, https, mailto
+
   if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) return '';
   return url;
 }
@@ -2509,9 +2425,9 @@ let _historyPaused = false;
 function snapshotHistory() {
   if (_historyPaused) return;
   const snap = JSON.stringify(CS);
-  // Don't push if same as current
+
   if (_history[_historyIdx] === snap) return;
-  // Remove any redo states
+
   _history.splice(_historyIdx + 1);
   _history.push(snap);
   if (_history.length > 50) _history.shift();
@@ -2547,7 +2463,7 @@ function updateUndoRedoBtns() {
   if (u) u.disabled = _historyIdx <= 0;
   if (r) r.disabled = _historyIdx >= _history.length - 1;
 }
-  // ── STRIPE BADGE SLOTS ────────────────────────────────────────────────────────
+
 const STRIPE_PRICE_IDS = {
   '3slot':    'price_1T71EWIkWV8zhl3F4IhYadWy',
   '10slot':   'price_1T71EyIkWV8zhl3FtyZpf7D9',
@@ -2566,7 +2482,7 @@ async function buySlots(pack) {
   btn.disabled = true;
 
   try {
-    // Create a Stripe Checkout session via your edge function
+
     const res = await fetch(
       'https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/create-checkout',
       {
@@ -2595,7 +2511,6 @@ async function buySlots(pack) {
 async function buyVerifiedBadge() {
   if (!currentUser) return;
 
-  // Already has it?
   if (unlockedBadges.includes('verified')) {
     showAlert('pricingAlert', 'you already have the verified badge!', 'success');
     return;
@@ -2633,14 +2548,13 @@ async function buyVerifiedBadge() {
     showAlert('pricingAlert', 'checkout error: ' + err.message, 'error');
   }
 }
-// Update slot display
+
 function updateSlotDisplay() {
   const slots = currentProfile?.custom_badge_slots ?? 3;
   const el = document.getElementById('slotCountTag');
   if (el) el.textContent = `— ${slots} total`;
 }
 
-// Show success message if returning from Stripe
 const _paymentResult = new URLSearchParams(window.location.search).get('payment');
 if (_paymentResult === 'success') {
   setTimeout(() => {
@@ -2649,7 +2563,7 @@ if (_paymentResult === 'success') {
   }, 500);
 } else if (_paymentResult === 'verified') {
   setTimeout(async () => {
-    // Grant the verified badge on return
+
     const merged = [...new Set([...unlockedBadges, 'verified'])];
     await sb.from('profiles').update({
       unlocked_badges: JSON.stringify(merged),
@@ -2662,7 +2576,7 @@ if (_paymentResult === 'success') {
 async function verifyCustomDomain() {
   const domain = document.getElementById('fCustomDomain').value.trim();
   if (!domain) return;
-  // Call an edge function that does a DNS lookup
+
   const res = await fetch('https://cwaifnbgkqqecatggvrx.supabase.co/functions/v1/verify-domain', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (await sb.auth.getSession()).data.session.access_token },
@@ -2684,7 +2598,7 @@ function renderBioLines() {
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;align-items:center';
     row.innerHTML = `
-      <input class="field-input" type="text" value="${sanitize(line)}" maxlength="120" 
+      <input class="field-input" type="text" value="${sanitize(line)}" maxlength="120"
         style="flex:1" oninput="bioLines[${i}]=this.value" placeholder="bio line ${i+1}...">
       <button class="btn btn-ghost" style="padding:8px;flex-shrink:0" onclick="bioLines.splice(${i},1);renderBioLines()">
         <i class="fas fa-times"></i>
@@ -2699,13 +2613,8 @@ function addBioLine() {
   renderBioLines();
 }
 
-// Load existing bio lines when profile loads — in populateForm add:
-
-
-// In saveProfile, add to updates object:
-  // keep bio as fallback
   async function loadPricingTab() {
-  // Show verified status
+
   const statusEl = document.getElementById('verifiedBadgeStatus');
   const buyBtn   = document.getElementById('buyVerifiedBtn');
   if (unlockedBadges.includes('verified')) {
@@ -2716,7 +2625,6 @@ function addBioLine() {
     if (buyBtn) { buyBtn.textContent = '✓ already verified'; buyBtn.disabled = true; buyBtn.style.opacity = '0.5'; }
   }
 
-  // Show purchases list
   const list = document.getElementById('purchasesList');
   const owned = [];
   if (unlockedBadges.includes('verified')) owned.push({ icon:'fas fa-check-circle', name:'Verified Badge', price:'$4.99', color:'#38bdf8' });
@@ -2740,7 +2648,6 @@ function addBioLine() {
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  // ─── STATE ───────────────────────────────────────────────────────────────────
   let currentUser    = null;
   let currentProfile = null;
   let isAdmin        = false;
@@ -2751,12 +2658,10 @@ function addBioLine() {
   let unlockedBadges = [];
   let currentBgTab   = 'video';
 
-  // Custom font state
   let customFontName   = null;
   let customFontFamily = null;
   let customFontDataUrl = null;
 
-  // Custom icons state (array of {id, dataUrl, label})
   let customIcons = [];
 
   let CS = {};
@@ -2783,8 +2688,6 @@ const CS_DEF = {
 };
   function cs(k){ return (CS[k] !== undefined && CS[k] !== null) ? CS[k] : CS_DEF[k]; }
 
-  // ─── BADGE DEFS ─────────────────────────────────────────────────────────────
-  // owner gets ALL badges; developer gets developer badge auto
   function buildPresetThemeGrid() {
   const grid = document.getElementById('presetThemeGrid');
   if (!grid) return;
@@ -2910,7 +2813,6 @@ const BADGE_DEFS = [
     { icon:'fas fa-paint-brush', label:'art'      },
   ];
 
-  // ─── AUTO-HIDING TOP BAR ────────────────────────────────────────────────────
   (function() {
     const bar     = document.getElementById('topBar');
     const trigger = document.getElementById('topBarTrigger');
@@ -2941,7 +2843,7 @@ function toggleMobileSidebar() {
     icon.className = 'fas fa-bars';
   }
 }
-  // ─── 3D CARD TILT ───────────────────────────────────────────────────────────
+
   (function() {
     const wrap = document.getElementById('cardPreviewWrap');
     const card = document.getElementById('cardPreviewMini');
@@ -2951,10 +2853,10 @@ function toggleMobileSidebar() {
       const rect   = wrap.getBoundingClientRect();
       const cx     = rect.left + rect.width  / 2;
       const cy     = rect.top  + rect.height / 2;
-      const dx     = (e.clientX - cx) / (rect.width  / 2); // -1 to 1
-      const dy     = (e.clientY - cy) / (rect.height / 2); // -1 to 1
-      const rotX   = -dy * 10;  // up-down tilt in degrees
-      const rotY   =  dx * 14;  // left-right tilt
+      const dx     = (e.clientX - cx) / (rect.width  / 2);
+      const dy     = (e.clientY - cy) / (rect.height / 2);
+      const rotX   = -dy * 10;
+      const rotY   =  dx * 14;
       card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02,1.02,1.02)`;
       card.style.transition = 'box-shadow 0.15s';
     });
@@ -2964,11 +2866,11 @@ function toggleMobileSidebar() {
       card.style.transition  = 'transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s';
     });
   })();
-  // discord
+
 async function checkDiscordVerification() {
   const { data: { session } } = await sb.auth.getSession();
   if (currentProfile.discord_verified) return;
-  if (!session) return; // not logged in, handle normally
+  if (!session) return;
 
   const { data: profile } = await sb
     .from('profiles')
@@ -3046,7 +2948,6 @@ async function linkDiscord() {
     currentProfile.discord_username = user.username;
     currentProfile.discord_verified = true;
 
-    // Also update the discord_id field in the profile tab
     const discordIdInput = document.getElementById('fDiscordId');
     if (discordIdInput) discordIdInput.value = user.id;
 
@@ -3056,9 +2957,9 @@ async function linkDiscord() {
   });
 }
 function showDiscordVerifyGate() {
-  // blur the layout, NOT the body
+
   document.getElementById('dashLayout')?.style.setProperty('filter', 'blur(4px)');
-  
+
   const gate = document.createElement('div');
   gate.id = 'dcGate';
   gate.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px';
@@ -3076,9 +2977,9 @@ function showDiscordVerifyGate() {
   document.body.appendChild(gate);
 }
   const DISCORD_CLIENT_ID  = '1478888702649565234';
-const DISCORD_REDIRECT   = 'https://swaqq.xyz/discord-callback.html'; // e.g. https://swaqq.xyz/discord-callback.html
+const DISCORD_REDIRECT   = 'https://swaqq.xyz/discord-callback.html';
 const DISCORD_WEBHOOK    = 'https://discord.com/api/webhooks/1478889239604101203/KWHTeH7KqrN0EtdnnkY842yrB_WD1FdPmnFFIZKZlrWOG5fHbfBnKBHF2pYs5TB8L5G3';
-  
+
   async function verifyDiscordGate() {
   const state = Math.random().toString(36).slice(2);
   sessionStorage.setItem('dc_gate_state', state);
@@ -3120,14 +3021,12 @@ const DISCORD_WEBHOOK    = 'https://discord.com/api/webhooks/1478889239604101203
       return;
     }
 
-    // Save to profile
     const { data: { session } } = await sb.auth.getSession();
     await sb.from('profiles').update({
       discord_verified: true,
       discord_id_verified: user.id,
     }).eq('id', session.user.id);
 
-    // Send to webhook
     await fetch(DISCORD_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -3145,7 +3044,6 @@ const DISCORD_WEBHOOK    = 'https://discord.com/api/webhooks/1478889239604101203
       })
     }).catch(() => {});
 
-    // Dismiss gate
     const btn = document.getElementById('dcGateBtn');
     if (btn) { btn.style.background = 'rgba(67,181,129,0.15)'; btn.style.borderColor = 'rgba(67,181,129,0.4)'; btn.style.color = '#43b581'; btn.textContent = '✓ verified'; }
     document.getElementById('dcGateStatus').textContent = 'success — loading dashboard...';
@@ -3155,7 +3053,7 @@ document.getElementById('dashLayout')?.style.removeProperty('filter');
     setTimeout(() => document.getElementById('dcGate')?.remove(), 1200);
   });
 }
-  // ─── AUTH ────────────────────────────────────────────────────────────────────
+
 async function initAuth() {
   const { data:{ session } } = await sb.auth.getSession();
   if (!session) { window.location.href = '/'; return; }
@@ -3181,7 +3079,7 @@ async function initAuth() {
       if (e.target === overlay) closeIconPicker();
     });
   }
-  // mark unsaved whenever user changes anything
+
 document.querySelectorAll('.field-input, .prefix-input').forEach(el => {
   el.addEventListener('input', markUnsaved);
 });
@@ -3192,7 +3090,6 @@ document.querySelectorAll('.font-card, .color-chip').forEach(el => {
   el.addEventListener('click', markUnsaved);
 });
 }
-
 
 initAuth().catch(err => {
   console.error('initAuth failed:', err);
@@ -3217,8 +3114,7 @@ let badgeColors = {};
     isDeveloper    = !!data.is_developer;
     activeBadges   = pj(data.badges, []);
     unlockedBadges = pj(data.unlocked_badges, []);
-    // Parse custom_settings blob, then layer in flat columns as fallback
-    // so even if custom_settings is empty, the saved flat columns apply
+
     const csBlob = pj(data.custom_settings, {});
 const get = (key, fallback) => csBlob[key] ?? data[key] ?? fallback;
 CS = {
@@ -3276,24 +3172,22 @@ CS = {
   bg_video_loop:      get('bg_video_loop',      true),
   bg_video_mute:      get('bg_video_mute',      true),
   youtube_video_id:   get('youtube_video_id',   ''),
-  
+
   badge_colors: pj(data.badge_colors, {}),
 
 };
     badgeColors = CS.badge_colors;
     console.log('[swaqq] loaded CS:', CS);
 
-    // Owners auto-unlock all badges
     if (isOwner) {
       unlockedBadges = BADGE_DEFS.map(b => b.id);
-      isAdmin = true; // owners are always admin
+      isAdmin = true;
     }
-    // Developers auto-unlock developer badge
+
     if (isDeveloper && !unlockedBadges.includes('developer')) {
       unlockedBadges.push('developer');
     }
 
-    // Restore custom font from CS
     if (cs('custom_font_data') && cs('custom_font_family')) {
       injectCustomFont(cs('custom_font_family'), cs('custom_font_data'));
       customFontFamily  = cs('custom_font_family');
@@ -3301,7 +3195,6 @@ CS = {
       customFontDataUrl = cs('custom_font_data');
     }
 
-    // Restore custom icons from CS
     customIcons = cs('custom_icons') || [];
 
     if (isAdmin) {
@@ -3313,7 +3206,6 @@ CS = {
       if (adminTag) adminTag.style.display = 'none';
     }
 
-    // Fill SQL admin grant box
     const sqlEl = document.getElementById('sqlGrantAdmin');
     if (sqlEl) {
       sqlEl.innerHTML =
@@ -3335,8 +3227,6 @@ renderBadgeGrid();
     renderBadgeColorPickers();
 console.log('[swaqq] badgegrid done');
 
-
-    // Fetch UID number — position in signup order (oldest = uid 1)
     sb.from('profiles').select('id').order('created_at', { ascending: true }).then(({ data: allIds }) => {
       if (!allIds) return;
       const pos = allIds.findIndex(r => r.id === currentUser.id);
@@ -3346,7 +3236,7 @@ console.log('[swaqq] badgegrid done');
       }
     });
     updateSlotDisplay()
-    // Start autosave after profile loads — add in loadProfile() at the end:
+
   if (data.discord_id) {
   syncDiscordRoleBadges(data.discord_id);
 }
@@ -3358,7 +3248,6 @@ console.log('[swaqq] badgegrid done');
     try { return JSON.parse(v); } catch { return fallback; }
   }
 
-  // ─── POPULATE ────────────────────────────────────────────────────────────────
   function populateForm(p) {
     document.getElementById('fDisplayName').value = p.display_name || '';
     document.getElementById('fHandle').value      = p.handle || '';
@@ -3368,7 +3257,6 @@ console.log('[swaqq] badgegrid done');
     document.getElementById('fYoutubeId').value   = p.youtube_video_id || '';
     if (p.youtube_video_id) renderVideoThumb(p.youtube_video_id);
 
-    // Core toggles
     tog('tSplash',      p.show_splash  !== false);
     tog('tTilt',        p.show_tilt    !== false);
     tog('tViews',       p.show_views   !== false);
@@ -3376,7 +3264,7 @@ console.log('[swaqq] badgegrid done');
     tog('tShowVideo',   cs('show_video_bg') !== false);
     tog('tMuteDefault', cs('mute_video')    === true);
     tog('tAgeGate', p.age_gate === true)
-    // BG fields
+
     document.getElementById('fBgImageUrl').value   = cs('bg_image_url');
     document.getElementById('fBgColor').value      = cs('bg_color');
     document.getElementById('fBgColorHex').value   = cs('bg_color');
@@ -3387,18 +3275,16 @@ console.log('[swaqq] badgegrid done');
     document.getElementById('fBgOpacity').value    = cs('bg_opacity');
     document.getElementById('bgOpacityVal').textContent = cs('bg_opacity') + '%';
 
-    // Gradient direction
     const dirSel = document.getElementById('fGradDir');
     const dir    = cs('bg_grad_dir');
     for (let i = 0; i < dirSel.options.length; i++) {
       if (dirSel.options[i].value === dir) { dirSel.selectedIndex = i; break; }
     }
 
-    // Customize
     const accent = cs('accent_color');
     document.getElementById('fAccentColor').value = accent;
     document.getElementById('fAccentHex').value   = accent;
-    // Mark selected chip
+
     document.querySelectorAll('#tab-customize .color-chip').forEach(chip => {
       chip.classList.toggle('selected', chip.style.background.toLowerCase() === accent.toLowerCase() ||
         chip.style.backgroundColor === accent);
@@ -3411,7 +3297,6 @@ console.log('[swaqq] badgegrid done');
     tog('tCardGlow', cs('card_glow')    !== false);
     tog('tRounded',  cs('card_rounded') !== false);
 
-    // Sidebar + topbar
     const name = p.display_name || p.handle || '?';
     document.getElementById('sideName').textContent    = name;
     document.getElementById('sideHandle').textContent  = '@' + p.handle;
@@ -3454,14 +3339,12 @@ function restoreCustomizeSelections() {
     if (el) el.classList.add('selected');
   });
 
-  // Name gradient pickers
   document.getElementById('nameGradientPickers').style.display = cs('name_style') === 'gradient' ? 'block' : 'none';
   document.getElementById('fNameGrad1').value    = cs('name_grad1');
   document.getElementById('fNameGrad1Hex').value = cs('name_grad1');
   document.getElementById('fNameGrad2').value    = cs('name_grad2');
   document.getElementById('fNameGrad2Hex').value = cs('name_grad2');
 
-  // Sliders
   document.getElementById('fCardWidth').value       = cs('card_width');
   document.getElementById('cardWidthVal').textContent = cs('card_width') + 'px';
   document.getElementById('fAvatarBorder').value    = cs('avatar_border');
@@ -3473,7 +3356,6 @@ function restoreCustomizeSelections() {
   document.getElementById('fParticleColor').value   = cs('particle_color');
   document.getElementById('fParticleColorHex').value = cs('particle_color');
 
-  // Toggles
   tog('tGlass',       cs('card_glass')   === true);
   tog('tCardShadow',  cs('card_shadow')  !== false);
   tog('tAvatarGlow',  cs('avatar_glow')  === true);
@@ -3518,7 +3400,6 @@ renderAliases();
   }
   function gtog(id) { return document.getElementById(id)?.classList.contains('on') ?? false; }
 
-  // ─── TABS ─────────────────────────────────────────────────────────────────────
 const TABS = ['profile','appearance','customize','socials','badges','settings','analytics','music','schedule','pricing','imagehost','admin'];
 function showTab(name) {
   TABS.forEach(t => {
@@ -3551,7 +3432,7 @@ function showTab(name) {
   if (name === 'imagehost') loadImagehostTab();
   window.scrollTo(0, 0);
 }
-  // ─── BG TABS ─────────────────────────────────────────────────────────────────
+
   function activateBgTab(tab) {
     currentBgTab = tab || 'video';
     document.querySelectorAll('.bg-panel').forEach(p => p.classList.remove('active'));
@@ -3638,7 +3519,7 @@ function generateEmbedCode(handle) {
   navigator.clipboard.writeText(code);
   showAlert('profileAlert', '✓ embed code copied!', 'success');
 }
-  // ─── CUSTOM FONT ─────────────────────────────────────────────────────────────
+
   function handleCustomFont(input) {
     const file = input.files[0]; if (!file) return;
     if (file.size > 5 * 1024 * 1024) { alert('font file too large — max 5mb'); return; }
@@ -3662,7 +3543,7 @@ function generateEmbedCode(handle) {
   }
 
   function injectCustomFont(family, dataUrl) {
-    // Remove existing
+
     const old = document.getElementById('customFontStyle');
     if (old) old.remove();
     const style = document.createElement('style');
@@ -3671,7 +3552,6 @@ function generateEmbedCode(handle) {
     document.head.appendChild(style);
   }
 
-  // ─── FONT GRID ────────────────────────────────────────────────────────────────
   function buildFontGrid() {
     const grid = document.getElementById('fontGrid'); if (!grid) return;
     const cur  = cs('card_font');
@@ -3685,7 +3565,7 @@ function generateEmbedCode(handle) {
       card.onclick = () => { CS.card_font = f.name; buildFontGrid(); updateCardPreview(); };
       grid.appendChild(card);
     });
-    // Add custom font card if loaded
+
     if (customFontFamily) {
       const card = document.createElement('div');
       card.className = 'font-card custom-font-card' + (cur === customFontFamily ? ' selected' : '');
@@ -3733,7 +3613,6 @@ function removeAlias(i) {
 async function saveAliases() {
   const cleaned = aliases.map(a => a.trim().toLowerCase()).filter(a => /^[a-z0-9_]{2,20}$/.test(a));
 
-  // Check each alias isn't taken by someone else
   for (const alias of cleaned) {
     const { data } = await sb.from('alias_map')
       .select('profile_id')
@@ -3743,7 +3622,7 @@ async function saveAliases() {
       showAlert('aliasAlert', `"${alias}" is already taken.`, 'error');
       return false;
     }
-    // also can't be someone's handle
+
     const { data: handleTaken } = await sb.from('profiles')
       .select('id')
       .eq('handle', alias)
@@ -3754,7 +3633,6 @@ async function saveAliases() {
     }
   }
 
-  // Delete old aliases for this user then re-insert
   await sb.from('alias_map').delete().eq('profile_id', currentUser.id);
   if (cleaned.length) {
     const rows = cleaned.map(alias => ({ alias, profile_id: currentUser.id }));
@@ -3762,13 +3640,12 @@ async function saveAliases() {
     if (error) { showAlert('aliasAlert', 'save failed: ' + error.message, 'error'); return false; }
   }
 
-  // Store on profile too for easy access
   await sb.from('profiles').update({ aliases: JSON.stringify(cleaned) }).eq('id', currentUser.id);
   aliases = cleaned;
   renderAliases();
   return true;
 }
-  // ─── ACCENT ──────────────────────────────────────────────────────────────────
+
   function pickAccent(chip, color) {
     document.querySelectorAll('#tab-customize .color-chip').forEach(c => c.classList.remove('selected'));
     chip.classList.add('selected');
@@ -3790,7 +3667,6 @@ async function saveAliases() {
     }
   }
 
-  // ─── CARD PREVIEW (3D TILT + LIVE FONT/STYLE APPLY) ─────────────────────────
   function pickBorderStyle(el, val) {
   document.querySelectorAll('#borderStyleGrid .font-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
@@ -3856,7 +3732,6 @@ function pickSocialStyle(el, val) {
     const avatar  = document.getElementById('fAvatarUrl')?.value   || currentProfile?.avatar_url   || '';
     const alpha   = Math.round(opacity * 2.55).toString(16).padStart(2, '0');
 
-    // Apply card styles — use backdrop on a real color background
     mini.style.background     = '#111111' + alpha;
     mini.style.backdropFilter = 'blur(' + blur + 'px)';
     mini.style.webkitBackdropFilter = 'blur(' + blur + 'px)';
@@ -3864,7 +3739,6 @@ function pickSocialStyle(el, val) {
     mini.style.boxShadow      = glow ? '0 0 24px ' + accent + '33, inset 0 0 0 1px ' + accent + '22' : 'none';
     mini.style.borderRadius   = rounded ? '16px' : '4px';
 
-    // Font — CRITICAL: apply to all child text elements
     mini.style.fontFamily = "'" + font + "', sans-serif";
 
     const pName = document.getElementById('previewName');
@@ -3882,7 +3756,7 @@ function pickSocialStyle(el, val) {
     }
     if (pAv) {
       if (avatar) {
-        // Use an img tag for correct object-fit
+
         pAv.innerHTML = '<img src="' + avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">';
         pAv.style.backgroundImage = 'none';
       } else {
@@ -3894,8 +3768,6 @@ function pickSocialStyle(el, val) {
     snapshotHistory()
   }
 
-  // ─── PFP ──────────────────────────────────────────────────────────────────────
-  // Fixed: use img tag for proper object-fit cover fitting in the circle
   function setPfpPreview(url, name) {
     const el = document.getElementById('pfpPreview');
     if (url) {
@@ -3914,7 +3786,7 @@ async function handleBgImageUpload(input) {
   const path = `backgrounds/${currentUser.id}.${ext}`;
   const { error } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
   if (error) {
-    // fallback to base64
+
     const reader = new FileReader();
     reader.onload = e => {
       document.getElementById('fBgImageUrl').value = e.target.result;
@@ -3926,7 +3798,7 @@ async function handleBgImageUpload(input) {
   const { data:{ publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
   document.getElementById('fBgImageUrl').value = publicUrl;
   document.getElementById('bgImageFileName').textContent = '✓ uploaded';
-  // auto switch to image tab
+
   switchBgTab('image');
   updateBgPreview();
   showAlert('appearanceAlert', 'background uploaded! hit save to apply.', 'success');
@@ -4041,7 +3913,7 @@ async function handleBannerUpload(input) {
   updateBannerPreview();
   showAlert('appearanceAlert', 'banner uploaded!', 'success');
 }
-  // ─── VIDEO ────────────────────────────────────────────────────────────────────
+
   let _vTimer;
   function debounceVideoPreview(val) { clearTimeout(_vTimer); _vTimer = setTimeout(() => renderVideoThumb(val), 700); }
 
@@ -4064,14 +3936,14 @@ async function handleBannerUpload(input) {
     }
     iframe.src = 'https://www.youtube-nocookie.com/embed/' + id.trim() +
       '?autoplay=0&controls=1&mute=1&modestbranding=1&rel=0';
-    // Remove old overlay before adding new
+
     const oldOv = wrap.querySelector('.video-thumb-overlay');
     if (oldOv) oldOv.remove();
     const ov = document.createElement('div'); ov.className = 'video-thumb-overlay';
     ov.innerHTML = '<span class="video-thumb-label">preview — muted</span>';
     wrap.appendChild(ov);
   }
-// ── ANALYTICS ────────────────────────────────────────────────────────────────
+
   async function exportProfileData() {
   const { data: profile } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
   const { data: views }   = await sb.from('view_events').select('viewed_at').eq('profile_id', currentUser.id).limit(1000);
@@ -4079,7 +3951,6 @@ async function handleBannerUpload(input) {
   const { data: customs } = await sb.from('custom_badges').select('*').eq('profile_id', currentUser.id);
   const { data: themes }  = await sb.from('profile_themes').select('*').eq('profile_id', currentUser.id);
 
-  // Strip sensitive internal fields
   const { is_admin, is_owner, is_developer, is_banned, ban_reason, note, ...safeProfile } = profile;
 
   const exportData = {
@@ -4104,7 +3975,6 @@ async function handleBannerUpload(input) {
 async function loadAnalytics() {
   if (!currentProfile) return;
 
-  // Fetch reactions
   const { data: prof } = await sb.from('profiles')
     .select('like_count, dislike_count, view_count')
     .eq('id', currentUser.id).single();
@@ -4114,7 +3984,6 @@ async function loadAnalytics() {
     document.getElementById('anTotal').textContent    = (prof.view_count    || 0).toLocaleString();
   }
 
-  // Fetch view events for last 90 days
   const since = new Date();
   since.setDate(since.getDate() - 90);
 
@@ -4137,7 +4006,6 @@ async function loadAnalytics() {
   document.getElementById('analyticsEmpty').style.display = 'none';
   document.getElementById('analyticsChart').style.display = 'block';
 
-  // Build daily buckets for last 90 days
   const buckets = {};
   const today = new Date();
   for (let i = 89; i >= 0; i--) {
@@ -4192,20 +4060,18 @@ function renderAnalyticsChart(labels, vals, peak) {
 
   ctx.clearRect(0, 0, W, H);
 
-  // Grid lines
   ctx.strokeStyle = 'rgba(255,255,255,0.05)';
   ctx.lineWidth = 1;
   for (let i = 0; i <= 4; i++) {
     const y = pad.top + (cH / 4) * i;
     ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cW, y); ctx.stroke();
-    // Y axis labels
+
     ctx.fillStyle = 'rgba(255,255,255,0.2)';
     ctx.font      = '9px Geist Mono, monospace';
     ctx.textAlign = 'right';
     ctx.fillText(Math.round(max - (max / 4) * i), pad.left - 4, y + 3);
   }
 
-  // X axis labels — show every ~15 days
   ctx.fillStyle = 'rgba(255,255,255,0.2)';
   ctx.font      = '9px Geist Mono, monospace';
   ctx.textAlign = 'center';
@@ -4215,12 +4081,10 @@ function renderAnalyticsChart(labels, vals, peak) {
     ctx.fillText((d.getMonth()+1) + '/' + d.getDate(), x, H - 4);
   }
 
-  // Gradient fill
   const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + cH);
   grad.addColorStop(0,   'rgba(255,255,255,0.15)');
   grad.addColorStop(1,   'rgba(255,255,255,0)');
 
-  // Draw area
   ctx.beginPath();
   vals.forEach((v, i) => {
     const x = pad.left + (i / (n - 1)) * cW;
@@ -4233,7 +4097,6 @@ function renderAnalyticsChart(labels, vals, peak) {
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Draw line
   ctx.beginPath();
   vals.forEach((v, i) => {
     const x = pad.left + (i / (n - 1)) * cW;
@@ -4244,7 +4107,6 @@ function renderAnalyticsChart(labels, vals, peak) {
   ctx.lineWidth   = 1.5;
   ctx.stroke();
 
-  // Dots on non-zero days
   vals.forEach((v, i) => {
     if (!v) return;
     const x = pad.left + (i / (n - 1)) * cW;
@@ -4269,7 +4131,7 @@ function renderHourlyHeatmap(hourCounts) {
     el.appendChild(cell);
   }
 }
-  // ── PROFILE THEMES ────────────────────────────────────────────────────────────
+
 async function loadThemes() {
   const { data } = await sb.from('profile_themes')
     .select('*')
@@ -4304,13 +4166,11 @@ async function saveTheme() {
   const name = document.getElementById('themeNameInput').value.trim();
   if (!name) { showAlert('themesAlert', 'enter a theme name.', 'error'); return; }
 
-  // Check limit — max 20 themes
   const { count } = await sb.from('profile_themes')
     .select('id', { count:'exact', head:true })
     .eq('profile_id', currentUser.id);
   if (count >= 20) { showAlert('themesAlert', 'max 20 themes. delete one first.', 'error'); return; }
 
-  // Snapshot current CS state from UI
   const snap = buildCurrentCS();
 
   const { error } = await sb.from('profile_themes').insert({
@@ -4331,7 +4191,6 @@ async function loadTheme(id) {
     .eq('id', id).single();
   if (error || !data) { showAlert('themesAlert', 'failed to load theme.', 'error'); return; }
 
-  // Apply blob to CS and repopulate UI
   Object.assign(CS, data.cs_blob);
   populateForm({ ...currentProfile, custom_settings: data.cs_blob });
   updateCardPreview();
@@ -4346,7 +4205,6 @@ async function deleteTheme(id, btn) {
   loadThemes();
 }
 
-// Build a CS snapshot from current UI — call this instead of duplicating logic
 function buildCurrentCS() {
   const safeInt = (elId, fallback) => {
     const v = parseInt(document.getElementById(elId)?.value);
@@ -4398,7 +4256,7 @@ function buildCurrentCS() {
     splash_typewriter: gtog('tSplashTypewriter'),
   };
 }
-  // ── CUSTOM BADGES ─────────────────────────────────────────────────────────────
+
 let _pendingBadgeFile = null;
 
 const CUSTOM_BADGE_LIMIT = () => {
@@ -4409,7 +4267,6 @@ const CUSTOM_BADGE_LIMIT = () => {
 async function loadCustomBadges() {
   await cleanFakeBadges();
 
-  
   const { data } = await sb.from('custom_badges')
     .select('*')
     .eq('profile_id', currentUser.id)
@@ -4466,7 +4323,6 @@ async function confirmCustomBadgeUpload() {
     return;
   }
 
-  // Upload to storage
   const ext  = _pendingBadgeFile.name.split('.').pop();
   const path = `badges/${currentUser.id}/${Date.now()}.${ext}`;
   const { error: upErr } = await sb.storage.from('avatars').upload(path, _pendingBadgeFile, {
@@ -4475,7 +4331,7 @@ async function confirmCustomBadgeUpload() {
 
   let imageUrl;
   if (upErr) {
-    // Fallback: base64
+
     imageUrl = await new Promise(res => {
       const r = new FileReader();
       r.onload = e => res(e.target.result);
@@ -4512,7 +4368,7 @@ async function deleteCustomBadge(id, btn) {
   if (error) { btn.closest('.badge-card').style.opacity = '1'; showAlert('customBadgeAlert', 'delete failed.', 'error'); return; }
   loadCustomBadges();
 }
-  // ── 2FA / MFA ─────────────────────────────────────────────────────────────────
+
 let _mfaFactorId  = null;
 let _mfaChallengeId = null;
 
@@ -4541,17 +4397,16 @@ async function loadMFAStatus() {
 
 async function toggleMFA() {
   if (_mfaFactorId) {
-    // Show disable flow
+
     document.getElementById('mfaDisableSection').style.display = 'block';
     document.getElementById('mfaEnrollSection').style.display  = 'none';
   } else {
-    // Start enroll
+
     const { data, error } = await sb.auth.mfa.enroll({ factorType: 'totp', issuer: 'swaqq.xyz' });
     if (error) { showAlert('mfaAlert', error.message, 'error'); return; }
 
     _mfaFactorId = data.id;
 
-    // Render QR with a simple canvas-based approach using the totp_uri
     const qrEl = document.getElementById('mfaQrCode');
     qrEl.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(data.totp.uri)}" style="width:160px;height:160px;border-radius:6px">`;
     document.getElementById('mfaSecret').textContent = data.totp.secret;
@@ -4564,7 +4419,6 @@ async function verifyMFAEnroll() {
   const code = document.getElementById('mfaVerifyInput').value.trim();
   if (code.length !== 6) { showAlert('mfaAlert', 'enter the 6-digit code.', 'error'); return; }
 
-  // Challenge then verify
   const { data: ch, error: chErr } = await sb.auth.mfa.challenge({ factorId: _mfaFactorId });
   if (chErr) { showAlert('mfaAlert', chErr.message, 'error'); return; }
 
@@ -4576,7 +4430,6 @@ async function verifyMFAEnroll() {
 
   if (error) { showAlert('mfaAlert', 'invalid code — try again.', 'error'); return; }
 
-  // Mark in profiles table
   await sb.from('profiles').update({ mfa_enabled: true }).eq('id', currentUser.id);
   document.getElementById('mfaVerifyInput').value = '';
   showAlert('mfaAlert', '✓ 2fa enabled! your account is now protected.', 'success');
@@ -4606,12 +4459,12 @@ async function disableMFA() {
   showAlert('mfaAlert', '2fa disabled.', 'success');
   loadMFAStatus();
 }
-  // ─── CUSTOM ICON ─────────────────────────────────────────────────────────────
+
   function handleCustomIcon(input) {
    const file = input.files[0]; if (!file) return;
-  if (file.size > 10 * 1024 * 1024) { 
-    alert('icon too large — max 10mb'); 
-    return; 
+  if (file.size > 10 * 1024 * 1024) {
+    alert('icon too large — max 10mb');
+    return;
   }
     const reader = new FileReader();
     reader.onload = e => {
@@ -4645,7 +4498,6 @@ async function disableMFA() {
     });
   }
 
-  // ─── ICON PICKER ─────────────────────────────────────────────────────────────
   let _iconPickerTarget   = null;
   let _iconPickerSelected = null;
 
@@ -4654,11 +4506,10 @@ function openIconPicker(rowEl) {
   _iconPickerSelected = rowEl.dataset.iconType === 'custom'
     ? { type:'custom', id:rowEl.dataset.iconId, dataUrl:rowEl.dataset.iconData, label:rowEl.dataset.iconLabel }
     : rowEl.dataset.icon || 'fas fa-link';
-  
+
   const overlay = document.getElementById('iconPickerOverlay');
   overlay.classList.add('open');
-  
-  // Defer grid build until overlay is visible in DOM
+
   requestAnimationFrame(() => {
     const si = document.getElementById('iconSearchInput');
     if (si) si.value = '';
@@ -4702,7 +4553,7 @@ function openIconPicker(rowEl) {
     const i   = btn.querySelector('i');
 
     if (typeof _iconPickerSelected === 'object' && _iconPickerSelected?.type === 'custom') {
-      // Custom image icon
+
       const { id, dataUrl, label } = _iconPickerSelected;
       btn.innerHTML = '<img src="' + dataUrl + '" style="width:18px;height:18px;object-fit:contain;border-radius:3px">';
       _iconPickerTarget.dataset.iconType  = 'custom';
@@ -4720,7 +4571,6 @@ function openIconPicker(rowEl) {
     closeIconPicker();
   }
 
-  // ─── SOCIALS ─────────────────────────────────────────────────────────────────
   function renderSocials(arr) {
     const ed = document.getElementById('socialsEditor'); ed.innerHTML = '';
     arr.forEach(s => addSocialRow(s.icon || guessIcon(s.label), s.label||'', s.url||'', s.icon_type, s.icon_data, s.icon_label));
@@ -4794,16 +4644,16 @@ function openIconPicker(rowEl) {
     const inputs = r.querySelectorAll('.social-input');
     const rawUrl = inputs[1].value.trim();
     const safeUrl = sanitizeUrl(rawUrl);
-    
+
     let iconData = r.dataset.iconData || '';
-    // Validate custom icon data URLs
+
     if (iconData && !/^data:image\/(png|jpeg|gif|webp|svg\+xml);base64,/i.test(iconData)) {
-      iconData = ''; // strip dangerous data URLs
+      iconData = '';
     }
-    
+
     return {
       icon:       r.dataset.icon || 'fas fa-link',
-      label:      sanitize(inputs[0].value.trim()).slice(0, 30), // max 30 chars
+      label:      sanitize(inputs[0].value.trim()).slice(0, 30),
       url:        safeUrl,
       icon_type:  r.dataset.iconType  || '',
       icon_data:  iconData,
@@ -4811,7 +4661,7 @@ function openIconPicker(rowEl) {
     };
   }).filter(s => s.url);
 }
-  // ─── BADGES ──────────────────────────────────────────────────────────────────
+
   async function shareThemePublic() {
   const name = document.getElementById('shareThemeNameInput').value.trim();
   const desc = document.getElementById('shareThemeDescInput').value.trim();
@@ -4858,8 +4708,8 @@ async function loadMarketplace(sort, btn) {
       ? `linear-gradient(135deg, ${colors[0]}, ${colors[1]})`
       : colors[0];
     return `
-      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all 0.2s" 
-           onmouseover="this.style.borderColor='rgba(255,255,255,0.25)'" 
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all 0.2s"
+           onmouseover="this.style.borderColor='rgba(255,255,255,0.25)'"
            onmouseout="this.style.borderColor='var(--border)'">
         <div style="height:70px;background:${gradient};position:relative">
           ${theme.is_featured ? '<span style="position:absolute;top:6px;right:6px;background:rgba(245,166,35,0.9);color:#000;font-family:\'Geist Mono\',monospace;font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.1em">FEATURED</span>' : ''}
@@ -4885,7 +4735,7 @@ async function applyMarketplaceTheme(id) {
   Object.assign(CS, data.cs_blob);
   populateForm({ ...currentProfile, custom_settings: CS });
   updateCardPreview();
-  // Increment like count
+
   await sb.from('public_themes').update({ likes: (data.likes||0) + 1 }).eq('id', id);
   showAlert('marketplaceAlert', `✓ "${sanitize(data.name)}" applied — hit save to keep it!`, 'success');
 }
@@ -4901,7 +4751,7 @@ const color = typeof colorData === 'string' ? colorData : (colorData.color || de
    card.className = ['badge-card', def.early ? 'early-badge' : '', def.founder ? 'founder-badge' : '', canUse ? 'unlocked' : 'locked', isActive ? 'selected' : ''].filter(Boolean).join(' ');
 
 card.style.setProperty('--badge-color', color);
-card.style.setProperty('--badge-rgb', hexToRgb(color)); // helper below
+card.style.setProperty('--badge-rgb', hexToRgb(color));
       card.dataset.id = def.id;
 
       let stateHtml;
@@ -4991,7 +4841,6 @@ function setBadgeStyle(id, style, btn) {
   const color = typeof existing === 'object' ? (existing.color || '#ffffff') : (existing || '#ffffff');
   badgeColors[id] = { color, style };
 
-  // Update button highlight
   const btnGroup = btn.parentElement;
   btnGroup.querySelectorAll('button').forEach(b => {
     b.style.background = 'transparent';
@@ -5008,7 +4857,7 @@ function resetBadgeColor(id) {
 async function loadReports() {
   const tbody = document.getElementById('reportsBody');
   tbody.innerHTML = '<tr><td colspan="5" class="ap-table-empty"><i class="fas fa-spinner fa-spin"></i> loading...</td></tr>';
-  
+
   const { data, error } = await sb
     .from('reports')
     .select('*')
@@ -5073,9 +4922,7 @@ async function resolveReport(reportId, action, profileId, handle) {
 }
 
   const DISCORD_ROLE_BADGE_MAP = {
-  // 'ROLE_ID_HERE': 'badge_id',
-  // Example: '1234567890123456789': 'supporter',
-  // Example: '9876543210987654321': 'contributor',
+
   '1476981046649032815': 'supporter',
   '1477011805237940426': 'contributor',
   '1476980632407248927': 'staff',
@@ -5094,23 +4941,22 @@ async function syncDiscordRoleBadges(discordId) {
     const r = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
     const d = await r.json();
     if (!d.success || !d.data?.discord_user) return;
-    
-   
-    const roles = d.data?.roles || []; 
-    
+
+    const roles = d.data?.roles || [];
+
     const earnedBadges = [];
     roles.forEach(roleId => {
       if (DISCORD_ROLE_BADGE_MAP[roleId]) {
         earnedBadges.push(DISCORD_ROLE_BADGE_MAP[roleId]);
       }
     });
-    
+
     if (earnedBadges.length > 0) {
- 
+
       const merged = [...new Set([...unlockedBadges, ...earnedBadges])];
       if (merged.length !== unlockedBadges.length) {
         unlockedBadges = merged;
-      
+
         await sb.from('profiles')
           .update({ unlocked_badges: JSON.stringify(unlockedBadges) })
           .eq('id', currentUser.id);
@@ -5143,7 +4989,6 @@ async function syncDiscordRoleBadges(discordId) {
 });
   }
 
-  // ─── SAVE ────────────────────────────────────────────────────────────────────
   async function saveProfile() {
   const btn = document.getElementById('saveBtn');
   const st  = document.getElementById('saveStatus');
@@ -5183,7 +5028,6 @@ async function syncDiscordRoleBadges(discordId) {
     return isNaN(v) ? (cs(csKey)) : v;
   };
 
-  // Strip heavy base64 data from custom_settings — store refs only
   const newCS = {
     bg_type:           currentBgTab,
     bg_image_url:      (document.getElementById('fBgImageUrl')?.value || '').trim(),
@@ -5203,12 +5047,12 @@ async function syncDiscordRoleBadges(discordId) {
     show_uid_scramble: isAdmin ? gtog('tUid') : false,
     custom_font_name:   customFontName,
     custom_font_family: customFontFamily,
-    custom_font_data:   customFontDataUrl, // kept for font rendering
-    // strip base64 data from custom_icons, keep metadata only
+    custom_font_data:   customFontDataUrl,
+
     custom_icons: (customIcons || []).map(icon => ({
       id:    icon.id,
       name:  icon.name,
-      url:   icon.url,   // storage URL only, no base64
+      url:   icon.url,
     })),
     audio_only_id:  document.getElementById('fAudioId')?.value.trim() || '',
     audio_only_bg: document.getElementById('audioOnlyBgUrl')?.value.trim() || '',
@@ -5251,14 +5095,13 @@ async function syncDiscordRoleBadges(discordId) {
 
   };
 
-  // Serialize and check size — warn if still too large
   const csJson = JSON.stringify(newCS);
   if (csJson.length > 50000) {
     console.warn('[swaqq] custom_settings is large:', csJson.length, 'bytes — consider moving font to storage');
   }
     console.log('[save] badgeColors =', badgeColors);
 console.log('[save] CS.badge_colors =', CS.badge_colors);
-// this needs to run BEFORE the updates object is built
+
   const updates = {
     display_name:      displayName || handle,
     handle,
@@ -5275,7 +5118,7 @@ console.log('[save] CS.badge_colors =', CS.badge_colors);
     show_video_bg:     newCS.show_video_bg,
     mute_video:        newCS.mute_video,
     badges:            JSON.stringify(activeBadges),
-badge_colors: JSON.stringify(Object.keys(badgeColors).length ? badgeColors : (CS.badge_colors || {})), 
+badge_colors: JSON.stringify(Object.keys(badgeColors).length ? badgeColors : (CS.badge_colors || {})),
     socials:           JSON.stringify(getSocials()),
     card_font:         newCS.card_font,
     accent_color:      newCS.accent_color,
@@ -5296,7 +5139,7 @@ badge_colors: JSON.stringify(Object.keys(badgeColors).length ? badgeColors : (CS
     age_gate:          gtog('tAgeGate'),
     custom_settings:   csJson,
     updated_at:        new Date().toISOString(),
-   
+
   };
 
   delete updates.is_admin;
@@ -5309,7 +5152,6 @@ badge_colors: JSON.stringify(Object.keys(badgeColors).length ? badgeColors : (CS
   if (error) {
     console.warn('[swaqq] full save failed, trying slim save:', error.message);
 
-    // Slim save — no blobs at all
     const slim = {
       display_name:  updates.display_name,
       handle:        updates.handle,
@@ -5375,7 +5217,7 @@ function copyReferralLink() {
   navigator.clipboard.writeText(`https://swaqq.xyz/?ref=${code}`);
   showAlert('profileAlert', '✓ referral link copied!', 'success');
 }
-  // ─── SETTINGS ────────────────────────────────────────────────────────────────
+
   async function changePassword() {
     const p1 = document.getElementById('fNewPassword').value;
     const p2 = document.getElementById('fConfirmPassword').value;
@@ -5406,7 +5248,6 @@ function copyReferralLink() {
     return;
   }
 
-  // Remove from UI
   allUsers = allUsers.filter(u => u.id !== userId);
   renderAdminTable(allUsers);
   alert(`@${handle} deleted.`);
@@ -5416,14 +5257,13 @@ function copyReferralLink() {
 
   handleLogout = doLogout
 
- // ─── ADMIN ────────────────────────────────────────────────────────────────────
 async function loadAdminData() {
     const { data: factors } = await sb.auth.mfa.listFactors();
   const totp = factors?.totp?.[0];
   if (totp && totp.status === 'verified') {
     const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
     if (aal?.currentLevel !== 'aal2') {
-      // Show inline 2FA prompt instead of loading data
+
       document.getElementById('adminUserTbody').innerHTML =
         `<tr><td colspan="6" style="text-align:center;padding:32px">
           <div style="font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:14px">verify 2fa to access admin panel</div>
@@ -5454,7 +5294,7 @@ async function loadAdminData() {
   }
   if (flagged.length) {
     console.warn('[swaqq] flagged handles:', flagged);
-    // Optionally show in admin panel
+
     const el = document.getElementById('adminUserCount');
     if (el && flagged.length) {
       el.innerHTML += ` <span style="color:var(--red);font-family:'Geist Mono',monospace;font-size:10px">⚠ ${flagged.length} flagged handle(s)</span>`;
@@ -5474,7 +5314,7 @@ async function verifyAdminMFA() {
     if (err) err.textContent = 'invalid code — try again.';
     return;
   }
-  loadAdminData(); // retry now that aal2 is satisfied
+  loadAdminData();
 }
 function renderAdminStats(users) {
   document.getElementById('aTotalUsers').textContent  = users.length;
@@ -5519,7 +5359,7 @@ function filterUsers() {
     if (sortBy === 'oldest')  return new Date(a.created_at) - new Date(b.created_at);
     if (sortBy === 'views')   return (b.view_count||0) - (a.view_count||0);
     if (sortBy === 'handle')  return (a.handle||'').localeCompare(b.handle||'');
-    return new Date(b.created_at) - new Date(a.created_at); // newest
+    return new Date(b.created_at) - new Date(a.created_at);
   });
 
   renderAdminTable(filtered);
@@ -5540,7 +5380,6 @@ function renderAdminTable(users) {
       ? `<div class="user-av" style="background-image:url(${u.avatar_url});background-size:cover"></div>`
       : `<div class="user-av">${initials}</div>`;
 
-    // Role tags
     const roleTags = [
       u.is_owner     ? `<span style="font-size:9px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--gold);border-radius:3px;padding:1px 5px;font-family:'Geist Mono',monospace">owner</span>` : '',
       u.is_developer ? `<span style="font-size:9px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:#38bdf8;border-radius:3px;padding:1px 5px;font-family:'Geist Mono',monospace">dev</span>` : '',
@@ -5637,7 +5476,7 @@ return `<tr>
   async function featureTheme(profileId) {
   const { data } = await sb.from('public_themes').select('*').eq('profile_id', profileId);
   if (!data?.length) { alert('this user has no public themes.'); return; }
-  // Toggle featured on their most recent theme
+
   const theme = data[0];
   await sb.from('public_themes').update({ is_featured: !theme.is_featured }).eq('id', theme.id);
   alert(`theme "${theme.name}" ${!theme.is_featured ? 'featured' : 'unfeatured'}.`);
@@ -5678,29 +5517,26 @@ async function saveAdminNote() {
   }
 }
 async function deleteAccount(userId, userHandle) {
-  // Block owner and developer
+
   const target = allUsers.find(u => u.id === userId);
   if (target?.badges?.includes('owner') || target?.badges?.includes('developer')) {
     showAlert('adminAlert', 'cannot delete owner or developer accounts.', 'error');
     return;
   }
 
-  // Confirm dialog
   const confirmed = confirm(`permanently delete @${userHandle}?\n\nthis will:\n• delete their profile\n• remove their handle\n• cannot be undone`);
   if (!confirmed) return;
 
   try {
-    // Delete related data first to avoid FK constraint errors
+
     await sb.from('profile_follows').delete().or(`follower_id.eq.${userId},following_id.eq.${userId}`);
     await sb.from('link_clicks').delete().eq('profile_id', userId);
     await sb.from('custom_badges').delete().eq('profile_id', userId);
     await sb.from('reports').delete().eq('reported_profile_id', userId);
 
-    // Delete the profile row itself
     const { error } = await sb.from('profiles').delete().eq('id', userId);
     if (error) throw error;
 
-    // Remove from local allUsers array and re-render
     allUsers = allUsers.filter(u => u.id !== userId);
     renderAdminTable(allUsers);
     showAlert('adminAlert', `@${userHandle} has been deleted.`, 'success');
@@ -5709,7 +5545,7 @@ async function deleteAccount(userId, userHandle) {
     showAlert('adminAlert', `failed to delete: ${err.message}`, 'error');
   }
 }
-// ─── ROLE MODAL ───────────────────────────────────────────────────────────────
+
 let _roleModalUid = null;
 
 function openRoleModal(uid, handle) {
@@ -5717,7 +5553,6 @@ function openRoleModal(uid, handle) {
   const u = allUsers.find(u => u.id === uid);
   if (!u) return;
 
-  // Build a quick inline modal (reuse badge modal pattern)
   document.getElementById('badgeModalSub').textContent = 'set role for @' + handle;
   const list = document.getElementById('badgeModalList');
   list.innerHTML = '';
@@ -5749,7 +5584,6 @@ function openRoleModal(uid, handle) {
     list.appendChild(row);
   });
 
-  // Override save button to use role save
   const saveBtn = document.querySelector('.modal-save');
   saveBtn.textContent = 'apply role →';
   saveBtn.onclick = saveRoleGrant;
@@ -5843,7 +5677,6 @@ async function unbanUser(uid, handle) {
 
   if (error) { alert('failed: ' + error.message); return; }
 
-  // Remove from bans table so they can access the site again
   await sb.from('bans').delete().eq('profile_id', uid);
 
   Object.assign(allUsers.find(u => u.id === uid), { is_banned: false, ban_reason: null });
@@ -5851,7 +5684,7 @@ async function unbanUser(uid, handle) {
   renderAdminStats(allUsers);
   logActivity('unban',         uid, { handle });
 }
-  // ─── BADGE MODAL ─────────────────────────────────────────────────────────────
+
   let _modalUid = null;
   let _modalRoles = {};
 
@@ -5870,7 +5703,6 @@ async function unbanUser(uid, handle) {
       '</div>'
     ).join('');
 
-    // Role toggles
     const rolesEl = document.getElementById('badgeModalRoles');
     rolesEl.innerHTML = '';
     [
@@ -5986,7 +5818,7 @@ function loadDraft() {
   if (!raw) return;
   const draft = JSON.parse(raw);
   const age = Date.now() - (draft.savedAt || 0);
-  // Only restore drafts less than 24h old
+
   if (age > 86400000) { localStorage.removeItem(DRAFT_KEY()); return; }
   const mins = Math.round(age / 60000);
   const banner = document.createElement('div');
@@ -6019,11 +5851,6 @@ function discardDraft() {
   document.getElementById('draftBanner')?.remove();
 }
 
-
-
-
-
-  // ─── SQL HELPERS ─────────────────────────────────────────────────────────────
  function copySql(elId) {
   const el = document.getElementById(elId);
   if (!el) return;
@@ -6042,19 +5869,17 @@ function discardDraft() {
     else { const t = document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
   }
 
-  // ─── ALERT ───────────────────────────────────────────────────────────────────
   function showAlert(id, msg, type) {
     const el = document.getElementById(id); if (!el) return;
     el.textContent = msg; el.className = 'alert ' + type;
     setTimeout(() => { el.className = 'alert'; el.textContent = ''; }, 6000);
   }
 
-  // ─── LIVE INPUT WATCHERS (update card preview as user types) ─────────────────
   ['fDisplayName','fBio','fAvatarUrl'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', updateCardPreview);
   });
-    // ── CUSTOM VIDEO BG ───────────────────────────────────────────────────────────
+
 async function handleBgVideoUpload(input) {
   const file = input.files[0]; if (!file) return;
   if (file.size > 50 * 1024 * 1024) {
@@ -6066,7 +5891,7 @@ async function handleBgVideoUpload(input) {
   const path = `bgvideos/${currentUser.id}.${ext}`;
   const { error } = await sb.storage.from('avatars').upload(path, file, { upsert:true, contentType:file.type });
   if (error) {
-    // Fallback: blob URL (session only)
+
     const url = URL.createObjectURL(file);
     document.getElementById('fBgVideoUrl').value = url;
     nameEl.textContent = '✓ ' + file.name + ' (session only — re-upload to persist)';
@@ -6079,7 +5904,6 @@ async function handleBgVideoUpload(input) {
   input.value = '';
 }
 
-// ── MUSIC TAB ─────────────────────────────────────────────────────────────────
 function loadMusicTab() {
   if (!currentProfile) return;
   const p = currentProfile;
@@ -6121,7 +5945,7 @@ function switchPreviewMode(mode) {
     mobile.style.display = 'block';
     deskBtn.classList.remove('active');
     mobBtn.classList.add('active');
-    // Clone the preview card into the mobile frame
+
     const inner = document.getElementById('mobilePreviewInner');
     const clone = document.getElementById('cardPreviewMini').cloneNode(true);
     clone.style.transform = '';
@@ -6134,13 +5958,13 @@ function switchPreviewMode(mode) {
     mobBtn.classList.remove('active');
   }
 }
-// ── SCHEDULED BIO ─────────────────────────────────────────────────────────────
+
 function loadScheduleTab() {
   if (!currentProfile) return;
   document.getElementById('fScheduledBio').value = currentProfile.scheduled_bio || '';
   if (currentProfile.scheduled_bio_at) {
     const d = new Date(currentProfile.scheduled_bio_at);
-    // datetime-local format: YYYY-MM-DDTHH:mm
+
     const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
     document.getElementById('fScheduledAt').value = local;
     showScheduleStatus();
@@ -6155,7 +5979,7 @@ const LATEST_VERSION = CHANGELOG[0].version;
 function checkChangelog() {
   const seen = localStorage.getItem('swaqq_changelog_seen');
   if (seen !== LATEST_VERSION) {
-    // Add badge to nav
+
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
       if (item.getAttribute('onclick')?.includes('settings')) {
@@ -6206,10 +6030,6 @@ async function clearScheduledBio() {
   showAlert('scheduleAlert', 'scheduled bio cleared.', 'success');
 }
 
-// ── SAVE — update saveProfile to include new fields ───────────────────────────
-
-
-// ── ADMIN: ACTIVITY LOG ───────────────────────────────────────────────────────
 async function logActivity(action, targetId, details = {}) {
   try {
     await sb.from('activity_log').insert({
@@ -6258,7 +6078,7 @@ return `
   }).join('');
 }
 async function loadIpStats() {
-  // We derive IP hints from the bans table + view patterns
+
   const { data: bans } = await sb.from('bans').select('ip_hint, fingerprint, reason, banned_at, profile_id').order('banned_at', { ascending: false }).limit(50);
   const el = document.getElementById('ipStatsBody');
   if (!bans || !bans.length) {
@@ -6294,7 +6114,7 @@ function renderChangelog() {
       ${entry.items.map(i => `<div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--sub);margin-bottom:4px">✓ ${i}</div>`).join('')}
     </div>`).join('');
   localStorage.setItem('swaqq_changelog_seen', LATEST_VERSION);
-  // Remove badge
+
   document.querySelectorAll('.nav-item span[style*="f04747"]').forEach(el => el.remove());
 }
 function updateBulkBar() {
@@ -6365,8 +6185,6 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
 });
 
-
-// ── IMAGE HOST ────────────────────────────────────────────────────────────────
 let _ihImages = [];
 let _ihView   = 'grid';
 let _ihLightboxId = null;
@@ -6413,10 +6231,9 @@ async function buyImagehost() {
   }
 }
 
-// Handle payment return
 if (new URLSearchParams(window.location.search).get('payment') === 'imagehost') {
   setTimeout(async () => {
-    // Reload profile first so unlockedBadges is fresh
+
     const { data: prof } = await sb.from('profiles').select('unlocked_badges').eq('id', currentUser?.id).single();
     const current = JSON.parse(prof?.unlocked_badges || '[]');
     const merged  = [...new Set([...current, 'imagehost'])];
@@ -6494,7 +6311,7 @@ function ihRenderGallery(images) {
         <div style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${img.url}</div>
 <button class="btn btn-ghost ih-copy-btn" data-url="${img.url}" style="font-size:10px;flex-shrink:0"><i class="fas fa-copy"></i></button>
         <button class="btn btn-danger ih-del-btn" data-id="${img.id}" style="font-size:10px;flex-shrink:0"><i class="fas fa-trash"></i></button>`;
-      // After row.innerHTML = `...`
+
       const copyBtn = row.querySelector('.ih-copy-btn');
 copyBtn.addEventListener('click', (e) => {
   e.stopPropagation();
@@ -6540,7 +6357,6 @@ async function ihUploadFile(file) {
   if (file.size > 10 * 1024 * 1024) { showAlert('imagehostAlert', file.name + ' is too large (max 10mb).', 'error'); return; }
   if (!file.type.startsWith('image/')) { showAlert('imagehostAlert', file.name + ' is not an image.', 'error'); return; }
 
-  // Add progress item
   const queueId = 'ih_' + Date.now();
   const queueEl = document.getElementById('ihUploadQueue');
   const item    = document.createElement('div');
@@ -6653,15 +6469,12 @@ function ihFormatSize(bytes) {
   return (bytes/(1024*1024)).toFixed(1) + ' mb';
 }
 
-  
 loadDraft();
 setInterval(saveDraft, 30000);
   checkChangelog()
 
-</script> 
-    <!-- ═══ MUSIC TAB ═══ -->
+</script>
 
-  <!-- BADGE SLOTS -->
   <div class="dash-section">
     <div class="dash-section-title">badge slots</div>
     <div class="dash-section-sub">add more custom badge upload slots</div>
@@ -6717,7 +6530,6 @@ setInterval(saveDraft, 30000);
     </div>
   </div>
 
-  <!-- ALREADY OWNED -->
   <div class="dash-section">
     <div class="dash-section-title">your purchases</div>
     <div class="card-edit" id="purchasesList">
@@ -6726,10 +6538,6 @@ setInterval(saveDraft, 30000);
   </div>
 </div>
 
-
-
-  <!-- ICON PICKER -->
-<!-- ═══ IMAGE HOST TAB ═══ -->
 <div id="tab-imagehost" style="display:none">
   <div class="page-header">
     <h1 class="page-title">image host</h1>
@@ -6738,7 +6546,6 @@ setInterval(saveDraft, 30000);
 
   <div class="alert" id="imagehostAlert"></div>
 
-  <!-- LOCKED STATE -->
   <div id="imagehostLocked" style="display:none">
     <div class="card-edit" style="text-align:center;padding:48px 32px;display:flex;flex-direction:column;align-items:center;gap:20px">
       <div style="width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;color:rgba(255,255,255,0.3)">
@@ -6776,10 +6583,8 @@ setInterval(saveDraft, 30000);
     </div>
   </div>
 
-  <!-- UNLOCKED STATE -->
   <div id="imagehostUnlocked" style="display:none">
 
-    <!-- UPLOAD ZONE -->
     <div class="dash-section">
       <div class="dash-section-title">upload</div>
       <div class="dash-section-sub">png · jpg · gif · webp — max 10mb each</div>
@@ -6797,19 +6602,17 @@ setInterval(saveDraft, 30000);
           <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted)">multiple files supported</div>
           <input type="file" id="ihFileInput" accept="image/png,image/jpeg,image/gif,image/webp" multiple style="display:none" onchange="ihHandleFiles(this.files)">
         </div>
-        <!-- Upload progress -->
+
         <div id="ihUploadQueue" style="margin-top:12px;display:flex;flex-direction:column;gap:8px"></div>
       </div>
     </div>
 
-    <!-- STATS -->
     <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:28px">
       <div class="stat-card"><div class="stat-card-val" id="ihTotalCount">0</div><div class="stat-card-label">images uploaded</div></div>
       <div class="stat-card"><div class="stat-card-val" id="ihTotalSize">0 mb</div><div class="stat-card-label">storage used</div></div>
       <div class="stat-card"><div class="stat-card-val" id="ihTotalCopies">0</div><div class="stat-card-label">links copied</div></div>
     </div>
 
-    <!-- GALLERY -->
     <div class="dash-section">
       <div class="dash-section-title">your images <span id="ihGalleryCount" style="font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;margin-left:8px"></span></div>
       <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
@@ -6827,7 +6630,6 @@ setInterval(saveDraft, 30000);
   </div>
 </div>
 
-<!-- IMAGE LIGHTBOX -->
 <div id="ihLightbox" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.9);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)ihCloseLightbox()">
   <div style="max-width:800px;width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:16px;overflow:hidden">
     <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
@@ -6848,12 +6650,12 @@ setInterval(saveDraft, 30000);
     <div class="icon-picker-title">choose icon</div>
     <input class="icon-search" type="text" placeholder="search icons..." oninput="filterIcons(this.value)" id="iconSearchInput">
     <div class="icon-grid" id="iconGrid"></div>
-    <!-- Custom icon upload -->
+
     <div class="icon-upload-area">
       <span class="icon-upload-label">custom icon <span class="tag">image/gif file — max 10 mb</span></span>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <div class="icon-drop-zone" onclick="document.getElementById('customIconInput').click()">
-          <i class="fas fa-upload" style="font-size:10px;margin-right:5px"></i> upload png / jpg / gif / webp 
+          <i class="fas fa-upload" style="font-size:10px;margin-right:5px"></i> upload png / jpg / gif / webp
         </div>
         <input type="file" id="customIconInput" accept="image/png,image/svg+xml,image/jpeg,image/webp" onchange="handleCustomIcon(this)">
       </div>
@@ -6865,7 +6667,7 @@ setInterval(saveDraft, 30000);
     </div>
   </div>
 </div>
-  
+
   <div class="save-bar" id="saveBar" style="display:none">
   <div style="display:flex;align-items:center;gap:8px">
     <button id="undoBtn" class="btn btn-ghost" onclick="undo()" title="undo (ctrl+z)" disabled style="font-size:10px;padding:6px 10px"><i class="fas fa-undo"></i></button>
