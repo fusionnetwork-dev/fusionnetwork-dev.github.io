@@ -3098,6 +3098,11 @@ let badgeColors = {};
   window.location.href = '/?banned=1';
   return;
 }
+    if (!data.discord_verified) {
+  await sb.auth.signOut();
+  window.location.href = '/';
+  return;
+}
     isAdmin        = !!data.is_admin;
     isOwner        = !!data.is_owner;
     isDeveloper    = !!data.is_developer;
@@ -5085,9 +5090,11 @@ async function syncDiscordRoleBadges(discordId) {
   };
 
   const csJson = JSON.stringify(newCS);
-  if (csJson.length > 50000) {
-    console.warn('[swaqq] custom_settings is large:', csJson.length, 'bytes — consider moving font to storage');
-  }
+ if (csJson.length > 50000) {
+  showAlert('profileAlert', 'settings too large — remove your custom font and try again.', 'error');
+  btn.disabled = false; btn.textContent = 'save changes →';
+  return;
+}
     console.log('[save] badgeColors =', badgeColors);
 console.log('[save] CS.badge_colors =', CS.badge_colors);
 
