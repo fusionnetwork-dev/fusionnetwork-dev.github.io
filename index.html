@@ -631,7 +631,7 @@
 
     window.addEventListener('message', async function handler(e) {
       if (e.origin !== window.location.origin) return;
-      if (!e.data?.discord_access_token) return;
+     if (!e.data?.token || e.data?.type !== 'DISCORD_TOKEN') return;
       window.removeEventListener('message', handler);
 
       try {
@@ -639,7 +639,7 @@
         const res = await fetch(`${SUPABASE_URL}/functions/v1/verify-discord`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ access_token: e.data.discord_access_token })
+      body: JSON.stringify({ access_token: e.data.token })
         });
 
         const data = await res.json();
