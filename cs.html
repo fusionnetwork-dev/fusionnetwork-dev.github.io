@@ -1,13 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>comment stripper</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #070707;
+    --surface: #111;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f0;
+    --sub: rgba(255,255,255,0.38);
+    --muted: rgba(255,255,255,0.18);
+    --green: #43b581;
+    --red: #f04747;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  h1 {
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sub);
+    font-weight: 400;
+  }
+  .editors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .editor-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .editor-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  textarea {
+    width: 100%;
+    height: 560px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    tab-size: 2;
+  }
+  textarea:focus { border-color: rgba(255,255,255,0.18); }
+  textarea::placeholder { color: var(--muted); }
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: filter 0.2s, transform 0.15s;
+  }
+  button:hover { filter: brightness(1.2); transform: translateY(-1px); }
+  .btn-strip { background: #fff; color: #000; }
+  .btn-copy  { background: var(--surface); border: 1px solid var(--border); color: var(--sub); }
+  .btn-clear { background: var(--surface); border: 1px solid var(--border); color: var(--sub); }
+  .hint { font-size: 10px; color: var(--muted); margin-left: auto; }
+  .status { font-size: 11px; letter-spacing: 0.08em; min-height: 16px; }
+  .status.ok  { color: var(--green); }
+  .status.err { color: var(--red); }
+  @media (max-width: 700px) {
+    .editors { grid-template-columns: 1fr; }
+    textarea { height: 300px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>comment stripper</h1>
+  <div class="editors">
+    <div class="editor-wrap">
+      <div class="editor-label">input — paste js / ts / html</div>
+      <textarea id="input" placeholder="paste your code here..."></textarea>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-label">output — comments removed</div>
+      <textarea id="output" readonly placeholder="result appears here..."></textarea>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn-strip" onclick="strip()">strip comments →</button>
+    <button class="btn-copy"  onclick="copyOutput()">copy output</button>
+    <button class="btn-clear" onclick="clearAll()">clear</button>
+    <span class="hint">ctrl+enter to strip</span>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+
 <script>
 function stripJS(src) {
-  src = src.replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
-
   let out = '';
   let i = 0;
   const len = src.length;
 
   while (i < len) {
     const ch = src[i];
+
 
     if (ch === "'") {
       let s = ch; i++;
@@ -19,6 +161,7 @@ function stripJS(src) {
       out += s; continue;
     }
 
+
     if (ch === '"') {
       let s = ch; i++;
       while (i < len) {
@@ -29,6 +172,7 @@ function stripJS(src) {
       out += s; continue;
     }
 
+
     if (ch === '`') {
       let s = ch; i++;
       let depth = 0;
@@ -36,23 +180,26 @@ function stripJS(src) {
         const c = src[i]; s += c; i++;
         if (c === '\\') { s += src[i]; i++; }
         else if (c === '$' && src[i] === '{') { s += src[i]; i++; depth++; }
-        else if (c === '}' && depth > 0) depth--;
+        else if (c === '}' && depth > 0) { depth--; }
         else if (c === '`' && depth === 0) break;
       }
       out += s; continue;
     }
 
+  
     if (ch === '/' && src[i + 1] === '/') {
       while (i < len && src[i] !== '\n') i++;
       continue;
     }
 
+  
     if (ch === '/' && src[i + 1] === '*') {
       i += 2;
       while (i < len - 1 && !(src[i] === '*' && src[i + 1] === '/')) i++;
       i += 2;
       continue;
     }
+
 
     if (ch === '/') {
       const prev = out.trimEnd();
@@ -89,7 +236,7 @@ function cleanBlankLines(src) {
   return src
     .split('\n')
     .map(l => l.trimEnd())
-    .reduce((acc, line) => {
+    .reduce((acc, line, i, arr) => {
       if (line.trim() === '' && acc[acc.length - 1]?.trim() === '') return acc;
       acc.push(line);
       return acc;
@@ -124,7 +271,7 @@ function strip() {
     result = cleanBlankLines(result);
     document.getElementById('output').value = result;
 
-    const inLines = input.split('\n').length;
+    const inLines  = input.split('\n').length;
     const outLines = result.split('\n').length;
     setStatus(`✓ done — ${inLines} → ${outLines} lines (removed ${inLines - outLines})`, 'ok');
   } catch (e) {
@@ -148,7 +295,7 @@ function copyOutput() {
 }
 
 function clearAll() {
-  document.getElementById('input').value = '';
+  document.getElementById('input').value  = '';
   document.getElementById('output').value = '';
   setStatus('', '');
 }
@@ -157,3 +304,5 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') strip();
 });
 </script>
+</body>
+</html>
